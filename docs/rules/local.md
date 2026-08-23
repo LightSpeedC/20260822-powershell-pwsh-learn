@@ -10,10 +10,25 @@ type: local-rule
 
 ## ファイル形式
 
-**資料は HTML で直接作成する**（`docs/NN-タイトル.html`）。中間の Markdown は作らない。
+**資料は HTML で直接作成する**（`docs/NN-タイトル.html`）。**HTML が唯一の原本。**
 
 - 構成案・検討メモは `docs/plan/`
 - ルールは `docs/rules/`
+
+### Markdown は生成物
+
+GitHub は `.html` をレンダリングしないため、**同じ内容の `.md` を HTML から生成**する。
+
+```powershell
+.\src\scripts\markdown\build-markdown.ps1
+```
+
+- **`.md` を直接編集しない**。次回の生成で上書きされる。修正は `.html` 側に入れる
+- 図は `docs/images/*.png`（HTML から撮影した PNG）への参照になる。**コミット対象**
+- `.html` へのリンクは `.md` に、`#chNN` は見出しのスラッグに自動で書き換わる
+
+**Why:** 資料を2箇所で保守すると必ず食い違う。HTML を原本と決め、
+Markdown は毎回作り直す派生物として扱う。
 
 ---
 

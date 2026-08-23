@@ -556,10 +556,30 @@ pptx は <code>tmp/outline/*.json</code> を材料にするため、<strong>先�
 # 2) pptx を生成する（-Prefix で1章だけも可）
 .\src\scripts\pptx\build-pptx.ps1 -Prefix 05 -Pdf -Images
 
-# すべての章をまとめて
-.\src\scripts\pptx\build-pptx.ps1 -Pdf</code></pre>
+# 3) GitHub 用の Markdown を生成する
+.\src\scripts\markdown\build-markdown.ps1</code></pre>
 
 <p>いずれも<strong>同名の <code>.cmd</code> をダブルクリック</strong>しても実行できます。</p>
+
+<h2>Markdown 版について</h2>
+
+<p>GitHub は <code>.html</code> をレンダリングしないため、<strong>同じ内容の <code>.md</code> を HTML から生成</strong>しています。リポジトリ上で読むときはこちらを使ってください。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>変換されるもの</th><th>Markdown での表現</th></tr>
+<tr><td class="nowrap">SVG 図</td><td><code>docs/images/*.png</code> への画像参照（HTML から撮影した PNG）</td></tr>
+<tr><td class="nowrap"><code>.callout</code></td><td>GitHub のアラート記法（<code>&gt; [!NOTE]</code>）</td></tr>
+<tr><td class="nowrap">バッジ</td><td><code>**［pwsh 7］**</code> のような強調表示</td></tr>
+<tr><td class="nowrap">章へのリンク</td><td><code>.html</code> → <code>.md</code> に書き換え。<code>#chNN</code> は見出しのスラッグに差し替え</td></tr>
+<tr><td class="nowrap">コードブロック</td><td>中身から言語を推測（<code>powershell</code> / <code>bat</code> / <code>javascript</code> ほか）</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>原本は HTML です。</strong><br>
+<code>.md</code> を直接編集しても、次回の生成で<strong>上書きされます</strong>。修正は必ず <code>.html</code> 側に入れてください。
+</div>
 
 <div class="table-wrap">
 <table>
@@ -591,7 +611,9 @@ pptx は <code>tmp/outline/*.json</code> を材料にするため、<strong>先�
 <div class="table-wrap">
 <table>
 <tr><th>場所</th><th>内容</th><th>git</th></tr>
-<tr><td class="nowrap"><code>docs/</code></td><td>資料の HTML（原本）</td><td><span class="badge b-good">対象</span></td></tr>
+<tr><td class="nowrap"><code>docs/*.html</code></td><td>資料（<strong>原本</strong>）</td><td><span class="badge b-good">対象</span></td></tr>
+<tr><td class="nowrap"><code>docs/*.md</code></td><td>GitHub 表示用（HTML から生成）</td><td><span class="badge b-good">対象</span></td></tr>
+<tr><td class="nowrap"><code>docs/images/</code></td><td>Markdown が参照する図の PNG</td><td><span class="badge b-good">対象</span></td></tr>
 <tr><td class="nowrap"><code>src/scripts/</code></td><td>ビルド用スクリプト</td><td><span class="badge b-good">対象</span></td></tr>
 <tr><td class="nowrap"><code>tmp/figures/</code></td><td>図の PNG（46 枚）</td><td><span class="badge b-none">除外</span></td></tr>
 <tr><td class="nowrap"><code>tmp/outline/</code></td><td>構造 JSON</td><td><span class="badge b-none">除外</span></td></tr>
