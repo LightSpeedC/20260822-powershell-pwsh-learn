@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>07. ファイル・テキスト操作</title>
+<style>
+	:root {
+		--navy1: #12224d;
+		--navy2: #2f5fbf;
+		--ink: #1c2330;
+		--ink-soft: #4a5568;
+		--line: #d9dfe8;
+		--code-bg: #f4f6fa;
+
+		/* 章クラス(.chNN)の外に置かれた要素用の既定値 */
+		--accent: var(--navy1);
+		--accent2: var(--navy2);
+		--soft: #f2f5fb;
+	}
+
+	/* 章ごとの虹色アクセント (H: 280 → 0, 280°を4章に均等分割 = 93.3°刻み) */
+	.ch01 { --accent: hsl(280,78%,25%);   --accent2: hsl(280,58%,65%);   --soft: hsl(280,28%,95%); }
+	.ch02 { --accent: hsl(186.7,78%,25%); --accent2: hsl(186.7,58%,65%); --soft: hsl(186.7,28%,95%); }
+	.ch03 { --accent: hsl(93.3,78%,25%);  --accent2: hsl(93.3,58%,65%);  --soft: hsl(93.3,28%,95%); }
+	.ch04 { --accent: hsl(0,78%,25%);     --accent2: hsl(0,58%,65%);     --soft: hsl(0,28%,95%); }
+
+	* { box-sizing: border-box; }
+
+	body {
+		margin: 0;
+		padding: 0 0 60px;
+		background: #ffffff;
+		color: var(--ink);
+		font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", "Meiryo", sans-serif;
+		line-height: 1.85;
+		font-size: 15.5px;
+	}
+
+	.wrap { max-width: 1400px; margin: 0 auto; padding: 0 30px; }
+
+	/* タイトルバー */
+	.titlebar {
+		background: linear-gradient(135deg, var(--navy1) 0%, var(--navy2) 100%);
+		color: #fff;
+		padding: 34px 30px 30px;
+		box-shadow: 0 6px 18px rgba(18,34,77,0.28);
+	}
+	.titlebar .inner { max-width: 1400px; margin: 0 auto; }
+	.titlebar h1 {
+		margin: 0 0 10px;
+		font-size: 2.1em;
+		letter-spacing: 0.02em;
+		color: #fff;
+	}
+	.titlebar p { margin: 4px 0; font-size: 0.92em; color: #d8e4ff; }
+	.titlebar .meta { font-size: 0.84em; color: #b9cdf5; }
+	.titlebar code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+
+	/* 目次 */
+	nav.toc {
+		background: linear-gradient(180deg, #f2f5fb 0%, #ffffff 100%);
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		padding: 16px 22px;
+		margin: 28px 0;
+		box-shadow: 0 2px 8px rgba(30,50,90,0.07);
+	}
+	nav.toc strong { display: block; color: var(--navy1); margin-bottom: 10px; }
+	nav.toc ol {
+		margin: 0;
+		padding-left: 0;
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		counter-reset: toc;
+	}
+	nav.toc li { counter-increment: toc; margin: 0; }
+	nav.toc a {
+		display: -webkit-box;
+		width: 310px;
+		max-width: 100%;
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		text-decoration: none;
+		text-align: left;
+		border-radius: 6px;
+		padding: 7px 10px;
+		font-size: 0.88em;
+		font-weight: 600;
+		line-height: 1.4;
+		white-space: normal;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		box-shadow: 0 1px 4px rgba(20,30,60,0.18);
+	}
+	nav.toc a::before { content: "07." counter(toc) " "; opacity: 0.85; }
+	nav.toc a:hover { text-decoration: underline; }
+
+	/* 章 */
+	section {
+		background: linear-gradient(180deg, var(--soft) 0%, #ffffff 42%);
+		border-radius: 12px;
+		padding: 4px 26px 26px;
+		margin: 34px 0;
+		border: 1px solid var(--line);
+	}
+
+	section h1 {
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		font-size: 1.5em;
+		margin: 26px 0 20px;
+		padding: 14px 20px;
+		border-radius: 9px;
+		box-shadow: 0 5px 14px rgba(30,40,70,0.28);
+	}
+	section h1 code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+
+	h2 {
+		font-size: 1.16em;
+		color: var(--accent);
+		border-left: 7px solid var(--accent);
+		background: linear-gradient(90deg, var(--soft) 0%, rgba(255,255,255,0) 88%);
+		padding: 6px 12px;
+		margin: 30px 0 12px;
+		border-radius: 0 6px 6px 0;
+	}
+
+	h3 {
+		font-size: 1.02em;
+		color: var(--accent);
+		margin: 20px 0 8px;
+		padding-bottom: 3px;
+		border-bottom: 2px dotted var(--accent2);
+		display: inline-block;
+	}
+
+	p { margin: 10px 0; }
+	ul, ol { margin: 10px 0; padding-left: 1.6em; }
+	li { margin: 6px 0; }
+
+	code {
+		background: var(--code-bg);
+		border: 1px solid var(--line);
+		border-radius: 4px;
+		padding: 1px 6px;
+		font-family: "BIZ UDゴシック", "ＭＳ ゴシック", Consolas, "Cascadia Mono", monospace;
+		font-size: 0.9em;
+		color: #17335f;
+	}
+
+	pre {
+		background: linear-gradient(180deg, #f7f9fd 0%, #eef2f9 100%);
+		border: 1px solid var(--line);
+		border-left: 5px solid var(--accent2);
+		border-radius: 8px;
+		padding: 13px 16px;
+		overflow-x: auto;
+		font-size: 0.88em;
+		line-height: 1.6;
+	}
+	pre code { background: none; border: none; padding: 0; color: #1b2b46; }
+
+	.table-wrap { overflow-x: auto; margin: 16px 0; }
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 0.93em;
+		box-shadow: 0 2px 7px rgba(40,55,90,0.12);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+	th {
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		text-align: left;
+		padding: 9px 12px;
+		font-weight: 600;
+	}
+	th code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+	td { padding: 9px 12px; border-bottom: 1px solid var(--line); background: #fff; vertical-align: top; }
+	tr:nth-child(even) td { background: #fafbfe; }
+	td.nowrap { white-space: nowrap; }
+	td.mono { font-family: "BIZ UDゴシック", "ＭＳ ゴシック", Consolas, monospace; white-space: nowrap; }
+	td.num { text-align: right; white-space: nowrap; }
+
+	/* バッジ */
+	.badge {
+		display: inline-block;
+		font-size: 0.78em;
+		font-weight: 700;
+		color: #fff;
+		border-radius: 4px;
+		padding: 1px 9px;
+		margin-right: 7px;
+		letter-spacing: 0.04em;
+		white-space: nowrap;
+	}
+	.b-good { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
+	.b-bad  { background: linear-gradient(100deg, #a51f22, #e05a5c); }
+	.b-none { background: linear-gradient(100deg, #5a6472, #97a1ae); }
+	.b-warn { background: linear-gradient(100deg, #b8620a, #f0a548); }
+	.b-ps7  { background: linear-gradient(100deg, #1a5fa8, #4d9ae0); }
+	.b-ps51 { background: linear-gradient(100deg, #5b2d82, #9a6bc4); }
+
+	.callout {
+		background: linear-gradient(180deg, var(--soft) 0%, #ffffff 100%);
+		border: 1px solid var(--accent2);
+		border-left: 6px solid var(--accent);
+		border-radius: 0 8px 8px 0;
+		padding: 12px 18px;
+		margin: 16px 0;
+	}
+	.callout strong { color: var(--accent); }
+
+	/* SVG図 */
+	figure { margin: 20px 0; text-align: center; }
+	figure svg {
+		max-width: 100%;
+		height: auto;
+		font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", "Meiryo", sans-serif;
+	}
+	figcaption { font-size: 0.84em; color: var(--ink-soft); margin-top: 6px; }
+
+	footer {
+		max-width: 1400px;
+		margin: 40px auto 0;
+		padding: 18px 30px 0;
+		border-top: 2px solid var(--line);
+		color: var(--ink-soft);
+		font-size: 0.86em;
+	}
+	footer a { color: var(--navy2); }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>07. ファイル・テキスト操作</h1>
+		<p>02 章の文字コードが、ここで <code>-Encoding</code> として効いてくる</p>
+		<p class="meta">📅 作成: 2026-08-23 / 更新: 2026-08-23 ／ 対象: Windows PowerShell 5.1 ＋ PowerShell 7</p>
+	</div>
+</div>
+
+<div class="wrap">
+
+<h2>この章で何ができるようになるか</h2>
+
+<ul>
+	<li>パスを<strong>環境に依存しない形</strong>で組み立てられる</li>
+	<li><code>Get-ChildItem</code> が<strong>0 件を返したとき、原因を切り分けられる</strong></li>
+	<li>読み書きの<strong>文字コードを 5.1 と 7 の両方で意図どおりに指定</strong>できる</li>
+	<li>CSV と JSON を<strong>データを壊さずに往復</strong>させられる</li>
+</ul>
+
+<div class="callout">
+<strong>「0 件が返る」「文字化けする」の大半はこの章の内容です。</strong><br>
+ファイル操作はコマンド自体が単純なので、つまずくのは<strong>指定の仕方</strong>です。この章では動くコードよりも、<strong>動かないときに何を疑うか</strong>を中心に扱います。
+</div>
+
+<nav class="toc">
+	<strong>目次</strong>
+	<ol>
+		<li class="ch01"><a href="#ch01">パスの組み立て</a></li>
+		<li class="ch02"><a href="#ch02">Get-ChildItem — 0 件になる3つの理由</a></li>
+		<li class="ch03"><a href="#ch03">読み書きと文字コード</a></li>
+		<li class="ch04"><a href="#ch04">CSV と JSON</a></li>
+	</ol>
+</nav>
+
+<!-- ============ 07.1 ============ -->
+<section class="ch01" id="ch01">
+<h1>07.1 パスの組み立て</h1>
+
+<h2>文字列結合でパスを作らない</h2>
+
+<figure>
+<svg viewBox="0 0 780 244" role="img" aria-label="文字列結合と Join-Path の違い">
+	<defs>
+		<linearGradient id="g-07-1a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-07-1b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<text x="196" y="20" fill="#a51f22" font-size="14" font-weight="700" text-anchor="middle">文字列結合</text>
+	<text x="584" y="20" fill="hsl(140,78%,25%)" font-size="14" font-weight="700" text-anchor="middle">Join-Path</text>
+
+	<rect x="20" y="32" width="352" height="44" rx="8" fill="url(#g-07-1a)"/>
+	<text x="196" y="60" fill="#fff" font-size="13" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">"$dir" + "\" + "$name"</text>
+
+	<rect x="408" y="32" width="352" height="44" rx="8" fill="url(#g-07-1b)"/>
+	<text x="584" y="60" fill="#fff" font-size="13" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Join-Path $dir $name</text>
+
+	<rect x="20" y="90" width="352" height="88" rx="8" fill="#fff" stroke="hsl(0,58%,60%)" stroke-width="2"/>
+	<text x="196" y="112" fill="var(--ink)" font-size="12.5" text-anchor="middle">$dir が末尾に \ を持っていると</text>
+	<text x="196" y="134" fill="#a51f22" font-size="13" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">C:\work\\a.txt</text>
+	<text x="196" y="158" fill="var(--ink-soft)" font-size="12" text-anchor="middle">区切りが二重になる。動く場合もあり発見が遅れる</text>
+
+	<rect x="408" y="90" width="352" height="88" rx="8" fill="#fff" stroke="hsl(140,58%,55%)" stroke-width="2"/>
+	<text x="584" y="112" fill="var(--ink)" font-size="12.5" text-anchor="middle">末尾の \ の有無を吸収してくれる</text>
+	<text x="584" y="134" fill="hsl(140,78%,25%)" font-size="13" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">C:\work\a.txt</text>
+	<text x="584" y="158" fill="var(--ink-soft)" font-size="12" text-anchor="middle">Linux 上では / を使うので移植性も上がる</text>
+
+	<rect x="20" y="192" width="740" height="44" rx="8" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+	<text x="390" y="212" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="middle">3階層以上もまとめて渡せる（PowerShell 7）</text>
+	<text x="390" y="230" fill="var(--ink-soft)" font-size="12" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Join-Path 'C:\a' 'b' 'c'   →   C:\a\b\c</text>
+</svg>
+<figcaption>図 07.1 — <code>Join-Path</code> は区切り文字の重複を吸収する</figcaption>
+</figure>
+
+<h2>基準となる場所を間違えない</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>変数</th><th>指すもの</th><th>使いどころ</th></tr>
+<tr><td class="nowrap"><code>$PSScriptRoot</code></td><td><strong>このスクリプトがあるフォルダ</strong></td><td><span class="badge b-good">推奨</span>同梱ファイルを読む</td></tr>
+<tr><td class="nowrap"><code>$PWD</code> / <code>Get-Location</code></td><td>カレントディレクトリ</td><td>ユーザーが今いる場所を対象にする</td></tr>
+<tr><td class="nowrap"><code>$HOME</code></td><td>ユーザーのホーム</td><td>設定ファイルの置き場所</td></tr>
+<tr><td class="nowrap"><code>$env:TEMP</code></td><td>一時フォルダ</td><td>作業用ファイル</td></tr>
+</table>
+</div>
+
+<pre><code># スクリプトと同じ場所にある設定ファイルを読む（定番）
+$config = Join-Path $PSScriptRoot 'config.json'</code></pre>
+
+<div class="callout">
+<strong>ダブルクリックで実行したときのカレントは、スクリプトの場所とは限りません。</strong><br>
+ショートカット経由やタスクスケジューラ経由では、まったく別のフォルダがカレントになります。<strong>同梱ファイルを読むときは必ず <code>$PSScriptRoot</code></strong> を使ってください。02 章の cmd ランチャーで <code>%~dp0</code> を使ったのと同じ理由です。
+</div>
+
+<h2>カレントの実行ファイルは <code>.\</code> を明示する</h2>
+
+<pre><code># ✗ 環境設定によっては見つからない
+mytool.exe
+
+# ✓ カレントを明示する
+.\mytool.exe</code></pre>
+
+<p>PowerShell は<strong>カレントディレクトリを自動では探しません</strong>（意図しないプログラムの実行を防ぐため）。cmd.exe とは挙動が違う点です。</p>
+
+<h2>パス操作のコマンド</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>コマンド</th><th>用途</th><th>例</th></tr>
+<tr><td class="nowrap"><code>Join-Path</code></td><td>連結する</td><td class="mono">Join-Path $dir 'a.txt'</td></tr>
+<tr><td class="nowrap"><code>Split-Path</code></td><td>分解する</td><td class="mono">Split-Path $p -Parent / -Leaf</td></tr>
+<tr><td class="nowrap"><code>Test-Path</code></td><td>存在を確認する</td><td class="mono">Test-Path $p -PathType Leaf</td></tr>
+<tr><td class="nowrap"><code>Resolve-Path</code></td><td>絶対パスにする（存在必須）</td><td class="mono">Resolve-Path .\docs</td></tr>
+<tr><td class="nowrap"><code>Convert-Path</code></td><td>絶対パスにする（文字列で返る）</td><td class="mono">Convert-Path .\docs</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>PowerShell が初めての人へ</strong><br>
+<code>Test-Path</code> は<strong>ファイルでもフォルダでも <code>True</code> を返します</strong>。区別したいときは <code>-PathType Leaf</code>（ファイル）か <code>-PathType Container</code>（フォルダ）を付けてください。<br>
+「ファイルがあるはずなのに条件分岐がおかしい」というとき、同名のフォルダを掴んでいることがあります。
+</div>
+</section>
+
+<!-- ============ 07.2 ============ -->
+<section class="ch02" id="ch02">
+<h1>07.2 Get-ChildItem — 0 件になる3つの理由</h1>
+
+<h2>検証に使うファイル構成</h2>
+
+<p>以降の例はすべて、次の構成に対して実行した<strong>実測値</strong>です。</p>
+
+<pre><code>$base\
+├── docs-a\
+│   ├── a.txt
+│   └── a.log
+├── docs-b\
+│   └── b.txt
+└── other\
+    └── c.txt</code></pre>
+
+<div class="table-wrap">
+<table>
+<tr><th>数え方</th><th>該当するファイル</th><th>件数</th></tr>
+<tr><td class="nowrap"><code>.txt</code> をすべて</td><td class="mono">a.txt / b.txt / c.txt</td><td class="nowrap"><strong>3 件</strong></td></tr>
+<tr><td class="nowrap"><code>docs-*</code> の下の <code>.txt</code> だけ</td><td class="mono">a.txt / b.txt</td><td class="nowrap"><strong>2 件</strong></td></tr>
+<tr><td class="nowrap"><code>other</code> の下</td><td class="mono">c.txt</td><td class="nowrap">1 件</td></tr>
+</table>
+</div>
+
+<p><strong>「docs-a と docs-b の中の .txt だけが欲しい」= 2 件が正解</strong>という前提で読んでください。<code>a.log</code> と <code>c.txt</code> は除外されるべきものです。</p>
+
+<h2>理由① パスのワイルドカードと <code>-Filter</code> を併用した <span class="badge b-bad">最頻出</span></h2>
+
+<p>これが最も多い原因です。<strong>エラーは出ず、静かに 0 件を返します</strong>。</p>
+
+<figure>
+<svg viewBox="0 0 780 262" role="img" aria-label="ワイルドカードパスと -Filter の併用で0件になる">
+	<defs>
+		<linearGradient id="g-07-2a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-07-2b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<text x="390" y="20" fill="var(--ink)" font-size="13.5" font-weight="700" text-anchor="middle">docs-a\a.txt ・ docs-a\a.log ・ docs-b\b.txt ・ other\c.txt がある状態で</text>
+
+	<rect x="20" y="32" width="580" height="40" rx="8" fill="url(#g-07-2a)"/>
+	<text x="310" y="57" fill="#fff" font-size="12.5" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Get-ChildItem "docs-*" -Filter "*.txt"</text>
+	<text x="690" y="52" fill="#a51f22" font-size="15" font-weight="700" text-anchor="middle">0 件</text>
+	<text x="690" y="67" fill="#a51f22" font-size="11" font-weight="700" text-anchor="middle">（取れない）</text>
+
+	<rect x="20" y="80" width="580" height="40" rx="8" fill="url(#g-07-2b)"/>
+	<text x="310" y="105" fill="#fff" font-size="12.5" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Get-ChildItem "docs-*\*.txt"</text>
+	<text x="690" y="100" fill="hsl(140,78%,25%)" font-size="15" font-weight="700" text-anchor="middle">2 件</text>
+	<text x="690" y="115" fill="hsl(140,78%,25%)" font-size="11" font-weight="700" text-anchor="middle">a.txt / b.txt</text>
+
+	<rect x="20" y="128" width="580" height="40" rx="8" fill="url(#g-07-2b)"/>
+	<text x="310" y="153" fill="#fff" font-size="12" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Get-ChildItem $base -Recurse -Filter "*.txt"</text>
+	<text x="690" y="148" fill="hsl(35,78%,30%)" font-size="15" font-weight="700" text-anchor="middle">3 件</text>
+	<text x="690" y="163" fill="hsl(35,78%,30%)" font-size="11" font-weight="700" text-anchor="middle">c.txt も混ざる</text>
+
+	<rect x="20" y="176" width="580" height="40" rx="8" fill="url(#g-07-2b)"/>
+	<text x="310" y="195" fill="#fff" font-size="11.5" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">↑ | Where-Object { $_.Directory.Name -like 'docs-*' }</text>
+	<text x="310" y="211" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">絞り込みは Where-Object に任せる</text>
+	<text x="690" y="195" fill="hsl(140,78%,25%)" font-size="15" font-weight="700" text-anchor="middle">2 件</text>
+	<text x="690" y="210" fill="hsl(140,78%,25%)" font-size="11" font-weight="700" text-anchor="middle">これが正解</text>
+
+	<rect x="20" y="226" width="740" height="30" rx="8" fill="#fff" stroke="hsl(0,58%,60%)" stroke-width="2"/>
+	<text x="390" y="246" fill="#a51f22" font-size="13" font-weight="700" text-anchor="middle">-Filter はプロバイダに渡されるため、ワイルドカードで展開されたパスとは噛み合わない</text>
+</svg>
+<figcaption>図 07.2 — 実測値。①だけが 0 件になる。エラーが出ないため原因に気づきにくい</figcaption>
+</figure>
+
+<pre><code># ✗ 0 件になる
+Get-ChildItem "$base\docs-*" -Filter '*.txt' -File
+
+# ✓ 親フォルダを指定して再帰し、絞り込みは Where-Object で行う
+Get-ChildItem $base -Recurse -Filter '*.txt' -File |
+    Where-Object { $_.Directory.Name -like 'docs-*' }</code></pre>
+
+<h2>理由② <code>-Include</code> を <code>-Recurse</code> なしで使った</h2>
+
+<pre><code>Get-ChildItem $base -Include '*.txt'              # → 0 件（何も返らない）
+Get-ChildItem $base -Recurse -Include '*.txt'     # → 3 件（a.txt / b.txt / c.txt）
+Get-ChildItem "$base\*" -Include '*.txt'          # → これでも動く</code></pre>
+
+<div class="callout">
+<strong><code>-Include</code> はパスの<strong>末尾</strong>に対して働きます。</strong><br>
+<code>-Recurse</code> か、末尾に <code>\*</code> が付いたパスが必要です。単にフォルダを指定しただけでは何にも一致しません。<br>
+<strong>迷ったら <code>-Filter</code> を使ってください。</strong><code>-Filter</code> のほうが高速で（ファイルシステム側で絞るため）、この落とし穴もありません。ただし<strong>パターンは1つしか書けません</strong>。複数拡張子を扱うときだけ <code>-Include</code> の出番です。
+</div>
+
+<div class="table-wrap">
+<table>
+<tr><th>観点</th><th><code>-Filter</code></th><th><code>-Include</code></th></tr>
+<tr><td class="nowrap">速度</td><td><span class="badge b-good">速い</span>ファイルシステムが絞る</td><td>PowerShell 側で絞る</td></tr>
+<tr><td class="nowrap">パターン数</td><td>1つだけ</td><td>複数指定できる</td></tr>
+<tr><td class="nowrap">条件</td><td>特になし</td><td><strong><code>-Recurse</code> か <code>\*</code> が必要</strong></td></tr>
+<tr><td class="nowrap">ワイルドカードパス</td><td><strong>併用不可</strong></td><td>併用できる</td></tr>
+</table>
+</div>
+
+<h2>理由③ ファイル名に <code>[</code> <code>]</code> が含まれていた</h2>
+
+<p><code>-Path</code> はワイルドカードを解釈します。<strong>角括弧は「いずれか1文字」を意味する</strong>ため、実在するファイルが見つかりません。</p>
+
+<figure>
+<svg viewBox="0 0 780 232" role="img" aria-label="角括弧を含むファイル名はワイルドカードとして解釈される">
+	<defs>
+		<linearGradient id="g-07-3a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-07-3b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<text x="390" y="20" fill="var(--ink)" font-size="13.5" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">report[2026].txt が実在する状態で</text>
+
+	<rect x="30" y="34" width="490" height="42" rx="8" fill="url(#g-07-3a)"/>
+	<text x="275" y="60" fill="#fff" font-size="12.5" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Get-ChildItem -Path "report[2026].txt"</text>
+	<text x="640" y="60" fill="#a51f22" font-size="15" font-weight="700" text-anchor="middle">0 件</text>
+
+	<rect x="30" y="84" width="490" height="42" rx="8" fill="url(#g-07-3b)"/>
+	<text x="275" y="110" fill="#fff" font-size="12.5" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Get-ChildItem -LiteralPath "report[2026].txt"</text>
+	<text x="640" y="110" fill="hsl(140,78%,25%)" font-size="15" font-weight="700" text-anchor="middle">1 件</text>
+
+	<rect x="30" y="140" width="720" height="82" rx="8" fill="#fff" stroke="hsl(0,58%,60%)" stroke-width="2"/>
+	<text x="390" y="162" fill="#a51f22" font-size="13.5" font-weight="700" text-anchor="middle">[2026] は「2 か 0 か 6 のいずれか1文字」を意味する</text>
+	<text x="390" y="184" fill="var(--ink)" font-size="12.5" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">report2.txt / report0.txt / report6.txt</text>
+	<text x="390" y="206" fill="var(--ink-soft)" font-size="12" text-anchor="middle">これらを探しに行くので 0 件になる。-Path では作成すらできない</text>
+</svg>
+<figcaption>図 07.3 — 角括弧を含む名前は <code>-LiteralPath</code> でしか扱えない</figcaption>
+</figure>
+
+<div class="callout">
+<strong>変数から受け取ったパスには <code>-LiteralPath</code> を使ってください。</strong><br>
+自分で書いたリテラルなら文字を把握できますが、<strong>ユーザー入力やファイル一覧から来たパスに何が含まれているかは分かりません</strong>。角括弧のほか <code>*</code> <code>?</code> も同じ問題を起こします。<br>
+日付やバージョンを角括弧で囲む命名は実際によくあるため、遭遇率は低くありません。
+</div>
+
+<h2>よく使う指定</h2>
+
+<pre><code>Get-ChildItem $dir -File                        # ファイルだけ
+Get-ChildItem $dir -Directory                   # フォルダだけ
+Get-ChildItem $dir -Recurse -Depth 2            # 深さを制限する
+Get-ChildItem $dir -Force                       # 隠しファイルも含める
+Get-ChildItem $dir -Recurse -ErrorAction SilentlyContinue   # アクセス不可を無視</code></pre>
+
+<div class="callout">
+<strong>PowerShell が初めての人へ</strong><br>
+<code>-Recurse</code> で深い階層を辿ると、<strong>アクセス権のないフォルダでエラーが大量に出る</strong>ことがあります。処理自体は続きますが、画面が赤く埋まって本来のエラーが埋もれます。<br>
+<code>-ErrorAction SilentlyContinue</code> を付けると黙って読み飛ばします。エラーを後で確認したいときは <code>-ErrorVariable</code> で受け取れます（08 章）。
+</div>
+</section>
+
+<!-- ============ 07.3 ============ -->
+<section class="ch03" id="ch03">
+<h1>07.3 読み書きと文字コード</h1>
+
+<h2>02 章の話がここで効いてくる</h2>
+
+<p>02 章で「ファイルは文字コードを自己申告しない」と学びました。<strong>読み書きのたびに指定が必要になる</strong>のがその帰結です。しかも<strong>既定値が 5.1 と 7 で違います</strong>。</p>
+
+<h2>既定のエンコーディング — 実測値</h2>
+
+<p>「あ」1文字を書き出したときの<strong>実際のバイト列</strong>です。</p>
+
+<figure>
+<svg viewBox="0 0 780 274" role="img" aria-label="5.1 と 7 の既定エンコーディングの比較">
+	<defs>
+		<linearGradient id="g-07-4a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(275,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(275,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-07-4b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(211,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(211,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<text x="150" y="20" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="middle">書き出し方</text>
+	<text x="410" y="20" fill="#5b2d82" font-size="13" font-weight="700" text-anchor="middle">Windows PowerShell 5.1</text>
+	<text x="650" y="20" fill="#1a5fa8" font-size="13" font-weight="700" text-anchor="middle">PowerShell 7</text>
+
+	<text x="20" y="58" fill="var(--ink)" font-size="12.5" font-weight="700" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Set-Content（既定）</text>
+	<rect x="290" y="32" width="240" height="38" rx="7" fill="url(#g-07-4a)"/>
+	<text x="410" y="50" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">ANSI（CP932）</text>
+	<text x="410" y="65" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">82 A0</text>
+	<rect x="540" y="32" width="220" height="38" rx="7" fill="url(#g-07-4b)"/>
+	<text x="650" y="50" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">UTF-8（BOM なし）</text>
+	<text x="650" y="65" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">E3 81 82</text>
+
+	<text x="20" y="104" fill="var(--ink)" font-size="12.5" font-weight="700" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Out-File（既定）</text>
+	<rect x="290" y="78" width="240" height="38" rx="7" fill="url(#g-07-4a)"/>
+	<text x="410" y="96" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">UTF-16LE（BOM 付き）</text>
+	<text x="410" y="111" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">FF FE 42 30</text>
+	<rect x="540" y="78" width="220" height="38" rx="7" fill="url(#g-07-4b)"/>
+	<text x="650" y="96" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">UTF-8（BOM なし）</text>
+	<text x="650" y="111" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">E3 81 82</text>
+
+	<text x="20" y="150" fill="var(--ink)" font-size="12.5" font-weight="700" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">-Encoding UTF8</text>
+	<rect x="290" y="124" width="240" height="38" rx="7" fill="url(#g-07-4a)"/>
+	<text x="410" y="142" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">UTF-8（BOM 付き）</text>
+	<text x="410" y="157" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">EF BB BF E3 81 82</text>
+	<rect x="540" y="124" width="220" height="38" rx="7" fill="url(#g-07-4b)"/>
+	<text x="650" y="142" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">UTF-8（BOM なし）</text>
+	<text x="650" y="157" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">E3 81 82</text>
+
+	<rect x="20" y="176" width="740" height="42" rx="8" fill="#fff" stroke="hsl(0,58%,60%)" stroke-width="2"/>
+	<text x="390" y="196" fill="#a51f22" font-size="13.5" font-weight="700" text-anchor="middle">同じ -Encoding UTF8 が、5.1 では BOM 付き、7 では BOM なし</text>
+	<text x="390" y="212" fill="var(--ink)" font-size="12" text-anchor="middle">7 で BOM を付けるには utf8BOM を明示する</text>
+
+	<rect x="20" y="228" width="740" height="38" rx="8" fill="#fff" stroke="hsl(140,58%,55%)" stroke-width="2"/>
+	<text x="390" y="252" fill="hsl(140,78%,22%)" font-size="13.5" font-weight="700" text-anchor="middle">結論 — 読み書きの両方で -Encoding を必ず明示する</text>
+</svg>
+<figcaption>図 07.4 — 5.1 は3種類バラバラ、7 はすべて UTF-8。既定に頼ると移植時に壊れる</figcaption>
+</figure>
+
+<div class="callout">
+<strong>5.1 の既定は<strong>コマンドごとに違います</strong>。</strong><br>
+<code>Set-Content</code> は ANSI、<code>Out-File</code> と <code>&gt;</code> は UTF-16LE です。同じスクリプトの中で書き方を変えると、<strong>出力ファイルの文字コードが混在します</strong>。7 ではすべて UTF-8 に統一されました。<br>
+<strong>だからこそ、既定に頼らず毎回 <code>-Encoding</code> を書くのが唯一の安全策</strong>です。
+</div>
+
+<h3>両方で同じ結果になる書き方</h3>
+
+<pre><code># 読む（BOM があればそちらが優先される）
+$text = Get-Content .\data.txt -Encoding UTF8 -Raw
+
+# 書く
+$text | Set-Content .\out.txt -Encoding UTF8      # 5.1: BOM 付き / 7: BOM なし</code></pre>
+
+<div class="table-wrap">
+<table>
+<tr><th>やりたいこと</th><th><span class="badge b-ps51">5.1</span></th><th><span class="badge b-ps7">pwsh 7</span></th></tr>
+<tr><td class="nowrap">BOM 付き UTF-8 で書く</td><td class="mono">-Encoding UTF8</td><td class="mono">-Encoding utf8BOM</td></tr>
+<tr><td class="nowrap">BOM なし UTF-8 で書く</td><td>標準では不可（.NET を直接使う）</td><td class="mono">-Encoding utf8</td></tr>
+<tr><td class="nowrap">Shift-JIS で書く</td><td class="mono">-Encoding Default</td><td class="mono">-Encoding Shift_JIS</td></tr>
+</table>
+</div>
+
+<h2><code>Get-Content</code> は既定で「行の配列」を返す</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>書き方</th><th>戻り値</th><th>用途</th></tr>
+<tr><td class="mono">Get-Content a.txt</td><td><code>Object[]</code>（1行1要素）</td><td>行ごとに処理する</td></tr>
+<tr><td class="mono">Get-Content a.txt -Raw</td><td><code>String</code>（改行含む1つの文字列）</td><td>正規表現・JSON のパース</td></tr>
+<tr><td class="mono">Get-Content a.txt -TotalCount 10</td><td>先頭 10 行</td><td>大きなファイルの先頭確認</td></tr>
+<tr><td class="mono">Get-Content a.txt -Tail 10</td><td>末尾 10 行</td><td>ログの確認</td></tr>
+<tr><td class="mono">Get-Content a.txt -Wait</td><td>追記を待ち受ける</td><td><code>tail -f</code> 相当</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>JSON を読むときは <code>-Raw</code> が必須です。</strong><br>
+<code>-Raw</code> なしだと行ごとの配列になり、<code>ConvertFrom-Json</code> が正しく解釈できません。<strong>「JSON の解析に失敗する」の原因はほぼこれです。</strong>
+</div>
+
+<pre><code># ✗ 行の配列が渡ってしまう
+Get-Content .\data.json | ConvertFrom-Json
+
+# ✓
+Get-Content .\data.json -Raw | ConvertFrom-Json</code></pre>
+
+<div class="callout">
+<strong>PowerShell が初めての人へ</strong><br>
+巨大なログを扱うときは <code>Get-Content</code> の既定（行の配列）が有利です。<strong>パイプラインに1行ずつ流れる</strong>ので、10GB のファイルでもメモリを使い切りません。<br>
+逆に <code>-Raw</code> は<strong>全体を1つの文字列としてメモリに載せます</strong>。設定ファイルのような小さいファイル専用と考えてください。
+</div>
+</section>
+
+<!-- ============ 07.4 ============ -->
+<section class="ch04" id="ch04">
+<h1>07.4 CSV と JSON</h1>
+
+<h2>CSV — 表形式のデータ</h2>
+
+<pre><code># 読む（1行が1オブジェクトになる）
+$rows = Import-Csv .\data.csv -Encoding UTF8
+
+# 書く
+$rows | Export-Csv .\out.csv -Encoding UTF8 -NoTypeInformation</code></pre>
+
+<div class="callout">
+<strong><span class="badge b-ps51">5.1</span> では <code>-NoTypeInformation</code> を必ず付けてください。</strong><br>
+付けないと 1 行目に <code>#TYPE System.Management.Automation.PSCustomObject</code> という行が入り、<strong>Excel や他のツールで開いたときに列がずれます</strong>。<span class="badge b-ps7">pwsh 7</span> では既定で付かなくなったため不要ですが、<strong>書いておけば両方で正しく動きます</strong>。
+</div>
+
+<h3>読み込んだ値はすべて文字列</h3>
+
+<pre><code>$rows = Import-Csv .\sales.csv
+$rows[0].Amount + 1        # → "1000" + 1 = "10001"  ✗ 文字列結合
+
+[int]$rows[0].Amount + 1   # → 1001                  ✓</code></pre>
+
+<p>04 章で見た<strong>「左辺の型が演算を決める」</strong>がここで効いてきます。CSV から読んだ数値は必ず明示的に変換してください。</p>
+
+<h2>JSON</h2>
+
+<pre><code># 読む
+$config = Get-Content .\config.json -Raw | ConvertFrom-Json
+
+# 書く
+$data | ConvertTo-Json -Depth 10 | Set-Content .\out.json -Encoding UTF8</code></pre>
+
+<h3><code>-Depth</code> の既定は 2 <span class="badge b-bad">データが消える</span></h3>
+
+<p>入れ子が3階層を超えると、<strong>そこから先が文字列に置き換わります</strong>。</p>
+
+<figure>
+<svg viewBox="0 0 780 244" role="img" aria-label="ConvertTo-Json の深さ制限でデータが失われる">
+	<defs>
+		<linearGradient id="g-07-5a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-07-5b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<text x="390" y="20" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">@{ L1 = @{ L2 = @{ L3 = @{ L4 = 'ここまで届くか' } } } }</text>
+
+	<rect x="20" y="34" width="740" height="62" rx="8" fill="url(#g-07-5a)"/>
+	<text x="390" y="56" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">ConvertTo-Json（既定 -Depth 2）</text>
+	<text x="390" y="80" fill="#fff" font-size="12" text-anchor="middle" opacity="0.95" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">{"L1":{"L2":{"L3":"System.Collections.Hashtable"}}}</text>
+
+	<rect x="20" y="106" width="740" height="62" rx="8" fill="url(#g-07-5b)"/>
+	<text x="390" y="128" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">ConvertTo-Json -Depth 10</text>
+	<text x="390" y="152" fill="#fff" font-size="12" text-anchor="middle" opacity="0.95" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">{"L1":{"L2":{"L3":{"L4":"ここまで届くか"}}}}</text>
+
+	<rect x="20" y="180" width="740" height="56" rx="8" fill="#fff" stroke="hsl(0,58%,60%)" stroke-width="2"/>
+	<text x="390" y="202" fill="#a51f22" font-size="13.5" font-weight="700" text-anchor="middle">深い部分が "System.Collections.Hashtable" という文字列に化ける</text>
+	<text x="390" y="224" fill="var(--ink)" font-size="12.5" text-anchor="middle">警告は出るが処理は続行される。書き出したファイルを開くまで気づかない</text>
+</svg>
+<figcaption>図 07.5 — 実測結果。既定のままだと3階層目から先が失われる</figcaption>
+</figure>
+
+<div class="callout">
+<strong><code>-Depth</code> は最初から大きめに書いてください。</strong><br>
+<code>-Depth 10</code> や <code>-Depth 100</code> を付けておけば、後から構造が深くなっても壊れません。<strong>警告は出ますが処理は止まらない</strong>ため、出力ファイルを開くまで気づけない種類の事故です。<br>
+<span class="badge b-ps7">pwsh 7</span> でも既定は 2 のままです。バージョンを上げても解決しません。
+</div>
+
+<h3>JSON を読むと <code>PSCustomObject</code> になる</h3>
+
+<pre><code>$config = Get-Content .\config.json -Raw | ConvertFrom-Json
+$config.database.host        # ドットでたどれる
+
+# ハッシュテーブルとして受け取りたい場合
+$hash = Get-Content .\config.json -Raw | ConvertFrom-Json -AsHashtable   # pwsh 7</code></pre>
+
+<p><code>-AsHashtable</code> は <span class="badge b-ps7">pwsh 7</span> で追加されました。キーを動的に扱いたいときに便利です。</p>
+
+<h2>形式ごとの使い分け</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>形式</th><th>向いているもの</th><th>注意点</th></tr>
+<tr><td class="nowrap">CSV</td><td>表形式・Excel との連携</td><td>すべて文字列になる。<code>-NoTypeInformation</code></td></tr>
+<tr><td class="nowrap">JSON</td><td>入れ子のある設定・API との連携</td><td><code>-Depth</code>、読むとき <code>-Raw</code></td></tr>
+<tr><td class="nowrap">CLIXML</td><td>PowerShell オブジェクトの完全な保存</td><td>PowerShell 専用。他言語から読めない</td></tr>
+</table>
+</div>
+
+<pre><code># オブジェクトをそのまま保存して復元する（型情報も保たれる）
+Get-Process | Export-Clixml .\proc.xml
+$procs = Import-Clixml .\proc.xml</code></pre>
+
+<div class="callout">
+<strong>PowerShell が初めての人へ</strong><br>
+<code>Export-Clixml</code> は<strong>PowerShell のオブジェクトを型ごと保存できる</strong>形式です。JSON と違って日付が <code>DateTime</code> のまま復元されるので、<strong>スクリプト間でデータを受け渡すとき</strong>に便利です。<br>
+ただし他の言語からは読めません。<strong>外部と共有するなら JSON か CSV</strong>、PowerShell 内で完結するなら CLIXML、と使い分けてください。
+</div>
+</section>
+
+<h2>この章のまとめ</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>症状</th><th>疑うところ</th></tr>
+<tr><td class="nowrap">0 件が返る（エラーなし）</td><td>ワイルドカードパスと <code>-Filter</code> の併用 ／ <code>-Include</code> に <code>-Recurse</code> が無い ／ 名前に <code>[ ]</code></td></tr>
+<tr><td class="nowrap">文字化けする</td><td>読み書きの <code>-Encoding</code> を省略している。5.1 と 7 で既定が違う</td></tr>
+<tr><td class="nowrap">JSON の解析に失敗する</td><td><code>Get-Content</code> に <code>-Raw</code> が無い</td></tr>
+<tr><td class="nowrap">JSON の一部が文字列に化ける</td><td><code>ConvertTo-Json</code> の <code>-Depth</code>（既定 2）</td></tr>
+<tr><td class="nowrap">CSV の列がずれる</td><td>5.1 で <code>-NoTypeInformation</code> を付けていない</td></tr>
+<tr><td class="nowrap">CSV の数値がおかしい</td><td>すべて文字列。<code>[int]</code> で明示的に変換する</td></tr>
+<tr><td class="nowrap">スクリプトが同梱ファイルを見つけられない</td><td>カレント依存。<code>$PSScriptRoot</code> を使う</td></tr>
+</table>
+</div>
+
+<h3>覚えておく3点</h3>
+
+<ol>
+	<li><strong>0 件はエラーではない</strong>。<code>Get-ChildItem</code> が空を返したら、まず<strong>指定の仕方</strong>を疑う。ワイルドカードパスと <code>-Filter</code> の併用が最頻出</li>
+	<li><strong>読み書きの両方で <code>-Encoding</code> を明示する</strong>。既定値は 5.1 でコマンドごとにバラバラ、7 では UTF-8。既定に頼ると移植時に壊れる</li>
+	<li><strong><code>-Raw</code> と <code>-Depth</code> を忘れない</strong>。JSON を読むときは <code>-Raw</code>、書くときは <code>-Depth 10</code>。どちらも欠けると静かにデータが壊れる</li>
+</ol>
+
+<div class="callout">
+<strong>次章の予告 — 08. エラー処理とデバッグ</strong><br>
+この章で扱った失敗の多くは<strong>エラーにならずに 0 件や空文字列を返します</strong>。次章では、そもそも<strong>PowerShell のエラーが2種類ある</strong>こと、<code>try/catch</code> が効かないエラーがあること、そして<strong>外部コマンドの失敗をどう検知するか</strong>を扱います。
+</div>
+
+</div>
+
+<footer>
+	<p>PowerShell 学習資料 07 ／ 前章: <a href="06-制御構文と関数.html">06. 制御構文と関数</a> ／ 次章: <a href="08-エラー処理.html">08. エラー処理とデバッグ</a></p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,12 @@
+# 生成物・一時ファイル（HTML から作り直せる）
+tmp/
+
+# セッションログ・補助ファイル
+etc/
+
+# ローカル設定
+.claude/
+
+# Windows
+Thumbs.db
+desktop.ini

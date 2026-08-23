@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>08. エラー処理とデバッグ</title>
+<style>
+	:root {
+		--navy1: #12224d;
+		--navy2: #2f5fbf;
+		--ink: #1c2330;
+		--ink-soft: #4a5568;
+		--line: #d9dfe8;
+		--code-bg: #f4f6fa;
+
+		/* 章クラス(.chNN)の外に置かれた要素用の既定値 */
+		--accent: var(--navy1);
+		--accent2: var(--navy2);
+		--soft: #f2f5fb;
+	}
+
+	/* 章ごとの虹色アクセント (H: 280 → 0, 280°を4章に均等分割 = 93.3°刻み) */
+	.ch01 { --accent: hsl(280,78%,25%);   --accent2: hsl(280,58%,65%);   --soft: hsl(280,28%,95%); }
+	.ch02 { --accent: hsl(186.7,78%,25%); --accent2: hsl(186.7,58%,65%); --soft: hsl(186.7,28%,95%); }
+	.ch03 { --accent: hsl(93.3,78%,25%);  --accent2: hsl(93.3,58%,65%);  --soft: hsl(93.3,28%,95%); }
+	.ch04 { --accent: hsl(0,78%,25%);     --accent2: hsl(0,58%,65%);     --soft: hsl(0,28%,95%); }
+
+	* { box-sizing: border-box; }
+
+	body {
+		margin: 0;
+		padding: 0 0 60px;
+		background: #ffffff;
+		color: var(--ink);
+		font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", "Meiryo", sans-serif;
+		line-height: 1.85;
+		font-size: 15.5px;
+	}
+
+	.wrap { max-width: 1400px; margin: 0 auto; padding: 0 30px; }
+
+	/* タイトルバー */
+	.titlebar {
+		background: linear-gradient(135deg, var(--navy1) 0%, var(--navy2) 100%);
+		color: #fff;
+		padding: 34px 30px 30px;
+		box-shadow: 0 6px 18px rgba(18,34,77,0.28);
+	}
+	.titlebar .inner { max-width: 1400px; margin: 0 auto; }
+	.titlebar h1 {
+		margin: 0 0 10px;
+		font-size: 2.1em;
+		letter-spacing: 0.02em;
+		color: #fff;
+	}
+	.titlebar p { margin: 4px 0; font-size: 0.92em; color: #d8e4ff; }
+	.titlebar .meta { font-size: 0.84em; color: #b9cdf5; }
+	.titlebar code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+
+	/* 目次 */
+	nav.toc {
+		background: linear-gradient(180deg, #f2f5fb 0%, #ffffff 100%);
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		padding: 16px 22px;
+		margin: 28px 0;
+		box-shadow: 0 2px 8px rgba(30,50,90,0.07);
+	}
+	nav.toc strong { display: block; color: var(--navy1); margin-bottom: 10px; }
+	nav.toc ol {
+		margin: 0;
+		padding-left: 0;
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		counter-reset: toc;
+	}
+	nav.toc li { counter-increment: toc; margin: 0; }
+	nav.toc a {
+		display: -webkit-box;
+		width: 310px;
+		max-width: 100%;
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		text-decoration: none;
+		text-align: left;
+		border-radius: 6px;
+		padding: 7px 10px;
+		font-size: 0.88em;
+		font-weight: 600;
+		line-height: 1.4;
+		white-space: normal;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		box-shadow: 0 1px 4px rgba(20,30,60,0.18);
+	}
+	nav.toc a::before { content: "08." counter(toc) " "; opacity: 0.85; }
+	nav.toc a:hover { text-decoration: underline; }
+
+	/* 章 */
+	section {
+		background: linear-gradient(180deg, var(--soft) 0%, #ffffff 42%);
+		border-radius: 12px;
+		padding: 4px 26px 26px;
+		margin: 34px 0;
+		border: 1px solid var(--line);
+	}
+
+	section h1 {
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		font-size: 1.5em;
+		margin: 26px 0 20px;
+		padding: 14px 20px;
+		border-radius: 9px;
+		box-shadow: 0 5px 14px rgba(30,40,70,0.28);
+	}
+	section h1 code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+
+	h2 {
+		font-size: 1.16em;
+		color: var(--accent);
+		border-left: 7px solid var(--accent);
+		background: linear-gradient(90deg, var(--soft) 0%, rgba(255,255,255,0) 88%);
+		padding: 6px 12px;
+		margin: 30px 0 12px;
+		border-radius: 0 6px 6px 0;
+	}
+
+	h3 {
+		font-size: 1.02em;
+		color: var(--accent);
+		margin: 20px 0 8px;
+		padding-bottom: 3px;
+		border-bottom: 2px dotted var(--accent2);
+		display: inline-block;
+	}
+
+	p { margin: 10px 0; }
+	ul, ol { margin: 10px 0; padding-left: 1.6em; }
+	li { margin: 6px 0; }
+
+	code {
+		background: var(--code-bg);
+		border: 1px solid var(--line);
+		border-radius: 4px;
+		padding: 1px 6px;
+		font-family: "BIZ UDゴシック", "ＭＳ ゴシック", Consolas, "Cascadia Mono", monospace;
+		font-size: 0.9em;
+		color: #17335f;
+	}
+
+	pre {
+		background: linear-gradient(180deg, #f7f9fd 0%, #eef2f9 100%);
+		border: 1px solid var(--line);
+		border-left: 5px solid var(--accent2);
+		border-radius: 8px;
+		padding: 13px 16px;
+		overflow-x: auto;
+		font-size: 0.88em;
+		line-height: 1.6;
+	}
+	pre code { background: none; border: none; padding: 0; color: #1b2b46; }
+
+	.table-wrap { overflow-x: auto; margin: 16px 0; }
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 0.93em;
+		box-shadow: 0 2px 7px rgba(40,55,90,0.12);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+	th {
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		text-align: left;
+		padding: 9px 12px;
+		font-weight: 600;
+	}
+	th code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+	td { padding: 9px 12px; border-bottom: 1px solid var(--line); background: #fff; vertical-align: top; }
+	tr:nth-child(even) td { background: #fafbfe; }
+	td.nowrap { white-space: nowrap; }
+	td.mono { font-family: "BIZ UDゴシック", "ＭＳ ゴシック", Consolas, monospace; white-space: nowrap; }
+
+	/* バッジ */
+	.badge {
+		display: inline-block;
+		font-size: 0.78em;
+		font-weight: 700;
+		color: #fff;
+		border-radius: 4px;
+		padding: 1px 9px;
+		margin-right: 7px;
+		letter-spacing: 0.04em;
+		white-space: nowrap;
+	}
+	.b-good { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
+	.b-bad  { background: linear-gradient(100deg, #a51f22, #e05a5c); }
+	.b-none { background: linear-gradient(100deg, #5a6472, #97a1ae); }
+	.b-warn { background: linear-gradient(100deg, #b8620a, #f0a548); }
+	.b-ps7  { background: linear-gradient(100deg, #1a5fa8, #4d9ae0); }
+	.b-ps51 { background: linear-gradient(100deg, #5b2d82, #9a6bc4); }
+
+	.callout {
+		background: linear-gradient(180deg, var(--soft) 0%, #ffffff 100%);
+		border: 1px solid var(--accent2);
+		border-left: 6px solid var(--accent);
+		border-radius: 0 8px 8px 0;
+		padding: 12px 18px;
+		margin: 16px 0;
+	}
+	.callout strong { color: var(--accent); }
+
+	/* SVG図 */
+	figure { margin: 20px 0; text-align: center; }
+	figure svg {
+		max-width: 100%;
+		height: auto;
+		font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", "Meiryo", sans-serif;
+	}
+	figcaption { font-size: 0.84em; color: var(--ink-soft); margin-top: 6px; }
+
+	footer {
+		max-width: 1400px;
+		margin: 40px auto 0;
+		padding: 18px 30px 0;
+		border-top: 2px solid var(--line);
+		color: var(--ink-soft);
+		font-size: 0.86em;
+	}
+	footer a { color: var(--navy2); }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>08. エラー処理とデバッグ</h1>
+		<p><code>try/catch</code> を書いたのに捕まらない — その理由から始める</p>
+		<p class="meta">📅 作成: 2026-08-23 / 更新: 2026-08-23 ／ 対象: Windows PowerShell 5.1 ＋ PowerShell 7</p>
+	</div>
+</div>
+
+<div class="wrap">
+
+<h2>この章で何ができるようになるか</h2>
+
+<ul>
+	<li><strong>エラーが2種類ある</strong>ことを理解し、<code>try/catch</code> が効く形で書ける</li>
+	<li><strong>外部コマンドの失敗</strong>を検知できる（例外は飛んでこない）</li>
+	<li>エラーメッセージから<strong>原因と発生箇所を読み取れる</strong></li>
+</ul>
+
+<div class="callout">
+<strong>「<code>try/catch</code> で囲んだのに止まらない」は PowerShell では正常な動作です。</strong><br>
+バグではありません。<strong>PowerShell には他言語にない「非終了エラー」という区分</strong>があり、既定ではこれが <code>catch</code> に入らないからです。この仕組みを知らないまま書くと、<strong>エラー処理をしたつもりで何も守れていない</strong>コードになります。
+</div>
+
+<nav class="toc">
+	<strong>目次</strong>
+	<ol>
+		<li class="ch01"><a href="#ch01">2種類のエラー</a></li>
+		<li class="ch02"><a href="#ch02">try / catch / finally</a></li>
+		<li class="ch03"><a href="#ch03">外部コマンドと終了コード</a></li>
+		<li class="ch04"><a href="#ch04">デバッグ</a></li>
+	</ol>
+</nav>
+
+<!-- ============ 08.1 ============ -->
+<section class="ch01" id="ch01">
+<h1>08.1 2種類のエラー</h1>
+
+<h2>まず動かして確かめる</h2>
+
+<pre><code>try {
+    Get-ChildItem 'X:\ないパス'
+    'ここまで到達した'
+} catch {
+    'catch に入った'
+}</code></pre>
+
+<p>結果は <strong>「ここまで到達した」</strong> です。画面には赤いエラーが表示されるのに、<code>catch</code> には入りません。</p>
+
+<figure>
+<svg viewBox="0 0 780 268" role="img" aria-label="終了エラーと非終了エラーの違い">
+	<defs>
+		<linearGradient id="g-08-1a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-08-1b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="20" y="20" width="352" height="46" rx="8" fill="url(#g-08-1a)"/>
+	<text x="196" y="42" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">非終了エラー</text>
+	<text x="196" y="59" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">Non-terminating</text>
+
+	<rect x="408" y="20" width="352" height="46" rx="8" fill="url(#g-08-1b)"/>
+	<text x="584" y="42" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">終了エラー</text>
+	<text x="584" y="59" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">Terminating</text>
+
+	<rect x="20" y="76" width="352" height="112" rx="8" fill="#fff" stroke="hsl(35,58%,60%)" stroke-width="2"/>
+	<text x="196" y="100" fill="var(--ink)" font-size="12.5" text-anchor="middle">赤いメッセージは出る</text>
+	<text x="196" y="122" fill="var(--ink)" font-size="12.5" text-anchor="middle">処理は<strong>そのまま続く</strong></text>
+	<text x="196" y="146" fill="#a51f22" font-size="13.5" font-weight="700" text-anchor="middle">catch に入らない</text>
+	<text x="196" y="170" fill="var(--ink-soft)" font-size="11.5" text-anchor="middle">例: 存在しないパス、アクセス拒否</text>
+
+	<rect x="408" y="76" width="352" height="112" rx="8" fill="#fff" stroke="hsl(0,58%,60%)" stroke-width="2"/>
+	<text x="584" y="100" fill="var(--ink)" font-size="12.5" text-anchor="middle">赤いメッセージが出る</text>
+	<text x="584" y="122" fill="var(--ink)" font-size="12.5" text-anchor="middle">処理が<strong>そこで止まる</strong></text>
+	<text x="584" y="146" fill="hsl(140,78%,25%)" font-size="13.5" font-weight="700" text-anchor="middle">catch に入る</text>
+	<text x="584" y="170" fill="var(--ink-soft)" font-size="11.5" text-anchor="middle">例: throw、構文エラー、型変換の失敗</text>
+
+	<rect x="20" y="200" width="740" height="58" rx="8" fill="#fff" stroke="var(--accent2)" stroke-width="2"/>
+	<text x="390" y="222" fill="var(--accent)" font-size="13.5" font-weight="700" text-anchor="middle">なぜ2種類あるのか — シェルだから</text>
+	<text x="390" y="244" fill="var(--ink)" font-size="12.5" text-anchor="middle">1000 個のファイルを処理して1つ失敗したとき、全部止めるより残りを続けたい場面が多い</text>
+</svg>
+<figcaption>図 08.1 — 既定では非終了エラーは <code>catch</code> に入らない。バグではなく仕様</figcaption>
+</figure>
+
+<div class="callout">
+<strong>この設計はシェルとして自然です。</strong><br>
+1000 個のファイルをコピー中に 1 個が読み取り不可だったとき、<strong>そこで全部止めるべきでしょうか</strong>。多くの場合は「その1件を報告して残りを続ける」ほうが望まれます。<br>
+プログラミング言語なら例外を投げる場面でも、<strong>シェルは続行を選ぶ</strong> — それが非終了エラーです。
+</div>
+
+<h2>どちらになるかは決まっている</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>発生源</th><th>種類</th><th><code>catch</code> に入るか</th></tr>
+<tr><td class="nowrap">Cmdlet が報告するエラー</td><td>非終了</td><td><span class="badge b-bad">入らない</span></td></tr>
+<tr><td class="mono">Write-Error</td><td>非終了</td><td><span class="badge b-bad">入らない</span></td></tr>
+<tr><td class="mono">throw</td><td><strong>終了</strong></td><td><span class="badge b-good">入る</span></td></tr>
+<tr><td class="nowrap">構文エラー・型変換の失敗</td><td><strong>終了</strong></td><td><span class="badge b-good">入る</span></td></tr>
+<tr><td class="nowrap">.NET メソッドの例外</td><td><strong>終了</strong></td><td><span class="badge b-good">入る</span></td></tr>
+<tr><td class="nowrap">外部コマンド（exe）の失敗</td><td><strong>エラーですらない</strong></td><td><span class="badge b-bad">入らない</span>（08.3）</td></tr>
+</table>
+</div>
+
+<h2>解決策 — <code>-ErrorAction Stop</code></h2>
+
+<p>非終了エラーを<strong>終了エラーに格上げ</strong>すると <code>catch</code> できます。</p>
+
+<pre><code>try {
+    Get-ChildItem 'X:\ないパス' -ErrorAction Stop
+    'ここまで到達した'
+} catch {
+    'catch に入った: ' + $_.Exception.GetType().Name
+}
+# → catch に入った: DriveNotFoundException</code></pre>
+
+<figure>
+<svg viewBox="0 0 780 250" role="img" aria-label="-ErrorAction に指定できる値と効果">
+	<defs>
+		<linearGradient id="g-08-2a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-08-2b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-08-2c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(215,20%,35%)"/>
+			<stop offset="1" stop-color="hsl(215,18%,62%)"/>
+		</linearGradient>
+	</defs>
+
+	<text x="130" y="20" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="middle">値</text>
+	<text x="400" y="20" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="middle">画面表示</text>
+	<text x="590" y="20" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="middle">処理</text>
+	<text x="710" y="20" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="middle">$Error</text>
+
+	<rect x="20" y="30" width="220" height="36" rx="7" fill="url(#g-08-2a)"/>
+	<text x="130" y="53" fill="#fff" font-size="13" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Stop</text>
+	<text x="400" y="53" fill="var(--ink)" font-size="12.5" text-anchor="middle">出る</text>
+	<text x="590" y="53" fill="#a51f22" font-size="12.5" font-weight="700" text-anchor="middle">止まる（catch 可）</text>
+	<text x="710" y="53" fill="var(--ink)" font-size="12.5" text-anchor="middle">残る</text>
+
+	<rect x="20" y="72" width="220" height="36" rx="7" fill="url(#g-08-2b)"/>
+	<text x="130" y="95" fill="#fff" font-size="13" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Continue（既定）</text>
+	<text x="400" y="95" fill="var(--ink)" font-size="12.5" text-anchor="middle">出る</text>
+	<text x="590" y="95" fill="var(--ink)" font-size="12.5" text-anchor="middle">続く</text>
+	<text x="710" y="95" fill="var(--ink)" font-size="12.5" text-anchor="middle">残る</text>
+
+	<rect x="20" y="114" width="220" height="36" rx="7" fill="url(#g-08-2c)"/>
+	<text x="130" y="137" fill="#fff" font-size="13" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">SilentlyContinue</text>
+	<text x="400" y="137" fill="var(--ink)" font-size="12.5" text-anchor="middle">出ない</text>
+	<text x="590" y="137" fill="var(--ink)" font-size="12.5" text-anchor="middle">続く</text>
+	<text x="710" y="137" fill="hsl(140,78%,25%)" font-size="12.5" font-weight="700" text-anchor="middle">残る</text>
+
+	<rect x="20" y="156" width="220" height="36" rx="7" fill="url(#g-08-2c)"/>
+	<text x="130" y="179" fill="#fff" font-size="13" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Ignore</text>
+	<text x="400" y="179" fill="var(--ink)" font-size="12.5" text-anchor="middle">出ない</text>
+	<text x="590" y="179" fill="var(--ink)" font-size="12.5" text-anchor="middle">続く</text>
+	<text x="710" y="179" fill="#a51f22" font-size="12.5" font-weight="700" text-anchor="middle">残らない</text>
+
+	<rect x="20" y="204" width="740" height="38" rx="8" fill="#fff" stroke="var(--accent2)" stroke-width="2"/>
+	<text x="390" y="228" fill="var(--accent)" font-size="13" font-weight="700" text-anchor="middle">SilentlyContinue は「隠すが記録は残す」。Ignore は「なかったことにする」</text>
+</svg>
+<figcaption>図 08.2 — <code>SilentlyContinue</code> と <code>Ignore</code> の違いは <code>$Error</code> に残るかどうか</figcaption>
+</figure>
+
+<h3>スクリプト全体を厳しくする</h3>
+
+<pre><code>$ErrorActionPreference = 'Stop'      # スクリプトの先頭に書く</code></pre>
+
+<div class="callout">
+<strong>業務スクリプトでは先頭に書くことを推奨します。</strong><br>
+毎回 <code>-ErrorAction Stop</code> を書くのは現実的ではありません。<strong>先頭で一括指定し、続行したい箇所だけ個別に <code>-ErrorAction SilentlyContinue</code> を付ける</strong>のが実務的です。<br>
+「失敗したのに最後まで走り切って、壊れたデータを出力する」という最悪の結果を防げます。
+</div>
+
+<div class="callout">
+<strong>PowerShell が初めての人へ</strong><br>
+Java・C# では<strong>例外は必ず catch できる</strong>のが前提でした。PowerShell では<strong>catch できるかどうかが呼び出し側の指定で変わります</strong>。<br>
+戸惑うポイントですが、逆に言えば<strong>「止めるか続けるか」を呼ぶ側が決められる</strong>ということです。同じコマンドを、あるときは厳格に、あるときは寛容に扱えます。
+</div>
+</section>
+
+<!-- ============ 08.2 ============ -->
+<section class="ch02" id="ch02">
+<h1>08.2 try / catch / finally</h1>
+
+<h2>基本の形</h2>
+
+<pre><code>try {
+    $data = Get-Content .\config.json -Raw -ErrorAction Stop
+    $config = $data | ConvertFrom-Json
+}
+catch [System.IO.FileNotFoundException] {
+    Write-Host "設定ファイルがありません"
+}
+catch {
+    Write-Host "予期しないエラー: $($_.Exception.Message)"
+}
+finally {
+    Write-Host "後始末（成功・失敗にかかわらず必ず実行）"
+}</code></pre>
+
+<figure>
+<svg viewBox="0 0 780 232" role="img" aria-label="try catch finally の実行順">
+	<defs>
+		<linearGradient id="g-08-3a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-08-3b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-08-3c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/>
+			<stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="290" y="18" width="200" height="42" rx="8" fill="url(#g-08-3a)"/>
+	<text x="390" y="45" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">try</text>
+
+	<path d="M340 62 V 80 H 180 V 98" fill="none" stroke="var(--ink-soft)" stroke-width="2"/>
+	<polygon points="173,98 180,114 187,98" fill="var(--ink-soft)"/>
+	<path d="M440 62 V 80 H 600 V 98" fill="none" stroke="var(--ink-soft)" stroke-width="2"/>
+	<polygon points="593,98 600,114 607,98" fill="var(--ink-soft)"/>
+
+	<text x="250" y="78" fill="hsl(140,78%,25%)" font-size="12" font-weight="700" text-anchor="middle">成功</text>
+	<text x="536" y="78" fill="#a51f22" font-size="12" font-weight="700" text-anchor="middle">終了エラー</text>
+
+	<rect x="70" y="120" width="220" height="42" rx="8" fill="url(#g-08-3a)"/>
+	<text x="180" y="147" fill="#fff" font-size="13.5" font-weight="700" text-anchor="middle">そのまま次へ</text>
+
+	<rect x="490" y="120" width="220" height="42" rx="8" fill="url(#g-08-3b)"/>
+	<text x="600" y="147" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">catch</text>
+
+	<path d="M180 164 V 178 H 340 V 190" fill="none" stroke="var(--ink-soft)" stroke-width="2"/>
+	<path d="M600 164 V 178 H 440 V 190" fill="none" stroke="var(--ink-soft)" stroke-width="2"/>
+	<polygon points="333,190 390,190 383,190" fill="none"/>
+
+	<rect x="290" y="188" width="200" height="42" rx="8" fill="url(#g-08-3c)"/>
+	<text x="390" y="215" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">finally — 必ず通る</text>
+</svg>
+<figcaption>図 08.3 — <code>finally</code> は成功・失敗のどちらでも実行される。後始末に使う</figcaption>
+</figure>
+
+<h2>エラーオブジェクトから取れる情報</h2>
+
+<p><code>catch</code> の中では <code>$_</code> にエラーの詳細が入っています。<strong>実際に取得できる値</strong>です。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>プロパティ</th><th>実際の値の例</th><th>用途</th></tr>
+<tr><td class="mono">$_.Exception.Message</td><td>Cannot find drive. A drive with the name 'X' does not exist.</td><td>人が読むメッセージ</td></tr>
+<tr><td class="mono">$_.Exception.GetType().Name</td><td class="mono">DriveNotFoundException</td><td>種類で分岐する</td></tr>
+<tr><td class="mono">$_.CategoryInfo.Category</td><td class="mono">ObjectNotFound</td><td>大まかな分類</td></tr>
+<tr><td class="mono">$_.FullyQualifiedErrorId</td><td class="mono">DriveNotFound</td><td>正確な識別子</td></tr>
+<tr><td class="mono">$_.InvocationInfo.ScriptLineNumber</td><td class="mono">17</td><td><strong>発生した行番号</strong></td></tr>
+<tr><td class="mono">$_.ScriptStackTrace</td><td>呼び出し履歴</td><td>どこから呼ばれたか</td></tr>
+</table>
+</div>
+
+<pre><code>catch {
+    Write-Host "エラー: $($_.Exception.Message)"
+    Write-Host "場所  : $($_.InvocationInfo.ScriptName) の $($_.InvocationInfo.ScriptLineNumber) 行目"
+}</code></pre>
+
+<div class="callout">
+<strong>ログには行番号を必ず含めてください。</strong><br>
+メッセージだけでは、同じ処理が複数箇所にあるとき<strong>どこで失敗したか分かりません</strong>。<code>$_.InvocationInfo.ScriptLineNumber</code> を1つ足すだけで、調査時間が大きく変わります。
+</div>
+
+<h2><code>throw</code> と <code>Write-Error</code> の使い分け</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th></th><th class="mono">throw</th><th class="mono">Write-Error</th></tr>
+<tr><td class="nowrap">エラーの種類</td><td><strong>終了エラー</strong></td><td>非終了エラー</td></tr>
+<tr><td class="nowrap">処理</td><td>止まる</td><td>続く</td></tr>
+<tr><td class="nowrap"><code>catch</code></td><td>入る</td><td>入らない</td></tr>
+<tr><td class="nowrap">使いどころ</td><td>続行不可能な状態</td><td>1件失敗しても続けたい</td></tr>
+</table>
+</div>
+
+<pre><code># 続行できないので止める
+if (-not (Test-Path $config)) { throw "設定ファイルが見つかりません: $config" }
+
+# 1件失敗しても残りを処理したい
+foreach ($f in $files) {
+    if (-not (Test-Path $f)) { Write-Error "スキップ: $f"; continue }
+    # ...
+}</code></pre>
+
+<h2>エラーを後から確認する</h2>
+
+<pre><code># 直近のエラーが新しい順に入っている
+$Error[0]
+$Error.Count
+
+# その場で変数に受け取る
+Get-ChildItem 'X:\a','X:\b' -ErrorAction SilentlyContinue -ErrorVariable myErr
+$myErr.Count        # → 2
+
+# PowerShell 7 の詳細表示
+Get-Error</code></pre>
+
+<div class="callout">
+<strong><code>Get-Error</code> は <span class="badge b-ps7">pwsh 7</span> で追加された強力なコマンドです。</strong><br>
+直前のエラーを<strong>すべてのプロパティを展開して</strong>表示します。<code>$Error[0] | Format-List *</code> より読みやすく、原因の特定が速くなります。<br>
+エイリアスは <code>gerr</code> です（05 章で触れた「7 で追加された唯一のエイリアス」がこれです）。
+</div>
+
+<div class="callout">
+<strong>PowerShell が初めての人へ</strong><br>
+<code>$Error</code> は<strong>自動変数</strong>で、セッション中に起きたエラーが新しい順に溜まります。<code>$Error[0]</code> が最新です。<br>
+対話中に「さっき何が起きたんだっけ」と思ったら <code>$Error[0]</code>、詳しく見たいなら <code>Get-Error</code> と覚えておくと便利です。
+</div>
+</section>
+
+<!-- ============ 08.3 ============ -->
+<section class="ch03" id="ch03">
+<h1>08.3 外部コマンドと終了コード</h1>
+
+<h2>exe の失敗は例外にならない <span class="badge b-bad">見落としやすい</span></h2>
+
+<p><code>robocopy</code>、<code>git</code>、<code>7z</code> などの外部コマンドは、<strong>失敗しても PowerShell のエラーになりません</strong>。</p>
+
+<pre><code>try {
+    cmd /c "exit 3"
+    "例外なし。`$LASTEXITCODE = $LASTEXITCODE  /  `$? = $?"
+} catch {
+    'catch に入った'
+}
+# → 例外なし。$LASTEXITCODE = 3  /  $? = False</code></pre>
+
+<figure>
+<svg viewBox="0 0 780 262" role="img" aria-label="外部コマンドの失敗は例外にならない">
+	<defs>
+		<linearGradient id="g-08-4a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-08-4b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-08-4c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(211,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(211,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="230" y="18" width="320" height="44" rx="8" fill="url(#g-08-4a)"/>
+	<text x="390" y="46" fill="#fff" font-size="14" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">robocopy ... （失敗）</text>
+
+	<line x1="390" y1="64" x2="390" y2="80" stroke="var(--ink-soft)" stroke-width="2"/>
+	<polygon points="383,80 390,96 397,80" fill="var(--ink-soft)"/>
+
+	<rect x="20" y="102" width="360" height="46" rx="8" fill="#fff" stroke="hsl(0,58%,60%)" stroke-width="2"/>
+	<text x="200" y="122" fill="#a51f22" font-size="13" font-weight="700" text-anchor="middle">try/catch では捕まらない</text>
+	<text x="200" y="140" fill="var(--ink-soft)" font-size="11.5" text-anchor="middle">-ErrorAction Stop も効かない</text>
+
+	<rect x="400" y="102" width="360" height="46" rx="8" fill="url(#g-08-4b)"/>
+	<text x="580" y="122" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">$LASTEXITCODE で判定する</text>
+	<text x="580" y="140" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">0 以外なら失敗（コマンドによる）</text>
+
+	<rect x="20" y="164" width="740" height="42" rx="8" fill="url(#g-08-4c)"/>
+	<text x="390" y="182" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">PowerShell 7 なら例外にもできる</text>
+	<text x="390" y="199" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">$PSNativeCommandUseErrorActionPreference = $true</text>
+
+	<rect x="20" y="216" width="740" height="38" rx="8" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+	<text x="390" y="240" fill="var(--ink)" font-size="12.5" font-weight="700" text-anchor="middle">既定は $false。5.1 には無いので、両対応なら $LASTEXITCODE で書く</text>
+</svg>
+<figcaption>図 08.4 — 外部コマンドの失敗は自分で検知する必要がある</figcaption>
+</figure>
+
+<h2>2つの判定方法</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>変数</th><th>意味</th><th>対象</th></tr>
+<tr><td class="mono">$LASTEXITCODE</td><td>直前の<strong>外部コマンド</strong>の終了コード</td><td>exe のみ。Cmdlet では更新されない</td></tr>
+<tr><td class="mono">$?</td><td>直前のコマンドが<strong>成功したか</strong>（真偽値）</td><td>Cmdlet も外部コマンドも</td></tr>
+</table>
+</div>
+
+<pre><code>robocopy $src $dst /MIR
+if ($LASTEXITCODE -ge 8) {
+    throw "robocopy が失敗しました (終了コード: $LASTEXITCODE)"
+}</code></pre>
+
+<div class="callout">
+<strong><code>robocopy</code> の終了コードは 0 が成功とは限りません。</strong><br>
+<code>1</code> は「ファイルをコピーした」、<code>3</code> は「コピーと追加削除をした」で、いずれも成功です。<strong>失敗は 8 以上</strong>とされています。<br>
+<strong>外部コマンドごとに終了コードの意味は違います。</strong><code>0 -ne $LASTEXITCODE</code> で一律に失敗と判定すると、正常なのにエラー扱いになります。使う前にドキュメントを確認してください。
+</div>
+
+<h3>PowerShell 7 なら例外にできる <span class="badge b-ps7">pwsh 7</span></h3>
+
+<pre><code>$PSNativeCommandUseErrorActionPreference = $true
+$ErrorActionPreference = 'Stop'
+
+try { cmd /c "exit 5" }
+catch { $_.Exception.Message }
+# → Program "cmd.exe" ended with non-zero exit code: 5 (0x00000005).</code></pre>
+
+<p>既定は <code>$false</code> です。5.1 には存在しないので、<strong>両対応のスクリプトでは <code>$LASTEXITCODE</code> で書く</strong>のが確実です。</p>
+
+<h2>スクリプト自身の終了コード</h2>
+
+<pre><code>exit 0     # 正常終了
+exit 1     # 異常終了</code></pre>
+
+<div class="callout">
+<strong>明示しないと、最後に実行した外部コマンドの終了コードを引き継ぎます。</strong><br>
+スクリプトの末尾でたまたま <code>exit 3</code> を返すコマンドを呼んでいると、<strong>スクリプト自体が「失敗」として扱われます</strong>。タスクスケジューラや CI から呼ぶ場合、これが誤判定の原因になります。<br>
+<strong>バッチや CI から呼ばれるスクリプトは、末尾に <code>exit 0</code> を明示</strong>してください。
+</div>
+
+<div class="callout">
+<strong>PowerShell が初めての人へ</strong><br>
+「終了コード」は、プログラムが終わるときに OS へ返す数値です。<strong>0 が成功、それ以外が失敗</strong>というのが Unix 由来の慣習で、Windows でも同じです。<br>
+cmd の <code>%ERRORLEVEL%</code> と同じものを、PowerShell では <code>$LASTEXITCODE</code> で読みます。
+</div>
+</section>
+
+<!-- ============ 08.4 ============ -->
+<section class="ch04" id="ch04">
+<h1>08.4 デバッグ</h1>
+
+<h2>出力を使い分ける</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>コマンド</th><th>既定で表示</th><th>戻り値に混ざるか</th><th>用途</th></tr>
+<tr><td class="mono">Write-Output</td><td>する</td><td><span class="badge b-bad">混ざる</span></td><td>本来の出力</td></tr>
+<tr><td class="mono">Write-Host</td><td>する</td><td>混ざらない</td><td>利用者へのメッセージ</td></tr>
+<tr><td class="mono">Write-Verbose</td><td><strong>しない</strong></td><td>混ざらない</td><td><span class="badge b-good">推奨</span>処理の進行ログ</td></tr>
+<tr><td class="mono">Write-Debug</td><td><strong>しない</strong></td><td>混ざらない</td><td>開発中の詳細</td></tr>
+<tr><td class="mono">Write-Warning</td><td>する</td><td>混ざらない</td><td>注意喚起</td></tr>
+</table>
+</div>
+
+<pre><code>function Get-Report {
+    [CmdletBinding()]
+    param([string]$Path)
+
+    Write-Verbose "処理開始: $Path"
+    # ...
+    Write-Verbose "完了"
+}
+
+Get-Report -Path .\a.txt              # 何も出ない
+Get-Report -Path .\a.txt -Verbose     # Write-Verbose の内容が出る</code></pre>
+
+<div class="callout">
+<strong><code>Write-Verbose</code> は消さずに残せるデバッグ出力です。</strong><br>
+<code>Write-Host</code> でデバッグすると、本番前に消す必要があります。<code>Write-Verbose</code> なら<strong>普段は出ず、必要なときだけ <code>-Verbose</code> で有効化</strong>できるので、そのまま残しておけます。<br>
+06 章で <code>[CmdletBinding()]</code> を付けた理由がこれです。付けないと <code>-Verbose</code> が使えません。
+</div>
+
+<h2>止めて中身を見る</h2>
+
+<figure>
+<svg viewBox="0 0 780 214" role="img" aria-label="デバッグの4つの手段">
+	<defs>
+		<linearGradient id="g-08-5a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(255,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(255,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-08-5b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(200,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(200,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-08-5c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-08-5d" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="14" y="24" width="180" height="82" rx="9" fill="url(#g-08-5a)"/>
+	<text x="104" y="50" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">F9 → F5</text>
+	<text x="104" y="72" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">VS Code で</text>
+	<text x="104" y="90" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">ブレークポイント</text>
+
+	<rect x="206" y="24" width="180" height="82" rx="9" fill="url(#g-08-5b)"/>
+	<text x="296" y="50" fill="#fff" font-size="13" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Wait-Debugger</text>
+	<text x="296" y="72" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">コードに書いて</text>
+	<text x="296" y="90" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">その場で止める</text>
+
+	<rect x="398" y="24" width="180" height="82" rx="9" fill="url(#g-08-5c)"/>
+	<text x="488" y="50" fill="#fff" font-size="13" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Set-PSBreakpoint</text>
+	<text x="488" y="72" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">変数が変わった瞬間</text>
+	<text x="488" y="90" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">に止められる</text>
+
+	<rect x="590" y="24" width="176" height="82" rx="9" fill="url(#g-08-5d)"/>
+	<text x="678" y="50" fill="#fff" font-size="13" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Set-PSDebug</text>
+	<text x="678" y="72" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">実行行を全部</text>
+	<text x="678" y="90" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">表示する</text>
+
+	<rect x="14" y="120" width="752" height="82" rx="9" fill="#fff" stroke="var(--accent2)" stroke-width="2"/>
+	<text x="390" y="144" fill="var(--accent)" font-size="13.5" font-weight="700" text-anchor="middle">止めたあとは、その場のシェルにそのまま入れる</text>
+	<text x="390" y="168" fill="var(--ink)" font-size="12.5" text-anchor="middle">変数の中身を見るだけでなく、Get-Member でオブジェクトの構造を調べたり、</text>
+	<text x="390" y="188" fill="var(--ink)" font-size="12.5" text-anchor="middle">その場でコマンドを試したりできる — これが PowerShell のデバッグの強み</text>
+</svg>
+<figcaption>図 08.5 — 停止中はデバッグコンソールが通常のシェルとして使える</figcaption>
+</figure>
+
+<pre><code># 変数が変更されたときに止める
+Set-PSBreakpoint -Script .\main.ps1 -Variable count -Mode Write
+
+# 特定のコマンドが呼ばれたときに止める
+Set-PSBreakpoint -Script .\main.ps1 -Command Remove-Item
+
+# 一覧と削除
+Get-PSBreakpoint
+Get-PSBreakpoint | Remove-PSBreakpoint</code></pre>
+
+<div class="callout">
+<strong>「変数がいつ書き換わったか分からない」ときは <code>-Variable ... -Mode Write</code> が効きます。</strong><br>
+どこで値が変わったのかを追うために <code>Write-Host</code> を撒く必要がありません。<strong>書き換わった瞬間に止まり、その時点の呼び出し履歴が見られます</strong>。
+</div>
+
+<h3>行単位のトレース</h3>
+
+<pre><code>Set-PSDebug -Trace 1     # 実行された行を表示
+Set-PSDebug -Trace 2     # 変数代入も表示
+Set-PSDebug -Off         # 解除</code></pre>
+
+<div class="callout">
+<strong>PowerShell が初めての人へ</strong><br>
+PowerShell のデバッグは、<strong>停止した時点のシェルにそのまま入れる</strong>のが最大の特徴です。IDE のウォッチ式に頼らず、<code>$data | Get-Member</code> や <code>$data[0] | Format-List *</code> をその場で打てます。<br>
+05 章で扱った調べ方が、そのままデバッグ手段になります。<strong>「print を撒く」前に「一度止めて中を見る」</strong>を試してください。
+</div>
+</section>
+
+<h2>この章のまとめ</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>症状</th><th>原因と対処</th></tr>
+<tr><td class="nowrap">try/catch で捕まらない</td><td>非終了エラー。<code>-ErrorAction Stop</code> を付ける</td></tr>
+<tr><td class="nowrap">外部コマンドの失敗を検知できない</td><td>例外にならない。<code>$LASTEXITCODE</code> で判定する</td></tr>
+<tr><td class="nowrap">エラーが出るが処理は続いてほしい</td><td><code>-ErrorAction SilentlyContinue</code> ＋ <code>-ErrorVariable</code></td></tr>
+<tr><td class="nowrap">どこで失敗したか分からない</td><td><code>$_.InvocationInfo.ScriptLineNumber</code> をログに出す</td></tr>
+<tr><td class="nowrap">エラーの詳細が知りたい</td><td><code>Get-Error</code> <span class="badge b-ps7">pwsh 7</span> ／ <code>$Error[0] | Format-List *</code></td></tr>
+<tr><td class="nowrap">CI がスクリプトを失敗扱いする</td><td>末尾に <code>exit 0</code> を明示する</td></tr>
+<tr><td class="nowrap">変数がいつ変わるか追いたい</td><td><code>Set-PSBreakpoint -Variable x -Mode Write</code></td></tr>
+</table>
+</div>
+
+<h3>覚えておく3点</h3>
+
+<ol>
+	<li><strong>既定では <code>try/catch</code> は効かない</strong>。Cmdlet のエラーは非終了エラーなので、<code>-ErrorAction Stop</code> か <code>$ErrorActionPreference = 'Stop'</code> が必要</li>
+	<li><strong>外部コマンドの失敗は例外にならない</strong>。<code>$LASTEXITCODE</code> を自分で見る。終了コードの意味はコマンドごとに違う（<code>robocopy</code> は 8 以上が失敗）</li>
+	<li><strong>デバッグ出力は <code>Write-Verbose</code></strong>。普段は出ず、<code>-Verbose</code> で有効化できるので消さずに残せる</li>
+</ol>
+
+<div class="callout">
+<strong>次章の予告 — 09. 実務パターン集</strong><br>
+ここまでで必要な道具が揃いました。次章では<strong>そのまま使える実務スクリプト</strong>を扱います。ログ集計、一括リネーム、バックアップ、タスクスケジューラ連携、外部コマンド呼び出し。<strong>各パターンは 50 行以内</strong>に収め、写経できる長さにします。
+</div>
+
+</div>
+
+<footer>
+	<p>PowerShell 学習資料 08 ／ 前章: <a href="07-ファイル操作.html">07. ファイル・テキスト操作</a> ／ 次章: <a href="09-実務パターン.html">09. 実務パターン集</a></p>
+</footer>
+
+</body>
+</html>

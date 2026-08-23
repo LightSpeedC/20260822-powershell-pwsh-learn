@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>05. パイプラインとオブジェクト</title>
+<style>
+	:root {
+		--navy1: #12224d;
+		--navy2: #2f5fbf;
+		--ink: #1c2330;
+		--ink-soft: #4a5568;
+		--line: #d9dfe8;
+		--code-bg: #f4f6fa;
+
+		/* 章クラス(.chNN)の外に置かれた要素用の既定値 */
+		--accent: var(--navy1);
+		--accent2: var(--navy2);
+		--soft: #f2f5fb;
+	}
+
+	/* 章ごとの虹色アクセント (H: 280 → 0, 280°を5章に均等分割 = 70°刻み) */
+	.ch01 { --accent: hsl(280,78%,25%); --accent2: hsl(280,58%,65%); --soft: hsl(280,28%,95%); }
+	.ch02 { --accent: hsl(210,78%,25%); --accent2: hsl(210,58%,65%); --soft: hsl(210,28%,95%); }
+	.ch03 { --accent: hsl(140,78%,25%); --accent2: hsl(140,58%,65%); --soft: hsl(140,28%,95%); }
+	.ch04 { --accent: hsl(70,78%,25%);  --accent2: hsl(70,58%,65%);  --soft: hsl(70,28%,95%); }
+	.ch05 { --accent: hsl(0,78%,25%);   --accent2: hsl(0,58%,65%);   --soft: hsl(0,28%,95%); }
+
+	* { box-sizing: border-box; }
+
+	body {
+		margin: 0;
+		padding: 0 0 60px;
+		background: #ffffff;
+		color: var(--ink);
+		font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", "Meiryo", sans-serif;
+		line-height: 1.85;
+		font-size: 15.5px;
+	}
+
+	.wrap { max-width: 1400px; margin: 0 auto; padding: 0 30px; }
+
+	/* タイトルバー */
+	.titlebar {
+		background: linear-gradient(135deg, var(--navy1) 0%, var(--navy2) 100%);
+		color: #fff;
+		padding: 34px 30px 30px;
+		box-shadow: 0 6px 18px rgba(18,34,77,0.28);
+	}
+	.titlebar .inner { max-width: 1400px; margin: 0 auto; }
+	.titlebar h1 {
+		margin: 0 0 10px;
+		font-size: 2.1em;
+		letter-spacing: 0.02em;
+		color: #fff;
+	}
+	.titlebar p { margin: 4px 0; font-size: 0.92em; color: #d8e4ff; }
+	.titlebar .meta { font-size: 0.84em; color: #b9cdf5; }
+	.titlebar code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+
+	/* 目次 */
+	nav.toc {
+		background: linear-gradient(180deg, #f2f5fb 0%, #ffffff 100%);
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		padding: 16px 22px;
+		margin: 28px 0;
+		box-shadow: 0 2px 8px rgba(30,50,90,0.07);
+	}
+	nav.toc strong { display: block; color: var(--navy1); margin-bottom: 10px; }
+	nav.toc ol {
+		margin: 0;
+		padding-left: 0;
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		counter-reset: toc;
+	}
+	nav.toc li { counter-increment: toc; margin: 0; }
+	nav.toc a {
+		display: -webkit-box;
+		width: 310px;
+		max-width: 100%;
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		text-decoration: none;
+		text-align: left;
+		border-radius: 6px;
+		padding: 7px 10px;
+		font-size: 0.88em;
+		font-weight: 600;
+		line-height: 1.4;
+		white-space: normal;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		box-shadow: 0 1px 4px rgba(20,30,60,0.18);
+	}
+	nav.toc a::before { content: "05." counter(toc) " "; opacity: 0.85; }
+	nav.toc a:hover { text-decoration: underline; }
+
+	/* 章 */
+	section {
+		background: linear-gradient(180deg, var(--soft) 0%, #ffffff 42%);
+		border-radius: 12px;
+		padding: 4px 26px 26px;
+		margin: 34px 0;
+		border: 1px solid var(--line);
+	}
+
+	section h1 {
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		font-size: 1.5em;
+		margin: 26px 0 20px;
+		padding: 14px 20px;
+		border-radius: 9px;
+		box-shadow: 0 5px 14px rgba(30,40,70,0.28);
+	}
+	section h1 code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+
+	h2 {
+		font-size: 1.16em;
+		color: var(--accent);
+		border-left: 7px solid var(--accent);
+		background: linear-gradient(90deg, var(--soft) 0%, rgba(255,255,255,0) 88%);
+		padding: 6px 12px;
+		margin: 30px 0 12px;
+		border-radius: 0 6px 6px 0;
+	}
+
+	h3 {
+		font-size: 1.02em;
+		color: var(--accent);
+		margin: 20px 0 8px;
+		padding-bottom: 3px;
+		border-bottom: 2px dotted var(--accent2);
+		display: inline-block;
+	}
+
+	p { margin: 10px 0; }
+	ul, ol { margin: 10px 0; padding-left: 1.6em; }
+	li { margin: 6px 0; }
+
+	code {
+		background: var(--code-bg);
+		border: 1px solid var(--line);
+		border-radius: 4px;
+		padding: 1px 6px;
+		font-family: "BIZ UDゴシック", "ＭＳ ゴシック", Consolas, "Cascadia Mono", monospace;
+		font-size: 0.9em;
+		color: #17335f;
+	}
+
+	pre {
+		background: linear-gradient(180deg, #f7f9fd 0%, #eef2f9 100%);
+		border: 1px solid var(--line);
+		border-left: 5px solid var(--accent2);
+		border-radius: 8px;
+		padding: 13px 16px;
+		overflow-x: auto;
+		font-size: 0.88em;
+		line-height: 1.6;
+	}
+	pre code { background: none; border: none; padding: 0; color: #1b2b46; }
+
+	.table-wrap { overflow-x: auto; margin: 16px 0; }
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 0.93em;
+		box-shadow: 0 2px 7px rgba(40,55,90,0.12);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+	th {
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		text-align: left;
+		padding: 9px 12px;
+		font-weight: 600;
+	}
+	th code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+	td { padding: 9px 12px; border-bottom: 1px solid var(--line); background: #fff; vertical-align: top; }
+	tr:nth-child(even) td { background: #fafbfe; }
+	td.nowrap { white-space: nowrap; }
+	td.mono { font-family: "BIZ UDゴシック", "ＭＳ ゴシック", Consolas, monospace; white-space: nowrap; }
+
+	/* バッジ */
+	.badge {
+		display: inline-block;
+		font-size: 0.78em;
+		font-weight: 700;
+		color: #fff;
+		border-radius: 4px;
+		padding: 1px 9px;
+		margin-right: 7px;
+		letter-spacing: 0.04em;
+		white-space: nowrap;
+	}
+	.b-good { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
+	.b-bad  { background: linear-gradient(100deg, #a51f22, #e05a5c); }
+	.b-none { background: linear-gradient(100deg, #5a6472, #97a1ae); }
+	.b-warn { background: linear-gradient(100deg, #b8620a, #f0a548); }
+	.b-ps7  { background: linear-gradient(100deg, #1a5fa8, #4d9ae0); }
+	.b-ps51 { background: linear-gradient(100deg, #5b2d82, #9a6bc4); }
+
+	.callout {
+		background: linear-gradient(180deg, var(--soft) 0%, #ffffff 100%);
+		border: 1px solid var(--accent2);
+		border-left: 6px solid var(--accent);
+		border-radius: 0 8px 8px 0;
+		padding: 12px 18px;
+		margin: 16px 0;
+	}
+	.callout strong { color: var(--accent); }
+
+	/* SVG図 */
+	figure { margin: 20px 0; text-align: center; }
+	figure svg {
+		max-width: 100%;
+		height: auto;
+		font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", "Meiryo", sans-serif;
+	}
+	figcaption { font-size: 0.84em; color: var(--ink-soft); margin-top: 6px; }
+
+	footer {
+		max-width: 1400px;
+		margin: 40px auto 0;
+		padding: 18px 30px 0;
+		border-top: 2px solid var(--line);
+		color: var(--ink-soft);
+		font-size: 0.86em;
+	}
+	footer a { color: var(--navy2); }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>05. パイプラインとオブジェクト</h1>
+		<p>本資料の山場 — <code>Get-Member</code> ひとつで、知らないコマンドも自力で扱えるようになる</p>
+		<p class="meta">📅 作成: 2026-08-22 / 更新: 2026-08-23 ／ 対象: Windows PowerShell 5.1 ＋ PowerShell 7</p>
+	</div>
+</div>
+
+<div class="wrap">
+
+<h2>この章で何ができるようになるか</h2>
+
+<ul>
+	<li><strong>画面に出ている表示と、実際のデータは別物</strong>だと理解し、隠れているプロパティを取り出せる</li>
+	<li><code>Get-Member</code> で<strong>知らないコマンドの戻り値を自力で調べられる</strong></li>
+	<li>絞る・変える・選ぶ・並べる・集計する、を<strong>1本のパイプラインで書ける</strong></li>
+</ul>
+
+<div class="callout">
+<strong>ここが本資料でもっとも重要な章です。</strong><br>
+04 章までは他の言語にもある話でした。この章の内容は<strong>PowerShell 固有</strong>で、しかも<strong>ここを理解すると以降が独学できるようになります</strong>。逆にここを飛ばすと、ずっと「コマンドを暗記する」学び方から抜け出せません。時間をかける価値があります。
+</div>
+
+<nav class="toc">
+	<strong>目次</strong>
+	<ol>
+		<li class="ch01"><a href="#ch01">表示とデータは別物</a></li>
+		<li class="ch02"><a href="#ch02">Get-Member — 自習の起点</a></li>
+		<li class="ch03"><a href="#ch03">絞る・変える・選ぶ</a></li>
+		<li class="ch04"><a href="#ch04">並べる・まとめる・数える</a></li>
+		<li class="ch05"><a href="#ch05">コマンドの探し方</a></li>
+	</ol>
+</nav>
+
+<!-- ============ 05.1 ============ -->
+<section class="ch01" id="ch01">
+<h1>05.1 表示とデータは別物</h1>
+
+<h2>01 章の復習 — パイプを流れるのはオブジェクト</h2>
+
+<p>01 章で見たとおり、Bash のパイプには<strong>テキスト行</strong>が、PowerShell のパイプには<strong>オブジェクト</strong>が流れます。ここではそれを実際に確かめます。</p>
+
+<pre><code>Get-Process | Select-Object -First 1</code></pre>
+
+<p>実行すると、次のような表が出ます。</p>
+
+<pre><code> NPM(K)    PM(M)      WS(M)     CPU(s)      Id  SI ProcessName
+ ------    -----      -----     ------      --  -- -----------
+     28    18.42      35.66       1.42    9876   1 pwsh</code></pre>
+
+<h2>ここが最初の落とし穴</h2>
+
+<p>この表を見て「7つの項目を持つデータが返ってきた」と考えると<strong>間違いです</strong>。実際に返ってきているのは <code>System.Diagnostics.Process</code> というオブジェクトで、<strong>プロパティは 100 個近くあります</strong>。</p>
+
+<figure>
+<svg viewBox="0 0 780 288" role="img" aria-label="画面の表示は整形されたビューで、実際のオブジェクトはもっと多くの情報を持つ">
+	<defs>
+		<linearGradient id="g-05-1a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/>
+			<stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<linearGradient id="g-05-1b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="20" y="20" width="300" height="150" rx="10" fill="url(#g-05-1a)"/>
+	<text x="170" y="48" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">実際のオブジェクト</text>
+	<text x="170" y="70" fill="#fff" font-size="12" text-anchor="middle" opacity="0.9">System.Diagnostics.Process</text>
+	<text x="170" y="96" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">Id  ProcessName  CPU  WorkingSet</text>
+	<text x="170" y="114" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">Path  StartTime  Threads  Handle</text>
+	<text x="170" y="132" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">MainWindowTitle  Company  …</text>
+	<text x="170" y="156" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">プロパティは 100 個近い</text>
+
+	<line x1="326" y1="95" x2="366" y2="95" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="366,88 382,95 366,102" fill="var(--ink-soft)"/>
+	<text x="354" y="82" fill="var(--ink-soft)" font-size="11.5" font-weight="700" text-anchor="middle">整形</text>
+
+	<rect x="390" y="20" width="370" height="150" rx="10" fill="url(#g-05-1b)"/>
+	<text x="575" y="48" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">画面に出る表示（ビュー）</text>
+	<text x="575" y="72" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">NPM(K) PM(M) WS(M) CPU(s) Id SI ProcessName</text>
+	<text x="575" y="92" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">    28 18.42 35.66   1.42 9876  1 pwsh</text>
+	<text x="575" y="122" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">7 項目だけが選ばれている</text>
+	<text x="575" y="146" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.85">見やすさのために PowerShell が決めた既定の見せ方</text>
+
+	<rect x="20" y="188" width="740" height="80" rx="10" fill="#fff" stroke="var(--accent2)" stroke-width="2"/>
+	<text x="390" y="212" fill="var(--accent)" font-size="14" font-weight="700" text-anchor="middle">パイプの次に渡るのは「左の箱」であって「右の表」ではない</text>
+	<text x="390" y="236" fill="var(--ink)" font-size="12.5" text-anchor="middle">表に出ていない Path や StartTime も、次のコマンドからは普通に使える</text>
+	<text x="390" y="256" fill="var(--ink-soft)" font-size="12" text-anchor="middle">「表示されていない ＝ 存在しない」ではない。ここを取り違えると調べ方を間違える</text>
+</svg>
+<figcaption>図 05.1 — 表示は整形結果にすぎない。パイプに流れるのは元のオブジェクトそのもの</figcaption>
+</figure>
+
+<p>表に出ていない <code>Path</code> も、そのまま使えます。</p>
+
+<pre><code>Get-Process | Select-Object -First 1 | Select-Object Name, Path, StartTime</code></pre>
+
+<div class="callout">
+<strong>Bash との決定的な違いはここです。</strong><br>
+Bash では <code>ps aux</code> の出力に無い情報は<strong>本当に存在しません</strong>。欲しければオプションを足して再実行するしかありません。<br>
+PowerShell では<strong>表示が絞られているだけで、データは全部そこにあります</strong>。だから「もう一度実行し直す」のではなく「取り出し方を変える」のが正しい対処になります。
+</div>
+
+<h2><code>Format-*</code> は最後にだけ使う <span class="badge b-bad">重要な罠</span></h2>
+
+<p><code>Format-Table</code> や <code>Format-List</code> を途中に挟むと、<strong>そこでオブジェクトが「表示用の部品」に変換されてしまいます</strong>。以降のコマンドはまともに動きません。</p>
+
+<pre><code># ✗ 動かない — Format-Table の後は表示部品になっている
+Get-Process | Format-Table Name, Id | Where-Object { $_.Id -gt 1000 }
+
+# ✓ 絞ってから最後に整形する
+Get-Process | Where-Object { $_.Id -gt 1000 } | Format-Table Name, Id</code></pre>
+
+<div class="callout">
+<strong>覚え方は「Format は行き止まり」です。</strong><br>
+<code>Format-*</code> を書いたら、そのパイプラインはそこで終わりです。ファイルに出す（<code>Export-Csv</code>）、変数に入れる、別のコマンドに渡す — どれもできなくなります。<strong>画面で見るための最後の一手</strong>と考えてください。
+</div>
+
+<div class="callout">
+<strong>PowerShell が初めての人へ</strong><br>
+「オブジェクト」という言葉が難しければ、<strong>「名前の付いた項目をまとめて持ち歩ける箱」</strong>と考えてください。JavaScript のオブジェクト、Java のインスタンス、VBA のオブジェクト変数と同じものです。<br>
+重要なのは、<strong>その箱がコマンドからコマンドへそのまま渡される</strong>こと。文字列に潰れないので、受け取った側は <code>.Id</code> や <code>.Path</code> と書くだけで中身を取り出せます。
+</div>
+</section>
+
+<!-- ============ 05.2 ============ -->
+<section class="ch02" id="ch02">
+<h1>05.2 Get-Member — 自習の起点</h1>
+
+<h2>この1つを覚えれば独学できる</h2>
+
+<p>05.1 で「表示に出ていない情報がある」と分かりました。<strong>ではどうやって中身を知るのか。</strong>その答えが <code>Get-Member</code> です。</p>
+
+<pre><code>Get-Process | Get-Member</code></pre>
+
+<pre><code>   TypeName: System.Diagnostics.Process
+
+Name                       MemberType     Definition
+----                       ----------     ----------
+Kill                       Method         void Kill()
+Refresh                    Method         void Refresh()
+Id                         Property       int Id {get;}
+ProcessName                Property       string ProcessName {get;}
+StartTime                  Property       datetime StartTime {get;}
+CPU                        ScriptProperty System.Object CPU {get=...}
+...</code></pre>
+
+<figure>
+<svg viewBox="0 0 780 254" role="img" aria-label="Get-Member が教えてくれる3つのこと">
+	<defs>
+		<linearGradient id="g-05-2a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(255,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(255,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-05-2b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-05-2c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="270" y="14" width="240" height="46" rx="9" fill="url(#g-05-2a)"/>
+	<text x="390" y="43" fill="#fff" font-size="15" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">| Get-Member</text>
+
+	<path d="M330 62 V 82 H 140 V 102" fill="none" stroke="var(--ink-soft)" stroke-width="2"/>
+	<polygon points="133,102 140,118 147,102" fill="var(--ink-soft)"/>
+	<path d="M390 62 V 118" fill="none" stroke="var(--ink-soft)" stroke-width="2"/>
+	<polygon points="383,102 390,118 397,102" fill="var(--ink-soft)"/>
+	<path d="M450 62 V 82 H 640 V 102" fill="none" stroke="var(--ink-soft)" stroke-width="2"/>
+	<polygon points="633,102 640,118 647,102" fill="var(--ink-soft)"/>
+
+	<rect x="14" y="124" width="252" height="76" rx="9" fill="url(#g-05-2a)"/>
+	<text x="140" y="150" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">① 型名</text>
+	<text x="140" y="172" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">System.Diagnostics.Process</text>
+	<text x="140" y="190" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.85">→ この名前で検索できる</text>
+
+	<rect x="278" y="124" width="224" height="76" rx="9" fill="url(#g-05-2b)"/>
+	<text x="390" y="150" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">② プロパティ</text>
+	<text x="390" y="172" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">Id / Path / StartTime …</text>
+	<text x="390" y="190" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.85">→ 取り出せる値の一覧</text>
+
+	<rect x="514" y="124" width="252" height="76" rx="9" fill="url(#g-05-2c)"/>
+	<text x="640" y="150" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">③ メソッド</text>
+	<text x="640" y="172" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">Kill() / Refresh() …</text>
+	<text x="640" y="190" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.85">→ 実行できる操作の一覧</text>
+
+	<rect x="14" y="212" width="752" height="34" rx="8" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+	<text x="390" y="234" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="middle">「このコマンドの結果から何が取れるのか」に、その場で答えが出る</text>
+</svg>
+<figcaption>図 05.2 — <code>Get-Member</code> は型名・プロパティ・メソッドの3つを一度に教えてくれる</figcaption>
+</figure>
+
+<h2>出力の読み方</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>MemberType</th><th>意味</th><th>使い方</th></tr>
+<tr><td class="nowrap"><code>Property</code></td><td>元の .NET オブジェクトが持つ値</td><td class="mono">$p.Id</td></tr>
+<tr><td class="nowrap"><code>NoteProperty</code></td><td>PowerShell が後から足した値</td><td class="mono">$p.PSPath</td></tr>
+<tr><td class="nowrap"><code>ScriptProperty</code></td><td>アクセス時に計算される値</td><td class="mono">$p.CPU</td></tr>
+<tr><td class="nowrap"><code>AliasProperty</code></td><td>別名。実体は他のプロパティ</td><td class="mono">$p.Name（実体は ProcessName）</td></tr>
+<tr><td class="nowrap"><code>Method</code></td><td>実行できる操作</td><td class="mono">$p.Kill()</td></tr>
+</table>
+</div>
+
+<h3>プロパティだけ見たいとき</h3>
+
+<pre><code>Get-Process | Get-Member -MemberType Property
+
+# 短縮形（gm は Get-Member のエイリアス）
+Get-Process | gm -MemberType Property</code></pre>
+
+<h2>実際の型を確認しておく</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>コマンド</th><th>返るオブジェクトの型</th></tr>
+<tr><td class="mono">Get-Process</td><td class="mono">System.Diagnostics.Process</td></tr>
+<tr><td class="mono">Get-ChildItem（ファイル）</td><td class="mono">System.IO.FileInfo</td></tr>
+<tr><td class="mono">Get-ChildItem（フォルダ）</td><td class="mono">System.IO.DirectoryInfo</td></tr>
+<tr><td class="mono">Get-Content</td><td class="mono">System.String</td></tr>
+<tr><td class="mono">Import-Csv</td><td class="mono">System.Management.Automation.PSCustomObject</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>型名が分かると、検索の質が一気に上がります。</strong><br>
+「PowerShell ファイル サイズ 取得」で検索するより、<strong>「System.IO.FileInfo プロパティ」で検索する</strong>ほうが確実です。前者は玉石混交の記事が並びますが、後者は Microsoft の公式ドキュメントに直行できます。<br>
+PowerShell のオブジェクトは <strong>.NET のクラスそのもの</strong>なので、C# 向けのドキュメントがそのまま使えます。
+</div>
+
+<h2>まず <code>Get-Member</code>、が習慣になれば独学できる</h2>
+
+<pre><code># 知らないコマンドに出会ったとき
+Get-Service | Get-Member          # 何が返るか調べる
+Get-Service | Select-Object -First 1 | Format-List *   # 実際の値を全部見る</code></pre>
+
+<p><code>Format-List *</code> は<strong>すべてのプロパティを実際の値付きで表示</strong>します。<code>Get-Member</code> が「何があるか」なら、<code>Format-List *</code> は「いま何が入っているか」です。2つを組み合わせると、未知のコマンドでもすぐ扱えます。</p>
+
+<div class="callout">
+<strong>PowerShell が初めての人へ</strong><br>
+<strong>Java・C# の経験がある方へ</strong> — <code>Get-Member</code> はリフレクション（<code>getClass().getMethods()</code> や <code>GetType().GetProperties()</code>）を対話的に実行しているようなものです。IDE の補完で見ていた情報を、シェルの中で直接引ける、と考えると分かりやすいはずです。<br>
+<strong>VBA の経験がある方へ</strong> — オブジェクトブラウザ（F2）に相当します。違いは、<strong>実際に返ってきた値そのものに対して問い合わせる</strong>点です。
+</div>
+</section>
+
+<!-- ============ 05.3 ============ -->
+<section class="ch03" id="ch03">
+<h1>05.3 絞る・変える・選ぶ</h1>
+
+<h2>役割分担を先に押さえる</h2>
+
+<figure>
+<svg viewBox="0 0 780 232" role="img" aria-label="Where-Object・ForEach-Object・Select-Object の役割分担">
+	<defs>
+		<linearGradient id="g-05-3a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(255,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(255,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-05-3b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(180,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(180,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-05-3c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="14" y="20" width="244" height="94" rx="10" fill="url(#g-05-3a)"/>
+	<text x="136" y="48" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">Where-Object</text>
+	<text x="136" y="70" fill="#fff" font-size="18" font-weight="700" text-anchor="middle">絞る</text>
+	<text x="136" y="94" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">件数が減る。中身は変わらない</text>
+
+	<rect x="268" y="20" width="244" height="94" rx="10" fill="url(#g-05-3b)"/>
+	<text x="390" y="48" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">ForEach-Object</text>
+	<text x="390" y="70" fill="#fff" font-size="18" font-weight="700" text-anchor="middle">変える</text>
+	<text x="390" y="94" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">1件ずつ処理する。何を返すかは自由</text>
+
+	<rect x="522" y="20" width="244" height="94" rx="10" fill="url(#g-05-3c)"/>
+	<text x="644" y="48" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">Select-Object</text>
+	<text x="644" y="70" fill="#fff" font-size="18" font-weight="700" text-anchor="middle">選ぶ</text>
+	<text x="644" y="94" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">必要なプロパティだけ残す</text>
+
+	<rect x="14" y="130" width="752" height="88" rx="10" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+	<text x="390" y="152" fill="var(--ink)" font-size="13.5" font-weight="700" text-anchor="middle">JavaScript の配列メソッドとの対応</text>
+	<text x="136" y="178" fill="hsl(255,78%,32%)" font-size="13" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">.filter()</text>
+	<text x="390" y="178" fill="hsl(180,78%,25%)" font-size="13" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">.map()</text>
+	<text x="644" y="178" fill="hsl(35,78%,30%)" font-size="13" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">分割代入に近い</text>
+	<text x="390" y="204" fill="var(--ink-soft)" font-size="12" text-anchor="middle">ForEach-Object と Select-Object は役割が重なる。プロパティを選ぶだけなら Select-Object が読みやすい</text>
+</svg>
+<figcaption>図 05.3 — 3つの使い分け。まず「絞る」を先に書くとパイプライン全体が速くなる</figcaption>
+</figure>
+
+<h2>Where-Object — 絞る</h2>
+
+<pre><code># JavaScript
+files.filter(f =&gt; f.size &gt; 1024)
+
+# PowerShell（スクリプトブロック）
+Get-ChildItem | Where-Object { $_.Length -gt 1024 }
+
+# PowerShell（簡易構文 — 比較1つだけならこちらが読みやすい）
+Get-ChildItem | Where-Object Length -gt 1024</code></pre>
+
+<p><code>$_</code> は<strong>いま流れてきた1件</strong>を指す自動変数です。<code>$PSItem</code> とも書けますが、<code>$_</code> のほうが一般的です。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>書き方</th><th>例</th><th>使いどころ</th></tr>
+<tr><td class="nowrap">スクリプトブロック</td><td class="mono">Where-Object { $_.Length -gt 1024 }</td><td>複数条件、複雑な式</td></tr>
+<tr><td class="nowrap">簡易構文</td><td class="mono">Where-Object Length -gt 1024</td><td>比較1つだけ。<span class="badge b-good">読みやすい</span></td></tr>
+<tr><td class="nowrap">エイリアス</td><td class="mono">? { $_.Length -gt 1024 }</td><td>対話操作のみ。<strong>スクリプトでは使わない</strong></td></tr>
+</table>
+</div>
+
+<h2>ForEach-Object — 変える</h2>
+
+<pre><code># JavaScript
+files.map(f =&gt; f.name.toUpperCase())
+
+# PowerShell
+Get-ChildItem | ForEach-Object { $_.Name.ToUpper() }</code></pre>
+
+<h3>3つのブロックを持てる</h3>
+
+<pre><code>1..3 | ForEach-Object -Begin { "開始" } -Process { $_ * 10 } -End { "終了" }
+# → 開始 / 10 / 20 / 30 / 終了</code></pre>
+
+<p><code>-Begin</code> は最初に1回、<code>-End</code> は最後に1回だけ実行されます。集計の初期化と結果出力に使えます。</p>
+
+<h3>並列実行 <span class="badge b-ps7">pwsh 7</span></h3>
+
+<pre><code>1..10 | ForEach-Object -Parallel { Start-Sleep 1; $_ } -ThrottleLimit 5</code></pre>
+
+<div class="callout">
+<strong><code>-Parallel</code> の中は別のセッションです。</strong><br>
+外側の変数はそのままでは見えません。使いたい場合は <code>$using:</code> を付けます（<code>$using:baseDir</code>）。また、<strong>1件あたりの処理が軽いと並列化のオーバーヘッドのほうが大きくなります</strong>。ネットワーク待ちなど、待ち時間が長い処理にだけ使ってください。
+</div>
+
+<h2>Select-Object — 選ぶ</h2>
+
+<pre><code>Get-Process | Select-Object Name, Id, CPU
+Get-Process | Select-Object -First 5
+Get-Process | Select-Object -Property Name -Unique</code></pre>
+
+<h3><code>-ExpandProperty</code> — 値そのものを取り出す <span class="badge b-warn">よく使う</span></h3>
+
+<pre><code># オブジェクトが返る（Name というプロパティを持つ箱）
+Get-Process | Select-Object -First 1 -Property Name
+# → @{Name=pwsh}
+
+# 値そのものが返る（ただの文字列）
+Get-Process | Select-Object -First 1 -ExpandProperty Name
+# → pwsh</code></pre>
+
+<div class="callout">
+<strong>「なぜか文字列にならない」の原因はたいていこれです。</strong><br>
+<code>Select-Object Name</code> は<strong>Name というプロパティを1つだけ持つ新しいオブジェクト</strong>を作ります。文字列そのものが欲しいときは <code>-ExpandProperty</code> を使うか、<code>ForEach-Object { $_.Name }</code> と書きます。
+</div>
+
+<h3>計算プロパティ — 列を作る</h3>
+
+<pre><code>Get-ChildItem | Select-Object Name, @{ Name = 'MB'; Expression = { [math]::Round($_.Length / 1MB, 2) } }</code></pre>
+
+<p><code>Name</code>（列名）と <code>Expression</code>（値の計算式）のハッシュテーブルを渡すと、<strong>その場で新しい列を作れます</strong>。<code>N</code> / <code>E</code> と略記もできます。</p>
+
+<div class="callout">
+<strong><code>Select-Object</code> を通すと型が変わります。</strong><br>
+元が <code>FileInfo</code> でも、<code>Select-Object Name, Length</code> を通した後は <code>PSCustomObject</code> になります。<strong><code>.Delete()</code> のようなメソッドは呼べなくなります</strong>。<br>
+ファイル操作を続けたいなら、絞るだけにして <code>Select-Object</code> は最後に置いてください。
+</div>
+
+<div class="callout">
+<strong>PowerShell が初めての人へ</strong><br>
+<code>$_</code> は<strong>「いま処理している1件」</strong>を表します。JavaScript の <code>arr.filter(x =&gt; ...)</code> の <code>x</code> にあたるものが、名前を書かずに <code>$_</code> として用意されている、と考えてください。<br>
+入れ子にすると内側の <code>$_</code> が外側を隠してしまうので、<strong>ネストするときは <code>ForEach-Object { $item = $_; ... }</code> のように名前を付けて退避</strong>させます。
+</div>
+</section>
+
+<!-- ============ 05.4 ============ -->
+<section class="ch04" id="ch04">
+<h1>05.4 並べる・まとめる・数える</h1>
+
+<h2>集計の3兄弟</h2>
+
+<figure>
+<svg viewBox="0 0 780 244" role="img" aria-label="Sort-Object・Group-Object・Measure-Object の流れ">
+	<defs>
+		<linearGradient id="g-05-4a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(255,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(255,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-05-4b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(160,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(160,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-05-4c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="14" y="24" width="230" height="86" rx="10" fill="url(#g-05-4a)"/>
+	<text x="129" y="52" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">Sort-Object</text>
+	<text x="129" y="76" fill="#fff" font-size="17" font-weight="700" text-anchor="middle">並べる</text>
+	<text x="129" y="98" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">件数は変わらない</text>
+
+	<line x1="250" y1="67" x2="278" y2="67" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="278,60 294,67 278,74" fill="var(--ink-soft)"/>
+
+	<rect x="300" y="24" width="230" height="86" rx="10" fill="url(#g-05-4b)"/>
+	<text x="415" y="52" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">Group-Object</text>
+	<text x="415" y="76" fill="#fff" font-size="17" font-weight="700" text-anchor="middle">まとめる</text>
+	<text x="415" y="98" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">Name / Count / Group を返す</text>
+
+	<line x1="536" y1="67" x2="564" y2="67" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="564,60 580,67 564,74" fill="var(--ink-soft)"/>
+
+	<rect x="586" y="24" width="180" height="86" rx="10" fill="url(#g-05-4c)"/>
+	<text x="676" y="52" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">Measure-Object</text>
+	<text x="676" y="76" fill="#fff" font-size="17" font-weight="700" text-anchor="middle">数える</text>
+	<text x="676" y="98" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">合計・平均・最大</text>
+
+	<rect x="14" y="128" width="752" height="102" rx="10" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+	<text x="390" y="152" fill="var(--ink)" font-size="13.5" font-weight="700" text-anchor="middle">実例 — プロジェクト内のファイルを拡張子別に数える</text>
+	<text x="390" y="178" fill="var(--ink)" font-size="12.5" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Get-ChildItem -Recurse -File | Group-Object Extension | Sort-Object Count -Descending</text>
+	<text x="200" y="204" fill="hsl(160,78%,25%)" font-size="12.5" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">.png   82 件</text>
+	<text x="390" y="204" fill="hsl(160,78%,25%)" font-size="12.5" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">.html   5 件</text>
+	<text x="580" y="204" fill="hsl(160,78%,25%)" font-size="12.5" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">.json   5 件</text>
+	<text x="390" y="222" fill="var(--ink-soft)" font-size="12" text-anchor="middle">Bash なら awk と sort と uniq -c を組み合わせる場面が、コマンド2つで済む</text>
+</svg>
+<figcaption>図 05.4 — 集計は「並べる → まとめる → 数える」の組み合わせで書ける</figcaption>
+</figure>
+
+<h2>Sort-Object — 並べる</h2>
+
+<pre><code>Get-ChildItem | Sort-Object Length -Descending
+Get-ChildItem | Sort-Object Extension, Name          # 複数キー
+Get-Process   | Sort-Object CPU -Descending -Top 5   # 上位だけ</code></pre>
+
+<h2>Group-Object — まとめる</h2>
+
+<p>返るのは <code>GroupInfo</code> というオブジェクトで、<strong>3つのプロパティ</strong>を持ちます。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>プロパティ</th><th>中身</th></tr>
+<tr><td class="nowrap"><code>Name</code></td><td>グループのキー（例: <code>.png</code>）</td></tr>
+<tr><td class="nowrap"><code>Count</code></td><td>そのグループの件数</td></tr>
+<tr><td class="nowrap"><code>Group</code></td><td><strong>グループに属する元のオブジェクトすべて</strong></td></tr>
+</table>
+</div>
+
+<pre><code># 拡張子ごとの合計サイズを出す
+Get-ChildItem -Recurse -File |
+    Group-Object Extension |
+    ForEach-Object {
+        [PSCustomObject]@{
+            拡張子 = $_.Name
+            件数   = $_.Count
+            合計MB = [math]::Round(($_.Group | Measure-Object Length -Sum).Sum / 1MB, 2)
+        }
+    } | Sort-Object 合計MB -Descending</code></pre>
+
+<p><code>$_.Group</code> に元のファイルオブジェクトが全部入っているので、<strong>そこからさらに集計できます</strong>。</p>
+
+<div class="callout">
+<strong>グループ化しても元データは失われません。</strong><br>
+SQL の <code>GROUP BY</code> では集計関数を通した値しか取れませんが、<code>Group-Object</code> は<strong>元のオブジェクトを <code>Group</code> に丸ごと保持します</strong>。後から「やっぱり平均も欲しい」となっても、再実行せずに取り出せます。
+</div>
+
+<h2>Measure-Object — 数える</h2>
+
+<pre><code>Get-ChildItem | Measure-Object                                    # 件数だけ
+Get-ChildItem | Measure-Object Length -Sum -Average -Maximum      # 集計</code></pre>
+
+<pre><code>Count    : 4
+Average  : 43403.5
+Sum      : 173614
+Maximum  : 48259
+Property : Length</code></pre>
+
+<div class="callout">
+<strong>件数を数えるだけなら <code>.Count</code> で十分です。</strong><br>
+<code>(Get-ChildItem).Count</code> のほうが短く、速く書けます。<code>Measure-Object</code> が要るのは<strong>合計・平均・最大最小を同時に取りたいとき</strong>です。<br>
+ただし <code>.Count</code> は<strong>全件をメモリに載せてから</strong>数えます。数十万件を扱うなら <code>Measure-Object</code> のほうが安全です。
+</div>
+
+<h2>組み合わせの実例</h2>
+
+<pre><code># 直近7日に更新された .ps1 を、サイズの大きい順に5件
+Get-ChildItem -Recurse -Filter *.ps1 |
+    Where-Object { $_.LastWriteTime -gt (Get-Date).AddDays(-7) } |
+    Sort-Object Length -Descending |
+    Select-Object -First 5 Name, Length, LastWriteTime |
+    Format-Table -AutoSize</code></pre>
+
+<p><strong>絞る → 並べる → 選ぶ → 整形する</strong>の順です。<code>Format-Table</code> が最後に来ていることに注目してください（05.1 の罠）。</p>
+
+<div class="callout">
+<strong>PowerShell が初めての人へ</strong><br>
+パイプラインは<strong>行末で改行できます</strong>。<code>|</code> で終わっている行は「まだ続く」と解釈されるので、上の例のように<strong>1行1コマンドで縦に並べる</strong>と読みやすくなります。<br>
+長いパイプラインを1行に詰め込む必要はありません。<strong>スクリプトに書くときは必ず改行して並べてください。</strong>
+</div>
+</section>
+
+<!-- ============ 05.5 ============ -->
+<section class="ch05" id="ch05">
+<h1>05.5 コマンドの探し方</h1>
+
+<h2>すべてのコマンドは「動詞-名詞」</h2>
+
+<figure>
+<svg viewBox="0 0 780 250" role="img" aria-label="Cmdlet の命名規則と探索の手順">
+	<defs>
+		<linearGradient id="g-05-5a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(255,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(255,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-05-5b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(180,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(180,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="150" y="16" width="230" height="52" rx="9" fill="url(#g-05-5a)"/>
+	<text x="265" y="49" fill="#fff" font-size="20" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Get</text>
+	<text x="392" y="49" fill="var(--ink)" font-size="24" font-weight="700" text-anchor="middle">-</text>
+	<rect x="404" y="16" width="230" height="52" rx="9" fill="url(#g-05-5b)"/>
+	<text x="519" y="49" fill="#fff" font-size="20" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Process</text>
+
+	<text x="265" y="88" fill="hsl(255,78%,32%)" font-size="13" font-weight="700" text-anchor="middle">動詞 — 何をするか</text>
+	<text x="519" y="88" fill="hsl(180,78%,25%)" font-size="13" font-weight="700" text-anchor="middle">名詞 — 何に対して</text>
+
+	<text x="265" y="110" fill="var(--ink-soft)" font-size="12" text-anchor="middle">Get / Set / New / Remove / Start …</text>
+	<text x="519" y="110" fill="var(--ink-soft)" font-size="12" text-anchor="middle">Process / Service / Item / Content …</text>
+
+	<rect x="14" y="126" width="368" height="106" rx="10" fill="#fff" stroke="hsl(255,58%,60%)" stroke-width="2"/>
+	<text x="198" y="150" fill="hsl(255,78%,32%)" font-size="13.5" font-weight="700" text-anchor="middle">動詞は 100 個に決められている</text>
+	<text x="198" y="174" fill="var(--ink)" font-size="12" text-anchor="middle">Get 取得 ／ Set 設定 ／ New 作成</text>
+	<text x="198" y="194" fill="var(--ink)" font-size="12" text-anchor="middle">Remove 削除 ／ Start 開始 ／ Stop 停止</text>
+	<text x="198" y="218" fill="var(--ink-soft)" font-size="11.5" text-anchor="middle">Get-Verb で全部見られる</text>
+
+	<rect x="398" y="126" width="368" height="106" rx="10" fill="#fff" stroke="hsl(180,58%,55%)" stroke-width="2"/>
+	<text x="582" y="150" fill="hsl(180,78%,25%)" font-size="13.5" font-weight="700" text-anchor="middle">だから名前から機能が推測できる</text>
+	<text x="582" y="174" fill="var(--ink)" font-size="12" text-anchor="middle">サービスを止めたい → Stop-Service</text>
+	<text x="582" y="194" fill="var(--ink)" font-size="12" text-anchor="middle">ファイルを作りたい → New-Item</text>
+	<text x="582" y="218" fill="var(--ink-soft)" font-size="11.5" text-anchor="middle">暗記ではなく「組み立てて」探せる</text>
+</svg>
+<figcaption>図 05.5 — 動詞は承認された 100 個に統一されている。だから名前が推測できる</figcaption>
+</figure>
+
+<pre><code>Get-Verb | Measure-Object      # → Count: 100
+Get-Verb | Where-Object Group -eq 'Common'</code></pre>
+
+<h2>Get-Command で探す</h2>
+
+<pre><code>Get-Command -Verb Get -Noun Process        # 動詞と名詞で絞る
+Get-Command *service*                      # 名前の一部で探す
+Get-Command -Module Microsoft.PowerShell.Management</code></pre>
+
+<h2>Get-Help で使い方を見る</h2>
+
+<pre><code>Get-Help Get-ChildItem                     # 概要
+Get-Help Get-ChildItem -Examples           # 使用例だけ（最も実用的）
+Get-Help Get-ChildItem -Full               # 全部
+Get-Help Get-ChildItem -Online             # ブラウザで公式ドキュメント</code></pre>
+
+<div class="callout">
+<strong>まず <code>-Examples</code> を見る癖をつけてください。</strong><br>
+パラメータの一覧を読むより、<strong>動く例を1つ見るほうが速い</strong>ことがほとんどです。ヘルプが入っていない場合は <code>Update-Help</code> で取得できます（管理者権限が必要）。
+</div>
+
+<h2>未知のコマンドを扱う4ステップ</h2>
+
+<figure>
+<svg viewBox="0 0 780 176" role="img" aria-label="未知のコマンドを自力で扱う4つのステップ">
+	<defs>
+		<linearGradient id="g-05-6a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(255,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(255,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-05-6b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(200,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(200,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-05-6c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-05-6d" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="10" y="26" width="172" height="76" rx="9" fill="url(#g-05-6a)"/>
+	<text x="96" y="52" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">① 探す</text>
+	<text x="96" y="76" fill="#fff" font-size="12" text-anchor="middle" opacity="0.92" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Get-Command</text>
+	<text x="96" y="94" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">名前を組み立てる</text>
+
+	<line x1="188" y1="64" x2="204" y2="64" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="204,57 220,64 204,71" fill="var(--ink-soft)"/>
+
+	<rect x="226" y="26" width="172" height="76" rx="9" fill="url(#g-05-6b)"/>
+	<text x="312" y="52" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">② 使い方を見る</text>
+	<text x="312" y="76" fill="#fff" font-size="12" text-anchor="middle" opacity="0.92" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Get-Help -Examples</text>
+	<text x="312" y="94" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">動く例を1つ得る</text>
+
+	<line x1="404" y1="64" x2="420" y2="64" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="420,57 436,64 420,71" fill="var(--ink-soft)"/>
+
+	<rect x="442" y="26" width="150" height="76" rx="9" fill="url(#g-05-6c)"/>
+	<text x="517" y="52" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">③ 動かす</text>
+	<text x="517" y="76" fill="#fff" font-size="12" text-anchor="middle" opacity="0.92">まず1件だけ</text>
+	<text x="517" y="94" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">-First 1 で試す</text>
+
+	<line x1="598" y1="64" x2="614" y2="64" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="614,57 630,64 614,71" fill="var(--ink-soft)"/>
+
+	<rect x="636" y="26" width="134" height="76" rx="9" fill="url(#g-05-6d)"/>
+	<text x="703" y="52" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">④ 中身を見る</text>
+	<text x="703" y="76" fill="#fff" font-size="12" text-anchor="middle" opacity="0.92" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Get-Member</text>
+	<text x="703" y="94" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">取り出せる値を知る</text>
+
+	<rect x="10" y="118" width="760" height="46" rx="8" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+	<text x="390" y="138" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="middle">この4ステップが回せれば、資料に載っていないコマンドも自力で使える</text>
+	<text x="390" y="156" fill="var(--ink-soft)" font-size="12" text-anchor="middle">検索してコピペするより速く、しかも確実に自分の環境で動く答えが得られる</text>
+</svg>
+<figcaption>図 05.6 — 未知のコマンドに出会ったときの手順。暗記ではなく調べ方を身につける</figcaption>
+</figure>
+
+<h2>省略形は3種類ある</h2>
+
+<p><code>ls</code> のような短縮表記には<strong>仕組みの異なる3種類</strong>があります。混同すると「一覧はどこにあるのか」が分からなくなります。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>種類</th><th>例</th><th>一覧を出せるか</th></tr>
+<tr><td class="nowrap">① <strong>コマンドのエイリアス</strong></td><td class="mono">ls → Get-ChildItem</td><td><span class="badge b-good">できる</span><code>Get-Alias</code></td></tr>
+<tr><td class="nowrap">② <strong>パラメータのエイリアス</strong></td><td class="mono">-Recurse の別名が -s / -r</td><td><span class="badge b-good">できる</span>コマンドごとに調べる</td></tr>
+<tr><td class="nowrap">③ <strong>パラメータの前方一致</strong></td><td class="mono">-Rec → -Recurse</td><td><span class="badge b-bad">できない</span>その場で解決される</td></tr>
+</table>
+</div>
+
+<h2>① コマンドのエイリアス — <code>Get-Alias</code> で一覧できる</h2>
+
+<pre><code>Get-Alias                                # 全部見る
+Get-Alias ls                             # ls の正体を調べる
+Get-Alias -Definition Get-ChildItem      # 逆引き → dir, gci, ls の3つ
+Get-Help about_Aliases                   # 公式の解説</code></pre>
+
+<p><strong>初期値は PowerShell 本体に組み込まれています。</strong>設定ファイルに書かれているわけではないので、<code>Get-Alias</code> が唯一の確実な一覧です。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>環境</th><th>初期のエイリアス数</th></tr>
+<tr><td class="nowrap"><span class="badge b-ps51">5.1</span> Windows PowerShell</td><td>約 153 個</td></tr>
+<tr><td class="nowrap"><span class="badge b-ps7">pwsh 7</span> PowerShell 7</td><td>約 135 個</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>数は固定ではありません。</strong><br>
+<code>Get-Alias</code> の <code>Source</code> 列を見ると出どころが分かります。ほとんどはエンジン組み込みですが、<strong>モジュールを読み込むと増えます</strong>。「一覧を控えておく」のではなく、<strong>必要になったらその場で <code>Get-Alias</code> を叩く</strong>のが正しい使い方です。
+</div>
+
+<h3>5.1 と 7 で中身が違う <span class="badge b-bad">実害あり</span></h3>
+
+<p>7 では <strong>19 個のエイリアスが削除</strong>されました。特に次の2つは挙動が変わります。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>別名</th><th><span class="badge b-ps51">5.1</span> での正体</th><th><span class="badge b-ps7">pwsh 7</span></th><th>削除の理由</th></tr>
+<tr><td class="mono">curl</td><td class="mono">Invoke-WebRequest</td><td>本物の <code>curl.exe</code> が動く</td><td>実在のコマンドを隠していた</td></tr>
+<tr><td class="mono">sc</td><td class="mono">Set-Content</td><td>本物の <code>sc.exe</code> が動く</td><td>同上（サービス制御コマンド）</td></tr>
+<tr><td class="mono">gwmi</td><td class="mono">Get-WmiObject</td><td>存在しない</td><td>コマンド自体が 7 で削除（03 章）</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong><code>curl</code> と書いたスクリプトは、5.1 と 7 で全く違う動作をします。</strong><br>
+5.1 では PowerShell の <code>Invoke-WebRequest</code> が、7 では Windows 同梱の <code>curl.exe</code> が動きます。引数の書き方が全く違うため、<strong>移植したとたんに動かなくなります</strong>。これがエイリアスを避けるべき最も具体的な理由です。
+</div>
+
+<h2>② パラメータのエイリアス — コマンドごとに調べる</h2>
+
+<pre><code>(Get-Command Get-ChildItem).Parameters['Recurse'].Aliases
+# → s, r
+
+(Get-Command Get-ChildItem).Parameters['LiteralPath'].Aliases
+# → PSPath, LP</code></pre>
+
+<p>これは<strong>正式に定義された別名</strong>なので、前方一致とは違って安定しています。とはいえ読み手に伝わりにくいため、スクリプトでは正式名を使います。</p>
+
+<h2>③ パラメータの前方一致 — 一覧が存在しない <span class="badge b-warn">危険</span></h2>
+
+<p>パラメータ名は<strong>他と区別できるところまで縮められます</strong>。ただし一覧はなく、<strong>何に解決されるかが状況で変わります</strong>。</p>
+
+<pre><code>Get-ChildItem -Rec       # → Recurse に解決される  ✓
+Get-ChildItem -Fil       # → Filter に解決される   ✓
+Get-ChildItem -F         # → エラー
+# Parameter cannot be processed because the parameter name 'F' is ambiguous.
+# Possible matches include: -Filter -Force.</code></pre>
+
+<div class="callout">
+<strong>あいまいエラーの候補に <code>-File</code> が出てこない点に注目してください。</strong><br>
+<code>Get-ChildItem</code> には <code>-File</code> も <code>-Filter</code> もあるのに、<code>-Fi</code> は <strong><code>-Filter</code> に解決されます</strong>。<code>-File</code> は FileSystem プロバイダの<strong>動的パラメータ</strong>で、<code>-Filter</code> はコマンド自身の静的パラメータのため、扱いが異なるからです。<br>
+<strong>どちらに解決されるかを予測するのは現実的ではありません。</strong>対話操作で使うのは構いませんが、スクリプトには必ずフルネームを書いてください。
+</div>
+
+<h2>結論 — 対話は自由、ファイルは正式名</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>よく使う別名</th><th>正式名</th></tr>
+<tr><td class="mono">ls / dir / gci</td><td class="mono">Get-ChildItem</td></tr>
+<tr><td class="mono">cat / type / gc</td><td class="mono">Get-Content</td></tr>
+<tr><td class="mono">%</td><td class="mono">ForEach-Object</td></tr>
+<tr><td class="mono">?</td><td class="mono">Where-Object</td></tr>
+<tr><td class="mono">select</td><td class="mono">Select-Object</td></tr>
+<tr><td class="mono">gm</td><td class="mono">Get-Member</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>エイリアスは各人が上書きできます。</strong><br>
+プロファイル（03 章）で <code>Set-Alias</code> を書けば <code>ls</code> の意味を変えられます。つまり<strong>配布したスクリプトが相手の環境で別の動きをする</strong>可能性があります。<br>
+バージョン差・上書き・前方一致の3つが重なるため、<strong>ファイルに保存するものは必ず正式名で書く</strong> — これを習慣にしてください。対話操作では自由に使って構いません。
+</div>
+</section>
+
+<h2>この章のまとめ</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>やりたいこと</th><th>コマンド</th><th>JavaScript</th></tr>
+<tr><td class="nowrap">中身を調べる</td><td class="mono">| Get-Member</td><td>—（IDE の補完に相当）</td></tr>
+<tr><td class="nowrap">実際の値を全部見る</td><td class="mono">| Format-List *</td><td class="mono">console.dir()</td></tr>
+<tr><td class="nowrap">絞る</td><td class="mono">| Where-Object</td><td class="mono">.filter()</td></tr>
+<tr><td class="nowrap">変える</td><td class="mono">| ForEach-Object</td><td class="mono">.map()</td></tr>
+<tr><td class="nowrap">プロパティを選ぶ</td><td class="mono">| Select-Object</td><td>分割代入</td></tr>
+<tr><td class="nowrap">値そのものを取る</td><td class="mono">-ExpandProperty</td><td class="mono">.map(x =&gt; x.name)</td></tr>
+<tr><td class="nowrap">並べる</td><td class="mono">| Sort-Object</td><td class="mono">.sort()</td></tr>
+<tr><td class="nowrap">まとめる</td><td class="mono">| Group-Object</td><td class="mono">.reduce()</td></tr>
+<tr><td class="nowrap">数える・集計する</td><td class="mono">| Measure-Object</td><td class="mono">.length / .reduce()</td></tr>
+<tr><td class="nowrap">コマンドを探す</td><td class="mono">Get-Command</td><td>—</td></tr>
+</table>
+</div>
+
+<h3>覚えておく3点</h3>
+
+<ol>
+	<li><strong>画面の表示は整形結果にすぎない</strong>。パイプに流れるのは元のオブジェクトなので、表に出ていない値もそのまま使える。<code>Format-*</code> は行き止まりなので最後にだけ置く</li>
+	<li><strong>迷ったら <code>Get-Member</code></strong>。型名・プロパティ・メソッドが一度に分かる。型名で検索すれば公式ドキュメントに直行できる</li>
+	<li><strong>コマンド名は「動詞-名詞」で組み立てられる</strong>。暗記せず <code>Get-Command</code> と <code>Get-Help -Examples</code> で探す。エイリアスは対話専用</li>
+</ol>
+
+<div class="callout">
+<strong>次章の予告 — 06. 制御構文と関数</strong><br>
+ここまでで、既存のコマンドを組み合わせて使えるようになりました。次は<strong>自分の処理を関数として切り出す</strong>段階です。<code>if</code> や <code>foreach</code> は他言語とほぼ同じですが、<strong>関数の戻り値の扱いだけは PowerShell 独特</strong>で、経験者ほど引っかかります。「<code>return</code> したつもりの値以外も混ざって返ってくる」問題を正面から扱います。
+</div>
+
+</div>
+
+<footer>
+	<p>PowerShell 学習資料 05 ／ 前章: <a href="04-変数と型.html">04. 変数・型・演算子</a> ／ 次章: <a href="06-制御構文と関数.html">06. 制御構文と関数</a></p>
+</footer>
+
+</body>
+</html>

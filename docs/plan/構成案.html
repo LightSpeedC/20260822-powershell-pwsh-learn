@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PowerShell 学習資料 全体構成案</title>
+<style>
+	:root {
+		--navy1: #12224d;
+		--navy2: #2f5fbf;
+		--ink: #1c2330;
+		--ink-soft: #4a5568;
+		--line: #d9dfe8;
+		--code-bg: #f4f6fa;
+
+		/* 章クラス(.chNN)の外に置かれた要素用の既定値 */
+		--accent: var(--navy1);
+		--accent2: var(--navy2);
+		--soft: #f2f5fb;
+	}
+
+	/* 章ごとの虹色アクセント (H: 280 → 0, 280°を5章に均等分割 = 70°刻み) */
+	.ch01 { --accent: hsl(280,78%,25%); --accent2: hsl(280,58%,65%); --soft: hsl(280,28%,95%); }
+	.ch02 { --accent: hsl(210,78%,25%); --accent2: hsl(210,58%,65%); --soft: hsl(210,28%,95%); }
+	.ch03 { --accent: hsl(140,78%,25%); --accent2: hsl(140,58%,65%); --soft: hsl(140,28%,95%); }
+	.ch04 { --accent: hsl(70,78%,25%);  --accent2: hsl(70,58%,65%);  --soft: hsl(70,28%,95%); }
+	.ch05 { --accent: hsl(0,78%,25%);   --accent2: hsl(0,58%,65%);   --soft: hsl(0,28%,95%); }
+
+	* { box-sizing: border-box; }
+
+	body {
+		margin: 0;
+		padding: 0 0 60px;
+		background: #ffffff;
+		color: var(--ink);
+		font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", "Meiryo", sans-serif;
+		line-height: 1.85;
+		font-size: 15.5px;
+	}
+
+	.wrap { max-width: 1400px; margin: 0 auto; padding: 0 30px; }
+
+	/* タイトルバー */
+	.titlebar {
+		background: linear-gradient(135deg, var(--navy1) 0%, var(--navy2) 100%);
+		color: #fff;
+		padding: 34px 30px 30px;
+		box-shadow: 0 6px 18px rgba(18,34,77,0.28);
+	}
+	.titlebar .inner { max-width: 1400px; margin: 0 auto; }
+	.titlebar h1 {
+		margin: 0 0 10px;
+		font-size: 2.1em;
+		letter-spacing: 0.02em;
+		color: #fff;
+	}
+	.titlebar p { margin: 4px 0; font-size: 0.92em; color: #d8e4ff; }
+	.titlebar .meta { font-size: 0.84em; color: #b9cdf5; }
+	.titlebar code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+
+	/* 目次 */
+	nav.toc {
+		background: linear-gradient(180deg, #f2f5fb 0%, #ffffff 100%);
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		padding: 16px 22px;
+		margin: 28px 0;
+		box-shadow: 0 2px 8px rgba(30,50,90,0.07);
+	}
+	nav.toc strong { display: block; color: var(--navy1); margin-bottom: 10px; }
+	nav.toc ol {
+		margin: 0;
+		padding-left: 0;
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		counter-reset: toc;
+	}
+	nav.toc li { counter-increment: toc; margin: 0; }
+	nav.toc a {
+		display: -webkit-box;
+		width: 310px;
+		max-width: 100%;
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		text-decoration: none;
+		text-align: left;
+		border-radius: 6px;
+		padding: 7px 10px;
+		font-size: 0.88em;
+		font-weight: 600;
+		line-height: 1.4;
+		white-space: normal;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		box-shadow: 0 1px 4px rgba(20,30,60,0.18);
+	}
+	nav.toc a::before { content: counter(toc) ". "; opacity: 0.85; }
+	nav.toc a:hover { text-decoration: underline; }
+
+	/* 章 */
+	section {
+		background: linear-gradient(180deg, var(--soft) 0%, #ffffff 42%);
+		border-radius: 12px;
+		padding: 4px 26px 26px;
+		margin: 34px 0;
+		border: 1px solid var(--line);
+	}
+
+	section h1 {
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		font-size: 1.5em;
+		margin: 26px 0 20px;
+		padding: 14px 20px;
+		border-radius: 9px;
+		box-shadow: 0 5px 14px rgba(30,40,70,0.28);
+	}
+	section h1 code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+
+	h2 {
+		font-size: 1.16em;
+		color: var(--accent);
+		border-left: 7px solid var(--accent);
+		background: linear-gradient(90deg, var(--soft) 0%, rgba(255,255,255,0) 88%);
+		padding: 6px 12px;
+		margin: 30px 0 12px;
+		border-radius: 0 6px 6px 0;
+	}
+
+	h3 {
+		font-size: 1.02em;
+		color: var(--accent);
+		margin: 20px 0 8px;
+		padding-bottom: 3px;
+		border-bottom: 2px dotted var(--accent2);
+		display: inline-block;
+	}
+
+	p { margin: 10px 0; }
+	ul, ol { margin: 10px 0; padding-left: 1.6em; }
+	li { margin: 6px 0; }
+
+	code {
+		background: var(--code-bg);
+		border: 1px solid var(--line);
+		border-radius: 4px;
+		padding: 1px 6px;
+		font-family: "BIZ UDゴシック", "ＭＳ ゴシック", Consolas, "Cascadia Mono", monospace;
+		font-size: 0.9em;
+		color: #17335f;
+	}
+
+	pre {
+		background: linear-gradient(180deg, #f7f9fd 0%, #eef2f9 100%);
+		border: 1px solid var(--line);
+		border-left: 5px solid var(--accent2);
+		border-radius: 8px;
+		padding: 13px 16px;
+		overflow-x: auto;
+		font-size: 0.88em;
+		line-height: 1.6;
+	}
+	pre code { background: none; border: none; padding: 0; color: #1b2b46; }
+
+	.table-wrap { overflow-x: auto; margin: 16px 0; }
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 0.93em;
+		box-shadow: 0 2px 7px rgba(40,55,90,0.12);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+	th {
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		text-align: left;
+		padding: 9px 12px;
+		font-weight: 600;
+	}
+	th code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+	td { padding: 9px 12px; border-bottom: 1px solid var(--line); background: #fff; vertical-align: top; }
+	tr:nth-child(even) td { background: #fafbfe; }
+	td.nowrap { white-space: nowrap; }
+	td.num { text-align: right; white-space: nowrap; }
+
+	/* バッジ */
+	.badge {
+		display: inline-block;
+		font-size: 0.78em;
+		font-weight: 700;
+		color: #fff;
+		border-radius: 4px;
+		padding: 1px 9px;
+		margin-right: 7px;
+		letter-spacing: 0.04em;
+		white-space: nowrap;
+	}
+	.b-good { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
+	.b-bad  { background: linear-gradient(100deg, #a51f22, #e05a5c); }
+	.b-none { background: linear-gradient(100deg, #5a6472, #97a1ae); }
+	.b-warn { background: linear-gradient(100deg, #b8620a, #f0a548); }
+	.b-ps7  { background: linear-gradient(100deg, #1a5fa8, #4d9ae0); }
+	.b-ps51 { background: linear-gradient(100deg, #5b2d82, #9a6bc4); }
+
+	.callout {
+		background: linear-gradient(180deg, var(--soft) 0%, #ffffff 100%);
+		border: 1px solid var(--accent2);
+		border-left: 6px solid var(--accent);
+		border-radius: 0 8px 8px 0;
+		padding: 12px 18px;
+		margin: 16px 0;
+	}
+	.callout strong { color: var(--accent); }
+
+	/* SVG図 */
+	figure { margin: 20px 0; text-align: center; }
+	figure svg {
+		max-width: 100%;
+		height: auto;
+		font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", "Meiryo", sans-serif;
+	}
+	figcaption { font-size: 0.84em; color: var(--ink-soft); margin-top: 6px; }
+
+	footer {
+		max-width: 1400px;
+		margin: 40px auto 0;
+		padding: 18px 30px 0;
+		border-top: 2px solid var(--line);
+		color: var(--ink-soft);
+		font-size: 0.86em;
+	}
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>PowerShell 学習資料 全体構成案</h1>
+		<p>プログラミング経験のある読者を対象にした、全10ファイルのカリキュラム設計</p>
+		<p class="meta">📅 作成: 2026-08-22 / 更新: 2026-08-22 ／ ステータス: 確定（全5回・5.1と7の両対応）</p>
+	</div>
+</div>
+
+<div class="wrap">
+
+<nav class="toc">
+	<strong>目次</strong>
+	<ol>
+		<li class="ch01"><a href="#ch01">全体方針と対象読者</a></li>
+		<li class="ch02"><a href="#ch02">ファイル構成とロードマップ</a></li>
+		<li class="ch03"><a href="#ch03">基礎編（01〜05）の詳細</a></li>
+		<li class="ch04"><a href="#ch04">実践編（06〜09）の詳細</a></li>
+		<li class="ch05"><a href="#ch05">勉強会の進行案</a></li>
+	</ol>
+</nav>
+
+<!-- ============ 1 ============ -->
+<section class="ch01" id="ch01">
+<h1>1. 全体方針と対象読者</h1>
+
+<h2>2種類の読者を1つの資料でカバーする</h2>
+
+<p>この資料は<strong>読者を2種類</strong>想定しています。どちらも<strong>プログラミングの基礎（変数・条件分岐・繰り返し・関数）は理解している</strong>前提です。違いは「その経験が JavaScript かどうか」だけです。</p>
+
+<p>別々の資料を作ると保守が二重になるため、<strong>本文は JS 経験者向けに書き、JS 以外の経験者が引っかかる箇所だけ補足枠を添える</strong>方式にします。</p>
+
+<div class="callout">
+<strong>プログラミング未経験者は対象外とします。</strong><br>
+「変数とは」「関数とは」から説明を始めると分量が数倍になり、経験者にとっては冗長な資料になります。<strong>読者はすでに何らかの言語を書ける</strong>という前提を置くことで、PowerShell 固有の話に集中できます。
+</div>
+
+<figure>
+<svg viewBox="0 0 780 214" role="img" aria-label="2種類の読者と資料の対応">
+	<defs>
+		<linearGradient id="g-pl-1a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(210,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(210,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-pl-1b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-pl-1c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/>
+			<stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="24" y="14" width="300" height="76" rx="10" fill="url(#g-pl-1a)"/>
+	<text x="174" y="42" fill="#fff" font-size="16" font-weight="700" text-anchor="middle">読者A — JavaScript 経験者</text>
+	<text x="174" y="64" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">JS の基本文法を知っている</text>
+	<text x="174" y="82" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">「JS ではこう書く」の対比が効く</text>
+
+	<rect x="456" y="14" width="300" height="76" rx="10" fill="url(#g-pl-1b)"/>
+	<text x="606" y="42" fill="#fff" font-size="16" font-weight="700" text-anchor="middle">読者B — 他言語の経験者</text>
+	<text x="606" y="64" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">Java・C#・VBA など</text>
+	<text x="606" y="82" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">JS の例と Windows 用語で詰まる</text>
+
+	<path d="M174 94 V 122 H 320" fill="none" stroke="hsl(210,58%,45%)" stroke-width="2.5"/>
+	<polygon points="320,115 336,122 320,129" fill="hsl(210,58%,45%)"/>
+	<path d="M606 94 V 122 H 460" fill="none" stroke="hsl(35,58%,45%)" stroke-width="2.5"/>
+	<polygon points="460,115 444,122 460,129" fill="hsl(35,58%,45%)"/>
+
+	<rect x="130" y="140" width="520" height="60" rx="10" fill="url(#g-pl-1c)"/>
+	<text x="390" y="166" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">本文は読者A向け ＋ 「PowerShell が初めての人へ」枠で読者Bを補う</text>
+	<text x="390" y="188" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.9">1つの資料を保守すればよい／勉強会では枠を飛ばして進行できる</text>
+</svg>
+<figcaption>図 1 — 資料を分けず、補足枠で2種類の読者を吸収する</figcaption>
+</figure>
+
+<h2>本文を書くときの4原則</h2>
+
+<ul>
+	<li><span class="badge b-good">原則1</span><strong>DOS の例を必ず添える</strong> — 「cmd ではこう書いていた」が分かると、PowerShell の書き方が「何を解決したのか」として理解できる</li>
+	<li><span class="badge b-good">原則2</span><strong>JavaScript (Node.js) の例を随時添える</strong> — 読者Aの既知の知識に接続する。特に配列・オブジェクト・非同期の扱いで効く</li>
+	<li><span class="badge b-good">原則3</span><strong>「なぜそうなっているか」を先に書く</strong> — BOM や CRLF のような「決まりごと」は、理由を知らないと必ず忘れる</li>
+	<li><span class="badge b-good">原則4</span><strong>動かせる短いコードで終わる</strong> — 各節の最後に、コピペして即実行できる5行以内の例を置く</li>
+	<li><span class="badge b-good">原則5</span><strong>バージョン差はバッジで示す</strong> — 5.1 と 7 で違う箇所に <span class="badge b-ps7">pwsh 7</span> <span class="badge b-ps51">5.1</span> を付ける</li>
+</ul>
+
+<h2>補足枠に書くこと・書かないこと</h2>
+
+<p>読者が<strong>プログラミングの基礎を持っている</strong>前提になったことで、補足枠の中身も絞り込めます。書くのは <strong>PowerShell と Windows に固有の事情</strong>だけです。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>判定</th><th>内容</th><th>例</th></tr>
+<tr><td class="nowrap"><span class="badge b-good">書く</span></td><td>Windows 固有の用語</td><td>ANSI、コードページ、WMI、レジストリ、実行ポリシー</td></tr>
+<tr><td class="nowrap"><span class="badge b-good">書く</span></td><td>シェル特有の概念</td><td>シェルとターミナルの違い、パイプ、リダイレクト、標準出力</td></tr>
+<tr><td class="nowrap"><span class="badge b-good">書く</span></td><td>PowerShell 固有の慣習</td><td>動詞-名詞の命名規則、Cmdlet、<code>$_</code>、終了/非終了エラー</td></tr>
+<tr><td class="nowrap"><span class="badge b-good">書く</span></td><td>JS の例が読めない読者への言い換え</td><td>「JS の <code>filter</code> に相当」→「配列から条件に合う要素だけ取り出す処理」</td></tr>
+<tr><td class="nowrap"><span class="badge b-bad">書かない</span></td><td>プログラミングの基礎概念</td><td>変数とは、関数とは、配列とは、条件分岐とは</td></tr>
+<tr><td class="nowrap"><span class="badge b-bad">書かない</span></td><td>本文の単なる繰り返し</td><td>本文で説明済みの内容を言い換えただけの枠</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>枠の見出しは「PowerShell が初めての人へ」で統一します。</strong><br>
+「はじめての人へ」だとプログラミング未経験者向けに読めてしまいます。補うのは<strong>PowerShell と Windows の事情であって、プログラミングそのものではない</strong>ことを見出しで示します。
+</div>
+
+<h2>バージョンバッジの使い方</h2>
+
+<p>本資料は <strong>Windows PowerShell 5.1 と PowerShell 7 (pwsh) の両方</strong>を対象にします。読者の環境がどちらか分からないため、<strong>差がある箇所だけ</strong>をその場でバッジで示します。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>バッジ</th><th>意味</th><th>使用例</th></tr>
+<tr><td class="nowrap"><span class="badge b-ps7">pwsh 7</span></td><td>PowerShell 7 以降でのみ使える／挙動が異なる</td><td>三項演算子 <code>$a ? $b : $c</code>、<code>ForEach-Object -Parallel</code>、既定が BOM なし UTF-8</td></tr>
+<tr><td class="nowrap"><span class="badge b-ps51">5.1</span></td><td>Windows PowerShell 5.1 固有の注意点</td><td>BOM がないと日本語が壊れる、<code>Invoke-WebRequest</code> が IE エンジン依存</td></tr>
+<tr><td class="nowrap">（なし）</td><td>両方で同じように動く</td><td>大半の内容。バッジを付けない</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>バッジを付けすぎない。</strong><br>
+両方で動く内容にまで付けると、本当に注意が必要な箇所が埋もれます。<strong>コピペして動かなかったときに原因がバージョン差だと分かる</strong>ことが目的なので、差がある箇所に限定します。
+</div>
+
+<h2>1ファイルの構成テンプレート</h2>
+
+<p>全ファイルで同じ骨格にすることで、読者が「どこに何が書いてあるか」を予測できるようにします。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>位置</th><th>内容</th><th>目的</th></tr>
+<tr><td class="nowrap">冒頭</td><td>この章で何ができるようになるか（3行）</td><td>読む前に到達点を示す</td></tr>
+<tr><td class="nowrap">各章 (h1)</td><td>概念 → DOS/JS との対比 → PowerShell の書き方 → 短い実例</td><td>既知から未知へ橋を架ける</td></tr>
+<tr><td class="nowrap">補足枠</td><td><code>.callout</code> で「PowerShell が初めての人へ」</td><td>読者Bの補足。読者Aは飛ばせる</td></tr>
+<tr><td class="nowrap">末尾</td><td>まとめ表 ＋ 次章への導線</td><td>復習と連続性</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>この構成案自体もレビュー対象です。</strong><br>
+ファイル数・順序・粒度は確定していません。特に「基礎編を5ファイルに分けるか、3ファイルに圧縮するか」は勉強会の回数によって変わります。
+</div>
+</section>
+
+<!-- ============ 2 ============ -->
+<section class="ch02" id="ch02">
+<h1>2. ファイル構成とロードマップ</h1>
+
+<h2>全10ファイル・3部構成</h2>
+
+<figure>
+<svg viewBox="0 0 780 268" role="img" aria-label="3部構成のロードマップ">
+	<defs>
+		<linearGradient id="g-pl-2a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(255,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(255,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-pl-2b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(160,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(160,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-pl-2c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="14" y="34" width="236" height="150" rx="10" fill="url(#g-pl-2a)"/>
+	<text x="132" y="60" fill="#fff" font-size="16" font-weight="700" text-anchor="middle">第1部 基礎編</text>
+	<text x="132" y="84" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">01 生まれた経緯</text>
+	<text x="132" y="104" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">02 ファイル形式と文字コード</text>
+	<text x="132" y="124" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">03 実行環境と実行ポリシー</text>
+	<text x="132" y="144" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">04 変数・型・演算子</text>
+	<text x="132" y="164" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">05 パイプラインとオブジェクト</text>
+
+	<line x1="256" y1="109" x2="286" y2="109" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="286,102 302,109 286,116" fill="var(--ink-soft)"/>
+
+	<rect x="308" y="34" width="236" height="150" rx="10" fill="url(#g-pl-2b)"/>
+	<text x="426" y="60" fill="#fff" font-size="16" font-weight="700" text-anchor="middle">第2部 実践編</text>
+	<text x="426" y="88" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">06 制御構文と関数</text>
+	<text x="426" y="110" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">07 ファイルとテキスト操作</text>
+	<text x="426" y="132" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">08 エラー処理とデバッグ</text>
+	<text x="426" y="154" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">09 実務パターン集</text>
+
+	<line x1="550" y1="109" x2="580" y2="109" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="580,102 596,109 580,116" fill="var(--ink-soft)"/>
+
+	<rect x="602" y="34" width="164" height="150" rx="10" fill="url(#g-pl-2c)"/>
+	<text x="684" y="60" fill="#fff" font-size="16" font-weight="700" text-anchor="middle">第3部 演習</text>
+	<text x="684" y="94" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">10 ハンズオン課題</text>
+	<text x="684" y="116" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">と解答例</text>
+
+	<rect x="14" y="200" width="752" height="52" rx="10" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+	<text x="132" y="222" fill="hsl(255,78%,32%)" font-size="12.5" font-weight="700" text-anchor="middle">「読んで分かる」</text>
+	<text x="426" y="222" fill="hsl(160,78%,25%)" font-size="12.5" font-weight="700" text-anchor="middle">「書けるようになる」</text>
+	<text x="684" y="222" fill="hsl(35,78%,30%)" font-size="12.5" font-weight="700" text-anchor="middle">「一人で作れる」</text>
+	<text x="390" y="242" fill="var(--ink-soft)" font-size="12" text-anchor="middle">各部の到達目標</text>
+</svg>
+<figcaption>図 2 — 3部構成のロードマップと到達目標</figcaption>
+</figure>
+
+<h2>ファイル一覧</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>No.</th><th>タイトル</th><th>扱う内容</th><th>章数</th><th>状態</th></tr>
+<tr><td class="nowrap">01</td><td class="nowrap">背景</td><td>DOS/cmd の限界、Bash との比較、PowerShell の設計思想、Node.js との立場の違い</td><td class="num">4</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
+<tr><td class="nowrap">02</td><td class="nowrap">ファイル形式</td><td><strong>BOM の有無で 5.1 と 7 の解釈が逆になる</strong>（本資料の最重要点）、CRLF、<code>.ps1</code>／<code>.cmd</code>／<code>.bat</code> の使い分け、cmd ランチャー</td><td class="num">4</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
+<tr><td class="nowrap">03</td><td class="nowrap">実行環境</td><td>Windows PowerShell 5.1 と PowerShell 7 (pwsh) の違い、実行ポリシー、プロファイル、VS Code</td><td class="num">4</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
+<tr><td class="nowrap">04</td><td class="nowrap">変数と型</td><td>変数・型・演算子・配列・ハッシュテーブル。JS との対比を全節に配置</td><td class="num">5</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
+<tr><td class="nowrap">05</td><td class="nowrap">パイプライン</td><td>オブジェクトパイプ、<code>Where-Object</code>／<code>ForEach-Object</code>／<code>Select-Object</code>、Cmdlet の命名規則</td><td class="num">5</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
+<tr><td class="nowrap">06</td><td class="nowrap">制御構文と関数</td><td><code>if</code>／<code>foreach</code>／<code>switch</code>、関数、パラメータ、スコープ</td><td class="num">4</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
+<tr><td class="nowrap">07</td><td class="nowrap">ファイル操作</td><td>パス操作、<code>Get-Content</code>／<code>Set-Content</code> のエンコーディング、CSV/JSON</td><td class="num">4</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
+<tr><td class="nowrap">08</td><td class="nowrap">エラー処理</td><td><code>try/catch</code>、<code>$ErrorActionPreference</code>、終了コード、デバッグ手順</td><td class="num">4</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
+<tr><td class="nowrap">09</td><td class="nowrap">実務パターン集</td><td>ログ集計、一括リネーム、タスクスケジューラ連携、他プロセス呼び出し</td><td class="num">5</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
+<tr><td class="nowrap">10</td><td class="nowrap">ハンズオン</td><td>勉強会用の課題と解答例、詰まりやすい箇所の解説</td><td class="num">3</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
+</table>
+</div>
+
+<h2>読む順序の依存関係</h2>
+
+<ul>
+	<li><strong>01 → 02 → 03</strong> は順番必須。環境が整わないと以降が動かせない</li>
+	<li><strong>04・05</strong> は PowerShell の核心。ここだけは飛ばさせない</li>
+	<li><strong>06〜09</strong> は独立性が高く、必要な順に読んでよい</li>
+	<li><strong>10</strong> は 05 まで終わっていれば着手可能</li>
+</ul>
+
+<div class="callout">
+<strong>05「パイプラインとオブジェクト」が本資料の山場です。</strong><br>
+ここを理解できるかどうかで、PowerShell を「コマンドの寄せ集め」として使うか「オブジェクト指向シェル」として使えるかが分かれます。勉強会でも最も時間を割く回になります。
+</div>
+</section>
+
+<!-- ============ 3 ============ -->
+<section class="ch03" id="ch03">
+<h1>3. 基礎編（01〜05）の詳細</h1>
+
+<h2>01. 背景 <span class="badge b-good">作成済</span></h2>
+
+<p>DOS/cmd の限界 → Bash の強み → PowerShell が必要だった理由 → 設計思想 → 他言語との立場、の4章構成。SVG図4枚で、テキストパイプとオブジェクトパイプの違いを視覚化済み。</p>
+
+<h2>02. ファイル形式と文字コード <span class="badge b-good">作成済</span></h2>
+
+<p>この資料で最初に「決まりごと」が出てくる章です。<strong>理由を説明せずに規則だけ書くと必ず忘れられる</strong>ので、文字コードの仕組みから入ります。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>節</th><th>内容</th><th>添える対比</th></tr>
+<tr><td class="nowrap">02.1</td><td>文字コードの基礎 — Shift-JIS、UTF-8、BOM とは何か</td><td>JS のソースは BOM なし UTF-8 が普通</td></tr>
+<tr><td class="nowrap">02.2</td><td><strong>なぜ ps1 は BOM 付き UTF-8 なのか</strong> — <span class="badge b-ps51">5.1</span> は BOM がないと ANSI と誤認する。<span class="badge b-ps7">pwsh 7</span> は BOM なしでも正しく読む</td><td>Node.js は BOM なしで問題ない理由</td></tr>
+<tr><td class="nowrap">02.3</td><td><strong>なぜ CRLF なのか</strong> — Windows 標準、混在による事故</td><td>Git の <code>core.autocrlf</code></td></tr>
+<tr><td class="nowrap">02.4</td><td><code>.ps1</code>／<code>.cmd</code>／<code>.bat</code> の使い分けと cmd ランチャー</td><td>cmd/bat は SJIS + CRLF（ps1 と違う）</td></tr>
+</table>
+</div>
+
+<h3>02.2 が本資料で最も重要な節</h3>
+
+<div class="callout">
+<strong>BOM の有無で、5.1 と 7 は同じファイルを別の文字コードとして解釈します。</strong><br>
+しかも<strong>解釈の仕方が逆方向</strong>です。5.1 は「BOM がなければ ANSI（日本語環境では CP932）」と見なし、7 は「BOM がなければ UTF-8」と見なします。この結果、<strong>BOM 付き UTF-8 だけが両方で正しく読める唯一の形式</strong>になります。これが CLAUDE.md の「ps1 は BOM 付き UTF-8」ルールの根拠です。
+</div>
+
+<figure>
+<svg viewBox="0 0 780 274" role="img" aria-label="BOMの有無とPowerShellバージョンによる解釈の違い">
+	<defs>
+		<linearGradient id="g-pl-3a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-pl-3b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<text x="118" y="24" fill="var(--ink)" font-size="13.5" font-weight="700" text-anchor="middle">ps1 ファイルの保存形式</text>
+	<text x="392" y="24" fill="#5b2d82" font-size="13.5" font-weight="700" text-anchor="middle">Windows PowerShell 5.1 の解釈</text>
+	<text x="656" y="24" fill="#1a5fa8" font-size="13.5" font-weight="700" text-anchor="middle">PowerShell 7 の解釈</text>
+
+	<text x="10" y="70" fill="var(--ink)" font-size="13.5" font-weight="700">UTF-8（BOM 付き）</text>
+	<rect x="248" y="40" width="288" height="52" rx="8" fill="url(#g-pl-3a)"/>
+	<text x="392" y="63" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">✓ UTF-8 として読む</text>
+	<text x="392" y="81" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">BOM を見て判定できる</text>
+	<rect x="548" y="40" width="222" height="52" rx="8" fill="url(#g-pl-3a)"/>
+	<text x="659" y="63" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">✓ UTF-8 として読む</text>
+	<text x="659" y="81" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">BOM は読み飛ばす</text>
+
+	<text x="10" y="136" fill="var(--ink)" font-size="13.5" font-weight="700">UTF-8（BOM なし）</text>
+	<rect x="248" y="106" width="288" height="52" rx="8" fill="url(#g-pl-3b)"/>
+	<text x="392" y="129" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">✗ ANSI（CP932）と誤認</text>
+	<text x="392" y="147" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">日本語が文字化けする</text>
+	<rect x="548" y="106" width="222" height="52" rx="8" fill="url(#g-pl-3a)"/>
+	<text x="659" y="129" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">✓ UTF-8 として読む</text>
+	<text x="659" y="147" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">BOM なし＝UTF-8 が既定</text>
+
+	<text x="10" y="202" fill="var(--ink)" font-size="13.5" font-weight="700">Shift-JIS（BOM なし）</text>
+	<rect x="248" y="172" width="288" height="52" rx="8" fill="url(#g-pl-3a)"/>
+	<text x="392" y="195" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">✓ CP932 として読める</text>
+	<text x="392" y="213" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">既定が ANSI なので一致する</text>
+	<rect x="548" y="172" width="222" height="52" rx="8" fill="url(#g-pl-3b)"/>
+	<text x="659" y="195" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">✗ UTF-8 と誤認</text>
+	<text x="659" y="213" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">不正バイトとして壊れる</text>
+
+	<rect x="10" y="236" width="760" height="30" rx="8" fill="#fff" stroke="hsl(140,58%,55%)" stroke-width="2"/>
+	<text x="390" y="256" fill="hsl(140,78%,22%)" font-size="13.5" font-weight="700" text-anchor="middle">両方で正しく読めるのは「UTF-8（BOM 付き）」だけ</text>
+</svg>
+<figcaption>図 4 — 5.1 と 7 は「BOM がない場合」の既定解釈が逆。BOM 付き UTF-8 が唯一の共通解</figcaption>
+</figure>
+
+<p><span class="badge b-warn">注意</span>3行目に注目してください。<strong>Shift-JIS の ps1 は 5.1 では動くが 7 では壊れます</strong>。「今まで動いていたスクリプトが pwsh に変えた途端に文字化けする」典型的な原因がこれです。02.2 ではこの逆転を必ず扱います。</p>
+
+<div class="callout">
+<strong>この章は実際に壊して見せると効果的です。</strong><br>
+BOM なしの ps1 に日本語を書いて 5.1 で実行し、文字化けを目の前で起こす。さらに同じファイルを 7 で実行して正常に動くことを見せると、上の表が体感として入ります。「規則」が「実害の回避策」に変わります。
+</div>
+
+<h2>03. 実行環境と実行ポリシー <span class="badge b-good">作成済</span></h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>節</th><th>内容</th><th>添える対比</th></tr>
+<tr><td class="nowrap">03.1</td><td><strong>5.1 と 7 の違い</strong>、共存の考え方、<code>powershell.exe</code> と <code>pwsh.exe</code> の使い分け。<strong>以降の章で使うバージョンバッジの説明もここで行う</strong></td><td>Node.js のバージョン共存</td></tr>
+<tr><td class="nowrap">03.2</td><td>実行ポリシー — なぜ既定でスクリプトが動かないのか</td><td>DOS の bat には無かった概念</td></tr>
+<tr><td class="nowrap">03.3</td><td>プロファイル、モジュールパス、<code>$PSVersionTable</code></td><td><code>.bashrc</code>／<code>node_modules</code></td></tr>
+<tr><td class="nowrap">03.4</td><td>VS Code での編集・デバッグ環境</td><td>—</td></tr>
+</table>
+</div>
+
+<h2>04. 変数・型・演算子 <span class="badge b-good">作成済</span></h2>
+
+<p>読者Aの既知知識に最も接続しやすい章。<strong>全節で JS のコードを左、PowerShell を右に並べます。</strong></p>
+
+<pre><code># JavaScript                    # PowerShell
+const name = "PS";              $name = "PS"
+const arr = [1, 2, 3];          $arr = @(1, 2, 3)
+const obj = { a: 1 };           $obj = @{ a = 1 }
+arr.filter(x =&gt; x &gt; 1);         $arr | Where-Object { $_ -gt 1 }
+`${name} version`;              "$name version"</code></pre>
+
+<ul>
+	<li>04.1 変数と型 — <code>$</code> 記法、型推論、明示的な型指定</li>
+	<li>04.2 文字列 — 単一引用符と二重引用符の違い（展開の有無）、ヒアストリング</li>
+	<li>04.3 比較演算子 — <code>-eq</code>／<code>-gt</code> と、<strong>既定で大小文字を区別しない</strong>落とし穴</li>
+	<li>04.4 配列とハッシュテーブル</li>
+	<li>04.5 <code>$null</code>・真偽値・型変換の癖</li>
+</ul>
+
+<h2>05. パイプラインとオブジェクト <span class="badge b-good">作成済</span></h2>
+
+<ul>
+	<li>05.1 パイプに流れるのはオブジェクト — 01 の復習から入る</li>
+	<li>05.2 <code>Get-Member</code> で中身を覗く — <strong>この1つを覚えるだけで自習できるようになる</strong></li>
+	<li>05.3 <code>Where-Object</code>／<code>ForEach-Object</code>／<code>Select-Object</code></li>
+	<li>05.4 <code>Sort-Object</code>／<code>Group-Object</code>／<code>Measure-Object</code></li>
+	<li>05.5 Cmdlet の命名規則（動詞-名詞）と <code>Get-Command</code> での探し方</li>
+</ul>
+</section>
+
+<!-- ============ 4 ============ -->
+<section class="ch04" id="ch04">
+<h1>4. 実践編（06〜09）の詳細</h1>
+
+<h2>06. 制御構文と関数 <span class="badge b-good">作成済</span></h2>
+
+<ul>
+	<li>06.1 <code>if</code>／<code>foreach</code>／<code>while</code>／<code>switch</code> — JS との構文差</li>
+	<li>06.2 関数定義、<code>param()</code>、既定値、パイプライン入力の受け取り</li>
+	<li>06.3 <strong>戻り値の落とし穴</strong> — 関数内の出力がすべて戻り値になる、配列が潰れる問題</li>
+	<li>06.4 スコープ（<code>$script:</code>／<code>$global:</code>）</li>
+</ul>
+
+<div class="callout">
+<strong>06.3 は経験者ほど引っかかります。</strong><br>
+JS の <code>return</code> の感覚で書くと、途中の <code>Write-Output</code> や式の評価結果まで戻り値に混ざります。要素1個の配列がスカラーに潰れる問題（<code>return ,$array</code>）もここで扱います。
+</div>
+
+<h2>07. ファイル・テキスト操作</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>節</th><th>内容</th><th>注意点</th></tr>
+<tr><td class="nowrap">07.1</td><td>パス操作 — <code>Join-Path</code>、<code>Resolve-Path</code>、相対パス</td><td>カレントは <code>.\</code> を明示</td></tr>
+<tr><td class="nowrap">07.2</td><td><code>Get-ChildItem</code> — 再帰、フィルタ</td><td>ワイルドカードと <code>-Filter</code> の併用で0件になる罠</td></tr>
+<tr><td class="nowrap">07.3</td><td><code>Get-Content</code>／<code>Set-Content</code> のエンコーディング指定</td><td>02章の内容がここで効く。<span class="badge b-ps51">5.1</span> と <span class="badge b-ps7">pwsh 7</span> で <code>-Encoding</code> の既定値が違う</td></tr>
+<tr><td class="nowrap">07.4</td><td>CSV／JSON の読み書き</td><td><code>ConvertTo-Json</code> の深さ制限</td></tr>
+</table>
+</div>
+
+<h2>08. エラー処理とデバッグ</h2>
+
+<ul>
+	<li>08.1 終了エラーと非終了エラーの違い — <strong>PowerShell 固有の概念</strong></li>
+	<li>08.2 <code>try/catch/finally</code> と <code>-ErrorAction Stop</code></li>
+	<li>08.3 終了コード、<code>$LASTEXITCODE</code>、外部コマンドの失敗検知</li>
+	<li>08.4 <code>Write-Verbose</code>／ブレークポイント／<code>Set-PSDebug</code></li>
+</ul>
+
+<h2>09. 実務パターン集 <span class="badge b-good">作成済</span></h2>
+
+<p>ここまでの知識を組み合わせた「そのまま使える」スクリプト集。各パターンは<strong>50行以内</strong>に収め、写経できる長さにします。</p>
+
+<ul>
+	<li>09.1 ログファイルの集計（日付フィルタ ＋ <code>Group-Object</code>）</li>
+	<li>09.2 ファイルの一括リネーム（正規表現、ドライラン付き）</li>
+	<li>09.3 フォルダの同期・バックアップ</li>
+	<li>09.4 タスクスケジューラからの実行（cmd ランチャー、ログ出力）</li>
+	<li>09.5 外部コマンド・Node.js スクリプトの呼び出しと戻り値の受け取り</li>
+</ul>
+</section>
+
+<!-- ============ 5 ============ -->
+<section class="ch05" id="ch05">
+<h1>5. 勉強会の進行案</h1>
+
+<h2>全5回・1回90分</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>回</th><th>扱うファイル</th><th>ゴール</th><th>ハンズオン</th></tr>
+<tr><td class="nowrap">第1回</td><td class="nowrap">01・02</td><td>PowerShell が何を解決する道具かを言える</td><td>BOM なしで文字化けを再現する</td></tr>
+<tr><td class="nowrap">第2回</td><td class="nowrap">03・04</td><td>自分の PC でスクリプトを実行できる</td><td>環境構築 ＋ Hello World の ps1 と cmd ランチャー</td></tr>
+<tr><td class="nowrap">第3回</td><td class="nowrap">05</td><td><code>Get-Member</code> で自力で調べられる</td><td>プロセス一覧をメモリ順に並べて上位5件を出す</td></tr>
+<tr><td class="nowrap">第4回</td><td class="nowrap">06・07</td><td>関数に切り出したスクリプトが書ける</td><td>指定フォルダのファイル一覧を CSV 出力</td></tr>
+<tr><td class="nowrap">第5回</td><td class="nowrap">08・09・10</td><td>実務スクリプトを1本完成させる</td><td>ログ集計スクリプトを課題形式で作る</td></tr>
+</table>
+</div>
+
+<h2>1回あたりの時間配分</h2>
+
+<figure>
+<svg viewBox="0 0 780 158" role="img" aria-label="90分の時間配分">
+	<defs>
+		<linearGradient id="g-pl-5a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(255,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(255,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-pl-5b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(160,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(160,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-pl-5c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-pl-5d" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="14" y="34" width="167" height="62" rx="9" fill="url(#g-pl-5a)"/>
+	<text x="97" y="62" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">前回の復習</text>
+	<text x="97" y="84" fill="#fff" font-size="13" text-anchor="middle" opacity="0.9">10分</text>
+
+	<rect x="189" y="34" width="251" height="62" rx="9" fill="url(#g-pl-5b)"/>
+	<text x="314" y="62" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">資料の読み合わせ・解説</text>
+	<text x="314" y="84" fill="#fff" font-size="13" text-anchor="middle" opacity="0.9">35分</text>
+
+	<rect x="448" y="34" width="234" height="62" rx="9" fill="url(#g-pl-5c)"/>
+	<text x="565" y="62" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">ハンズオン</text>
+	<text x="565" y="84" fill="#fff" font-size="13" text-anchor="middle" opacity="0.9">35分</text>
+
+	<rect x="690" y="34" width="76" height="62" rx="9" fill="url(#g-pl-5d)"/>
+	<text x="728" y="62" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">質疑</text>
+	<text x="728" y="84" fill="#fff" font-size="13" text-anchor="middle" opacity="0.9">10分</text>
+
+	<text x="390" y="128" fill="var(--ink-soft)" font-size="13" text-anchor="middle">解説とハンズオンを同量にする。聞くだけの回にしない</text>
+</svg>
+<figcaption>図 3 — 90分の配分。手を動かす時間を解説と同量確保する</figcaption>
+</figure>
+
+<h2>事前準備（主催側）</h2>
+
+<ul>
+	<li><span class="badge b-warn">必須</span>第2回までに<strong>実行ポリシーの扱いを社内ルールとして確認</strong>しておく。参加者の PC で <code>RemoteSigned</code> に変更できないと以降が進まない</li>
+	<li><span class="badge b-warn">必須</span>ハンズオン用のサンプルデータ（ログファイル、リネーム対象フォルダ）を配布形式で用意</li>
+	<li><span class="badge b-warn">必須</span><strong>参加者に PowerShell 7 (pwsh) を導入してもらう</strong>。5.1 は Windows 標準で入っているが、両対応で進めるため 7 も揃える。導入手順は 03 章で扱う</li>
+	<li><span class="badge b-none">任意</span>各回の資料を事前配布し、読んできた前提で解説時間を短縮する運用も可能</li>
+</ul>
+
+<h2>決定事項</h2>
+
+<div class="callout">
+<strong>以下は確定済みです。</strong><br>
+① <strong>全5回・1回90分</strong>で進める<br>
+② <strong>5.1 と 7 の両方</strong>を対象にし、差がある箇所に <span class="badge b-ps7">pwsh 7</span> <span class="badge b-ps51">5.1</span> のバッジを付ける<br>
+③ 読者は<strong>何らかのプログラミング言語の基礎を知っている人</strong>とし、未経験者は対象外。JS 以外の経験者向けの補足は<strong>本文内の <code>.callout</code> 枠</strong>で対応し、別ファイルは作らない
+</div>
+</section>
+
+</div>
+
+<footer>
+	<p>PowerShell 学習資料 — 全体構成案（確定）／ この構成に沿って <code>docs/02-ファイル形式.html</code> から順に作成します。</p>
+</footer>
+
+</body>
+</html>

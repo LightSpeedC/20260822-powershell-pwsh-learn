@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PowerShell 学習資料</title>
+<style>
+	:root {
+		--navy1: #12224d;
+		--navy2: #2f5fbf;
+		--ink: #1c2330;
+		--ink-soft: #4a5568;
+		--line: #d9dfe8;
+		--code-bg: #f4f6fa;
+
+		/* 章クラス(.chNN)の外に置かれた要素用の既定値 */
+		--accent: var(--navy1);
+		--accent2: var(--navy2);
+		--soft: #f2f5fb;
+	}
+
+	/* 章ごとの虹色アクセント (H: 280 → 0, 280°を3章に均等分割 = 140°刻み) */
+	.ch01 { --accent: hsl(280,78%,25%); --accent2: hsl(280,58%,65%); --soft: hsl(280,28%,95%); }
+	.ch02 { --accent: hsl(140,78%,25%); --accent2: hsl(140,58%,65%); --soft: hsl(140,28%,95%); }
+	.ch03 { --accent: hsl(0,78%,25%);   --accent2: hsl(0,58%,65%);   --soft: hsl(0,28%,95%); }
+
+	* { box-sizing: border-box; }
+
+	body {
+		margin: 0;
+		padding: 0 0 60px;
+		background: #ffffff;
+		color: var(--ink);
+		font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", "Meiryo", sans-serif;
+		line-height: 1.85;
+		font-size: 15.5px;
+	}
+
+	.wrap { max-width: 1400px; margin: 0 auto; padding: 0 30px; }
+
+	/* タイトルバー */
+	.titlebar {
+		background: linear-gradient(135deg, var(--navy1) 0%, var(--navy2) 100%);
+		color: #fff;
+		padding: 34px 30px 30px;
+		box-shadow: 0 6px 18px rgba(18,34,77,0.28);
+	}
+	.titlebar .inner { max-width: 1400px; margin: 0 auto; }
+	.titlebar h1 {
+		margin: 0 0 10px;
+		font-size: 2.1em;
+		letter-spacing: 0.02em;
+		color: #fff;
+	}
+	.titlebar p { margin: 4px 0; font-size: 0.92em; color: #d8e4ff; }
+	.titlebar .meta { font-size: 0.84em; color: #b9cdf5; }
+	.titlebar code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+
+	/* 目次 */
+	nav.toc {
+		background: linear-gradient(180deg, #f2f5fb 0%, #ffffff 100%);
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		padding: 16px 22px;
+		margin: 28px 0;
+		box-shadow: 0 2px 8px rgba(30,50,90,0.07);
+	}
+	nav.toc strong { display: block; color: var(--navy1); margin-bottom: 10px; }
+	nav.toc ol {
+		margin: 0;
+		padding-left: 0;
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		counter-reset: toc;
+	}
+	nav.toc li { counter-increment: toc; margin: 0; }
+	nav.toc a {
+		display: -webkit-box;
+		width: 310px;
+		max-width: 100%;
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		text-decoration: none;
+		text-align: left;
+		border-radius: 6px;
+		padding: 7px 10px;
+		font-size: 0.88em;
+		font-weight: 600;
+		line-height: 1.4;
+		white-space: normal;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		box-shadow: 0 1px 4px rgba(20,30,60,0.18);
+	}
+	nav.toc a::before { content: counter(toc) ". "; opacity: 0.85; }
+	nav.toc a:hover { text-decoration: underline; }
+
+	/* 章 */
+	section {
+		background: linear-gradient(180deg, var(--soft) 0%, #ffffff 42%);
+		border-radius: 12px;
+		padding: 4px 26px 26px;
+		margin: 34px 0;
+		border: 1px solid var(--line);
+	}
+
+	section h1 {
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		font-size: 1.5em;
+		margin: 26px 0 20px;
+		padding: 14px 20px;
+		border-radius: 9px;
+		box-shadow: 0 5px 14px rgba(30,40,70,0.28);
+	}
+	section h1 code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+
+	h2 {
+		font-size: 1.16em;
+		color: var(--accent);
+		border-left: 7px solid var(--accent);
+		background: linear-gradient(90deg, var(--soft) 0%, rgba(255,255,255,0) 88%);
+		padding: 6px 12px;
+		margin: 30px 0 12px;
+		border-radius: 0 6px 6px 0;
+	}
+
+	h3 {
+		font-size: 1.02em;
+		color: var(--accent);
+		margin: 20px 0 8px;
+		padding-bottom: 3px;
+		border-bottom: 2px dotted var(--accent2);
+		display: inline-block;
+	}
+
+	p { margin: 10px 0; }
+	ul, ol { margin: 10px 0; padding-left: 1.6em; }
+	li { margin: 6px 0; }
+	a { color: var(--navy2); }
+
+	code {
+		background: var(--code-bg);
+		border: 1px solid var(--line);
+		border-radius: 4px;
+		padding: 1px 6px;
+		font-family: "BIZ UDゴシック", "ＭＳ ゴシック", Consolas, "Cascadia Mono", monospace;
+		font-size: 0.9em;
+		color: #17335f;
+	}
+
+	pre {
+		background: linear-gradient(180deg, #f7f9fd 0%, #eef2f9 100%);
+		border: 1px solid var(--line);
+		border-left: 5px solid var(--accent2);
+		border-radius: 8px;
+		padding: 13px 16px;
+		overflow-x: auto;
+		font-size: 0.88em;
+		line-height: 1.6;
+	}
+	pre code { background: none; border: none; padding: 0; color: #1b2b46; }
+
+	.table-wrap { overflow-x: auto; margin: 16px 0; }
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 0.93em;
+		box-shadow: 0 2px 7px rgba(40,55,90,0.12);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+	th {
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		text-align: left;
+		padding: 9px 12px;
+		font-weight: 600;
+	}
+	th code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+	td { padding: 9px 12px; border-bottom: 1px solid var(--line); background: #fff; vertical-align: top; }
+	tr:nth-child(even) td { background: #fafbfe; }
+	td.nowrap { white-space: nowrap; }
+	td.mono { font-family: "BIZ UDゴシック", "ＭＳ ゴシック", Consolas, monospace; white-space: nowrap; }
+	td.num { text-align: right; white-space: nowrap; }
+
+	/* 章へのリンクカード */
+	.chapters {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+		list-style: none;
+		padding: 0;
+		margin: 16px 0;
+	}
+	.chapters li { margin: 0; }
+	.chapters a {
+		display: block;
+		width: 330px;
+		max-width: 100%;
+		border-radius: 8px;
+		padding: 12px 16px;
+		text-decoration: none;
+		color: #fff;
+		box-shadow: 0 2px 7px rgba(20,30,60,0.2);
+	}
+	.chapters a:hover { filter: brightness(1.08); text-decoration: none; }
+	.chapters .no { display: block; font-size: 0.78em; opacity: 0.85; letter-spacing: 0.06em; }
+	.chapters .ttl { display: block; font-size: 1.02em; font-weight: 700; margin: 2px 0 4px; }
+	.chapters .desc { display: block; font-size: 0.82em; opacity: 0.92; line-height: 1.5; }
+
+	.c01 a { background: linear-gradient(100deg, hsl(280,78%,25%), hsl(280,58%,55%)); }
+	.c02 a { background: linear-gradient(100deg, hsl(249,78%,25%), hsl(249,58%,55%)); }
+	.c03 a { background: linear-gradient(100deg, hsl(218,78%,25%), hsl(218,58%,55%)); }
+	.c04 a { background: linear-gradient(100deg, hsl(187,78%,25%), hsl(187,58%,55%)); }
+	.c05 a { background: linear-gradient(100deg, hsl(156,78%,25%), hsl(156,58%,55%)); }
+	.c06 a { background: linear-gradient(100deg, hsl(124,78%,25%), hsl(124,58%,55%)); }
+	.c07 a { background: linear-gradient(100deg, hsl(93,78%,25%),  hsl(93,58%,55%)); }
+	.c08 a { background: linear-gradient(100deg, hsl(62,78%,25%),  hsl(62,58%,55%)); }
+	.c09 a { background: linear-gradient(100deg, hsl(31,78%,25%),  hsl(31,58%,55%)); }
+	.c10 a { background: linear-gradient(100deg, hsl(0,78%,25%),   hsl(0,58%,55%)); }
+
+	/* バッジ */
+	.badge {
+		display: inline-block;
+		font-size: 0.78em;
+		font-weight: 700;
+		color: #fff;
+		border-radius: 4px;
+		padding: 1px 9px;
+		margin-right: 7px;
+		letter-spacing: 0.04em;
+		white-space: nowrap;
+	}
+	.b-good { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
+	.b-bad  { background: linear-gradient(100deg, #a51f22, #e05a5c); }
+	.b-none { background: linear-gradient(100deg, #5a6472, #97a1ae); }
+	.b-warn { background: linear-gradient(100deg, #b8620a, #f0a548); }
+	.b-ps7  { background: linear-gradient(100deg, #1a5fa8, #4d9ae0); }
+	.b-ps51 { background: linear-gradient(100deg, #5b2d82, #9a6bc4); }
+
+	.callout {
+		background: linear-gradient(180deg, var(--soft) 0%, #ffffff 100%);
+		border: 1px solid var(--accent2);
+		border-left: 6px solid var(--accent);
+		border-radius: 0 8px 8px 0;
+		padding: 12px 18px;
+		margin: 16px 0;
+	}
+	.callout strong { color: var(--accent); }
+
+	/* SVG図 */
+	figure { margin: 20px 0; text-align: center; }
+	figure svg {
+		max-width: 100%;
+		height: auto;
+		font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", "Meiryo", sans-serif;
+	}
+	figcaption { font-size: 0.84em; color: var(--ink-soft); margin-top: 6px; }
+
+	footer {
+		max-width: 1400px;
+		margin: 40px auto 0;
+		padding: 18px 30px 0;
+		border-top: 2px solid var(--line);
+		color: var(--ink-soft);
+		font-size: 0.86em;
+	}
+	footer a { color: var(--navy2); }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>PowerShell 学習資料</h1>
+		<p>Windows PowerShell 5.1 と PowerShell 7 の両対応 ／ 全 10 章</p>
+		<p class="meta">📅 作成: 2026-08-22 / 更新: 2026-08-24 ／ 対象: 何らかのプログラミング言語の基礎を知っている方</p>
+	</div>
+</div>
+
+<div class="wrap">
+
+<h2>この資料について</h2>
+
+<p>PowerShell を<strong>「コマンドを暗記する道具」ではなく「調べ方が分かれば自走できる道具」</strong>として身につけるための資料です。JavaScript・Java・C#・VBA いずれかの経験を前提に、<strong>他の言語と違う部分だけを重点的に</strong>扱います。</p>
+
+<div class="callout">
+<strong>掲載しているコードと出力は、すべて実際に実行して確認しています。</strong><br>
+「たぶんこう動く」ではなく、<strong>実機で確かめた結果</strong>だけを載せています。バイト列・終了コード・エラーメッセージも実物です。
+</div>
+
+<h2>全 10 章</h2>
+
+<ul class="chapters">
+	<li class="c01"><a href="docs/01-背景.html">
+		<span class="no">第1部 基礎編 ／ 01</span>
+		<span class="ttl">PowerShell の生まれた経緯</span>
+		<span class="desc">DOS・Bash・Node.js と比較しながら、何を解決する道具なのかを掴む</span></a></li>
+	<li class="c02"><a href="docs/02-ファイル形式.html">
+		<span class="no">第1部 基礎編 ／ 02</span>
+		<span class="ttl">ファイル形式と文字コード</span>
+		<span class="desc">なぜ BOM 付き UTF-8 ＋ CRLF なのか。5.1 と 7 で解釈が逆になる</span></a></li>
+	<li class="c03"><a href="docs/03-実行環境.html">
+		<span class="no">第1部 基礎編 ／ 03</span>
+		<span class="ttl">実行環境と実行ポリシー</span>
+		<span class="desc">5.1 と 7 の共存、スクリプトが動かない理由、VS Code の設定</span></a></li>
+	<li class="c04"><a href="docs/04-変数と型.html">
+		<span class="no">第1部 基礎編 ／ 04</span>
+		<span class="ttl">変数・型・演算子</span>
+		<span class="desc">JavaScript と並べて読む。大文字小文字を区別しない比較の罠</span></a></li>
+	<li class="c05"><a href="docs/05-パイプライン.html">
+		<span class="no">第1部 基礎編 ／ 05</span>
+		<span class="ttl">パイプラインとオブジェクト</span>
+		<span class="desc">本資料の山場。Get-Member ひとつで自習できるようになる</span></a></li>
+	<li class="c06"><a href="docs/06-制御構文と関数.html">
+		<span class="no">第2部 実践編 ／ 06</span>
+		<span class="ttl">制御構文と関数</span>
+		<span class="desc">戻り値に「返したつもりのない値」が混ざる、最大の落とし穴</span></a></li>
+	<li class="c07"><a href="docs/07-ファイル操作.html">
+		<span class="no">第2部 実践編 ／ 07</span>
+		<span class="ttl">ファイル・テキスト操作</span>
+		<span class="desc">0 件が返る3つの理由。読み書きの文字コード指定</span></a></li>
+	<li class="c08"><a href="docs/08-エラー処理.html">
+		<span class="no">第2部 実践編 ／ 08</span>
+		<span class="ttl">エラー処理とデバッグ</span>
+		<span class="desc">try/catch を書いたのに捕まらない理由。外部コマンドの失敗検知</span></a></li>
+	<li class="c09"><a href="docs/09-実務パターン.html">
+		<span class="no">第2部 実践編 ／ 09</span>
+		<span class="ttl">実務パターン集</span>
+		<span class="desc">そのまま使える5本。ログ集計・リネーム・バックアップ・外部連携</span></a></li>
+	<li class="c10"><a href="docs/10-ハンズオン.html">
+		<span class="no">第3部 演習 ／ 10</span>
+		<span class="ttl">ハンズオン課題</span>
+		<span class="desc">5回分の課題と解答例。つまずきポイントの解説つき</span></a></li>
+</ul>
+
+<nav class="toc">
+	<strong>このページの内容</strong>
+	<ol>
+		<li class="ch01"><a href="#ch01">3部構成と読む順序</a></li>
+		<li class="ch02"><a href="#ch02">目的から引く — 逆引き索引</a></li>
+		<li class="ch03"><a href="#ch03">資料のメンテナンス</a></li>
+	</ol>
+</nav>
+
+<!-- ============ 1 ============ -->
+<section class="ch01" id="ch01">
+<h1>1. 3部構成と読む順序</h1>
+
+<figure>
+<svg viewBox="0 0 780 244" role="img" aria-label="3部構成のロードマップ">
+	<defs>
+		<linearGradient id="g-rm-1a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(255,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(255,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-rm-1b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(150,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(150,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-rm-1c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(20,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(20,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="14" y="24" width="252" height="146" rx="10" fill="url(#g-rm-1a)"/>
+	<text x="140" y="50" fill="#fff" font-size="16" font-weight="700" text-anchor="middle">第1部 基礎編</text>
+	<text x="140" y="74" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">01 生まれた経緯</text>
+	<text x="140" y="94" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">02 ファイル形式と文字コード</text>
+	<text x="140" y="114" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">03 実行環境と実行ポリシー</text>
+	<text x="140" y="134" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">04 変数・型・演算子</text>
+	<text x="140" y="154" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">05 パイプラインとオブジェクト</text>
+
+	<line x1="272" y1="97" x2="296" y2="97" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="296,90 312,97 296,104" fill="var(--ink-soft)"/>
+
+	<rect x="318" y="24" width="252" height="146" rx="10" fill="url(#g-rm-1b)"/>
+	<text x="444" y="50" fill="#fff" font-size="16" font-weight="700" text-anchor="middle">第2部 実践編</text>
+	<text x="444" y="80" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">06 制御構文と関数</text>
+	<text x="444" y="102" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">07 ファイル・テキスト操作</text>
+	<text x="444" y="124" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">08 エラー処理とデバッグ</text>
+	<text x="444" y="146" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">09 実務パターン集</text>
+
+	<line x1="576" y1="97" x2="600" y2="97" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="600,90 616,97 600,104" fill="var(--ink-soft)"/>
+
+	<rect x="622" y="24" width="144" height="146" rx="10" fill="url(#g-rm-1c)"/>
+	<text x="694" y="50" fill="#fff" font-size="16" font-weight="700" text-anchor="middle">第3部 演習</text>
+	<text x="694" y="92" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">10 ハンズオン課題</text>
+	<text x="694" y="114" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">全5回分</text>
+
+	<rect x="14" y="186" width="752" height="48" rx="9" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+	<text x="140" y="208" fill="hsl(255,78%,32%)" font-size="13" font-weight="700" text-anchor="middle">読んで分かる</text>
+	<text x="444" y="208" fill="hsl(150,78%,22%)" font-size="13" font-weight="700" text-anchor="middle">書けるようになる</text>
+	<text x="694" y="208" fill="hsl(20,78%,30%)" font-size="13" font-weight="700" text-anchor="middle">一人で作れる</text>
+	<text x="390" y="227" fill="var(--ink-soft)" font-size="12" text-anchor="middle">各部の到達目標</text>
+</svg>
+<figcaption>図 1 — 01 から順に読むのが基本。02・03 は環境が整わないと以降が動かせないため必須</figcaption>
+</figure>
+
+<h2>目的別の読み方</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>目的</th><th>読む順序</th><th>目安</th></tr>
+<tr><td class="nowrap">とにかく動かしたい</td><td><strong>02 → 03</strong> → 10 の課題2</td><td>1時間</td></tr>
+<tr><td class="nowrap">PowerShell らしい書き方を知りたい</td><td><strong>05</strong>（山場）→ 04 → 06</td><td>2時間</td></tr>
+<tr><td class="nowrap">既存スクリプトを直したい</td><td>07 → 08 →（必要に応じて 04）</td><td>1.5時間</td></tr>
+<tr><td class="nowrap">業務を自動化したい</td><td>01〜09 を順に → 09 のパターンを改造</td><td>1日</td></tr>
+<tr><td class="nowrap">勉強会で使いたい</td><td><a href="docs/plan/構成案.html">構成案</a> → 10</td><td>—</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>時間がないなら 05 章だけでも読んでください。</strong><br>
+<strong>「画面の表示とデータは別物」「迷ったら <code>Get-Member</code>」</strong>の2つが分かれば、あとは実行環境が教えてくれます。この資料に載っていないコマンドも自力で扱えるようになります。
+</div>
+
+<h2>本資料の約束事</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>表記</th><th>意味</th></tr>
+<tr><td class="nowrap"><span class="badge b-ps7">pwsh 7</span></td><td>PowerShell 7 以降でのみ使える／挙動が異なる</td></tr>
+<tr><td class="nowrap"><span class="badge b-ps51">5.1</span></td><td>Windows PowerShell 5.1 固有の注意点</td></tr>
+<tr><td class="nowrap">（バッジなし）</td><td>両方で同じように動く</td></tr>
+<tr><td class="nowrap">「PowerShell が初めての人へ」</td><td>JS 以外の言語経験者向けの補足。読み飛ばして構わない</td></tr>
+<tr><td class="nowrap"><code>C:¥Users</code></td><td>表示は円記号だが、実体はバックスラッシュ。コピペすれば正しく動く</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ============ 2 ============ -->
+<section class="ch02" id="ch02">
+<h1>2. 目的から引く — 逆引き索引</h1>
+
+<h2>困っていることから探す</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>症状・やりたいこと</th><th>参照先</th></tr>
+<tr><td>日本語が文字化けする</td><td><a href="docs/02-ファイル形式.html#ch02">02.2 BOM とバージョンの関係</a> ／ <a href="docs/07-ファイル操作.html#ch03">07.3 読み書きの文字コード</a></td></tr>
+<tr><td>スクリプトが実行できない</td><td><a href="docs/03-実行環境.html#ch02">03.2 実行ポリシー</a></td></tr>
+<tr><td>ダブルクリックで動かしたい</td><td><a href="docs/02-ファイル形式.html#ch04">02.4 cmd ランチャー</a></td></tr>
+<tr><td>5.1 と 7 のどちらで動いているか知りたい</td><td><a href="docs/03-実行環境.html#ch01">03.1 <code>$PSVersionTable</code></a></td></tr>
+<tr><td>比較がうまくいかない（大文字小文字）</td><td><a href="docs/04-変数と型.html#ch03">04.3 <code>-ceq</code> / <code>-creplace</code></a></td></tr>
+<tr><td>パスにバックスラッシュを書きたい</td><td><a href="docs/04-変数と型.html#ch02">04.2 エスケープはバッククォート</a></td></tr>
+<tr><td>コマンドの結果から値を取り出せない</td><td><a href="docs/05-パイプライン.html#ch02">05.2 <code>Get-Member</code></a></td></tr>
+<tr><td>知らないコマンドの使い方を調べたい</td><td><a href="docs/05-パイプライン.html#ch05">05.5 <code>Get-Command</code> / <code>Get-Help</code></a></td></tr>
+<tr><td>関数の戻り値に余計な値が混ざる</td><td><a href="docs/06-制御構文と関数.html#ch03">06.3 戻り値の落とし穴</a></td></tr>
+<tr><td>配列が1件のとき壊れる</td><td><a href="docs/06-制御構文と関数.html#ch03">06.3 <code>return ,$a</code></a></td></tr>
+<tr><td><code>Get-ChildItem</code> が 0 件しか返さない</td><td><a href="docs/07-ファイル操作.html#ch02">07.2 0 件になる3つの理由</a></td></tr>
+<tr><td>JSON の一部が欠ける</td><td><a href="docs/07-ファイル操作.html#ch04">07.4 <code>-Depth</code> の既定は 2</a></td></tr>
+<tr><td><code>try/catch</code> が効かない</td><td><a href="docs/08-エラー処理.html#ch01">08.1 非終了エラー</a></td></tr>
+<tr><td>外部コマンドの失敗を検知したい</td><td><a href="docs/08-エラー処理.html#ch03">08.3 <code>$LASTEXITCODE</code></a></td></tr>
+<tr><td>ログを集計したい</td><td><a href="docs/09-実務パターン.html#ch01">09.1 ログの集計</a></td></tr>
+<tr><td>安全に一括リネームしたい</td><td><a href="docs/09-実務パターン.html#ch02">09.2 <code>-WhatIf</code></a></td></tr>
+<tr><td>タスクスケジューラから動かしたい</td><td><a href="docs/09-実務パターン.html#ch04">09.4 無人実行</a></td></tr>
+</table>
+</div>
+
+<h2>困ったときの7行</h2>
+
+<pre><code>何が返るか分からない  → | Get-Member
+中身の値を見たい      → | Select-Object -First 1 | Format-List *
+コマンドを忘れた      → Get-Command *keyword*
+使い方が分からない    → Get-Help &lt;コマンド&gt; -Examples
+0 件しか返らない      → 07.2 の3つの理由を確認
+文字化けする          → 読み書き両方の -Encoding を確認
+エラーが捕まらない    → -ErrorAction Stop を付ける</code></pre>
+
+<div class="callout">
+<strong>PowerShell でつまずく場面の大半は、この7行のどれかです。</strong><br>
+コマンドを暗記する必要はありません。<strong>困ったときにどれを試すかを知っていれば足ります。</strong>
+</div>
+
+<h2>関連ファイル</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>ファイル</th><th>内容</th></tr>
+<tr><td class="nowrap"><a href="docs/plan/構成案.html">docs/plan/構成案.html</a></td><td>全体のカリキュラム設計。勉強会の進行案（全5回×90分）もここ</td></tr>
+<tr><td class="nowrap"><code>docs/rules/local.md</code></td><td>このプロジェクトの制作方針（ファイル形式・見出し番号・バッジ）</td></tr>
+<tr><td class="nowrap"><code>docs/rules/html-design.md</code></td><td>HTML デザインルールへの改善提案（作業記録）</td></tr>
+<tr><td class="nowrap"><code>src/scripts/</code></td><td>資料をビルドするスクリプト（下記）</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ============ 3 ============ -->
+<section class="ch03" id="ch03">
+<h1>3. 資料のメンテナンス</h1>
+
+<h2>HTML を編集したら再生成が必要</h2>
+
+<figure>
+<svg viewBox="0 0 780 250" role="img" aria-label="資料から pptx を生成するパイプライン">
+	<defs>
+		<linearGradient id="g-rm-2a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(255,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(255,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-rm-2b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(200,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(200,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-rm-2c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/>
+			<stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="270" y="16" width="240" height="46" rx="9" fill="url(#g-rm-2a)"/>
+	<text x="390" y="45" fill="#fff" font-size="14" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">docs/NN-*.html</text>
+
+	<path d="M330 64 V 84 H 180 V 100" fill="none" stroke="var(--ink-soft)" stroke-width="2"/>
+	<polygon points="173,100 180,116 187,100" fill="var(--ink-soft)"/>
+	<path d="M450 64 V 84 H 600 V 100" fill="none" stroke="var(--ink-soft)" stroke-width="2"/>
+	<polygon points="593,100 600,116 607,100" fill="var(--ink-soft)"/>
+
+	<text x="390" y="82" fill="var(--ink-soft)" font-size="11.5" font-weight="700" text-anchor="middle">capture-figures.ps1（Playwright）</text>
+
+	<rect x="40" y="122" width="280" height="52" rx="9" fill="url(#g-rm-2b)"/>
+	<text x="180" y="145" fill="#fff" font-size="13" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">tmp/figures/*.png</text>
+	<text x="180" y="164" fill="#fff" font-size="11" text-anchor="middle" opacity="0.9">SVG 図を 3 倍 DPI で撮影</text>
+
+	<rect x="460" y="122" width="280" height="52" rx="9" fill="url(#g-rm-2b)"/>
+	<text x="600" y="145" fill="#fff" font-size="13" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">tmp/outline/*.json</text>
+	<text x="600" y="164" fill="#fff" font-size="11" text-anchor="middle" opacity="0.9">見出し・本文・章の色を抽出</text>
+
+	<path d="M180 176 V 194 H 330 V 206" fill="none" stroke="var(--ink-soft)" stroke-width="2"/>
+	<path d="M600 176 V 194 H 450 V 206" fill="none" stroke="var(--ink-soft)" stroke-width="2"/>
+
+	<rect x="270" y="204" width="240" height="40" rx="9" fill="url(#g-rm-2c)"/>
+	<text x="390" y="229" fill="#fff" font-size="13.5" font-weight="700" text-anchor="middle">build-pptx.ps1 → pptx / PDF</text>
+</svg>
+<figcaption>図 2 — HTML が唯一の原本。図も pptx もそこから生成される</figcaption>
+</figure>
+
+<div class="callout">
+<strong>必ず <code>capture-figures.ps1</code> → <code>build-pptx.ps1</code> の順で実行してください。</strong><br>
+pptx は <code>tmp/outline/*.json</code> を材料にするため、<strong>先に抽出し直さないと HTML の変更が反映されません</strong>。スライド枚数が変わらないときは、この順序を飛ばしている可能性があります。
+</div>
+
+<h2>実行方法</h2>
+
+<pre><code># 1) SVG 図を PNG に書き出す（構造 JSON も同時に出力される）
+.\src\scripts\figures\capture-figures.ps1
+
+# 2) pptx を生成する（-Prefix で1章だけも可）
+.\src\scripts\pptx\build-pptx.ps1 -Prefix 05 -Pdf -Images
+
+# すべての章をまとめて
+.\src\scripts\pptx\build-pptx.ps1 -Pdf</code></pre>
+
+<p>いずれも<strong>同名の <code>.cmd</code> をダブルクリック</strong>しても実行できます。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>スイッチ</th><th>効果</th></tr>
+<tr><td class="nowrap"><code>-Prefix 05</code></td><td>その章だけを生成する</td></tr>
+<tr><td class="nowrap"><code>-Pdf</code></td><td>PDF も出力する</td></tr>
+<tr><td class="nowrap"><code>-Images</code></td><td>スライドを PNG で書き出す（見た目の確認用）</td></tr>
+<tr><td class="nowrap"><code>-IncludeSupplements</code></td><td>「PowerShell が初めての人へ」もスライドに含める</td></tr>
+</table>
+</div>
+
+<h2>章を追加したときの手順</h2>
+
+<ol>
+	<li><code>docs/NN-タイトル.html</code> を作る</li>
+	<li>前章のフッターにリンクを追加する</li>
+	<li><a href="docs/plan/構成案.html">構成案</a> の状態を<strong>作成済</strong>に更新する（一覧表と詳細見出しの<strong>2箇所</strong>）</li>
+	<li>Playwright の spec 2本の <code>targets</code> に追記する</li>
+	<li>このページの章カードと逆引き索引に追加する</li>
+</ol>
+
+<div class="callout">
+<strong>Playwright の spec は共有環境側にあります。</strong><br>
+<code>N:\2026\PlayWright\projects\20260822-powershell-pwsh-learn\</code> に <code>capture-figures.spec.ts</code> と <code>export-outline.spec.ts</code> があります。<strong>対象ファイルの一覧は両方に書く</strong>必要があります。
+</div>
+
+<h2>出力物の置き場所</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>場所</th><th>内容</th><th>git</th></tr>
+<tr><td class="nowrap"><code>docs/</code></td><td>資料の HTML（原本）</td><td><span class="badge b-good">対象</span></td></tr>
+<tr><td class="nowrap"><code>src/scripts/</code></td><td>ビルド用スクリプト</td><td><span class="badge b-good">対象</span></td></tr>
+<tr><td class="nowrap"><code>tmp/figures/</code></td><td>図の PNG（46 枚）</td><td><span class="badge b-none">除外</span></td></tr>
+<tr><td class="nowrap"><code>tmp/outline/</code></td><td>構造 JSON</td><td><span class="badge b-none">除外</span></td></tr>
+<tr><td class="nowrap"><code>tmp/pptx/</code></td><td>pptx と PDF</td><td><span class="badge b-none">除外</span></td></tr>
+<tr><td class="nowrap"><code>etc/</code></td><td>セッションログ・<code>c.bat</code></td><td><span class="badge b-none">除外</span></td></tr>
+</table>
+</div>
+
+<p>生成物はすべて <code>tmp/</code> にあります。<strong>消しても HTML から作り直せます。</strong></p>
+</section>
+
+</div>
+
+<footer>
+	<p>PowerShell 学習資料 ／ 全 10 章・SVG 図 46 枚 ／ 資料の設計は <a href="docs/plan/構成案.html">構成案</a> を参照してください。</p>
+</footer>
+
+</body>
+</html>

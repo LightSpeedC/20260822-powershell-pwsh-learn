@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>06. 制御構文と関数</title>
+<style>
+	:root {
+		--navy1: #12224d;
+		--navy2: #2f5fbf;
+		--ink: #1c2330;
+		--ink-soft: #4a5568;
+		--line: #d9dfe8;
+		--code-bg: #f4f6fa;
+
+		/* 章クラス(.chNN)の外に置かれた要素用の既定値 */
+		--accent: var(--navy1);
+		--accent2: var(--navy2);
+		--soft: #f2f5fb;
+	}
+
+	/* 章ごとの虹色アクセント (H: 280 → 0, 280°を4章に均等分割 = 93.3°刻み) */
+	.ch01 { --accent: hsl(280,78%,25%);   --accent2: hsl(280,58%,65%);   --soft: hsl(280,28%,95%); }
+	.ch02 { --accent: hsl(186.7,78%,25%); --accent2: hsl(186.7,58%,65%); --soft: hsl(186.7,28%,95%); }
+	.ch03 { --accent: hsl(93.3,78%,25%);  --accent2: hsl(93.3,58%,65%);  --soft: hsl(93.3,28%,95%); }
+	.ch04 { --accent: hsl(0,78%,25%);     --accent2: hsl(0,58%,65%);     --soft: hsl(0,28%,95%); }
+
+	* { box-sizing: border-box; }
+
+	body {
+		margin: 0;
+		padding: 0 0 60px;
+		background: #ffffff;
+		color: var(--ink);
+		font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", "Meiryo", sans-serif;
+		line-height: 1.85;
+		font-size: 15.5px;
+	}
+
+	.wrap { max-width: 1400px; margin: 0 auto; padding: 0 30px; }
+
+	/* タイトルバー */
+	.titlebar {
+		background: linear-gradient(135deg, var(--navy1) 0%, var(--navy2) 100%);
+		color: #fff;
+		padding: 34px 30px 30px;
+		box-shadow: 0 6px 18px rgba(18,34,77,0.28);
+	}
+	.titlebar .inner { max-width: 1400px; margin: 0 auto; }
+	.titlebar h1 {
+		margin: 0 0 10px;
+		font-size: 2.1em;
+		letter-spacing: 0.02em;
+		color: #fff;
+	}
+	.titlebar p { margin: 4px 0; font-size: 0.92em; color: #d8e4ff; }
+	.titlebar .meta { font-size: 0.84em; color: #b9cdf5; }
+	.titlebar code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+
+	/* 目次 */
+	nav.toc {
+		background: linear-gradient(180deg, #f2f5fb 0%, #ffffff 100%);
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		padding: 16px 22px;
+		margin: 28px 0;
+		box-shadow: 0 2px 8px rgba(30,50,90,0.07);
+	}
+	nav.toc strong { display: block; color: var(--navy1); margin-bottom: 10px; }
+	nav.toc ol {
+		margin: 0;
+		padding-left: 0;
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		counter-reset: toc;
+	}
+	nav.toc li { counter-increment: toc; margin: 0; }
+	nav.toc a {
+		display: -webkit-box;
+		width: 310px;
+		max-width: 100%;
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		text-decoration: none;
+		text-align: left;
+		border-radius: 6px;
+		padding: 7px 10px;
+		font-size: 0.88em;
+		font-weight: 600;
+		line-height: 1.4;
+		white-space: normal;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		box-shadow: 0 1px 4px rgba(20,30,60,0.18);
+	}
+	nav.toc a::before { content: "06." counter(toc) " "; opacity: 0.85; }
+	nav.toc a:hover { text-decoration: underline; }
+
+	/* 章 */
+	section {
+		background: linear-gradient(180deg, var(--soft) 0%, #ffffff 42%);
+		border-radius: 12px;
+		padding: 4px 26px 26px;
+		margin: 34px 0;
+		border: 1px solid var(--line);
+	}
+
+	section h1 {
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		font-size: 1.5em;
+		margin: 26px 0 20px;
+		padding: 14px 20px;
+		border-radius: 9px;
+		box-shadow: 0 5px 14px rgba(30,40,70,0.28);
+	}
+	section h1 code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+
+	h2 {
+		font-size: 1.16em;
+		color: var(--accent);
+		border-left: 7px solid var(--accent);
+		background: linear-gradient(90deg, var(--soft) 0%, rgba(255,255,255,0) 88%);
+		padding: 6px 12px;
+		margin: 30px 0 12px;
+		border-radius: 0 6px 6px 0;
+	}
+
+	h3 {
+		font-size: 1.02em;
+		color: var(--accent);
+		margin: 20px 0 8px;
+		padding-bottom: 3px;
+		border-bottom: 2px dotted var(--accent2);
+		display: inline-block;
+	}
+
+	p { margin: 10px 0; }
+	ul, ol { margin: 10px 0; padding-left: 1.6em; }
+	li { margin: 6px 0; }
+
+	code {
+		background: var(--code-bg);
+		border: 1px solid var(--line);
+		border-radius: 4px;
+		padding: 1px 6px;
+		font-family: "BIZ UDゴシック", "ＭＳ ゴシック", Consolas, "Cascadia Mono", monospace;
+		font-size: 0.9em;
+		color: #17335f;
+	}
+
+	pre {
+		background: linear-gradient(180deg, #f7f9fd 0%, #eef2f9 100%);
+		border: 1px solid var(--line);
+		border-left: 5px solid var(--accent2);
+		border-radius: 8px;
+		padding: 13px 16px;
+		overflow-x: auto;
+		font-size: 0.88em;
+		line-height: 1.6;
+	}
+	pre code { background: none; border: none; padding: 0; color: #1b2b46; }
+
+	.table-wrap { overflow-x: auto; margin: 16px 0; }
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 0.93em;
+		box-shadow: 0 2px 7px rgba(40,55,90,0.12);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+	th {
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		text-align: left;
+		padding: 9px 12px;
+		font-weight: 600;
+	}
+	th code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+	td { padding: 9px 12px; border-bottom: 1px solid var(--line); background: #fff; vertical-align: top; }
+	tr:nth-child(even) td { background: #fafbfe; }
+	td.nowrap { white-space: nowrap; }
+	td.mono { font-family: "BIZ UDゴシック", "ＭＳ ゴシック", Consolas, monospace; white-space: nowrap; }
+
+	/* バッジ */
+	.badge {
+		display: inline-block;
+		font-size: 0.78em;
+		font-weight: 700;
+		color: #fff;
+		border-radius: 4px;
+		padding: 1px 9px;
+		margin-right: 7px;
+		letter-spacing: 0.04em;
+		white-space: nowrap;
+	}
+	.b-good { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
+	.b-bad  { background: linear-gradient(100deg, #a51f22, #e05a5c); }
+	.b-none { background: linear-gradient(100deg, #5a6472, #97a1ae); }
+	.b-warn { background: linear-gradient(100deg, #b8620a, #f0a548); }
+	.b-ps7  { background: linear-gradient(100deg, #1a5fa8, #4d9ae0); }
+	.b-ps51 { background: linear-gradient(100deg, #5b2d82, #9a6bc4); }
+
+	.callout {
+		background: linear-gradient(180deg, var(--soft) 0%, #ffffff 100%);
+		border: 1px solid var(--accent2);
+		border-left: 6px solid var(--accent);
+		border-radius: 0 8px 8px 0;
+		padding: 12px 18px;
+		margin: 16px 0;
+	}
+	.callout strong { color: var(--accent); }
+
+	/* SVG図 */
+	figure { margin: 20px 0; text-align: center; }
+	figure svg {
+		max-width: 100%;
+		height: auto;
+		font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", "Meiryo", sans-serif;
+	}
+	figcaption { font-size: 0.84em; color: var(--ink-soft); margin-top: 6px; }
+
+	footer {
+		max-width: 1400px;
+		margin: 40px auto 0;
+		padding: 18px 30px 0;
+		border-top: 2px solid var(--line);
+		color: var(--ink-soft);
+		font-size: 0.86em;
+	}
+	footer a { color: var(--navy2); }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>06. 制御構文と関数</h1>
+		<p>構文は素直。ただし<strong>戻り値の扱いだけは経験者ほど引っかかる</strong></p>
+		<p class="meta">📅 作成: 2026-08-23 / 更新: 2026-08-23 ／ 対象: Windows PowerShell 5.1 ＋ PowerShell 7</p>
+	</div>
+</div>
+
+<div class="wrap">
+
+<h2>この章で何ができるようになるか</h2>
+
+<ul>
+	<li><code>if</code>・<code>foreach</code>・<code>switch</code> を<strong>PowerShell 固有の差を踏まえて</strong>書ける</li>
+	<li>処理を<strong>関数に切り出し、パイプラインから使える形</strong>にできる</li>
+	<li><strong>「返したつもりのない値」が混ざる</strong>という最大の落とし穴を回避できる</li>
+</ul>
+
+<div class="callout">
+<strong>この章の 06.3 だけは、他言語の常識が通用しません。</strong><br>
+<code>if</code> や <code>foreach</code> は素直なので流し読みで構いません。しかし<strong>関数の戻り値</strong>は、Java・C#・JavaScript のどれとも違う設計になっています。ここを知らずに書くと、<strong>動くけれど時々おかしい</strong>という最も厄介なバグを埋め込みます。
+</div>
+
+<nav class="toc">
+	<strong>目次</strong>
+	<ol>
+		<li class="ch01"><a href="#ch01">制御構文 — 素直な部分と switch の驚き</a></li>
+		<li class="ch02"><a href="#ch02">関数 — 定義と呼び出し</a></li>
+		<li class="ch03"><a href="#ch03">戻り値の落とし穴</a></li>
+		<li class="ch04"><a href="#ch04">スコープ</a></li>
+	</ol>
+</nav>
+
+<!-- ============ 06.1 ============ -->
+<section class="ch01" id="ch01">
+<h1>06.1 制御構文 — 素直な部分と switch の驚き</h1>
+
+<h2>if は見た目どおり</h2>
+
+<pre><code># JavaScript                        # PowerShell
+if (x &gt; 10) {                       if ($x -gt 10) {
+    ...                                 ...
+} else if (x &gt; 5) {                 } elseif ($x -gt 5) {
+    ...                                 ...
+} else {                            } else {
+    ...                                 ...
+}                                   }</code></pre>
+
+<p>違いは<strong>比較演算子（04 章）</strong>と <code>else if</code> が <code>elseif</code> の1語になっている点だけです。括弧と波括弧は<strong>どちらも省略できません</strong>。</p>
+
+<h2>繰り返し — 2つの foreach を使い分ける</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>書き方</th><th>特徴</th><th>使いどころ</th></tr>
+<tr><td class="nowrap"><code>foreach ($x in $arr)</code></td><td><strong>全件をメモリに載せてから</strong>回す。速い</td><td>件数が読めるとき。<code>break</code> / <code>continue</code> が使える</td></tr>
+<tr><td class="nowrap"><code>... | ForEach-Object</code></td><td><strong>1件ずつ流れてくる</strong>。メモリを使わない</td><td>パイプラインの途中。巨大なデータ</td></tr>
+</table>
+</div>
+
+<pre><code># 全件をメモリに載せる（10万件のファイルだと重い）
+foreach ($f in Get-ChildItem -Recurse) { $f.Name }
+
+# 1件ずつ処理する（メモリを使わない）
+Get-ChildItem -Recurse | ForEach-Object { $_.Name }</code></pre>
+
+<div class="callout">
+<strong>大量データを扱うときは <code>ForEach-Object</code> を選んでください。</strong><br>
+<code>foreach ($f in Get-ChildItem -Recurse)</code> は、<strong>括弧の中が全部終わってからループが始まります</strong>。数十万件のファイルを列挙すると、その全部がメモリに載ります。パイプライン版なら1件ずつ流れるので、メモリ使用量は一定です。<br>
+逆に数百件程度なら <code>foreach</code> 文のほうが速く、<code>break</code> で抜けられる利点もあります。
+</div>
+
+<h3>その他の繰り返し</h3>
+
+<pre><code>for ($i = 0; $i -lt 10; $i++) { $i }
+
+while ($true) { break }
+
+do { $n++ } while ($n -lt 3)
+do { $n++ } until ($n -ge 3)      # until は JavaScript にない
+
+1..5 | ForEach-Object { $_ }      # 範囲演算子</code></pre>
+
+<h2>switch は「一致した分だけ全部実行される」 <span class="badge b-bad">最大の驚き</span></h2>
+
+<p>C・Java・JavaScript の <code>switch</code> は<strong>最初に一致した場所から下に流れ落ちる</strong>（フォールスルー）ため <code>break</code> が必要でした。PowerShell は違います。</p>
+
+<figure>
+<svg viewBox="0 0 780 274" role="img" aria-label="PowerShell の switch は一致した分岐をすべて実行する">
+	<defs>
+		<linearGradient id="g-06-1a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-06-1b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-06-1c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(215,20%,35%)"/>
+			<stop offset="1" stop-color="hsl(215,18%,62%)"/>
+		</linearGradient>
+	</defs>
+
+	<text x="390" y="20" fill="var(--ink)" font-size="14" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">switch (5) { ... }</text>
+
+	<rect x="60" y="34" width="480" height="38" rx="8" fill="url(#g-06-1a)"/>
+	<text x="300" y="59" fill="#fff" font-size="13.5" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">{$_ -gt 1}  { 'gt1' }</text>
+	<text x="620" y="59" fill="hsl(140,78%,25%)" font-size="13" font-weight="700" text-anchor="middle">一致 → 実行</text>
+
+	<rect x="60" y="80" width="480" height="38" rx="8" fill="url(#g-06-1a)"/>
+	<text x="300" y="105" fill="#fff" font-size="13.5" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">{$_ -gt 3}  { 'gt3' }</text>
+	<text x="620" y="105" fill="hsl(140,78%,25%)" font-size="13" font-weight="700" text-anchor="middle">一致 → 実行</text>
+
+	<rect x="60" y="126" width="480" height="38" rx="8" fill="url(#g-06-1c)"/>
+	<text x="300" y="151" fill="#fff" font-size="13.5" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">{$_ -gt 10} { 'gt10' }</text>
+	<text x="620" y="151" fill="var(--ink-soft)" font-size="13" font-weight="700" text-anchor="middle">不一致 → 飛ばす</text>
+
+	<rect x="60" y="178" width="660" height="36" rx="8" fill="#fff" stroke="hsl(0,58%,60%)" stroke-width="2"/>
+	<text x="390" y="202" fill="#a51f22" font-size="14" font-weight="700" text-anchor="middle">結果は gt1 と gt3 の2つ — 最初の1つで止まらない</text>
+
+	<rect x="60" y="226" width="660" height="38" rx="8" fill="url(#g-06-1b)"/>
+	<text x="390" y="250" fill="#fff" font-size="13.5" font-weight="700" text-anchor="middle">1つだけ実行したいなら、各分岐の末尾に break を書く</text>
+</svg>
+<figcaption>図 06.1 — PowerShell の switch は条件を全部評価し、一致したものをすべて実行する</figcaption>
+</figure>
+
+<pre><code>switch (5) {
+    {$_ -gt 1}  { 'gt1' }
+    {$_ -gt 3}  { 'gt3' }
+    {$_ -gt 10} { 'gt10' }
+}
+# → gt1 と gt3 の両方が返る
+
+switch (5) {
+    {$_ -gt 1}  { 'gt1'; break }    # break で止まる
+    {$_ -gt 3}  { 'gt3' }
+}
+# → gt1 だけ</code></pre>
+
+<div class="callout">
+<strong>フォールスルー防止の <code>break</code> とは意味が逆です。</strong><br>
+C 系の <code>break</code> は<strong>「次に流れ落ちるのを防ぐ」</strong>ものでした。PowerShell の <code>break</code> は<strong>「残りの条件を評価するのをやめる」</strong>ものです。結果は似ていますが、<strong>書き忘れたときの挙動が違います</strong>。C 系では次のケースが芋づる式に実行され、PowerShell では<strong>一致した条件だけが全部実行されます</strong>。
+</div>
+
+<h2>switch の便利な使い方</h2>
+
+<pre><code># 配列を渡すと各要素を処理する（ループが不要）
+switch (1, 2, 3) {
+    1 { 'one' }
+    2 { 'two' }
+    default { 'other' }
+}
+# → one, two, other
+
+# 正規表現
+switch -Regex ('report-2026.txt') {
+    '^report' { '先頭が report' }
+    '\d{4}'   { "4桁: $($matches[0])" }
+}
+
+# ワイルドカード
+switch -Wildcard ('a.log') {
+    '*.txt' { 'txt' }
+    '*.log' { 'log' }
+}
+
+# 大文字小文字を区別する（04 章の話と同じ）
+switch -CaseSensitive ('ABC') { 'abc' { '一致しない' } }</code></pre>
+
+<div class="callout">
+<strong>PowerShell が初めての人へ</strong><br>
+<code>switch</code> に<strong>配列をそのまま渡せる</strong>のは、他の言語にはあまりない機能です。「各要素を判定して分類する」処理が、ループを書かずに済みます。<br>
+また <code>-Regex</code> を付けると <code>$matches</code> が使えるので、<strong>「パターンで振り分けつつ、値も取り出す」</strong>処理が1つの構文で書けます。ログの分類などで重宝します。
+</div>
+</section>
+
+<!-- ============ 06.2 ============ -->
+<section class="ch02" id="ch02">
+<h1>06.2 関数 — 定義と呼び出し</h1>
+
+<h2>定義</h2>
+
+<pre><code># JavaScript
+function getUser(name, age = 20) { ... }
+
+# PowerShell
+function Get-User {
+    param(
+        [Parameter(Mandatory)]
+        [string]$Name,
+        [int]$Age = 20
+    )
+    "$Name ($Age)"
+}</code></pre>
+
+<p>関数名は<strong>Cmdlet と同じ「動詞-名詞」</strong>にします（05 章）。<code>Get-Verb</code> にある動詞を使えば、利用者が機能を推測できます。</p>
+
+<h2>呼び出し方 — カンマと括弧を使わない <span class="badge b-bad">最大の罠</span></h2>
+
+<p>ここが経験者ほど間違える箇所です。PowerShell の関数は<strong>コマンドとして呼びます</strong>。</p>
+
+<figure>
+<svg viewBox="0 0 780 258" role="img" aria-label="関数呼び出しの正しい書き方と間違い">
+	<defs>
+		<linearGradient id="g-06-2a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-06-2b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="20" y="20" width="360" height="44" rx="8" fill="url(#g-06-2a)"/>
+	<text x="200" y="48" fill="#fff" font-size="14" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Show-Args 'x' 'y'</text>
+
+	<rect x="400" y="20" width="360" height="44" rx="8" fill="url(#g-06-2b)"/>
+	<text x="580" y="48" fill="#fff" font-size="14" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Show-Args('x', 'y')</text>
+
+	<text x="200" y="84" fill="hsl(140,78%,25%)" font-size="13.5" font-weight="700" text-anchor="middle">✓ スペース区切り</text>
+	<text x="580" y="84" fill="#a51f22" font-size="13.5" font-weight="700" text-anchor="middle">✗ 他言語の書き方</text>
+
+	<rect x="20" y="98" width="360" height="76" rx="8" fill="#fff" stroke="hsl(140,58%,60%)" stroke-width="2"/>
+	<text x="200" y="122" fill="var(--ink)" font-size="12.5" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">$A = "x"  （String）</text>
+	<text x="200" y="144" fill="var(--ink)" font-size="12.5" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">$B = "y"</text>
+	<text x="200" y="166" fill="hsl(140,78%,25%)" font-size="12.5" font-weight="700" text-anchor="middle">意図どおり2つの引数になる</text>
+
+	<rect x="400" y="98" width="360" height="76" rx="8" fill="#fff" stroke="hsl(0,58%,60%)" stroke-width="2"/>
+	<text x="580" y="122" fill="var(--ink)" font-size="12.5" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">$A = @("x","y")  （Object[]）</text>
+	<text x="580" y="144" fill="var(--ink)" font-size="12.5" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">$B = 空</text>
+	<text x="580" y="166" fill="#a51f22" font-size="12.5" font-weight="700" text-anchor="middle">配列1個が第1引数に入る</text>
+
+	<rect x="20" y="190" width="740" height="56" rx="8" fill="#fff" stroke="hsl(0,58%,60%)" stroke-width="2"/>
+	<text x="390" y="212" fill="#a51f22" font-size="13.5" font-weight="700" text-anchor="middle">エラーにならないので気づきにくい</text>
+	<text x="390" y="233" fill="var(--ink)" font-size="12.5" text-anchor="middle">第2引数が空のまま動き続け、後の処理で初めておかしくなる。名前付き（-Name 'x'）で呼べば防げる</text>
+</svg>
+<figcaption>図 06.2 — カンマと括弧で呼ぶと、引数がまとめて1つの配列になる。エラーが出ないため発見が遅れる</figcaption>
+</figure>
+
+<div class="table-wrap">
+<table>
+<tr><th>書き方</th><th>結果</th><th>評価</th></tr>
+<tr><td class="mono">Get-User -Name '田中' -Age 30</td><td>意図どおり</td><td><span class="badge b-good">推奨</span>名前付きが最も安全</td></tr>
+<tr><td class="mono">Get-User '田中' 30</td><td>意図どおり</td><td>順序に依存する</td></tr>
+<tr><td class="mono">Get-User('田中', 30)</td><td><strong>第1引数に配列が入る</strong></td><td><span class="badge b-bad">誤り</span>エラーにならない</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>関数は「コマンド」であって「メソッド」ではありません。</strong><br>
+<code>Get-ChildItem -Path C:\ -Recurse</code> と書くのと同じ形で自作関数も呼びます。<strong>括弧を付けるのは、戻り値をその場で使いたいときだけ</strong>です（<code>(Get-User -Name '田中').Length</code>）。<br>
+ただし <code>.NET</code> のメソッド（<code>$s.Substring(0, 3)</code>）は<strong>括弧とカンマで呼びます</strong>。この2つが混在するのが PowerShell の分かりにくいところです。
+</div>
+
+<h2>パイプラインから受け取る</h2>
+
+<p>自作関数を <code>|</code> の右側に置けるようにするには、<strong><code>ValueFromPipeline</code> と <code>process</code> ブロック</strong>を使います。</p>
+
+<figure>
+<svg viewBox="0 0 780 244" role="img" aria-label="begin・process・end ブロックの実行タイミング">
+	<defs>
+		<linearGradient id="g-06-3a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(255,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(255,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-06-3b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/>
+			<stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<linearGradient id="g-06-3c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="20" y="24" width="200" height="70" rx="9" fill="url(#g-06-3a)"/>
+	<text x="120" y="52" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">begin</text>
+	<text x="120" y="74" fill="#fff" font-size="12" text-anchor="middle" opacity="0.92">最初に1回だけ</text>
+	<text x="120" y="90" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">初期化・カウンタの準備</text>
+
+	<rect x="240" y="24" width="300" height="70" rx="9" fill="url(#g-06-3b)"/>
+	<text x="390" y="52" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">process</text>
+	<text x="390" y="74" fill="#fff" font-size="12" text-anchor="middle" opacity="0.92">流れてきた件数ぶん繰り返す</text>
+	<text x="390" y="90" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">$_ で1件ずつ受け取る</text>
+
+	<rect x="560" y="24" width="200" height="70" rx="9" fill="url(#g-06-3c)"/>
+	<text x="660" y="52" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">end</text>
+	<text x="660" y="74" fill="#fff" font-size="12" text-anchor="middle" opacity="0.92">最後に1回だけ</text>
+	<text x="660" y="90" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">集計結果の出力</text>
+
+	<line x1="222" y1="59" x2="230" y2="59" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="230,53 240,59 230,65" fill="var(--ink-soft)"/>
+	<line x1="542" y1="59" x2="550" y2="59" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="550,53 560,59 550,65" fill="var(--ink-soft)"/>
+
+	<path d="M470 98 V 120 H 320 V 106" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>
+	<polygon points="313,108 320,94 327,108" fill="var(--accent)"/>
+	<text x="390" y="144" fill="var(--accent)" font-size="12.5" font-weight="700" text-anchor="middle">1件ごとに繰り返し</text>
+
+	<rect x="20" y="158" width="740" height="76" rx="9" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+	<text x="390" y="180" fill="var(--ink)" font-size="13.5" font-weight="700" text-anchor="middle">ブロックを書かない場合、関数の中身は end 相当として扱われる</text>
+	<text x="390" y="202" fill="#a51f22" font-size="12.5" font-weight="700" text-anchor="middle">= パイプラインから受け取っても、最後の1件しか処理されない</text>
+	<text x="390" y="222" fill="var(--ink-soft)" font-size="12" text-anchor="middle">パイプライン対応の関数を書くときは、process ブロックを必ず書く</text>
+</svg>
+<figcaption>図 06.3 — <code>process</code> を書き忘れると、最後の1件しか処理されない</figcaption>
+</figure>
+
+<pre><code>function Add-Tag {
+    param([Parameter(ValueFromPipeline)][string]$Text)
+
+    begin   { $n = 0 }
+    process { $n++; "[$n] $Text" }
+    end     { "合計 $n 件" }
+}
+
+'a', 'b', 'c' | Add-Tag
+# → [1] a / [2] b / [3] c / 合計 3 件</code></pre>
+
+<div class="callout">
+<strong><code>process</code> を書き忘れると静かに壊れます。</strong><br>
+ブロックを何も書かない関数は、中身が <code>end</code> として扱われます。<code>end</code> は<strong>最後に1回だけ</strong>実行されるので、パイプラインで10件流しても<strong>最後の1件だけが処理されます</strong>。しかもエラーにはなりません。<br>
+パイプラインで使う関数を書くときは、<strong><code>process</code> があるかを最初に確認</strong>してください。
+</div>
+
+<h2><code>[CmdletBinding()]</code> を付ける</h2>
+
+<pre><code>function Get-Report {
+    [CmdletBinding()]
+    param([string]$Path)
+
+    Write-Verbose "処理開始: $Path"
+    # ...
+}
+
+Get-Report -Path .\a.txt -Verbose      # -Verbose が使えるようになる</code></pre>
+
+<p>これ1行で <code>-Verbose</code>・<code>-Debug</code>・<code>-ErrorAction</code> などの<strong>共通パラメータが自動で使えるようになります</strong>。自作関数が組み込みコマンドと同じ操作感になるので、付けておくのが定石です。</p>
+
+<div class="callout">
+<strong>PowerShell が初めての人へ</strong><br>
+<code>Write-Verbose</code> は<strong>「普段は出ないが、<code>-Verbose</code> を付けたときだけ出るメッセージ」</strong>です。デバッグ用の <code>print</code> を消さずに残しておける仕組みだと考えてください。<br>
+<code>Write-Host</code> と違い、<strong>必要なときだけ有効にできる</strong>ので、本番用のスクリプトに入れっぱなしにできます。
+</div>
+</section>
+
+<!-- ============ 06.3 ============ -->
+<section class="ch03" id="ch03">
+<h1>06.3 戻り値の落とし穴</h1>
+
+<h2>出力されたものが「すべて」戻り値になる</h2>
+
+<p>これが本章で最も重要な仕様です。PowerShell の関数は、<strong>変数に代入されなかった値をすべて戻り値として返します</strong>。</p>
+
+<figure>
+<svg viewBox="0 0 780 288" role="img" aria-label="関数内の出力がすべて戻り値として集められる">
+	<defs>
+		<linearGradient id="g-06-4a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-06-4b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(215,20%,35%)"/>
+			<stop offset="1" stop-color="hsl(215,18%,62%)"/>
+		</linearGradient>
+		<linearGradient id="g-06-4c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/>
+			<stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+	</defs>
+
+	<text x="240" y="20" fill="var(--ink)" font-size="13.5" font-weight="700" text-anchor="middle">関数の中身</text>
+	<text x="640" y="20" fill="var(--ink)" font-size="13.5" font-weight="700" text-anchor="middle">戻り値に入るか</text>
+
+	<rect x="20" y="32" width="440" height="36" rx="7" fill="url(#g-06-4a)"/>
+	<text x="240" y="55" fill="#fff" font-size="13" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">"途中の出力"</text>
+	<text x="640" y="55" fill="#a51f22" font-size="13" font-weight="700" text-anchor="middle">入る（意図せず）</text>
+
+	<rect x="20" y="76" width="440" height="36" rx="7" fill="url(#g-06-4b)"/>
+	<text x="240" y="99" fill="#fff" font-size="13" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">$x = 1 + 1</text>
+	<text x="640" y="99" fill="var(--ink-soft)" font-size="13" font-weight="700" text-anchor="middle">入らない（代入済み）</text>
+
+	<rect x="20" y="120" width="440" height="36" rx="7" fill="url(#g-06-4a)"/>
+	<text x="240" y="143" fill="#fff" font-size="13" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">$list.Add('x')</text>
+	<text x="640" y="143" fill="#a51f22" font-size="13" font-weight="700" text-anchor="middle">入ることがある</text>
+
+	<rect x="20" y="164" width="440" height="36" rx="7" fill="url(#g-06-4b)"/>
+	<text x="240" y="187" fill="#fff" font-size="13" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Write-Host "ログ"</text>
+	<text x="640" y="187" fill="var(--ink-soft)" font-size="13" font-weight="700" text-anchor="middle">入らない（別ストリーム）</text>
+
+	<rect x="20" y="208" width="440" height="36" rx="7" fill="url(#g-06-4c)"/>
+	<text x="240" y="231" fill="#fff" font-size="13" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">return "本命の値"</text>
+	<text x="640" y="231" fill="var(--accent)" font-size="13" font-weight="700" text-anchor="middle">入る</text>
+
+	<rect x="20" y="254" width="740" height="30" rx="7" fill="#fff" stroke="hsl(0,58%,60%)" stroke-width="2"/>
+	<text x="390" y="274" fill="#a51f22" font-size="13.5" font-weight="700" text-anchor="middle">この関数の戻り値は 3 件。return を書いても他の出力は消えない</text>
+</svg>
+<figcaption>図 06.4 — <code>return</code> は「関数を抜ける」だけ。それまでに出力されたものは全部戻り値に含まれる</figcaption>
+</figure>
+
+<pre><code>function Test-Return {
+    "途中の出力"          # ← これも戻り値になる
+    $x = 1 + 1            # ← 代入なので戻り値にならない
+    return "returnの値"
+}
+
+$r = Test-Return
+@($r).Count               # → 2
+$r -join ' / '            # → 途中の出力 / returnの値</code></pre>
+
+<div class="callout">
+<strong><code>return</code> は「値を返す」命令ではありません。</strong><br>
+PowerShell の <code>return</code> は<strong>「その値を出力して、関数を抜ける」</strong>という意味です。他言語のように「これだけが戻り値になる」わけではありません。<strong>それ以前に出力されたものは全部混ざります</strong>。
+</div>
+
+<h2>意図しない出力を止める3つの方法</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>書き方</th><th>例</th><th>特徴</th></tr>
+<tr><td class="nowrap"><code>$null = </code></td><td class="mono">$null = $list.Add('x')</td><td><span class="badge b-good">最速</span>推奨</td></tr>
+<tr><td class="nowrap"><code>[void]</code></td><td class="mono">[void]$list.Add('x')</td><td>C# 経験者に馴染む</td></tr>
+<tr><td class="nowrap"><code>| Out-Null</code></td><td class="mono">$list.Add('x') | Out-Null</td><td>読みやすいが<strong>遅い</strong></td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>ループの中では <code>| Out-Null</code> を避けてください。</strong><br>
+パイプラインを1本立ち上げるコストがかかるため、数万回のループでは目に見えて遅くなります。<code>$null = </code> か <code>[void]</code> を使ってください。
+</div>
+
+<h2>要素1個の配列が「潰れる」 <span class="badge b-bad">再現性の低いバグの温床</span></h2>
+
+<p>関数から配列を返すと、<strong>要素が1個のときだけ配列ではなくなります</strong>。</p>
+
+<pre><code>function Get-One {
+    $a = @('x')          # 要素1個の配列
+    return $a
+}
+
+$o = Get-One
+$o.GetType().Name        # → String （！配列ではない）</code></pre>
+
+<figure>
+<svg viewBox="0 0 780 254" role="img" aria-label="要素1個の配列が潰れる問題とその対策">
+	<defs>
+		<linearGradient id="g-06-5a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-06-5b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<text x="390" y="20" fill="var(--ink)" font-size="13.5" font-weight="700" text-anchor="middle">return $a — 要素数によって型が変わってしまう</text>
+
+	<rect x="30" y="32" width="220" height="60" rx="8" fill="url(#g-06-5b)"/>
+	<text x="140" y="56" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">要素 3 個</text>
+	<text x="140" y="78" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">Object[] のまま</text>
+
+	<rect x="280" y="32" width="220" height="60" rx="8" fill="url(#g-06-5a)"/>
+	<text x="390" y="56" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">要素 1 個</text>
+	<text x="390" y="78" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">String に潰れる</text>
+
+	<rect x="530" y="32" width="220" height="60" rx="8" fill="url(#g-06-5a)"/>
+	<text x="640" y="56" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">要素 0 個</text>
+	<text x="640" y="78" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">$null になる</text>
+
+	<rect x="30" y="106" width="720" height="44" rx="8" fill="#fff" stroke="hsl(0,58%,60%)" stroke-width="2"/>
+	<text x="390" y="126" fill="#a51f22" font-size="13" font-weight="700" text-anchor="middle">呼び出し側で $result.Count や foreach を書くと、件数によって動いたり壊れたりする</text>
+	<text x="390" y="144" fill="var(--ink)" font-size="12" text-anchor="middle">テストデータが2件以上だと気づけない。本番で1件になった日に初めて落ちる</text>
+
+	<text x="390" y="180" fill="hsl(140,78%,25%)" font-size="13.5" font-weight="700" text-anchor="middle">対策 — 先頭にカンマを付ける</text>
+
+	<rect x="230" y="192" width="320" height="46" rx="8" fill="url(#g-06-5b)"/>
+	<text x="390" y="221" fill="#fff" font-size="16" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">return ,$a</text>
+</svg>
+<figcaption>図 06.5 — 件数によって型が変わる。テストでは通り、本番で落ちる典型例</figcaption>
+</figure>
+
+<pre><code>function Get-OneFixed {
+    $a = @('x')
+    return ,$a           # ← 先頭のカンマがポイント
+}
+
+$o = Get-OneFixed
+$o.GetType().Name        # → Object[]
+$o.Count                 # → 1</code></pre>
+
+<div class="callout">
+<strong>先頭のカンマは「この配列を1個の要素として包む」という意味です。</strong><br>
+PowerShell は配列を返すとき<strong>自動的に要素へばらします（アンロール）</strong>。<code>,$a</code> と書くと「<code>$a</code> を唯一の要素とする配列」が作られ、ばらされた結果ちょうど <code>$a</code> が残ります。<br>
+<strong>配列を返す関数には、常に <code>,</code> を付ける</strong>と覚えてしまうのが安全です。空配列 <code>@()</code> も <code>,</code> があれば <code>Count = 0</code> の配列として返せます。
+</div>
+
+<h3>呼び出し側でも守れる</h3>
+
+<pre><code># 受け取る側で @() で包めば、必ず配列になる
+$items = @(Get-One)
+$items.Count             # → 1（潰れていても復元される）</code></pre>
+
+<div class="callout">
+<strong>PowerShell が初めての人へ</strong><br>
+この挙動は<strong>「パイプラインに1件ずつ流す」という設計の副作用</strong>です。関数の出力はパイプラインに流れるため、配列は「複数件の出力」として扱われ、1件なら「1件の出力」に見えます。<br>
+不便に思えますが、<code>Get-Process | Where-Object ...</code> のような書き方が自然にできるのは、この設計のおかげです。<strong>戻り値だけを見ると奇妙ですが、パイプラインの一部として見ると筋が通っています。</strong>
+</div>
+</section>
+
+<!-- ============ 06.4 ============ -->
+<section class="ch04" id="ch04">
+<h1>06.4 スコープ</h1>
+
+<h2>読めるが、書き換えられない</h2>
+
+<p>PowerShell のスコープは<strong>読み取りと書き込みで挙動が違います</strong>。</p>
+
+<figure>
+<svg viewBox="0 0 780 250" role="img" aria-label="スコープの読み取りと書き込みの非対称">
+	<defs>
+		<linearGradient id="g-06-6a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(255,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(255,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-06-6b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/>
+			<stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="60" y="24" width="660" height="88" rx="10" fill="url(#g-06-6a)"/>
+	<text x="390" y="50" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">スクリプトのスコープ</text>
+	<text x="390" y="74" fill="#fff" font-size="13" text-anchor="middle" opacity="0.92" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">$outer = 'もとの値'</text>
+
+	<rect x="180" y="120" width="420" height="76" rx="9" fill="url(#g-06-6b)"/>
+	<text x="390" y="144" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">関数のスコープ</text>
+	<text x="390" y="166" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">$outer を読む → 'もとの値' が見える ✓</text>
+	<text x="390" y="186" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">$outer = '変更' → 関数内に新しい変数ができるだけ</text>
+
+	<line x1="390" y1="112" x2="390" y2="118" stroke="var(--ink-soft)" stroke-width="2"/>
+
+	<rect x="60" y="208" width="660" height="34" rx="8" fill="#fff" stroke="hsl(0,58%,60%)" stroke-width="2"/>
+	<text x="390" y="230" fill="#a51f22" font-size="13" font-weight="700" text-anchor="middle">関数を抜けると変更は消える。外の $outer は 'もとの値' のまま</text>
+</svg>
+<figcaption>図 06.6 — 親の変数は読めるが、代入すると関数内に別の変数ができる</figcaption>
+</figure>
+
+<pre><code>$outer = 'もとの値'
+
+function Test-Write {
+    $outer = '関数内で変更'
+    "関数内: $outer"          # → 関数内: 関数内で変更
+}
+
+Test-Write
+"関数の外: $outer"            # → 関数の外: もとの値</code></pre>
+
+<h2>意図的に外を書き換える</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>接頭辞</th><th>意味</th><th>使いどころ</th></tr>
+<tr><td class="nowrap"><code>$script:</code></td><td>そのスクリプトファイル全体で共有</td><td><span class="badge b-warn">慎重に</span>スクリプト内の状態管理</td></tr>
+<tr><td class="nowrap"><code>$global:</code></td><td>セッション全体で共有</td><td><span class="badge b-bad">原則避ける</span>他のスクリプトに影響する</td></tr>
+<tr><td class="nowrap"><code>$local:</code></td><td>現在のスコープに限定（既定）</td><td>明示したいときだけ</td></tr>
+</table>
+</div>
+
+<pre><code>function Set-Counter {
+    $script:counter = 10      # スクリプト全体で見える
+}
+Set-Counter
+$counter                      # → 10</code></pre>
+
+<div class="callout">
+<strong>スコープ接頭辞は最後の手段にしてください。</strong><br>
+外の状態を書き換える関数は、<strong>どこから呼ばれても同じ結果になるとは限らなくなります</strong>。テストもしづらくなります。<br>
+まずは<strong>「引数で受け取り、戻り値で返す」</strong>形を検討してください。<code>$script:</code> が必要になるのは、複数の関数で共有するカウンタや設定など、限られた場面です。
+</div>
+
+<h2>ドットソース — 別ファイルの関数を読み込む</h2>
+
+<pre><code># ✗ これは別プロセスとして実行され、関数は残らない
+.\lib.ps1
+
+# ✓ ドットソース。現在のスコープに読み込まれる
+. .\lib.ps1
+Get-MyFunction            # lib.ps1 で定義した関数が使える</code></pre>
+
+<p><strong>ドット＋スペース＋パス</strong>です。見落としやすいですが、これがないと関数が読み込まれません。</p>
+
+<pre><code># 自分と同じフォルダの lib.ps1 を読む（定番の書き方）
+. (Join-Path $PSScriptRoot 'lib.ps1')</code></pre>
+
+<div class="callout">
+<strong><code>$PSScriptRoot</code> は「このスクリプトがあるフォルダ」です。</strong><br>
+カレントディレクトリではありません。02 章の cmd ランチャーで <code>%~dp0</code> を使ったのと同じ理由で、<strong>どこから実行されても自分の隣のファイルを確実に指せます</strong>。
+</div>
+
+<h2><code>Set-StrictMode</code> でミスを早く見つける</h2>
+
+<pre><code>Set-StrictMode -Version Latest</code></pre>
+
+<div class="table-wrap">
+<table>
+<tr><th>検出されるもの</th><th>例</th></tr>
+<tr><td>未定義の変数を参照</td><td class="mono">$typoName  ← 打ち間違い</td></tr>
+<tr><td>存在しないプロパティを参照</td><td class="mono">$obj.NotExist</td></tr>
+<tr><td>関数をメソッド構文で呼ぶ</td><td class="mono">Get-User('a')  ← 06.2 の罠</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>スクリプトの先頭に書いておくことを推奨します。</strong><br>
+既定の PowerShell は<strong>未定義の変数を <code>$null</code> として黙って扱います</strong>。変数名を打ち間違えてもエラーにならず、後の処理で初めておかしくなります。<code>Set-StrictMode -Version Latest</code> は VBA の <code>Option Explicit</code> や JavaScript の <code>"use strict"</code> にあたるもので、<strong>この種のミスをその場で止めてくれます</strong>。
+</div>
+
+<div class="callout">
+<strong>PowerShell が初めての人へ</strong><br>
+「読めるが書けない」というスコープは、<strong>関数を安全にするための設計</strong>です。うっかり外の変数を壊す事故が起きません。<br>
+JavaScript のクロージャに慣れていると不便に感じますが、<strong>PowerShell の関数はコマンドとして単体で動くことを前提</strong>にしています。外の状態に依存しないほうが、パイプラインの部品として使いやすくなります。
+</div>
+</section>
+
+<h2>この章のまとめ</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>やりたいこと</th><th>書き方</th><th>注意点</th></tr>
+<tr><td class="nowrap">大量データを回す</td><td class="mono">... | ForEach-Object { }</td><td><code>foreach</code> 文は全件をメモリに載せる</td></tr>
+<tr><td class="nowrap">1つだけ分岐したい</td><td class="mono">switch (...) { ... { ...; break } }</td><td><strong>break が無いと一致した分すべて実行</strong></td></tr>
+<tr><td class="nowrap">関数を呼ぶ</td><td class="mono">Get-User -Name '田中'</td><td><strong>カンマと括弧で呼ばない</strong></td></tr>
+<tr><td class="nowrap">パイプラインで受ける</td><td class="mono">process { ... }</td><td>書かないと最後の1件だけ処理される</td></tr>
+<tr><td class="nowrap">不要な出力を捨てる</td><td class="mono">$null = $list.Add('x')</td><td><code>| Out-Null</code> はループ内では遅い</td></tr>
+<tr><td class="nowrap">配列を返す</td><td class="mono">return ,$a</td><td>カンマが無いと1件のとき潰れる</td></tr>
+<tr><td class="nowrap">外の変数を変える</td><td class="mono">$script:counter = 10</td><td>まず引数と戻り値で済まないか検討する</td></tr>
+<tr><td class="nowrap">別ファイルを読む</td><td class="mono">. (Join-Path $PSScriptRoot 'lib.ps1')</td><td>ドット＋スペースを忘れない</td></tr>
+</table>
+</div>
+
+<h3>覚えておく3点</h3>
+
+<ol>
+	<li><strong><code>return</code> は「値を返す」ではなく「出力して抜ける」</strong>。それ以前に出力されたものも全部戻り値に混ざる。捨てるなら <code>$null = </code></li>
+	<li><strong>配列は1件のとき潰れる</strong>。返すときは <code>return ,$a</code>、受けるときは <code>@(...)</code> で包む。<strong>テストでは通り、本番で落ちる</strong>種類のバグ</li>
+	<li><strong>関数はコマンドとして呼ぶ</strong>。<code>Get-User('a','b')</code> はエラーにならず、配列1個が第1引数に入る</li>
+</ol>
+
+<div class="callout">
+<strong>次章の予告 — 07. ファイル・テキスト操作</strong><br>
+ここまでで書く力が揃いました。次は<strong>実際にファイルを読み書き</strong>します。02 章で学んだ文字コードの話が、<code>Get-Content</code> と <code>Set-Content</code> の <code>-Encoding</code> として具体的に効いてきます。<code>Get-ChildItem</code> の<strong>ワイルドカードと <code>-Filter</code> を併用すると 0 件になる</strong>という罠も扱います。
+</div>
+
+</div>
+
+<footer>
+	<p>PowerShell 学習資料 06 ／ 前章: <a href="05-パイプライン.html">05. パイプラインとオブジェクト</a> ／ 次章: <a href="07-ファイル操作.html">07. ファイル・テキスト操作</a></p>
+</footer>
+
+</body>
+</html>

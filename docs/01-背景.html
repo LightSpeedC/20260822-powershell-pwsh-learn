@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>01. PowerShell の生まれた経緯</title>
+<style>
+	:root {
+		--navy1: #12224d;
+		--navy2: #2f5fbf;
+		--ink: #1c2330;
+		--ink-soft: #4a5568;
+		--line: #d9dfe8;
+		--code-bg: #f4f6fa;
+
+		/* 章クラス(.chNN)の外に置かれた要素用の既定値 */
+		--accent: var(--navy1);
+		--accent2: var(--navy2);
+		--soft: #f2f5fb;
+	}
+
+	/* 章ごとの虹色アクセント (H: 280 → 0, 280°を4章に均等分割 = 93.3°刻み) */
+	.ch01 { --accent: hsl(280,78%,25%);   --accent2: hsl(280,58%,65%);   --soft: hsl(280,28%,95%); }
+	.ch02 { --accent: hsl(186.7,78%,25%); --accent2: hsl(186.7,58%,65%); --soft: hsl(186.7,28%,95%); }
+	.ch03 { --accent: hsl(93.3,78%,25%);  --accent2: hsl(93.3,58%,65%);  --soft: hsl(93.3,28%,95%); }
+	.ch04 { --accent: hsl(0,78%,25%);     --accent2: hsl(0,58%,65%);     --soft: hsl(0,28%,95%); }
+
+	* { box-sizing: border-box; }
+
+	body {
+		margin: 0;
+		padding: 0 0 60px;
+		background: #ffffff;
+		color: var(--ink);
+		font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", "Meiryo", sans-serif;
+		line-height: 1.85;
+		font-size: 15.5px;
+	}
+
+	.wrap { max-width: 1400px; margin: 0 auto; padding: 0 30px; }
+
+	/* タイトルバー */
+	.titlebar {
+		background: linear-gradient(135deg, var(--navy1) 0%, var(--navy2) 100%);
+		color: #fff;
+		padding: 34px 30px 30px;
+		box-shadow: 0 6px 18px rgba(18,34,77,0.28);
+	}
+	.titlebar .inner { max-width: 1400px; margin: 0 auto; }
+	.titlebar h1 {
+		margin: 0 0 10px;
+		font-size: 2.1em;
+		letter-spacing: 0.02em;
+		color: #fff;
+	}
+	.titlebar p { margin: 4px 0; font-size: 0.92em; color: #d8e4ff; }
+	.titlebar .meta { font-size: 0.84em; color: #b9cdf5; }
+	.titlebar code {
+		background: rgba(255,255,255,0.16);
+		color: #fff;
+		border: none;
+	}
+
+	/* 目次 */
+	nav.toc {
+		background: linear-gradient(180deg, #f2f5fb 0%, #ffffff 100%);
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		padding: 16px 22px;
+		margin: 28px 0;
+		box-shadow: 0 2px 8px rgba(30,50,90,0.07);
+	}
+	nav.toc strong { display: block; color: var(--navy1); margin-bottom: 10px; }
+	nav.toc ol {
+		margin: 0;
+		padding-left: 0;
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		counter-reset: toc;
+	}
+	nav.toc li { counter-increment: toc; margin: 0; }
+	nav.toc a {
+		display: -webkit-box;
+		width: 310px;
+		max-width: 100%;
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		text-decoration: none;
+		text-align: left;
+		border-radius: 6px;
+		padding: 7px 10px;
+		font-size: 0.88em;
+		font-weight: 600;
+		line-height: 1.4;
+		white-space: normal;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		box-shadow: 0 1px 4px rgba(20,30,60,0.18);
+	}
+	nav.toc a::before {
+		content: "01." counter(toc) " ";
+		opacity: 0.85;
+	}
+	nav.toc a:hover { text-decoration: underline; }
+
+	/* 章 */
+	section {
+		background: linear-gradient(180deg, var(--soft) 0%, #ffffff 42%);
+		border-radius: 12px;
+		padding: 4px 26px 26px;
+		margin: 34px 0;
+		border: 1px solid var(--line);
+	}
+
+	section h1 {
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		font-size: 1.5em;
+		margin: 26px 0 20px;
+		padding: 14px 20px;
+		border-radius: 9px;
+		box-shadow: 0 5px 14px rgba(30,40,70,0.28);
+	}
+	section h1 code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+
+	h2 {
+		font-size: 1.16em;
+		color: var(--accent);
+		border-left: 7px solid var(--accent);
+		background: linear-gradient(90deg, var(--soft) 0%, rgba(255,255,255,0) 88%);
+		padding: 6px 12px;
+		margin: 30px 0 12px;
+		border-radius: 0 6px 6px 0;
+	}
+
+	h3 {
+		font-size: 1.02em;
+		color: var(--accent);
+		margin: 20px 0 8px;
+		padding-bottom: 3px;
+		border-bottom: 2px dotted var(--accent2);
+		display: inline-block;
+	}
+
+	p { margin: 10px 0; }
+	ul, ol { margin: 10px 0; padding-left: 1.6em; }
+	li { margin: 6px 0; }
+
+	code {
+		background: var(--code-bg);
+		border: 1px solid var(--line);
+		border-radius: 4px;
+		padding: 1px 6px;
+		font-family: "BIZ UDゴシック", "ＭＳ ゴシック", Consolas, "Cascadia Mono", monospace;
+		font-size: 0.9em;
+		color: #17335f;
+	}
+
+	pre {
+		background: linear-gradient(180deg, #f7f9fd 0%, #eef2f9 100%);
+		border: 1px solid var(--line);
+		border-left: 5px solid var(--accent2);
+		border-radius: 8px;
+		padding: 13px 16px;
+		overflow-x: auto;
+		font-size: 0.88em;
+		line-height: 1.6;
+	}
+	pre code { background: none; border: none; padding: 0; color: #1b2b46; }
+
+	.table-wrap { overflow-x: auto; margin: 16px 0; }
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 0.93em;
+		box-shadow: 0 2px 7px rgba(40,55,90,0.12);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+	th {
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		text-align: left;
+		padding: 9px 12px;
+		font-weight: 600;
+	}
+	th code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+	td { padding: 9px 12px; border-bottom: 1px solid var(--line); background: #fff; vertical-align: top; }
+	tr:nth-child(even) td { background: #fafbfe; }
+	td.nowrap { white-space: nowrap; }
+
+	/* バッジ */
+	.badge {
+		display: inline-block;
+		font-size: 0.78em;
+		font-weight: 700;
+		color: #fff;
+		border-radius: 4px;
+		padding: 1px 9px;
+		margin-right: 7px;
+		letter-spacing: 0.04em;
+		white-space: nowrap;
+	}
+	.b-good { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
+	.b-bad  { background: linear-gradient(100deg, #a51f22, #e05a5c); }
+	.b-none { background: linear-gradient(100deg, #5a6472, #97a1ae); }
+	.b-warn { background: linear-gradient(100deg, #b8620a, #f0a548); }
+	.b-ps7  { background: linear-gradient(100deg, #1a5fa8, #4d9ae0); }
+	.b-ps51 { background: linear-gradient(100deg, #5b2d82, #9a6bc4); }
+
+	.callout {
+		background: linear-gradient(180deg, var(--soft) 0%, #ffffff 100%);
+		border: 1px solid var(--accent2);
+		border-left: 6px solid var(--accent);
+		border-radius: 0 8px 8px 0;
+		padding: 12px 18px;
+		margin: 16px 0;
+	}
+	.callout strong { color: var(--accent); }
+
+	/* SVG図 */
+	figure {
+		margin: 20px 0;
+		text-align: center;
+	}
+	figure svg {
+		max-width: 100%;
+		height: auto;
+		font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", "Meiryo", sans-serif;
+	}
+	figcaption {
+		font-size: 0.84em;
+		color: var(--ink-soft);
+		margin-top: 6px;
+	}
+
+	footer {
+		max-width: 1400px;
+		margin: 40px auto 0;
+		padding: 18px 30px 0;
+		border-top: 2px solid var(--line);
+		color: var(--ink-soft);
+		font-size: 0.86em;
+	}
+	footer a { color: var(--navy2); }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>01. PowerShell の生まれた経緯</h1>
+		<p>DOS・Bash・Node.js と比べながら、PowerShell が何を解決するために作られたのかを追う</p>
+		<p class="meta">📅 作成: 2026-08-22 / 更新: 2026-08-22 ／ 対象: JavaScript の基本文法を知っている経験者</p>
+	</div>
+</div>
+
+<div class="wrap">
+
+<h2>この章で何ができるようになるか</h2>
+
+<ul>
+	<li>PowerShell が<strong>何を解決するために作られたのか</strong>を自分の言葉で説明できる</li>
+	<li><strong>テキストパイプとオブジェクトパイプの違い</strong>を、具体例を挙げて説明できる</li>
+	<li>ある作業に対して <strong>PowerShell / Bash / Node.js のどれが向いているか</strong>を判断できる</li>
+</ul>
+
+<div class="callout">
+<strong>この章にコードを書く作業はありません。</strong><br>
+環境構築もまだ不要です。PowerShell という道具の<strong>成り立ちと立ち位置</strong>を掴むことが目的で、実際に手を動かすのは 02 章以降になります。急ぐ場合はこの章を飛ばしても後続に支障はありませんが、<strong>「なぜコマンドがこの形なのか」が腑に落ちるのはこの章</strong>です。
+</div>
+
+<nav class="toc">
+	<strong>目次</strong>
+	<ol>
+		<li class="ch01"><a href="#ch01">Windows Command Shell の限界</a></li>
+		<li class="ch02"><a href="#ch02">なぜ PowerShell が必要だったのか</a></li>
+		<li class="ch03"><a href="#ch03">PowerShell の設計思想</a></li>
+		<li class="ch04"><a href="#ch04">他のスクリプト言語との立場</a></li>
+	</ol>
+</nav>
+
+<!-- ============ 01.1 ============ -->
+<section class="ch01" id="ch01">
+<h1>01.1 Windows Command Shell の限界</h1>
+
+<h2>DOS と cmd.exe の時代（1980年代〜2000年代初期）</h2>
+
+<p>Windows が登場する前、パーソナルコンピュータは <strong>MS-DOS</strong> で動いていました。DOS のコマンドシェル（COMMAND.COM）と、その後継の <code>cmd.exe</code> は、<strong>テキストベースの単純なコマンド実行ツール</strong>でした。</p>
+
+<h3>DOS / cmd.exe の基本</h3>
+
+<pre><code>C:\&gt; dir
+C:\&gt; copy file.txt backup.txt
+C:\&gt; del oldfile.txt</code></pre>
+
+<p>これらは「単純なテキスト処理」しかできませんでした。つまり:</p>
+
+<ul>
+	<li><span class="badge b-bad">制約</span><strong>データ型がない</strong> — すべて文字列として扱われる</li>
+	<li><span class="badge b-bad">制約</span><strong>パイプが弱い</strong> — テキスト行を渡すだけで、構造化データを扱えない</li>
+	<li><span class="badge b-bad">制約</span><strong>スクリプト言語としての機能が貧弱</strong> — 変数、関数、制御構文は限定的</li>
+	<li><span class="badge b-bad">制約</span><strong>Windows システム機能へのアクセスが難しい</strong> — API を直接呼び出せず、外部プログラムに依存</li>
+</ul>
+
+<h3>DOS での問題例</h3>
+
+<pre><code>REM 変数はあるが文字列のみ
+set name=PowerShell
+echo %name%
+
+REM パイプは単純なテキスト行処理
+dir | find "test"</code></pre>
+
+<figure>
+<svg viewBox="0 0 780 168" role="img" aria-label="DOS のパイプはテキスト行しか流れない">
+	<defs>
+		<linearGradient id="g-01-1a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/>
+			<stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="14" y="38" width="172" height="66" rx="9" fill="url(#g-01-1a)"/>
+	<text x="100" y="70" fill="#fff" font-size="18" font-weight="700" text-anchor="middle">dir</text>
+	<text x="100" y="90" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.88">ファイル一覧を出力</text>
+
+	<text x="228" y="60" fill="var(--accent)" font-size="18" font-weight="700" text-anchor="middle">|</text>
+	<line x1="192" y1="71" x2="252" y2="71" stroke="var(--accent)" stroke-width="2.5"/>
+	<polygon points="252,64 268,71 252,78" fill="var(--accent)"/>
+
+	<rect x="276" y="38" width="230" height="66" rx="9" fill="#fff" stroke="var(--accent2)" stroke-width="2" stroke-dasharray="6 4"/>
+	<text x="391" y="64" fill="var(--ink)" font-size="12" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace" text-anchor="middle">2026/08/22  09:41  1,024 test.txt</text>
+	<text x="391" y="88" fill="#a51f22" font-size="12" font-weight="700" text-anchor="middle">ただの文字列（型なし）</text>
+
+	<line x1="512" y1="71" x2="572" y2="71" stroke="var(--accent)" stroke-width="2.5"/>
+	<polygon points="572,64 588,71 572,78" fill="var(--accent)"/>
+
+	<rect x="596" y="38" width="172" height="66" rx="9" fill="url(#g-01-1a)"/>
+	<text x="682" y="70" fill="#fff" font-size="18" font-weight="700" text-anchor="middle">find "test"</text>
+	<text x="682" y="90" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.88">文字位置を数えて切出し</text>
+
+	<text x="391" y="140" fill="var(--ink-soft)" font-size="13" text-anchor="middle">受け手は「何列目が何を意味するか」を自分で知っていなければならない</text>
+</svg>
+<figcaption>図 01.1 — DOS のパイプは構造を失ったテキスト行だけを渡す</figcaption>
+</figure>
+
+<h2>Unix/Linux の Bash が強かった理由</h2>
+
+<p>同じ時期、Unix/Linux の <strong>Bash</strong>（Bourne Again Shell）は以下の点で勝っていました。</p>
+
+<ul>
+	<li><span class="badge b-good">強み</span>パイプとリダイレクトが強力 — テキストベースだが、組み合わせで複雑な処理が可能</li>
+	<li><span class="badge b-good">強み</span>スクリプト言語としての機能が豊富 — 制御構文、関数、配列など</li>
+	<li><span class="badge b-good">強み</span>Unix の哲学 — 小さなツールを組み合わせる設計</li>
+</ul>
+
+<div class="callout">
+<strong>Windows には強力なシェル/スクリプト環境がなかった。</strong><br>
+Perl や VBScript は使えましたが、OS 標準ではなく、多くの環境では導入されていません。「標準で入っている強いシェル」の不在が、後の PowerShell を生む直接の動機になります。
+</div>
+
+<div class="callout">
+<strong>PowerShell が初めての人へ</strong><br>
+<strong>シェル</strong>とは、キーボードで打った命令を OS に伝えるプログラムのことです。Windows の「コマンドプロンプト」の黒い画面そのものではなく、<strong>その中で命令を解釈している部分</strong>がシェルです（画面側は「ターミナル」と呼びます）。<br>
+<strong>パイプ</strong>（<code>|</code>）は、あるコマンドの出力を次のコマンドの入力に横流しする仕組みです。<code>dir | find "test"</code> なら「一覧を出して、その中から test を含む行だけ拾う」という意味になります。この章の主題は<strong>「パイプで何が流れるか」</strong>です。
+</div>
+</section>
+
+<!-- ============ 01.2 ============ -->
+<section class="ch02" id="ch02">
+<h1>01.2 なぜ PowerShell が必要だったのか</h1>
+
+<h2>マイクロソフトの課題（2000年代）</h2>
+
+<p>Windows の利用が拡大する中、マイクロソフトは以下の課題に直面していました。</p>
+
+<ul>
+	<li><strong>システム管理が手作業に頼っていた</strong> — GUI ツールばかりで、自動化・スクリプト化ができない</li>
+	<li><strong>Unix/Linux との競争で劣っていた</strong> — Bash のようなシェル環境がない</li>
+	<li><strong>API へのアクセスが面倒</strong> — Windows の機能（WMI、Registry など）を簡単に操作できない</li>
+	<li><strong>複数プラットフォームで一貫したツール設計が必要</strong> — Exchange、SQL Server など複数製品の管理統一</li>
+</ul>
+
+<h2>PowerShell の登場（2006年）</h2>
+
+<div class="callout">
+<strong>Bash の強力さに、Windows の深い機能アクセスを組み合わせる。</strong><br>
+これが PowerShell の設計方針です。テキスト処理の便利さを取り込みつつ、.NET を土台にして Windows の内部まで手が届くようにしました。
+</div>
+
+<figure>
+<svg viewBox="0 0 780 246" role="img" aria-label="PowerShell は Bash の強みと Windows/.NET の機能を合流させた">
+	<defs>
+		<linearGradient id="g-01-2a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(45,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(45,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-01-2b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(258,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(258,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-01-2c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/>
+			<stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="34" y="14" width="288" height="82" rx="10" fill="url(#g-01-2a)"/>
+	<text x="178" y="44" fill="#fff" font-size="16" font-weight="700" text-anchor="middle">Bash から受け継いだもの</text>
+	<text x="178" y="66" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">パイプ ／ 制御構文 ／ 小さなツールの組み合わせ</text>
+	<text x="178" y="84" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">リダイレクト ／ スクリプトとしての表現力</text>
+
+	<rect x="458" y="14" width="288" height="82" rx="10" fill="url(#g-01-2b)"/>
+	<text x="602" y="44" fill="#fff" font-size="16" font-weight="700" text-anchor="middle">Windows / .NET から得たもの</text>
+	<text x="602" y="66" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">WMI ／ レジストリ ／ COM ／ サービス管理</text>
+	<text x="602" y="84" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">型システム ／ 例外処理 ／ クラスライブラリ</text>
+
+	<path d="M178 100 V 132 H 330" fill="none" stroke="hsl(45,58%,45%)" stroke-width="2.5"/>
+	<polygon points="330,125 346,132 330,139" fill="hsl(45,58%,45%)"/>
+	<path d="M602 100 V 132 H 450" fill="none" stroke="hsl(258,58%,50%)" stroke-width="2.5"/>
+	<polygon points="450,125 434,132 450,139" fill="hsl(258,58%,50%)"/>
+
+	<rect x="252" y="150" width="276" height="72" rx="10" fill="url(#g-01-2c)"/>
+	<text x="390" y="182" fill="#fff" font-size="21" font-weight="700" text-anchor="middle">PowerShell</text>
+	<text x="390" y="204" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">オブジェクトを流すシェル（2006年）</text>
+</svg>
+<figcaption>図 01.2 — 2つの系譜の合流点として設計された</figcaption>
+</figure>
+
+<h3>PowerShell が解決したこと</h3>
+
+<pre><code># オブジェクト指向のパイプ
+Get-Process | Where-Object { $_.Memory -gt 100MB } | Stop-Process
+
+# Windows API への直接アクセス
+Get-WmiObject Win32_OperatingSystem | Select-Object Caption, Version
+
+# 簡潔なスクリプト構文
+foreach ($file in Get-ChildItem) {
+    Write-Host $file.Name
+}</code></pre>
+
+<p>重要な点は3つです。</p>
+
+<ul>
+	<li><span class="badge b-good">要点</span><strong>オブジェクト指向の設計</strong> — パイプで渡すのは「テキスト行」ではなく「オブジェクト」</li>
+	<li><span class="badge b-good">要点</span><strong>Windows との一体化</strong> — .NET Framework を背景に、深い Windows 機能アクセス</li>
+	<li><span class="badge b-good">要点</span><strong>管理者向けに最適化</strong> — システム管理者が欲しい機能を最優先</li>
+</ul>
+
+<div class="callout">
+<strong>PowerShell が初めての人へ</strong><br>
+<strong>.NET Framework</strong> は Microsoft が作った巨大な部品の集まりです。ファイル操作・日付計算・暗号化・ネットワーク通信といった機能が最初から用意されており、PowerShell はこれを土台にしています。JavaScript でいえば、標準ライブラリと npm パッケージ群がまとめて OS に組み込まれているような状態です。<br>
+<strong>WMI</strong> は Windows 自身の情報（OS のバージョン、ディスクの空き容量、動いているサービスなど）を問い合わせる窓口です。GUI の画面をクリックして調べていた情報を、コマンドで取り出せるようになります。
+</div>
+</section>
+
+<!-- ============ 01.3 ============ -->
+<section class="ch03" id="ch03">
+<h1>01.3 PowerShell の設計思想</h1>
+
+<h2>言語ファミリーからの影響</h2>
+
+<p>PowerShell は以下のいくつかの言語から影響を受けています。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>言語</th><th>影響</th></tr>
+<tr><td class="nowrap"><strong>Bash</strong> から</td><td>パイプとリダイレクト、スクリプト言語としての制御構文、コマンドの並列・条件実行</td></tr>
+<tr><td class="nowrap"><strong>C# / .NET</strong> から</td><td>オブジェクト指向、型システムと例外処理、.NET ライブラリとの統合</td></tr>
+<tr><td class="nowrap"><strong>Perl / Ruby</strong> から</td><td>正規表現の標準化、簡潔な文法、スクリプト言語としての柔軟性</td></tr>
+<tr><td class="nowrap"><strong>VBScript</strong> から</td><td>Windows システムオブジェクトとの統合、WMI への直接アクセス、既存 Windows 管理ツールとの互換性</td></tr>
+</table>
+</div>
+
+<h2>「Cmdlet」という概念</h2>
+
+<p>PowerShell は <code>cmdlet</code>（コマンドレット）という小さな専門コマンドを大量に提供します。これは Bash の哲学「小さなツールを組み合わせる」を継承しつつ、<strong>オブジェクト指向</strong>にしたものです。</p>
+
+<h3>Bash（テキスト処理）</h3>
+
+<pre><code>$ ps aux | grep node | awk '{print $2}' | xargs kill</code></pre>
+
+<h3>PowerShell（オブジェクト処理）</h3>
+
+<pre><code>Get-Process -Name node | Stop-Process</code></pre>
+
+<figure>
+<svg viewBox="0 0 780 268" role="img" aria-label="テキストパイプとオブジェクトパイプの違い">
+	<defs>
+		<linearGradient id="g-01-3a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(30,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(30,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-01-3b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(212,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(212,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<text x="186" y="20" fill="hsl(30,78%,32%)" font-size="15" font-weight="700" text-anchor="middle">Bash — テキストパイプ</text>
+	<text x="594" y="20" fill="hsl(212,78%,32%)" font-size="15" font-weight="700" text-anchor="middle">PowerShell — オブジェクトパイプ</text>
+
+	<rect x="56" y="34" width="260" height="46" rx="8" fill="url(#g-01-3a)"/>
+	<text x="186" y="63" fill="#fff" font-size="14" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">ps aux</text>
+	<line x1="186" y1="80" x2="186" y2="98" stroke="hsl(30,58%,45%)" stroke-width="2.5"/>
+	<polygon points="179,98 186,114 193,98" fill="hsl(30,58%,45%)"/>
+
+	<rect x="56" y="116" width="260" height="52" rx="8" fill="#fff" stroke="hsl(30,58%,65%)" stroke-width="2" stroke-dasharray="6 4"/>
+	<text x="186" y="138" fill="var(--ink)" font-size="11.5" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace" text-anchor="middle">root 1823 0.4 node server.js</text>
+	<text x="186" y="158" fill="#a51f22" font-size="11.5" font-weight="700" text-anchor="middle">列を数えて awk で切り出す</text>
+	<line x1="186" y1="168" x2="186" y2="186" stroke="hsl(30,58%,45%)" stroke-width="2.5"/>
+	<polygon points="179,186 186,202 193,186" fill="hsl(30,58%,45%)"/>
+
+	<rect x="56" y="204" width="260" height="46" rx="8" fill="url(#g-01-3a)"/>
+	<text x="186" y="233" fill="#fff" font-size="14" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">xargs kill</text>
+
+	<rect x="464" y="34" width="260" height="46" rx="8" fill="url(#g-01-3b)"/>
+	<text x="594" y="63" fill="#fff" font-size="14" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Get-Process</text>
+	<line x1="594" y1="80" x2="594" y2="98" stroke="hsl(212,58%,45%)" stroke-width="2.5"/>
+	<polygon points="587,98 594,114 601,98" fill="hsl(212,58%,45%)"/>
+
+	<rect x="464" y="116" width="260" height="52" rx="8" fill="#fff" stroke="hsl(212,58%,65%)" stroke-width="2"/>
+	<text x="594" y="136" fill="hsl(212,78%,30%)" font-size="12" font-weight="700" text-anchor="middle">Process オブジェクト</text>
+	<text x="594" y="156" fill="var(--ink-soft)" font-size="11.5" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">.Id  .Name  .Memory</text>
+	<line x1="594" y1="168" x2="594" y2="186" stroke="hsl(212,58%,45%)" stroke-width="2.5"/>
+	<polygon points="587,186 594,202 601,186" fill="hsl(212,58%,45%)"/>
+
+	<rect x="464" y="204" width="260" height="46" rx="8" fill="url(#g-01-3b)"/>
+	<text x="594" y="233" fill="#fff" font-size="14" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Stop-Process</text>
+
+	<line x1="390" y1="30" x2="390" y2="254" stroke="var(--line)" stroke-width="2" stroke-dasharray="4 5"/>
+</svg>
+<figcaption>図 01.3 — 途中で構造が失われるか、最後まで保たれるか</figcaption>
+</figure>
+
+<div class="callout">
+<strong><code>Get-Process</code> が返すのは「テキスト行」ではなく「Process オブジェクト」。</strong><br>
+そのため <code>Stop-Process</code> はプロセスの仕様を直接理解でき、列の位置を数えたり文字列を切り出したりする必要がありません。より安全で効率的です。
+</div>
+
+<div class="callout">
+<strong>PowerShell が初めての人へ</strong><br>
+ここでいう<strong>オブジェクト</strong>は、JavaScript のオブジェクトとほぼ同じ考え方です。「名前の付いた項目の集まり」で、<code>$p.Name</code>、<code>$p.Id</code> のようにドットで中身を取り出せます。<br>
+違いは<strong>それがパイプを流れる</strong>という点です。Bash では <code>root 1823 0.4 node</code> という<strong>1行の文字列</strong>が流れるので、受け取った側は「2番目の数字が PID だ」と知っていて切り出す必要があります。PowerShell では最初から <code>.Id</code> という名前で取り出せるので、列を数える作業自体が消えます。
+</div>
+</section>
+
+<!-- ============ 01.4 ============ -->
+<section class="ch04" id="ch04">
+<h1>01.4 他のスクリプト言語との立場</h1>
+
+<h2>PowerShell、Bash、JavaScript（Node.js）の違い</h2>
+
+<figure>
+<svg viewBox="0 0 780 230" role="img" aria-label="PowerShell・Bash・Node.js の守備範囲">
+	<defs>
+		<linearGradient id="g-01-4a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(212,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(212,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-01-4b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(30,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(30,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-01-4c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(128,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(128,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="14" y="14" width="240" height="126" rx="10" fill="url(#g-01-4a)"/>
+	<text x="134" y="46" fill="#fff" font-size="18" font-weight="700" text-anchor="middle">PowerShell</text>
+	<text x="134" y="72" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">Windows システム管理</text>
+	<text x="134" y="92" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">.NET 統合 ／ 自動化</text>
+	<text x="134" y="112" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">オブジェクトパイプ</text>
+	<text x="134" y="132" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.75">△ 非同期・Web は後発</text>
+
+	<rect x="270" y="14" width="240" height="126" rx="10" fill="url(#g-01-4b)"/>
+	<text x="390" y="46" fill="#fff" font-size="18" font-weight="700" text-anchor="middle">Bash</text>
+	<text x="390" y="72" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">Unix/Linux の管理</text>
+	<text x="390" y="92" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">テキスト処理 ／ 移植性</text>
+	<text x="390" y="112" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">小ツールの組み合わせ</text>
+	<text x="390" y="132" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.75">△ 大規模スクリプトは苦手</text>
+
+	<rect x="526" y="14" width="240" height="126" rx="10" fill="url(#g-01-4c)"/>
+	<text x="646" y="46" fill="#fff" font-size="18" font-weight="700" text-anchor="middle">Node.js</text>
+	<text x="646" y="72" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">Web ／ API サーバー</text>
+	<text x="646" y="92" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">非同期 ／ JSON 処理</text>
+	<text x="646" y="112" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">大規模アプリ開発</text>
+	<text x="646" y="132" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.75">△ OS 機能へは間接的</text>
+
+	<rect x="14" y="160" width="752" height="56" rx="10" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+	<text x="390" y="182" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="middle">流れるデータの型が、その言語の得意分野を決めている</text>
+	<text x="134" y="204" fill="hsl(212,78%,32%)" font-size="12" font-weight="600" text-anchor="middle">オブジェクト</text>
+	<text x="390" y="204" fill="hsl(30,78%,32%)" font-size="12" font-weight="600" text-anchor="middle">テキスト行</text>
+	<text x="646" y="204" fill="hsl(128,78%,25%)" font-size="12" font-weight="600" text-anchor="middle">JSON / Promise</text>
+</svg>
+<figcaption>図 01.4 — 3言語の守備範囲と、パイプを流れるデータの型</figcaption>
+</figure>
+
+<h3>Bash（Unix/Linux）</h3>
+<ul>
+	<li><span class="badge b-good">得意</span>テキスト処理、ファイル操作、システム管理（Unix的）、小ツール組み合わせ</li>
+	<li><span class="badge b-bad">不得意</span>オブジェクト指向、大規模スクリプト、Windows 機能アクセス</li>
+	<li><span class="badge b-none">特徴</span>テキストベースのパイプ、シンプルな構文、ポータビリティ</li>
+</ul>
+
+<h3>JavaScript / Node.js</h3>
+<ul>
+	<li><span class="badge b-good">得意</span>非同期処理、Web API、JSON 処理、大規模アプリケーション開発</li>
+	<li><span class="badge b-bad">不得意</span>システムコマンドの実行（やや手作業）、OS 機能の直接アクセス</li>
+	<li><span class="badge b-none">特徴</span>イベント駆動、非同期性、フロントエンド／バックエンド兼用</li>
+</ul>
+
+<h3>PowerShell（Windows）</h3>
+<ul>
+	<li><span class="badge b-good">得意</span>Windows システム管理、.NET 統合、オブジェクト指向スクリプティング、自動化</li>
+	<li><span class="badge b-bad">不得意</span>非同期処理（後発）、大規模アプリケーション開発、Web リアルタイムアプリ</li>
+	<li><span class="badge b-none">特徴</span>オブジェクトベースパイプ、Windows 統合、Cmdlet による標準化</li>
+</ul>
+
+<h2>実例で見る使い分け</h2>
+
+<h3>PowerShell が向いている場面</h3>
+
+<pre><code># Windows サーバーの一括管理
+$servers = Get-Content servers.txt
+foreach ($server in $servers) {
+    Invoke-Command -ComputerName $server -ScriptBlock {
+        Get-Process | Where-Object {$_.Memory -gt 500MB}
+    }
+}
+
+# ファイルの一括操作（メタデータ含む）
+Get-ChildItem *.log | ForEach-Object {
+    if ($_.Length -gt 10MB) {
+        Remove-Item $_
+    }
+}</code></pre>
+
+<h3>Node.js が向いている場面</h3>
+
+<pre><code>// Web サーバー + リアルタイム処理
+const express = require('express');
+const app = express();
+
+app.get('/api/data', async (req, res) =&gt; {
+    const data = await fetchDataAsync();
+    res.json(data);
+});
+
+// 複数ファイルの並列処理（Promise.all）
+Promise.all([
+    fs.promises.readFile('file1.txt'),
+    fs.promises.readFile('file2.txt'),
+    fs.promises.readFile('file3.txt')
+]).then(files =&gt; { /* ... */ });</code></pre>
+
+<h2>重要な思想の違い</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>観点</th><th>PowerShell</th><th>Bash</th><th>Node.js</th></tr>
+<tr><td class="nowrap"><strong>データ流</strong></td><td>オブジェクト</td><td>テキスト行</td><td>JavaScript オブジェクト</td></tr>
+<tr><td class="nowrap"><strong>主要用途</strong></td><td>OS 管理・自動化</td><td>OS 管理・テキスト処理</td><td>Web・非同期処理</td></tr>
+<tr><td class="nowrap"><strong>プラットフォーム</strong></td><td>Windows 主体（7以降クロス）</td><td>Unix/Linux</td><td>任意（サーバー多い）</td></tr>
+<tr><td class="nowrap"><strong>非同期性</strong></td><td>限定的（後発）</td><td>後処理の組み合わせ</td><td>標準機能（async/await）</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>PowerShell が初めての人へ — 結局どれを使えばいいのか</strong><br>
+迷ったら<strong>「対象が何か」</strong>で決めてください。<strong>Windows という機械そのもの</strong>を操作したいなら PowerShell、<strong>Linux サーバー</strong>の上での作業なら Bash、<strong>Web やネット越しのデータ</strong>を扱うなら Node.js です。<br>
+この3つは競合ではなく<strong>併用するもの</strong>です。PowerShell から <code>node script.js</code> を呼ぶことも、その逆も普通に行われます。
+</div>
+</section>
+
+<h2>この章のまとめ</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>問い</th><th>答え</th></tr>
+<tr><td class="nowrap">なぜ PowerShell が作られたのか</td><td>Windows に「標準で入っている強力なシェル」が存在せず、システム管理を自動化できなかったため</td></tr>
+<tr><td class="nowrap">Bash から受け継いだもの</td><td>パイプ・リダイレクト・制御構文・「小さなツールを組み合わせる」思想</td></tr>
+<tr><td class="nowrap">Bash と決定的に違う点</td><td>パイプを流れるのが<strong>テキスト行ではなくオブジェクト</strong>であること</td></tr>
+<tr><td class="nowrap">Cmdlet とは</td><td>「動詞-名詞」の名前を持つ小さな専門コマンド。<code>Get-Process</code>、<code>Stop-Process</code> など</td></tr>
+<tr><td class="nowrap">Node.js との住み分け</td><td>OS の操作は PowerShell、Web と非同期は Node.js。併用が前提</td></tr>
+</table>
+</div>
+
+<h3>覚えておく3点</h3>
+
+<ol>
+	<li><strong>PowerShell は「Bash の強力さ ＋ Windows への深いアクセス」を狙って設計された</strong>。どちらか一方の性質だけを見ると理解を誤る</li>
+	<li><strong>パイプを流れるのはオブジェクト</strong>。だから <code>awk</code> で列を切り出すような作業が要らない。これが Bash との最大の違い</li>
+	<li><strong>コマンド名は「動詞-名詞」で統一されている</strong>。<code>Get-</code> は取得、<code>Set-</code> は設定、<code>New-</code> は作成。名前から機能が推測できる</li>
+</ol>
+
+<div class="callout">
+<strong>次章の予告 — 02. ファイル形式と文字コード</strong><br>
+ここからは実際にスクリプトを書く準備に入ります。最初の関門が<strong>文字コード</strong>です。PowerShell のスクリプトファイル（<code>.ps1</code>）は「BOM 付き UTF-8 ＋ CRLF」で保存する必要があり、これを外すと<strong>日本語が文字化けします</strong>。しかもその条件は Windows PowerShell 5.1 と PowerShell 7 で異なります。なぜそうなるのかを、バイト列のレベルから解きほぐします。
+</div>
+
+</div>
+
+<footer>
+	<p>PowerShell 学習資料 01 ／ 次章: <a href="02-ファイル形式.html">02. ファイル形式と文字コード</a></p>
+</footer>
+
+</body>
+</html>

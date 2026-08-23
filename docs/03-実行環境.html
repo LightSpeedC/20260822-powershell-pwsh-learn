@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>03. 実行環境と実行ポリシー</title>
+<style>
+	:root {
+		--navy1: #12224d;
+		--navy2: #2f5fbf;
+		--ink: #1c2330;
+		--ink-soft: #4a5568;
+		--line: #d9dfe8;
+		--code-bg: #f4f6fa;
+
+		/* 章クラス(.chNN)の外に置かれた要素用の既定値 */
+		--accent: var(--navy1);
+		--accent2: var(--navy2);
+		--soft: #f2f5fb;
+	}
+
+	/* 章ごとの虹色アクセント (H: 280 → 0, 280°を4章に均等分割 = 93.3°刻み) */
+	.ch01 { --accent: hsl(280,78%,25%);   --accent2: hsl(280,58%,65%);   --soft: hsl(280,28%,95%); }
+	.ch02 { --accent: hsl(186.7,78%,25%); --accent2: hsl(186.7,58%,65%); --soft: hsl(186.7,28%,95%); }
+	.ch03 { --accent: hsl(93.3,78%,25%);  --accent2: hsl(93.3,58%,65%);  --soft: hsl(93.3,28%,95%); }
+	.ch04 { --accent: hsl(0,78%,25%);     --accent2: hsl(0,58%,65%);     --soft: hsl(0,28%,95%); }
+
+	* { box-sizing: border-box; }
+
+	body {
+		margin: 0;
+		padding: 0 0 60px;
+		background: #ffffff;
+		color: var(--ink);
+		font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", "Meiryo", sans-serif;
+		line-height: 1.85;
+		font-size: 15.5px;
+	}
+
+	.wrap { max-width: 1400px; margin: 0 auto; padding: 0 30px; }
+
+	/* タイトルバー */
+	.titlebar {
+		background: linear-gradient(135deg, var(--navy1) 0%, var(--navy2) 100%);
+		color: #fff;
+		padding: 34px 30px 30px;
+		box-shadow: 0 6px 18px rgba(18,34,77,0.28);
+	}
+	.titlebar .inner { max-width: 1400px; margin: 0 auto; }
+	.titlebar h1 {
+		margin: 0 0 10px;
+		font-size: 2.1em;
+		letter-spacing: 0.02em;
+		color: #fff;
+	}
+	.titlebar p { margin: 4px 0; font-size: 0.92em; color: #d8e4ff; }
+	.titlebar .meta { font-size: 0.84em; color: #b9cdf5; }
+	.titlebar code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+
+	/* 目次 */
+	nav.toc {
+		background: linear-gradient(180deg, #f2f5fb 0%, #ffffff 100%);
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		padding: 16px 22px;
+		margin: 28px 0;
+		box-shadow: 0 2px 8px rgba(30,50,90,0.07);
+	}
+	nav.toc strong { display: block; color: var(--navy1); margin-bottom: 10px; }
+	nav.toc ol {
+		margin: 0;
+		padding-left: 0;
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		counter-reset: toc;
+	}
+	nav.toc li { counter-increment: toc; margin: 0; }
+	nav.toc a {
+		display: -webkit-box;
+		width: 310px;
+		max-width: 100%;
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		text-decoration: none;
+		text-align: left;
+		border-radius: 6px;
+		padding: 7px 10px;
+		font-size: 0.88em;
+		font-weight: 600;
+		line-height: 1.4;
+		white-space: normal;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		box-shadow: 0 1px 4px rgba(20,30,60,0.18);
+	}
+	nav.toc a::before { content: "03." counter(toc) " "; opacity: 0.85; }
+	nav.toc a:hover { text-decoration: underline; }
+
+	/* 章 */
+	section {
+		background: linear-gradient(180deg, var(--soft) 0%, #ffffff 42%);
+		border-radius: 12px;
+		padding: 4px 26px 26px;
+		margin: 34px 0;
+		border: 1px solid var(--line);
+	}
+
+	section h1 {
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		font-size: 1.5em;
+		margin: 26px 0 20px;
+		padding: 14px 20px;
+		border-radius: 9px;
+		box-shadow: 0 5px 14px rgba(30,40,70,0.28);
+	}
+	section h1 code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+
+	h2 {
+		font-size: 1.16em;
+		color: var(--accent);
+		border-left: 7px solid var(--accent);
+		background: linear-gradient(90deg, var(--soft) 0%, rgba(255,255,255,0) 88%);
+		padding: 6px 12px;
+		margin: 30px 0 12px;
+		border-radius: 0 6px 6px 0;
+	}
+
+	h3 {
+		font-size: 1.02em;
+		color: var(--accent);
+		margin: 20px 0 8px;
+		padding-bottom: 3px;
+		border-bottom: 2px dotted var(--accent2);
+		display: inline-block;
+	}
+
+	p { margin: 10px 0; }
+	ul, ol { margin: 10px 0; padding-left: 1.6em; }
+	li { margin: 6px 0; }
+
+	code {
+		background: var(--code-bg);
+		border: 1px solid var(--line);
+		border-radius: 4px;
+		padding: 1px 6px;
+		font-family: "BIZ UDゴシック", "ＭＳ ゴシック", Consolas, "Cascadia Mono", monospace;
+		font-size: 0.9em;
+		color: #17335f;
+	}
+
+	pre {
+		background: linear-gradient(180deg, #f7f9fd 0%, #eef2f9 100%);
+		border: 1px solid var(--line);
+		border-left: 5px solid var(--accent2);
+		border-radius: 8px;
+		padding: 13px 16px;
+		overflow-x: auto;
+		font-size: 0.88em;
+		line-height: 1.6;
+	}
+	pre code { background: none; border: none; padding: 0; color: #1b2b46; }
+
+	.table-wrap { overflow-x: auto; margin: 16px 0; }
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 0.93em;
+		box-shadow: 0 2px 7px rgba(40,55,90,0.12);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+	th {
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		text-align: left;
+		padding: 9px 12px;
+		font-weight: 600;
+	}
+	th code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+	td { padding: 9px 12px; border-bottom: 1px solid var(--line); background: #fff; vertical-align: top; }
+	tr:nth-child(even) td { background: #fafbfe; }
+	td.nowrap { white-space: nowrap; }
+	td.mono { font-family: "BIZ UDゴシック", "ＭＳ ゴシック", Consolas, monospace; white-space: nowrap; }
+
+	/* バッジ */
+	.badge {
+		display: inline-block;
+		font-size: 0.78em;
+		font-weight: 700;
+		color: #fff;
+		border-radius: 4px;
+		padding: 1px 9px;
+		margin-right: 7px;
+		letter-spacing: 0.04em;
+		white-space: nowrap;
+	}
+	.b-good { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
+	.b-bad  { background: linear-gradient(100deg, #a51f22, #e05a5c); }
+	.b-none { background: linear-gradient(100deg, #5a6472, #97a1ae); }
+	.b-warn { background: linear-gradient(100deg, #b8620a, #f0a548); }
+	.b-ps7  { background: linear-gradient(100deg, #1a5fa8, #4d9ae0); }
+	.b-ps51 { background: linear-gradient(100deg, #5b2d82, #9a6bc4); }
+
+	.callout {
+		background: linear-gradient(180deg, var(--soft) 0%, #ffffff 100%);
+		border: 1px solid var(--accent2);
+		border-left: 6px solid var(--accent);
+		border-radius: 0 8px 8px 0;
+		padding: 12px 18px;
+		margin: 16px 0;
+	}
+	.callout strong { color: var(--accent); }
+
+	/* SVG図 */
+	figure { margin: 20px 0; text-align: center; }
+	figure svg {
+		max-width: 100%;
+		height: auto;
+		font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", "Meiryo", sans-serif;
+	}
+	figcaption { font-size: 0.84em; color: var(--ink-soft); margin-top: 6px; }
+
+	footer {
+		max-width: 1400px;
+		margin: 40px auto 0;
+		padding: 18px 30px 0;
+		border-top: 2px solid var(--line);
+		color: var(--ink-soft);
+		font-size: 0.86em;
+	}
+	footer a { color: var(--navy2); }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>03. 実行環境と実行ポリシー</h1>
+		<p>5.1 と 7 はなぜ共存するのか、なぜ既定でスクリプトが動かないのか</p>
+		<p class="meta">📅 作成: 2026-08-22 / 更新: 2026-08-22 ／ 対象: Windows PowerShell 5.1 ＋ PowerShell 7</p>
+	</div>
+</div>
+
+<div class="wrap">
+
+<h2>この章で何ができるようになるか</h2>
+
+<ul>
+	<li>自分の環境に<strong>どのバージョンが入っていて、いま何で動いているか</strong>を確認できる</li>
+	<li><strong>実行ポリシーに阻まれたときの正しい対処</strong>を選べる（闇雲に緩めない）</li>
+	<li>02 章で決めた文字コードの規約を、<strong>VS Code の設定で自動化できる</strong></li>
+</ul>
+
+<div class="callout">
+<strong>この章を終えると、書いたスクリプトが実際に動くようになります。</strong><br>
+02 章まではファイルの作り方の話でした。ここでは<strong>それを実行する側の環境</strong>を整えます。「スクリプトが動かない」の原因は、ほぼこの章のどれかに当てはまります。
+</div>
+
+<nav class="toc">
+	<strong>目次</strong>
+	<ol>
+		<li class="ch01"><a href="#ch01">5.1 と 7 — 2つの PowerShell</a></li>
+		<li class="ch02"><a href="#ch02">実行ポリシー — なぜ動かないのか</a></li>
+		<li class="ch03"><a href="#ch03">プロファイルとモジュール</a></li>
+		<li class="ch04"><a href="#ch04">VS Code で編集環境を固める</a></li>
+	</ol>
+</nav>
+
+<!-- ============ 03.1 ============ -->
+<section class="ch01" id="ch01">
+<h1>03.1 5.1 と 7 — 2つの PowerShell</h1>
+
+<h2>まず名前の整理から</h2>
+
+<p>紛らわしいのですが、<strong>名前で世代が分かれています</strong>。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>呼び名</th><th>バージョン</th><th>実行ファイル</th><th>本資料での表記</th></tr>
+<tr><td class="nowrap"><strong>Windows PowerShell</strong></td><td class="nowrap">1.0 〜 5.1</td><td class="mono">powershell.exe</td><td class="nowrap"><span class="badge b-ps51">5.1</span></td></tr>
+<tr><td class="nowrap"><strong>PowerShell</strong></td><td class="nowrap">6.0 〜 7.x</td><td class="mono">pwsh.exe</td><td class="nowrap"><span class="badge b-ps7">pwsh 7</span></td></tr>
+</table>
+</div>
+
+<p>「Windows」が付くほうが<strong>古い世代</strong>です。6.0 でクロスプラットフォーム化したときに「Windows」が取れました。実行ファイル名も <code>powershell.exe</code> から <code>pwsh.exe</code> に変わっています。</p>
+
+<h2>両者は別のプログラムとして共存する</h2>
+
+<p>ここが重要です。<strong>7 を入れても 5.1 は消えません</strong>。上書きではなく、別の場所に別のプログラムとして入ります。</p>
+
+<figure>
+<svg viewBox="0 0 780 268" role="img" aria-label="5.1 と 7 は別プログラムとして共存する">
+	<defs>
+		<linearGradient id="g-03-1a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(275,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(275,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-03-1b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(211,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(211,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="14" y="14" width="368" height="58" rx="9" fill="url(#g-03-1a)"/>
+	<text x="198" y="40" fill="#fff" font-size="16" font-weight="700" text-anchor="middle">Windows PowerShell 5.1</text>
+	<text x="198" y="60" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">Windows に最初から入っている</text>
+
+	<rect x="398" y="14" width="368" height="58" rx="9" fill="url(#g-03-1b)"/>
+	<text x="582" y="40" fill="#fff" font-size="16" font-weight="700" text-anchor="middle">PowerShell 7</text>
+	<text x="582" y="60" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">自分で入れる</text>
+
+	<rect x="14" y="86" width="368" height="72" rx="8" fill="#fff" stroke="hsl(275,58%,60%)" stroke-width="2"/>
+	<text x="198" y="108" fill="hsl(275,78%,30%)" font-size="12" font-weight="700" text-anchor="middle">実行ファイル</text>
+	<text x="198" y="128" fill="var(--ink)" font-size="11.5" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">C:\Windows\System32\</text>
+	<text x="198" y="146" fill="var(--ink)" font-size="11.5" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">WindowsPowerShell\v1.0\powershell.exe</text>
+
+	<rect x="398" y="86" width="368" height="72" rx="8" fill="#fff" stroke="hsl(211,58%,60%)" stroke-width="2"/>
+	<text x="582" y="108" fill="hsl(211,78%,30%)" font-size="12" font-weight="700" text-anchor="middle">実行ファイル</text>
+	<text x="582" y="128" fill="var(--ink)" font-size="11.5" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">C:\Program Files\PowerShell\7\</text>
+	<text x="582" y="146" fill="var(--ink)" font-size="11.5" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">pwsh.exe</text>
+
+	<rect x="14" y="172" width="368" height="46" rx="8" fill="#fff" stroke="hsl(275,58%,60%)" stroke-width="2"/>
+	<text x="198" y="190" fill="hsl(275,78%,30%)" font-size="12" font-weight="700" text-anchor="middle">プロファイル</text>
+	<text x="198" y="209" fill="var(--ink)" font-size="11.5" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Documents\WindowsPowerShell\</text>
+
+	<rect x="398" y="172" width="368" height="46" rx="8" fill="#fff" stroke="hsl(211,58%,60%)" stroke-width="2"/>
+	<text x="582" y="190" fill="hsl(211,78%,30%)" font-size="12" font-weight="700" text-anchor="middle">プロファイル</text>
+	<text x="582" y="209" fill="var(--ink)" font-size="11.5" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Documents\PowerShell\</text>
+
+	<rect x="14" y="232" width="752" height="30" rx="8" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+	<text x="390" y="252" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="middle">実行ファイルも設定も別々。片方を変えてももう片方には影響しない</text>
+</svg>
+<figcaption>図 03.1 — 5.1 と 7 は独立して共存する。設定を片方だけ直しても、もう片方には反映されない</figcaption>
+</figure>
+
+<p><span class="badge b-none">豆知識</span>5.1 の実行ファイルが <code>WindowsPowerShell\v1.0\</code> の下にあることに気づきましたか。バージョン 5.1 なのに <strong>v1.0 フォルダ</strong>です。互換性のためにパスを変えられなくなった結果で、<code>.ps1</code> の「1」と同じ事情です。</p>
+
+<h2>いま何で動いているかを確認する</h2>
+
+<pre><code>$PSVersionTable</code></pre>
+
+<p>実行すると次のように出ます（PowerShell 7 の例）。</p>
+
+<pre><code>Name                           Value
+----                           -----
+PSVersion                      7.6.3
+PSEdition                      Core
+OS                             Microsoft Windows 10.0.26200
+Platform                       Win32NT</code></pre>
+
+<div class="table-wrap">
+<table>
+<tr><th>項目</th><th>5.1 の場合</th><th>7 の場合</th></tr>
+<tr><td class="nowrap"><code>PSVersion</code></td><td class="nowrap">5.1.x</td><td class="nowrap">7.x.x</td></tr>
+<tr><td class="nowrap"><code>PSEdition</code></td><td class="nowrap"><strong>Desktop</strong></td><td class="nowrap"><strong>Core</strong></td></tr>
+</table>
+</div>
+
+<p><code>PSEdition</code> が <strong>Desktop なら 5.1、Core なら 7</strong> です。スクリプトの中で分岐したいときはこれを見ます。</p>
+
+<pre><code>if ($PSVersionTable.PSEdition -eq 'Core') {
+    # PowerShell 7 での処理
+} else {
+    # Windows PowerShell 5.1 での処理
+}</code></pre>
+
+<h2>実務で効いてくる違い</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>観点</th><th><span class="badge b-ps51">5.1</span></th><th><span class="badge b-ps7">pwsh 7</span></th></tr>
+<tr><td class="nowrap">土台</td><td>.NET Framework 4.x</td><td>.NET 8 以降</td></tr>
+<tr><td class="nowrap">対応 OS</td><td>Windows のみ</td><td>Windows / Linux / macOS</td></tr>
+<tr><td class="nowrap">入手方法</td><td>Windows に標準搭載</td><td><code>winget</code> や MSI で別途導入</td></tr>
+<tr><td class="nowrap">今後の更新</td><td><strong>セキュリティ修正のみ</strong>（機能追加は終了）</td><td>機能追加が継続</td></tr>
+<tr><td class="nowrap">既定の文字コード</td><td>ANSI / UTF-16LE が混在（02 章参照）</td><td>UTF-8 に統一</td></tr>
+<tr><td class="nowrap">WMI 操作</td><td><code>Get-WmiObject</code> が使える</td><td><strong>削除済み</strong>。<code>Get-CimInstance</code> を使う</td></tr>
+<tr><td class="nowrap">条件付き実行</td><td>なし</td><td><code>&amp;&amp;</code> / <code>||</code> が使える</td></tr>
+<tr><td class="nowrap">三項演算子</td><td>なし</td><td><code>$a ? $b : $c</code></td></tr>
+<tr><td class="nowrap">並列処理</td><td>なし</td><td><code>ForEach-Object -Parallel</code></td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong><code>Get-WmiObject</code> が 7 で消えているのは要注意です。</strong><br>
+ネットで見つかる古いサンプルの多くが <code>Get-WmiObject</code> を使っています。7 で実行すると「コマンドレットが見つかりません」で止まります。<strong>置き換え先は <code>Get-CimInstance</code></strong> で、引数もほぼ同じです。
+</div>
+
+<pre><code># 5.1 の書き方（7 では動かない）
+Get-WmiObject Win32_OperatingSystem
+
+# 両方で動く書き方
+Get-CimInstance Win32_OperatingSystem</code></pre>
+
+<h2>どちらを使うか</h2>
+
+<ul>
+	<li><span class="badge b-good">推奨</span><strong>新しく書くなら 7</strong>。文字コードの扱いが素直で、書ける構文も多い</li>
+	<li><span class="badge b-warn">条件付き</span><strong>配布先が決まっていないスクリプトは 5.1 向けに書く</strong>。7 が入っていない PC でも動かせる</li>
+	<li><span class="badge b-none">補足</span>本資料は<strong>両方を対象</strong>にし、差がある箇所に <span class="badge b-ps7">pwsh 7</span> <span class="badge b-ps51">5.1</span> のバッジを付けます</li>
+</ul>
+
+<h3>PowerShell 7 の導入</h3>
+
+<pre><code>winget install --id Microsoft.PowerShell --source winget</code></pre>
+
+<p>導入後、<code>pwsh</code> と打てば 7 が起動します。<code>powershell</code> は今までどおり 5.1 のままです。</p>
+
+<div class="callout">
+<strong>PowerShell が初めての人へ</strong><br>
+<strong>Node.js のバージョン共存に慣れている方へ</strong> — nvm のように「切り替える」のではなく、<strong>2つが同時に居座る</strong>方式です。どちらで動かすかは<strong>起動する実行ファイルで決まります</strong>（<code>powershell</code> か <code>pwsh</code> か）。切り替え操作は要りません。<br>
+そのぶん、<strong>片方で入れたモジュールや設定はもう片方に効きません</strong>。「入れたはずのモジュールが見つからない」ときは、たいてい別のバージョンで探しています。
+</div>
+</section>
+
+<!-- ============ 03.2 ============ -->
+<section class="ch02" id="ch02">
+<h1>03.2 実行ポリシー — なぜ動かないのか</h1>
+
+<h2>最初に必ず出会うエラー</h2>
+
+<p><code>.ps1</code> を作って実行しようとすると、多くの環境で次のエラーが出ます。</p>
+
+<pre><code>.\hello.ps1 : このシステムではスクリプトの実行が無効になっているため、
+ファイル C:\work\hello.ps1 を読み込むことができません。</code></pre>
+
+<p>これが<strong>実行ポリシー</strong>です。02 章で cmd ランチャーに <code>-ExecutionPolicy Bypass</code> と書いたのは、これを回避するためでした。</p>
+
+<div class="callout">
+<strong>実行ポリシーはセキュリティ機能ではありません。</strong><br>
+Microsoft 自身がそう明言しています。回避方法はいくらでもあり（実際 <code>Bypass</code> の一言で通ります）、悪意のある相手を止める力はありません。<strong>目的は「うっかり実行」の防止</strong>です。メールで届いた <code>.ps1</code> を何も考えずダブルクリックしてしまう、といった事故を減らすための仕組みだと理解してください。
+</div>
+
+<h2>ポリシーの種類</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>値</th><th>意味</th><th>使いどころ</th></tr>
+<tr><td class="nowrap"><code>Restricted</code></td><td>スクリプトを一切実行しない</td><td>Windows クライアントの既定値であることが多い</td></tr>
+<tr><td class="nowrap"><code>AllSigned</code></td><td>署名されたスクリプトのみ実行</td><td>厳格な運用。自作スクリプトにも署名が要る</td></tr>
+<tr><td class="nowrap"><code>RemoteSigned</code></td><td><strong>ローカル作成は実行可、ダウンロード品は署名が必要</strong></td><td><span class="badge b-good">推奨</span>開発時の現実的な落としどころ</td></tr>
+<tr><td class="nowrap"><code>Unrestricted</code></td><td>すべて実行（ダウンロード品は警告）</td><td>非推奨</td></tr>
+<tr><td class="nowrap"><code>Bypass</code></td><td>何もブロックせず警告も出さない</td><td>自動実行するとき。<strong>Process スコープに限定して使う</strong></td></tr>
+<tr><td class="nowrap"><code>Undefined</code></td><td>未設定。上位スコープの値が使われる</td><td>—</td></tr>
+</table>
+</div>
+
+<h2>スコープには優先順位がある</h2>
+
+<p>実行ポリシーは<strong>1つの値ではなく、5つのスコープの重ね合わせ</strong>です。上にあるものが優先されます。</p>
+
+<figure>
+<svg viewBox="0 0 780 288" role="img" aria-label="実行ポリシーのスコープの優先順位">
+	<defs>
+		<linearGradient id="g-03-2a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-03-2b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-03-2c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/>
+			<stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+	</defs>
+
+	<text x="120" y="20" fill="var(--ink-soft)" font-size="12.5" font-weight="700" text-anchor="middle">優先度</text>
+	<text x="470" y="20" fill="var(--ink-soft)" font-size="12.5" font-weight="700" text-anchor="middle">スコープ</text>
+
+	<text x="120" y="52" fill="hsl(0,78%,32%)" font-size="13" font-weight="700" text-anchor="middle">高い</text>
+	<rect x="200" y="30" width="540" height="34" rx="7" fill="url(#g-03-2a)"/>
+	<text x="220" y="52" fill="#fff" font-size="13.5" font-weight="700">MachinePolicy — グループポリシー（会社が配る設定）</text>
+
+	<rect x="200" y="70" width="540" height="34" rx="7" fill="url(#g-03-2a)"/>
+	<text x="220" y="92" fill="#fff" font-size="13.5" font-weight="700">UserPolicy — グループポリシー（ユーザー単位）</text>
+
+	<rect x="200" y="110" width="540" height="34" rx="7" fill="url(#g-03-2b)"/>
+	<text x="220" y="132" fill="#fff" font-size="13.5" font-weight="700">Process — この起動中だけ有効（-ExecutionPolicy はここ）</text>
+
+	<rect x="200" y="150" width="540" height="34" rx="7" fill="url(#g-03-2c)"/>
+	<text x="220" y="172" fill="#fff" font-size="13.5" font-weight="700">CurrentUser — 自分のユーザーの設定（管理者権限が不要）</text>
+
+	<rect x="200" y="190" width="540" height="34" rx="7" fill="url(#g-03-2c)"/>
+	<text x="220" y="212" fill="#fff" font-size="13.5" font-weight="700">LocalMachine — PC 全体の設定（管理者権限が必要）</text>
+	<text x="120" y="212" fill="var(--accent)" font-size="13" font-weight="700" text-anchor="middle">低い</text>
+
+	<line x1="120" y1="66" x2="120" y2="192" stroke="var(--ink-soft)" stroke-width="2"/>
+	<polygon points="113,192 120,208 127,192" fill="var(--ink-soft)"/>
+
+	<rect x="14" y="238" width="752" height="42" rx="8" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+	<text x="390" y="258" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="middle">上から順に見ていき、最初に Undefined 以外だったものが採用される</text>
+	<text x="390" y="274" fill="var(--ink-soft)" font-size="12" text-anchor="middle">会社のポリシーが設定されていると、自分では変えられないのはこのため</text>
+</svg>
+<figcaption>図 03.2 — 実行ポリシーのスコープ。上位が設定されていると下位の値は無視される</figcaption>
+</figure>
+
+<h3>いまの状態を確認する</h3>
+
+<pre><code>Get-ExecutionPolicy -List</code></pre>
+
+<pre><code>        Scope ExecutionPolicy
+        ----- ---------------
+MachinePolicy       Undefined
+   UserPolicy       Undefined
+      Process          Bypass
+  CurrentUser       Undefined
+ LocalMachine    RemoteSigned</code></pre>
+
+<p>この例では <code>Process</code> が <code>Bypass</code> なので、<strong>この起動中は何も止められません</strong>。ランチャーから <code>-ExecutionPolicy Bypass</code> で起動するとこうなります。</p>
+
+<h2>正しい対処</h2>
+
+<h3>開発中の自分の PC なら</h3>
+
+<pre><code>Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned</code></pre>
+
+<ul>
+	<li><span class="badge b-good">利点</span><strong>管理者権限が不要</strong>（<code>CurrentUser</code> スコープのため）</li>
+	<li><span class="badge b-good">利点</span>自分で書いたスクリプトは動き、<strong>ダウンロードしたものは止まる</strong></li>
+	<li><span class="badge b-warn">注意</span>5.1 と 7 で<strong>別々に設定が必要</strong>な場合がある。両方で確認する</li>
+</ul>
+
+<h3>配布するスクリプトなら</h3>
+
+<p>相手の PC の設定を変えさせるのは筋が悪いので、<strong>ランチャー側で Process スコープだけ緩めます</strong>。02 章で作った形がこれです。</p>
+
+<pre><code>powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0foo.ps1"</code></pre>
+
+<div class="callout">
+<strong><code>-ExecutionPolicy Bypass</code> が安全に使える理由。</strong><br>
+このスイッチが効くのは <strong>Process スコープ、つまりその1回の起動中だけ</strong>です。PC の設定を書き換えるわけではないので、他のスクリプトや次回以降の起動には影響しません。<strong>「一時的に、この実行に限って」緩める</strong>のが正しい使い方です。逆に <code>Set-ExecutionPolicy -Scope LocalMachine Bypass</code> のような恒久的な緩和は避けてください。
+</div>
+
+<h2>ダウンロードしたファイルの印</h2>
+
+<p><code>RemoteSigned</code> が「ダウンロード品」を見分けられるのは、<strong>ファイルに印が付いている</strong>からです。Windows はインターネットから来たファイルに <code>Zone.Identifier</code> という情報を付けます。</p>
+
+<pre><code># 印が付いているか確認（5.1 / 7 共通）
+Get-Item .\downloaded.ps1 -Stream Zone.Identifier
+
+# 印を外す（内容を確認してから実行すること）
+Unblock-File .\downloaded.ps1</code></pre>
+
+<div class="callout">
+<strong>PowerShell が初めての人へ</strong><br>
+NTFS のファイルには、本体とは別に<strong>「代替データストリーム」という付箋のような領域</strong>があります。<code>Zone.Identifier</code> はそこに書かれる「このファイルはネットから来た」という記録です。ファイルサイズには現れず、コピー先によっては消えます（例: ZIP 経由や USB 経由）。<br>
+Zip で受け取ったスクリプトが動かないときは、<strong>展開前の zip を右クリック →［プロパティ］→［許可する］</strong>にチェックを入れてから展開すると、中のファイルに印が付きません。
+</div>
+</section>
+
+<!-- ============ 03.3 ============ -->
+<section class="ch03" id="ch03">
+<h1>03.3 プロファイルとモジュール</h1>
+
+<h2>プロファイル — 起動時に自動で読まれるスクリプト</h2>
+
+<p>PowerShell は起動時に<strong>プロファイル</strong>という <code>.ps1</code> を自動実行します。エイリアスや関数を常駐させたいときに使います。</p>
+
+<pre><code># 自分のプロファイルの場所を表示（無くてもパスは返る）
+$PROFILE
+
+# 実際に存在するか
+Test-Path $PROFILE
+
+# 無ければ作って開く
+if (-not (Test-Path $PROFILE)) { New-Item -ItemType File -Path $PROFILE -Force }
+notepad $PROFILE</code></pre>
+
+<div class="callout">
+<strong>プロファイルの置き場所は 5.1 と 7 で違います。</strong><br>
+<span class="badge b-ps51">5.1</span> は <code>Documents\WindowsPowerShell\</code>、<span class="badge b-ps7">pwsh 7</span> は <code>Documents\PowerShell\</code> の下です。<strong>片方に書いた設定はもう片方では読まれません</strong>。「7 では動くのに 5.1 では関数が無い」の典型的な原因がこれです。
+</div>
+
+<div class="table-wrap">
+<table>
+<tr><th>バージョン</th><th>プロファイルのパス</th></tr>
+<tr><td class="nowrap"><span class="badge b-ps51">5.1</span></td><td class="mono">C:\Users\&lt;username&gt;\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1</td></tr>
+<tr><td class="nowrap"><span class="badge b-ps7">pwsh 7</span></td><td class="mono">C:\Users\&lt;username&gt;\Documents\PowerShell\Microsoft.PowerShell_profile.ps1</td></tr>
+</table>
+</div>
+
+<h3><code>-NoProfile</code> を付ける理由</h3>
+
+<p>02 章のランチャーに <code>-NoProfile</code> を書きました。その意味がここで分かります。</p>
+
+<ul>
+	<li><span class="badge b-good">速い</span>プロファイルの読み込みを飛ばすので起動が早い</li>
+	<li><span class="badge b-good">安定</span><strong>個人の設定に左右されない</strong>。配布先のプロファイルが何を書いていても影響を受けない</li>
+</ul>
+
+<div class="callout">
+<strong>配布するスクリプトには必ず <code>-NoProfile</code> を付けてください。</strong><br>
+プロファイルは各人が自由に書ける場所です。そこで <code>Set-Alias</code> や <code>function</code> が上書きされていると、<strong>同じスクリプトが人によって違う動きをします</strong>。原因の特定が非常に困難になるため、最初から読ませないのが安全です。
+</div>
+
+<h2>モジュール — 機能の追加</h2>
+
+<p>PowerShell の機能拡張は<strong>モジュール</strong>という単位で配布されます。JavaScript でいう npm パッケージにあたります。</p>
+
+<pre><code># 探す
+Find-Module -Name ImportExcel
+
+# 入れる（-Scope CurrentUser なら管理者権限が不要）
+Install-Module -Name ImportExcel -Scope CurrentUser
+
+# 入っているものを見る
+Get-Module -ListAvailable
+
+# 読み込む（多くは自動で読まれるので通常は不要）
+Import-Module ImportExcel</code></pre>
+
+<div class="table-wrap">
+<table>
+<tr><th>PowerShell</th><th>Node.js での対応物</th><th>備考</th></tr>
+<tr><td class="nowrap"><code>Install-Module</code></td><td class="nowrap"><code>npm install -g</code></td><td>既定はユーザー単位ではなく全体。<code>-Scope CurrentUser</code> を付ける</td></tr>
+<tr><td class="nowrap">PowerShell Gallery</td><td class="nowrap">npm レジストリ</td><td>公式の配布元</td></tr>
+<tr><td class="nowrap"><code>$env:PSModulePath</code></td><td class="nowrap"><code>NODE_PATH</code></td><td>モジュールを探す場所の一覧</td></tr>
+<tr><td class="nowrap"><code>Import-Module</code></td><td class="nowrap"><code>require</code> / <code>import</code></td><td>PowerShell は自動読み込みが効くことが多い</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>PowerShell が初めての人へ</strong><br>
+Node.js と違い、<strong>プロジェクトごとの <code>node_modules</code> にあたる仕組みがありません</strong>。モジュールはユーザー単位か PC 全体に入り、どのスクリプトからも見えます。<br>
+そのため<strong>「動かすのにどのモジュールが要るか」がスクリプトから読み取れません</strong>。配布するときは、必要なモジュールをファイル冒頭のコメントに書くか、<code>#Requires -Modules ImportExcel</code> と書いて明示してください。
+</div>
+
+<h3>5.1 と 7 でモジュールの置き場所も違う</h3>
+
+<pre><code>$env:PSModulePath -split ';'</code></pre>
+
+<p>実行するバージョンによって異なる一覧が返ります。<strong>7 で入れたモジュールは 5.1 からは見えません</strong>（Windows 用の一部を除く）。プロファイルと同じ事情です。</p>
+</section>
+
+<!-- ============ 03.4 ============ -->
+<section class="ch04" id="ch04">
+<h1>03.4 VS Code で編集環境を固める</h1>
+
+<h2>拡張機能を入れる</h2>
+
+<p>拡張機能マーケットプレースで <strong>「PowerShell」（発行元 Microsoft）</strong> を入れます。これだけで補完・構文チェック・デバッグが揃います。</p>
+
+<h2>02 章の規約を設定で自動化する</h2>
+
+<p>02 章で「ps1 は BOM 付き UTF-8 ＋ CRLF」「bat は Shift-JIS ＋ CRLF」と決めました。<strong>これは手作業で守るものではありません。</strong>拡張子ごとに設定しておけば、保存するだけで正しい形式になります。</p>
+
+<figure>
+<svg viewBox="0 0 780 226" role="img" aria-label="VS Code の設定で 02 章の規約を自動化する">
+	<defs>
+		<linearGradient id="g-03-4a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(211,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(211,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-03-4b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-03-4c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/>
+			<stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="270" y="14" width="240" height="52" rx="9" fill="url(#g-03-4c)"/>
+	<text x="390" y="38" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">settings.json</text>
+	<text x="390" y="57" fill="#fff" font-size="12" text-anchor="middle" opacity="0.9">拡張子ごとに1回だけ設定</text>
+
+	<path d="M340 70 V 92 H 150 V 112" fill="none" stroke="var(--ink-soft)" stroke-width="2"/>
+	<polygon points="143,112 150,128 157,112" fill="var(--ink-soft)"/>
+	<path d="M440 70 V 92 H 630 V 112" fill="none" stroke="var(--ink-soft)" stroke-width="2"/>
+	<polygon points="623,112 630,128 637,112" fill="var(--ink-soft)"/>
+
+	<rect x="20" y="134" width="260" height="70" rx="9" fill="url(#g-03-4a)"/>
+	<text x="150" y="158" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">.ps1 を保存</text>
+	<text x="150" y="178" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">BOM 付き UTF-8</text>
+	<text x="150" y="196" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">CRLF</text>
+
+	<rect x="500" y="134" width="260" height="70" rx="9" fill="url(#g-03-4b)"/>
+	<text x="630" y="158" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">.bat / .cmd を保存</text>
+	<text x="630" y="178" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">Shift-JIS</text>
+	<text x="630" y="196" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">CRLF</text>
+
+	<text x="390" y="176" fill="var(--ink-soft)" font-size="12.5" font-weight="700" text-anchor="middle">毎回意識せずに</text>
+	<text x="390" y="194" fill="var(--ink-soft)" font-size="12.5" font-weight="700" text-anchor="middle">規約どおりになる</text>
+</svg>
+<figcaption>図 03.4 — 文字コードは人が守るものではなく、エディタに守らせるもの</figcaption>
+</figure>
+
+<h3>settings.json の設定</h3>
+
+<pre><code>{
+    "[powershell]": {
+        "files.encoding": "utf8bom",
+        "files.eol": "\r\n"
+    },
+    "[bat]": {
+        "files.encoding": "shiftjis",
+        "files.eol": "\r\n"
+    },
+    "files.autoGuessEncoding": true
+}</code></pre>
+
+<div class="table-wrap">
+<table>
+<tr><th>設定</th><th>効果</th><th>02 章との対応</th></tr>
+<tr><td class="nowrap"><code>files.encoding: utf8bom</code></td><td>ps1 を BOM 付き UTF-8 で保存する</td><td>5.1 が ANSI と誤認するのを防ぐ</td></tr>
+<tr><td class="nowrap"><code>files.eol: \r\n</code></td><td>改行を CRLF にする</td><td>混在による diff の崩れを防ぐ</td></tr>
+<tr><td class="nowrap"><code>files.encoding: shiftjis</code></td><td>bat を Shift-JIS で保存する</td><td>cmd.exe のコードページに合わせる</td></tr>
+<tr><td class="nowrap"><code>files.autoGuessEncoding</code></td><td>既存ファイルを開くとき文字コードを推測する</td><td>過去のファイルを開いて壊すのを防ぐ</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>この設定はプロジェクトに置くこともできます。</strong><br>
+リポジトリのルートに <code>.vscode/settings.json</code> を作って上記を書けば、<strong>チーム全員に同じ規約が効きます</strong>。個人設定に頼ると、新しく参加した人のファイルだけ形式が違う、という事態が起こります。
+</div>
+
+<h2>統合ターミナルのバージョンを切り替える</h2>
+
+<p>VS Code のターミナルは <code>+</code> の横の <code>∨</code> から起動するシェルを選べます。<strong>PowerShell（5.1）と PowerShell 7 は別項目として並びます</strong>。動作確認は両方で行うのが安全です。</p>
+
+<pre><code>// 既定を PowerShell 7 にする場合
+"terminal.integrated.defaultProfile.windows": "PowerShell"</code></pre>
+
+<p><span class="badge b-warn">紛らわしい</span>VS Code の表示では、<strong>7 のほうが「PowerShell」、5.1 が「Windows PowerShell」</strong>です。03.1 の名前の整理と同じ規則になっています。</p>
+
+<h2>デバッグ</h2>
+
+<ul>
+	<li><strong>F5</strong> — スクリプトを実行してデバッグ開始</li>
+	<li><strong>F9</strong> — 行にブレークポイントを置く</li>
+	<li><strong>F10 / F11</strong> — ステップオーバー / ステップイン</li>
+	<li>停止中は<strong>デバッグコンソールで変数を直接評価</strong>できる（<code>$data.Count</code> など）</li>
+</ul>
+
+<div class="callout">
+<strong>PowerShell が初めての人へ</strong><br>
+PowerShell のデバッグは、<strong>停止した時点のシェルにそのまま入れる</strong>のが特徴です。ブレークポイントで止めたあと、デバッグコンソールで <code>$_</code> や変数の中身を触ったり、<code>Get-Member</code> でオブジェクトの構造を調べたりできます。<br>
+「print デバッグ」に頼る前に、<strong>一度止めて中身を見る</strong>癖をつけると、次章以降のパイプライン処理の理解がずっと速くなります。
+</div>
+</section>
+
+<h2>この章のまとめ</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>困りごと</th><th>確認・対処</th></tr>
+<tr><td class="nowrap">どっちで動いているか分からない</td><td><code>$PSVersionTable</code> の <code>PSEdition</code>。Desktop なら 5.1、Core なら 7</td></tr>
+<tr><td class="nowrap">スクリプトが実行できない</td><td><code>Get-ExecutionPolicy -List</code> で確認 → <code>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</code></td></tr>
+<tr><td class="nowrap">配布先で実行できない</td><td>ランチャーに <code>-ExecutionPolicy Bypass</code>（Process スコープのみ）</td></tr>
+<tr><td class="nowrap">ダウンロードした ps1 が動かない</td><td><code>Unblock-File</code>、または zip の段階で［許可する］</td></tr>
+<tr><td class="nowrap">入れたモジュールが見つからない</td><td>別のバージョンで探している可能性。<code>$env:PSModulePath</code> を確認</td></tr>
+<tr><td class="nowrap">プロファイルの設定が効かない</td><td>5.1 と 7 で置き場所が違う。<code>$PROFILE</code> で実際のパスを確認</td></tr>
+<tr><td class="nowrap">古いサンプルが 7 で動かない</td><td><code>Get-WmiObject</code> → <code>Get-CimInstance</code> に置き換える</td></tr>
+</table>
+</div>
+
+<h3>覚えておく3点</h3>
+
+<ol>
+	<li><strong>5.1 と 7 は共存する別プログラム</strong>。実行ファイル・プロファイル・モジュールの置き場所がすべて別。「片方では動く」の原因はたいていこれ</li>
+	<li><strong>実行ポリシーはセキュリティ機能ではない</strong>。うっかり実行の防止が目的なので、<code>CurrentUser</code> に <code>RemoteSigned</code>、配布時は <code>Process</code> に <code>Bypass</code> が定石</li>
+	<li><strong>文字コードの規約はエディタに守らせる</strong>。<code>.vscode/settings.json</code> に書けばチーム全員に効く</li>
+</ol>
+
+<div class="callout">
+<strong>次章の予告 — 04. 変数・型・演算子</strong><br>
+環境が整ったので、ここからは言語そのものに入ります。JavaScript の書き方を左に、PowerShell を右に並べて対比しながら進めます。<code>$</code> 記法、単一引用符と二重引用符の違い、そして<strong>比較演算子が既定で大文字小文字を区別しない</strong>という、経験者ほど引っかかる落とし穴を扱います。
+</div>
+
+</div>
+
+<footer>
+	<p>PowerShell 学習資料 03 ／ 前章: <a href="02-ファイル形式.html">02. ファイル形式と文字コード</a> ／ 次章: <a href="04-変数と型.html">04. 変数・型・演算子</a></p>
+</footer>
+
+</body>
+</html>
