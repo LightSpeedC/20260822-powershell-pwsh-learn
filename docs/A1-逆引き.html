@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A1. 逆引き</title>
+<style>
+	:root {
+		--navy1: #12224d;
+		--navy2: #2f5fbf;
+		--ink: #1c2330;
+		--ink-soft: #4a5568;
+		--line: #d9dfe8;
+		--code-bg: #f4f6fa;
+
+		/* 章クラス(.chNN)の外に置かれた要素用の既定値 */
+		--accent: var(--navy1);
+		--accent2: var(--navy2);
+		--soft: #f2f5fb;
+	}
+
+	/* 章ごとの虹色アクセント (H: 280 → 0, 280°を4章に均等分割 = 93.3°刻み) */
+	.ch01 { --accent: hsl(280,78%,25%);   --accent2: hsl(280,58%,65%);   --soft: hsl(280,28%,95%); }
+	.ch02 { --accent: hsl(186.7,78%,25%); --accent2: hsl(186.7,58%,65%); --soft: hsl(186.7,28%,95%); }
+	.ch03 { --accent: hsl(93.3,78%,25%);  --accent2: hsl(93.3,58%,65%);  --soft: hsl(93.3,28%,95%); }
+	.ch04 { --accent: hsl(0,78%,25%);     --accent2: hsl(0,58%,65%);     --soft: hsl(0,28%,95%); }
+
+	* { box-sizing: border-box; }
+
+	body {
+		margin: 0;
+		padding: 0 0 60px;
+		background: #ffffff;
+		color: var(--ink);
+		font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", "Meiryo", sans-serif;
+		line-height: 1.85;
+		font-size: 15.5px;
+	}
+
+	.wrap { max-width: 1400px; margin: 0 auto; padding: 0 30px; }
+
+	/* タイトルバー */
+	.titlebar {
+		background: linear-gradient(135deg, var(--navy1) 0%, var(--navy2) 100%);
+		color: #fff;
+		padding: 34px 30px 30px;
+		box-shadow: 0 6px 18px rgba(18,34,77,0.28);
+	}
+	.titlebar .inner { max-width: 1400px; margin: 0 auto; }
+	.titlebar h1 {
+		margin: 0 0 10px;
+		font-size: 2.1em;
+		letter-spacing: 0.02em;
+		color: #fff;
+	}
+	.titlebar p { margin: 4px 0; font-size: 0.92em; color: #d8e4ff; }
+	.titlebar .meta { font-size: 0.84em; color: #b9cdf5; }
+	.titlebar code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+
+	/* 目次 */
+	nav.toc {
+		background: linear-gradient(180deg, #f2f5fb 0%, #ffffff 100%);
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		padding: 16px 22px;
+		margin: 28px 0;
+		box-shadow: 0 2px 8px rgba(30,50,90,0.07);
+	}
+	nav.toc strong { display: block; color: var(--navy1); margin-bottom: 10px; }
+	nav.toc ol {
+		margin: 0;
+		padding-left: 0;
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		counter-reset: toc;
+	}
+	nav.toc li { counter-increment: toc; margin: 0; }
+	nav.toc a {
+		display: -webkit-box;
+		width: 310px;
+		max-width: 100%;
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		text-decoration: none;
+		text-align: left;
+		border-radius: 6px;
+		padding: 7px 10px;
+		font-size: 0.88em;
+		font-weight: 600;
+		line-height: 1.4;
+		white-space: normal;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		box-shadow: 0 1px 4px rgba(20,30,60,0.18);
+	}
+	nav.toc a::before { content: "A1." counter(toc) " "; opacity: 0.85; }
+	nav.toc a:hover { text-decoration: underline; }
+
+	/* 章 */
+	section {
+		background: linear-gradient(180deg, var(--soft) 0%, #ffffff 42%);
+		border-radius: 12px;
+		padding: 4px 26px 26px;
+		margin: 34px 0;
+		border: 1px solid var(--line);
+	}
+
+	section h1 {
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		font-size: 1.5em;
+		margin: 26px 0 20px;
+		padding: 14px 20px;
+		border-radius: 9px;
+		box-shadow: 0 5px 14px rgba(30,40,70,0.28);
+	}
+	section h1 code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+
+	h2 {
+		font-size: 1.16em;
+		color: var(--accent);
+		border-left: 7px solid var(--accent);
+		background: linear-gradient(90deg, var(--soft) 0%, rgba(255,255,255,0) 88%);
+		padding: 6px 12px;
+		margin: 30px 0 12px;
+		border-radius: 0 6px 6px 0;
+	}
+
+	h3 {
+		font-size: 1.02em;
+		color: var(--accent);
+		margin: 20px 0 8px;
+		padding-bottom: 3px;
+		border-bottom: 2px dotted var(--accent2);
+		display: inline-block;
+	}
+
+	p { margin: 10px 0; }
+	ul, ol { margin: 10px 0; padding-left: 1.6em; }
+	li { margin: 6px 0; }
+	a { color: var(--navy2); }
+
+	code {
+		background: var(--code-bg);
+		border: 1px solid var(--line);
+		border-radius: 4px;
+		padding: 1px 6px;
+		font-family: "BIZ UDゴシック", "ＭＳ ゴシック", Consolas, "Cascadia Mono", monospace;
+		font-size: 0.9em;
+		color: #17335f;
+	}
+
+	pre {
+		background: linear-gradient(180deg, #f7f9fd 0%, #eef2f9 100%);
+		border: 1px solid var(--line);
+		border-left: 5px solid var(--accent2);
+		border-radius: 8px;
+		padding: 13px 16px;
+		overflow-x: auto;
+		font-size: 0.88em;
+		line-height: 1.6;
+	}
+	pre code { background: none; border: none; padding: 0; color: #1b2b46; }
+
+	.table-wrap { overflow-x: auto; margin: 16px 0; }
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 0.93em;
+		box-shadow: 0 2px 7px rgba(40,55,90,0.12);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+	th {
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		text-align: left;
+		padding: 9px 12px;
+		font-weight: 600;
+	}
+	th code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+	td { padding: 9px 12px; border-bottom: 1px solid var(--line); background: #fff; vertical-align: top; }
+	tr:nth-child(even) td { background: #fafbfe; }
+	td.nowrap { white-space: nowrap; }
+	td.mono { font-family: "BIZ UDゴシック", "ＭＳ ゴシック", Consolas, monospace; white-space: nowrap; }
+
+	/* バッジ */
+	.badge {
+		display: inline-block;
+		font-size: 0.78em;
+		font-weight: 700;
+		color: #fff;
+		border-radius: 4px;
+		padding: 1px 9px;
+		margin-right: 7px;
+		letter-spacing: 0.04em;
+		white-space: nowrap;
+	}
+	.b-good { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
+	.b-bad  { background: linear-gradient(100deg, #a51f22, #e05a5c); }
+	.b-none { background: linear-gradient(100deg, #5a6472, #97a1ae); }
+	.b-warn { background: linear-gradient(100deg, #b8620a, #f0a548); }
+	.b-ps7  { background: linear-gradient(100deg, #1a5fa8, #4d9ae0); }
+	.b-ps51 { background: linear-gradient(100deg, #5b2d82, #9a6bc4); }
+
+	.callout {
+		background: linear-gradient(180deg, var(--soft) 0%, #ffffff 100%);
+		border: 1px solid var(--accent2);
+		border-left: 6px solid var(--accent);
+		border-radius: 0 8px 8px 0;
+		padding: 12px 18px;
+		margin: 16px 0;
+	}
+	.callout strong { color: var(--accent); }
+
+	/* SVG図 */
+	figure { margin: 20px 0; text-align: center; }
+	figure svg {
+		max-width: 100%;
+		height: auto;
+		font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", "Meiryo", sans-serif;
+	}
+	figcaption { font-size: 0.84em; color: var(--ink-soft); margin-top: 6px; }
+
+	footer {
+		max-width: 1400px;
+		margin: 40px auto 0;
+		padding: 18px 30px 0;
+		border-top: 2px solid var(--line);
+		color: var(--ink-soft);
+		font-size: 0.86em;
+	}
+	footer a { color: var(--navy2); }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>A1. 逆引き</h1>
+		<p>症状・コマンド名・JavaScript・用語 — 4つの入口から本編へ</p>
+		<p class="meta">📅 作成: 2026-08-25 / 更新: 2026-08-25 ／ 付録（順に読む必要はありません）</p>
+	</div>
+</div>
+
+<div class="wrap">
+
+<h2>この付録の使い方</h2>
+
+<p>本編 01〜10 は<strong>順に読む</strong>資料でした。この付録は<strong>必要になったときに引く</strong>ためのものです。読み物ではなく索引なので、目的の行を見つけたら本編へ飛んでください。</p>
+
+<figure>
+<svg viewBox="0 0 780 214" role="img" aria-label="逆引きの4つの入口">
+	<defs>
+		<linearGradient id="g-A1-0a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(280,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(280,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-A1-0b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(186.7,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(186.7,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-A1-0c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(93.3,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(93.3,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-A1-0d" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="10" y="24" width="180" height="84" rx="9" fill="url(#g-A1-0a)"/>
+	<text x="100" y="50" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">A1.1 症状から</text>
+	<text x="100" y="74" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">「0 件しか返らない」</text>
+	<text x="100" y="92" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">「文字化けする」</text>
+
+	<rect x="206" y="24" width="180" height="84" rx="9" fill="url(#g-A1-0b)"/>
+	<text x="296" y="50" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">A1.2 コマンドから</text>
+	<text x="296" y="74" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">Cmdlet 名 → 用途</text>
+	<text x="296" y="92" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">と解説箇所</text>
+
+	<rect x="402" y="24" width="180" height="84" rx="9" fill="url(#g-A1-0c)"/>
+	<text x="492" y="50" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">A1.3 JavaScript から</text>
+	<text x="492" y="74" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">filter → Where-Object</text>
+	<text x="492" y="92" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">の対応表</text>
+
+	<rect x="598" y="24" width="172" height="84" rx="9" fill="url(#g-A1-0d)"/>
+	<text x="684" y="50" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">A1.4 用語から</text>
+	<text x="684" y="74" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">Cmdlet・BOM</text>
+	<text x="684" y="92" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">非終了エラー ほか</text>
+
+	<rect x="10" y="126" width="760" height="76" rx="9" fill="#fff" stroke="var(--accent2)" stroke-width="2"/>
+	<text x="390" y="150" fill="var(--accent)" font-size="13.5" font-weight="700" text-anchor="middle">困っている内容によって入口を選ぶ</text>
+	<text x="390" y="174" fill="var(--ink)" font-size="12.5" text-anchor="middle">エラーや異常が起きている → A1.1 ／ コマンド名は分かる → A1.2</text>
+	<text x="390" y="192" fill="var(--ink)" font-size="12.5" text-anchor="middle">JS ならこう書ける → A1.3 ／ 言葉の意味が分からない → A1.4</text>
+</svg>
+<figcaption>図 A1.0 — 4つの入口。どれも本編の該当箇所へのリンクで終わる</figcaption>
+</figure>
+
+<nav class="toc">
+	<strong>目次</strong>
+	<ol>
+		<li class="ch01"><a href="#ch01">症状から引く</a></li>
+		<li class="ch02"><a href="#ch02">コマンドから引く</a></li>
+		<li class="ch03"><a href="#ch03">JavaScript から引く</a></li>
+		<li class="ch04"><a href="#ch04">用語から引く</a></li>
+	</ol>
+</nav>
+
+<!-- ============ A1.1 ============ -->
+<section class="ch01" id="ch01">
+<h1>A1.1 症状から引く</h1>
+
+<h2>動かない・止まらない</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>症状</th><th>疑うところ</th><th>参照</th></tr>
+<tr><td>スクリプトを実行できない</td><td>実行ポリシー</td><td><a href="03-実行環境.html#ch02">03.2</a></td></tr>
+<tr><td>ダウンロードした ps1 が動かない</td><td><code>Zone.Identifier</code> の印。<code>Unblock-File</code></td><td><a href="03-実行環境.html#ch02">03.2</a></td></tr>
+<tr><td><code>.ps1</code> をダブルクリックしても動かない</td><td>仕様。cmd ランチャーを添える</td><td><a href="02-ファイル形式.html#ch04">02.4</a></td></tr>
+<tr><td><code>try/catch</code> で捕まらない</td><td>非終了エラー。<code>-ErrorAction Stop</code> が要る</td><td><a href="08-エラー処理.html#ch01">08.1</a></td></tr>
+<tr><td>外部コマンドの失敗に気づけない</td><td>例外にならない。<code>$LASTEXITCODE</code> で判定</td><td><a href="08-エラー処理.html#ch03">08.3</a></td></tr>
+<tr><td>CI やタスクが失敗扱いになる</td><td>末尾に <code>exit 0</code> が無い</td><td><a href="08-エラー処理.html#ch03">08.3</a></td></tr>
+<tr><td>手元では動くのにタスクからは動かない</td><td>カレント・画面・実行ユーザーが違う</td><td><a href="09-実務パターン.html#ch04">09.4</a></td></tr>
+<tr><td>入れたモジュールが見つからない</td><td>別バージョンで探している</td><td><a href="03-実行環境.html#ch03">03.3</a></td></tr>
+<tr><td>プロファイルの設定が効かない</td><td>5.1 と 7 で置き場所が違う</td><td><a href="03-実行環境.html#ch03">03.3</a></td></tr>
+<tr><td>古いサンプルが 7 で動かない</td><td><code>Get-WmiObject</code> は削除済み</td><td><a href="03-実行環境.html#ch01">03.1</a></td></tr>
+</table>
+</div>
+
+<h2>結果がおかしい</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>症状</th><th>疑うところ</th><th>参照</th></tr>
+<tr><td><code>Get-ChildItem</code> が 0 件しか返さない</td><td>ワイルドカードパス × <code>-Filter</code> ／ <code>-Include</code> に <code>-Recurse</code> が無い ／ 名前に <code>[ ]</code></td><td><a href="07-ファイル操作.html#ch02">07.2</a></td></tr>
+<tr><td>日本語が文字化けする</td><td>BOM の有無と <code>-Encoding</code></td><td><a href="02-ファイル形式.html#ch02">02.2</a> / <a href="07-ファイル操作.html#ch03">07.3</a></td></tr>
+<tr><td>JSON の解析に失敗する</td><td><code>Get-Content</code> に <code>-Raw</code> が無い</td><td><a href="07-ファイル操作.html#ch03">07.3</a></td></tr>
+<tr><td>JSON の一部が文字列に化ける</td><td><code>ConvertTo-Json</code> の <code>-Depth</code>（既定 2）</td><td><a href="07-ファイル操作.html#ch04">07.4</a></td></tr>
+<tr><td>CSV の列がずれる</td><td>5.1 で <code>-NoTypeInformation</code> が無い</td><td><a href="07-ファイル操作.html#ch04">07.4</a></td></tr>
+<tr><td>CSV の数値がおかしい</td><td>すべて文字列。<code>[int]</code> で変換する</td><td><a href="07-ファイル操作.html#ch04">07.4</a></td></tr>
+<tr><td>大小文字だけの変更が反映されない</td><td>既定で区別しない。<code>-cne</code> / <code>-creplace</code></td><td><a href="04-変数と型.html#ch03">04.3</a></td></tr>
+<tr><td>関数の戻り値に余計な値が混ざる</td><td>出力がすべて戻り値になる</td><td><a href="06-制御構文と関数.html#ch03">06.3</a></td></tr>
+<tr><td>要素1件のとき配列でなくなる</td><td>アンロール。<code>return ,$a</code> ／ 受け側は <code>@()</code></td><td><a href="06-制御構文と関数.html#ch03">06.3</a></td></tr>
+<tr><td><code>.Count</code> がエラーになる</td><td>0 件だと <code>$null</code>。<code>@()</code> で包む</td><td><a href="06-制御構文と関数.html#ch03">06.3</a></td></tr>
+<tr><td>関数に渡した引数が1つにまとまる</td><td>カンマ＋括弧で呼んでいる</td><td><a href="06-制御構文と関数.html#ch02">06.2</a></td></tr>
+<tr><td>パイプで流しても最後の1件しか処理されない</td><td><code>process</code> ブロックが無い</td><td><a href="06-制御構文と関数.html#ch02">06.2</a></td></tr>
+<tr><td><code>switch</code> が複数の分岐を実行する</td><td>仕様。<code>break</code> を書く</td><td><a href="06-制御構文と関数.html#ch01">06.1</a></td></tr>
+<tr><td>文字列にならない（オブジェクトが返る）</td><td><code>-ExpandProperty</code> が要る</td><td><a href="05-パイプライン.html#ch03">05.3</a></td></tr>
+<tr><td><code>.Delete()</code> などのメソッドが消える</td><td><code>Select-Object</code> を通すと型が変わる</td><td><a href="05-パイプライン.html#ch03">05.3</a></td></tr>
+<tr><td>パイプの途中から動かなくなる</td><td><code>Format-*</code> は行き止まり</td><td><a href="05-パイプライン.html#ch01">05.1</a></td></tr>
+<tr><td>数値のはずが文字列結合になる</td><td>左辺の型が演算を決める</td><td><a href="04-変数と型.html#ch05">04.5</a></td></tr>
+<tr><td>空配列なのに真になる／偽になる</td><td><code>@()</code> は False、<code>@{}</code> は True</td><td><a href="04-変数と型.html#ch05">04.5</a></td></tr>
+<tr><td>ハッシュテーブルの順序が変わる</td><td><code>[ordered]@{}</code> を使う</td><td><a href="04-変数と型.html#ch04">04.4</a></td></tr>
+<tr><td>スクリプトが途中から遅くなる</td><td>配列の <code>+=</code>。<code>List</code> かパイプラインへ</td><td><a href="04-変数と型.html#ch04">04.4</a></td></tr>
+<tr><td>関数内の変更が外に反映されない</td><td>スコープ。読めるが書けない</td><td><a href="06-制御構文と関数.html#ch04">06.4</a></td></tr>
+</table>
+</div>
+
+<h2>調べ方が分からない</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>やりたいこと</th><th>手段</th><th>参照</th></tr>
+<tr><td>何が返るか知りたい</td><td class="mono">| Get-Member</td><td><a href="05-パイプライン.html#ch02">05.2</a></td></tr>
+<tr><td>いま入っている値を全部見たい</td><td class="mono">| Select-Object -First 1 | Format-List *</td><td><a href="05-パイプライン.html#ch02">05.2</a></td></tr>
+<tr><td>コマンドを探したい</td><td class="mono">Get-Command *keyword*</td><td><a href="05-パイプライン.html#ch05">05.5</a></td></tr>
+<tr><td>使い方を知りたい</td><td class="mono">Get-Help &lt;名前&gt; -Examples</td><td><a href="05-パイプライン.html#ch05">05.5</a></td></tr>
+<tr><td>どのバージョンで動いているか</td><td class="mono">$PSVersionTable.PSEdition</td><td><a href="03-実行環境.html#ch01">03.1</a></td></tr>
+<tr><td>エラーの詳細を見たい</td><td class="mono">Get-Error <span class="badge b-ps7">pwsh 7</span></td><td><a href="08-エラー処理.html#ch02">08.2</a></td></tr>
+<tr><td>変数がいつ変わったか追いたい</td><td class="mono">Set-PSBreakpoint -Variable x -Mode Write</td><td><a href="08-エラー処理.html#ch04">08.4</a></td></tr>
+</table>
+</div>
+</section>
+
+<!-- ============ A1.2 ============ -->
+<section class="ch02" id="ch02">
+<h1>A1.2 コマンドから引く</h1>
+
+<p>本編に登場する Cmdlet の一覧です。<strong>この表は <code>docs/*.html</code> を走査して自動生成</strong>しています。</p>
+
+<div class="callout">
+<strong>資料で定義している例示用の関数は除いています。</strong><br>
+<code>Get-LogSummary</code> や <code>Write-Log</code> のような<strong>本編で自作した関数</strong>は実在の Cmdlet ではないため、この表には含めていません。<br>
+表の更新は <code>src/scripts/index/build-index.ps1</code> で行います。用途の説明はそのスクリプト内に持っており、新しい Cmdlet が資料に入ると<strong>実行時に警告が出ます</strong>。
+</div>
+
+<!-- AUTO:cmdlets -->
+<div class="table-wrap">
+<table>
+<tr><th>Cmdlet</th><th>用途</th><th>登場する章</th></tr>
+<tr><td class="mono">Add-Content</td><td>ファイルの末尾に追記する</td><td class="nowrap">09</td></tr>
+<tr><td class="mono">Convert-Path</td><td>相対パスを絶対パスの文字列にする</td><td class="nowrap">07</td></tr>
+<tr><td class="mono">Copy-Item</td><td>ファイル・フォルダをコピーする</td><td class="nowrap">09</td></tr>
+<tr><td class="mono">Export-Clixml</td><td>オブジェクトを型ごと保存する（PowerShell 専用形式）</td><td class="nowrap">07</td></tr>
+<tr><td class="mono">Export-Csv</td><td>CSV に書き出す。5.1 では -NoTypeInformation が要る</td><td class="nowrap">05 / 07 / 10</td></tr>
+<tr><td class="mono">Find-Module</td><td>PowerShell Gallery のモジュールを検索する</td><td class="nowrap">03</td></tr>
+<tr><td class="mono">Format-List</td><td>全プロパティを縦に並べて表示する。行き止まり</td><td class="nowrap">05 / 08 / 10</td></tr>
+<tr><td class="mono">Format-Table</td><td>表形式で表示する。パイプラインの最後にだけ置く</td><td class="nowrap">05 / 09 / 10</td></tr>
+<tr><td class="mono">Get-Alias</td><td>エイリアスの一覧・逆引き</td><td class="nowrap">05</td></tr>
+<tr><td class="mono">Get-ChildItem</td><td>ファイル・フォルダを列挙する</td><td class="nowrap">01 / 05 / 06 / 07 / 08 / 09 / 10</td></tr>
+<tr><td class="mono">Get-CimInstance</td><td>WMI 情報を取得する（7 では Get-WmiObject の代替）</td><td class="nowrap">03</td></tr>
+<tr><td class="mono">Get-Command</td><td>コマンドを探す。動詞・名詞・モジュールで絞れる</td><td class="nowrap">05 / 09 / 10</td></tr>
+<tr><td class="mono">Get-Content</td><td>ファイルを読む。既定は行の配列、-Raw で 1 文字列</td><td class="nowrap">01 / 02 / 05 / 06 / 07 / 08 / 09 / 10</td></tr>
+<tr><td class="mono">Get-Date</td><td>現在日時の取得と書式化</td><td class="nowrap">05 / 09 / 10</td></tr>
+<tr><td class="mono">Get-Error</td><td>直前のエラーを全プロパティ展開して表示する</td><td class="nowrap">08</td></tr>
+<tr><td class="mono">Get-ExecutionPolicy</td><td>実行ポリシーを確認する。-List でスコープ別</td><td class="nowrap">03</td></tr>
+<tr><td class="mono">Get-Help</td><td>コマンドの使い方。-Examples が最も実用的</td><td class="nowrap">05 / 10</td></tr>
+<tr><td class="mono">Get-Item</td><td>1 つの項目を取得する</td><td class="nowrap">03 / 04</td></tr>
+<tr><td class="mono">Get-Location</td><td>カレントディレクトリを取得する</td><td class="nowrap">07</td></tr>
+<tr><td class="mono">Get-Member</td><td>オブジェクトの型・プロパティ・メソッドを調べる</td><td class="nowrap">03 / 04 / 05 / 08 / 10</td></tr>
+<tr><td class="mono">Get-Module</td><td>読み込み済み・利用可能なモジュールを見る</td><td class="nowrap">03</td></tr>
+<tr><td class="mono">Get-Process</td><td>実行中のプロセスを取得する</td><td class="nowrap">01 / 05 / 06 / 07 / 10</td></tr>
+<tr><td class="mono">Get-PSBreakpoint</td><td>設定済みのブレークポイントを一覧する</td><td class="nowrap">08</td></tr>
+<tr><td class="mono">Get-Random</td><td>乱数・ランダムな要素を得る</td><td class="nowrap">10</td></tr>
+<tr><td class="mono">Get-Service</td><td>Windows サービスを取得する</td><td class="nowrap">05</td></tr>
+<tr><td class="mono">Get-Verb</td><td>承認された動詞の一覧（100 個）</td><td class="nowrap">05 / 06</td></tr>
+<tr><td class="mono">Get-WmiObject</td><td>7 で削除済み。Get-CimInstance に置き換える</td><td class="nowrap">01 / 03 / 05</td></tr>
+<tr><td class="mono">Group-Object</td><td>キーでまとめる。Name / Count / Group を返す</td><td class="nowrap">05 / 09 / 10</td></tr>
+<tr><td class="mono">Import-Clixml</td><td>Export-Clixml で保存したオブジェクトを復元する</td><td class="nowrap">07</td></tr>
+<tr><td class="mono">Import-Csv</td><td>CSV を読む。値はすべて文字列になる</td><td class="nowrap">05 / 07</td></tr>
+<tr><td class="mono">Import-Module</td><td>モジュールを明示的に読み込む</td><td class="nowrap">03</td></tr>
+<tr><td class="mono">Install-Module</td><td>モジュールを導入する。-Scope CurrentUser 推奨</td><td class="nowrap">03</td></tr>
+<tr><td class="mono">Invoke-Command</td><td>リモートやスクリプトブロックを実行する</td><td class="nowrap">01</td></tr>
+<tr><td class="mono">Invoke-WebRequest</td><td>HTTP 要求。5.1 では curl がこれのエイリアスだった</td><td class="nowrap">05</td></tr>
+<tr><td class="mono">Join-Path</td><td>パスを連結する。区切りの重複を吸収する</td><td class="nowrap">06 / 07 / 09 / 10</td></tr>
+<tr><td class="mono">Measure-Object</td><td>件数・合計・平均・最大最小を求める</td><td class="nowrap">05</td></tr>
+<tr><td class="mono">Move-Item</td><td>ファイル・フォルダを移動する</td><td class="nowrap">09</td></tr>
+<tr><td class="mono">New-Item</td><td>ファイル・フォルダを作る。-Force で親ごと</td><td class="nowrap">03 / 05 / 09 / 10</td></tr>
+<tr><td class="mono">New-ScheduledTaskAction</td><td>タスクスケジューラの実行内容を定義する</td><td class="nowrap">09</td></tr>
+<tr><td class="mono">New-ScheduledTaskTrigger</td><td>タスクスケジューラの起動条件を定義する</td><td class="nowrap">09</td></tr>
+<tr><td class="mono">Out-File</td><td>ファイルに書き出す。5.1 の既定は UTF-16LE</td><td class="nowrap">02 / 07</td></tr>
+<tr><td class="mono">Out-Null</td><td>出力を捨てる。ループ内では $null = のほうが速い</td><td class="nowrap">06 / 09 / 10</td></tr>
+<tr><td class="mono">Register-ScheduledTask</td><td>タスクを登録する</td><td class="nowrap">09</td></tr>
+<tr><td class="mono">Remove-Item</td><td>削除する。-WhatIf で事前確認できる</td><td class="nowrap">01 / 08 / 09</td></tr>
+<tr><td class="mono">Remove-PSBreakpoint</td><td>ブレークポイントを削除する</td><td class="nowrap">08</td></tr>
+<tr><td class="mono">Rename-Item</td><td>名前を変更する。-WhatIf で事前確認できる</td><td class="nowrap">09</td></tr>
+<tr><td class="mono">Resolve-Path</td><td>絶対パスに解決する（存在しないとエラー）</td><td class="nowrap">07</td></tr>
+<tr><td class="mono">Select-Object</td><td>プロパティを選ぶ。-ExpandProperty で値そのもの</td><td class="nowrap">01 / 05 / 10</td></tr>
+<tr><td class="mono">Set-Alias</td><td>エイリアスを定義する</td><td class="nowrap">03 / 05</td></tr>
+<tr><td class="mono">Set-Content</td><td>ファイルに書く。-Encoding を必ず明示する</td><td class="nowrap">02 / 05 / 06 / 07 / 10</td></tr>
+<tr><td class="mono">Set-ExecutionPolicy</td><td>実行ポリシーを変更する。-Scope CurrentUser 推奨</td><td class="nowrap">03 / 10</td></tr>
+<tr><td class="mono">Set-PSBreakpoint</td><td>行・変数・コマンドにブレークポイントを置く</td><td class="nowrap">08</td></tr>
+<tr><td class="mono">Set-PSDebug</td><td>実行行のトレースを有効にする</td><td class="nowrap">08</td></tr>
+<tr><td class="mono">Set-StrictMode</td><td>未定義変数などを即エラーにする。先頭に書く</td><td class="nowrap">04 / 06 / 09 / 10</td></tr>
+<tr><td class="mono">Split-Path</td><td>パスを親・末尾に分解する</td><td class="nowrap">07</td></tr>
+<tr><td class="mono">Start-Sleep</td><td>指定秒だけ待つ</td><td class="nowrap">05</td></tr>
+<tr><td class="mono">Stop-Process</td><td>プロセスを終了する</td><td class="nowrap">01</td></tr>
+<tr><td class="mono">Stop-Service</td><td>サービスを停止する</td><td class="nowrap">05</td></tr>
+<tr><td class="mono">Test-Path</td><td>存在を確認する。-PathType でファイル／フォルダを区別</td><td class="nowrap">03 / 07 / 08 / 09 / 10</td></tr>
+<tr><td class="mono">Unblock-File</td><td>ダウンロード由来の印（Zone.Identifier）を外す</td><td class="nowrap">03</td></tr>
+<tr><td class="mono">Update-Help</td><td>ヘルプを取得・更新する</td><td class="nowrap">05</td></tr>
+<tr><td class="mono">Wait-Debugger</td><td>その場でデバッガに入る</td><td class="nowrap">08</td></tr>
+<tr><td class="mono">Write-Debug</td><td>-Debug 指定時だけ出るメッセージ</td><td class="nowrap">08</td></tr>
+<tr><td class="mono">Write-Error</td><td>非終了エラーを出す。catch には入らない</td><td class="nowrap">08</td></tr>
+<tr><td class="mono">Write-Host</td><td>画面に出す。戻り値には混ざらない</td><td class="nowrap">01 / 02 / 04 / 06 / 08 / 09 / 10</td></tr>
+<tr><td class="mono">Write-Output</td><td>本来の出力。戻り値に混ざる</td><td class="nowrap">08</td></tr>
+<tr><td class="mono">Write-Progress</td><td>進捗を表示する</td><td class="nowrap">03</td></tr>
+<tr><td class="mono">Write-Verbose</td><td>-Verbose 指定時だけ出る。消さずに残せる</td><td class="nowrap">06 / 08 / 09 / 10</td></tr>
+<tr><td class="mono">Write-Warning</td><td>警告を出す</td><td class="nowrap">08 / 09</td></tr>
+</table>
+</div>
+<!-- /AUTO:cmdlets -->
+
+</section>
+
+<!-- ============ A1.3 ============ -->
+<section class="ch03" id="ch03">
+<h1>A1.3 JavaScript から引く</h1>
+
+<h2>配列の操作</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>JavaScript</th><th>PowerShell</th><th>参照</th></tr>
+<tr><td class="mono">arr.filter(x =&gt; x.size &gt; 10)</td><td class="mono">$arr | Where-Object { $_.Size -gt 10 }</td><td><a href="05-パイプライン.html#ch03">05.3</a></td></tr>
+<tr><td class="mono">arr.map(x =&gt; x.name)</td><td class="mono">$arr | ForEach-Object { $_.Name }</td><td><a href="05-パイプライン.html#ch03">05.3</a></td></tr>
+<tr><td class="mono">arr.sort()</td><td class="mono">$arr | Sort-Object</td><td><a href="05-パイプライン.html#ch04">05.4</a></td></tr>
+<tr><td class="mono">arr.length</td><td class="mono">$arr.Count</td><td><a href="04-変数と型.html#ch04">04.4</a></td></tr>
+<tr><td class="mono">arr.includes(x)</td><td class="mono">$arr -contains $x</td><td><a href="04-変数と型.html#ch03">04.3</a></td></tr>
+<tr><td class="mono">arr[arr.length - 1]</td><td class="mono">$arr[-1]</td><td><a href="04-変数と型.html#ch04">04.4</a></td></tr>
+<tr><td class="mono">arr.slice(1, 3)</td><td class="mono">$arr[1..2]</td><td><a href="04-変数と型.html#ch04">04.4</a></td></tr>
+<tr><td class="mono">arr.reduce(...)</td><td class="mono">$arr | Measure-Object -Sum</td><td><a href="05-パイプライン.html#ch04">05.4</a></td></tr>
+</table>
+</div>
+
+<h2>文字列と変数</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>JavaScript</th><th>PowerShell</th><th>参照</th></tr>
+<tr><td class="mono">const x = 5;</td><td class="mono">$x = 5</td><td><a href="04-変数と型.html#ch01">04.1</a></td></tr>
+<tr><td class="mono">`Hello ${name}`</td><td class="mono">"Hello $name"</td><td><a href="04-変数と型.html#ch02">04.2</a></td></tr>
+<tr><td class="mono">`${obj.prop}`</td><td class="mono">"$($obj.prop)"</td><td><a href="04-変数と型.html#ch02">04.2</a></td></tr>
+<tr><td class="mono">"C:\\temp"</td><td class="mono">'C:\temp'（エスケープ不要）</td><td><a href="04-変数と型.html#ch02">04.2</a></td></tr>
+<tr><td class="mono">\n（改行）</td><td class="mono">`n</td><td><a href="04-変数と型.html#ch02">04.2</a></td></tr>
+<tr><td class="mono">a === b</td><td class="mono">$a -eq $b（大小文字を区別しない）</td><td><a href="04-変数と型.html#ch03">04.3</a></td></tr>
+<tr><td class="mono">a !== b</td><td class="mono">$a -ne $b</td><td><a href="04-変数と型.html#ch03">04.3</a></td></tr>
+<tr><td class="mono">&amp;&amp; / || / !</td><td class="mono">-and / -or / -not</td><td><a href="04-変数と型.html#ch03">04.3</a></td></tr>
+<tr><td class="mono">RegExp.test(s)</td><td class="mono">$s -match 'pattern'</td><td><a href="04-変数と型.html#ch03">04.3</a></td></tr>
+<tr><td class="mono">s.replace(/a/g, 'b')</td><td class="mono">$s -replace 'a', 'b'</td><td><a href="04-変数と型.html#ch03">04.3</a></td></tr>
+</table>
+</div>
+
+<h2>オブジェクトと関数</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>JavaScript</th><th>PowerShell</th><th>参照</th></tr>
+<tr><td class="mono">const o = { a: 1 };</td><td class="mono">$o = @{ a = 1 }</td><td><a href="04-変数と型.html#ch04">04.4</a></td></tr>
+<tr><td class="mono">Object.keys(o)</td><td class="mono">$o.Keys</td><td><a href="04-変数と型.html#ch04">04.4</a></td></tr>
+<tr><td class="mono">"a" in o</td><td class="mono">$o.ContainsKey("a")</td><td><a href="04-変数と型.html#ch04">04.4</a></td></tr>
+<tr><td class="mono">function f(a, b) { }</td><td class="mono">function Verb-Noun { param($A, $B) }</td><td><a href="06-制御構文と関数.html#ch02">06.2</a></td></tr>
+<tr><td class="mono">f(1, 2)</td><td class="mono">Verb-Noun -A 1 -B 2 <span class="badge b-bad">括弧は使わない</span></td><td><a href="06-制御構文と関数.html#ch02">06.2</a></td></tr>
+<tr><td class="mono">"use strict"</td><td class="mono">Set-StrictMode -Version Latest</td><td><a href="06-制御構文と関数.html#ch04">06.4</a></td></tr>
+<tr><td class="mono">console.dir(o)</td><td class="mono">$o | Format-List *</td><td><a href="05-パイプライン.html#ch02">05.2</a></td></tr>
+<tr><td class="mono">JSON.parse(s)</td><td class="mono">$s | ConvertFrom-Json</td><td><a href="07-ファイル操作.html#ch04">07.4</a></td></tr>
+<tr><td class="mono">JSON.stringify(o)</td><td class="mono">$o | ConvertTo-Json -Depth 10</td><td><a href="07-ファイル操作.html#ch04">07.4</a></td></tr>
+<tr><td class="mono">npm install -g</td><td class="mono">Install-Module -Scope CurrentUser</td><td><a href="03-実行環境.html#ch03">03.3</a></td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>対応表はあくまで出発点です。</strong><br>
+<code>filter</code> と <code>Where-Object</code> は似ていますが、<strong>PowerShell はオブジェクトを1件ずつ流す</strong>ため、巨大なデータでもメモリを使い切りません。JavaScript の配列メソッドは<strong>全件をメモリに載せてから</strong>処理します。<br>
+書き換えの目安として使い、挙動の違いは本編で確認してください。
+</div>
+</section>
+
+<!-- ============ A1.4 ============ -->
+<section class="ch04" id="ch04">
+<h1>A1.4 用語から引く</h1>
+
+<div class="table-wrap">
+<table>
+<tr><th>用語</th><th>意味</th><th>参照</th></tr>
+<tr><td class="nowrap"><strong>ANSI</strong></td><td>特定の文字コードではなく、<strong>その環境の既定のコードページ</strong>。日本語環境では CP932</td><td><a href="02-ファイル形式.html#ch01">02.1</a></td></tr>
+<tr><td class="nowrap"><strong>BOM</strong></td><td>ファイル先頭に置く文字コードの目印。UTF-8 では <code>EF BB BF</code></td><td><a href="02-ファイル形式.html#ch01">02.1</a></td></tr>
+<tr><td class="nowrap"><strong>Cmdlet</strong></td><td>「動詞-名詞」の名前を持つ小さな専門コマンド</td><td><a href="05-パイプライン.html#ch05">05.5</a></td></tr>
+<tr><td class="nowrap"><strong>CRLF / LF</strong></td><td>改行コード。CRLF は <code>0D 0A</code> の2バイト、LF は <code>0A</code></td><td><a href="02-ファイル形式.html#ch03">02.3</a></td></tr>
+<tr><td class="nowrap"><strong>Desktop / Core</strong></td><td><code>PSEdition</code> の値。Desktop は 5.1、Core は 7</td><td><a href="03-実行環境.html#ch01">03.1</a></td></tr>
+<tr><td class="nowrap"><strong>ISE</strong></td><td>5.1 専用の旧スクリプト編集環境。開発終了。VS Code を使う</td><td><a href="03-実行環境.html#ch04">03.4</a></td></tr>
+<tr><td class="nowrap"><strong>Zone.Identifier</strong></td><td>「ネットから来た」という印。NTFS の代替データストリームに入る</td><td><a href="03-実行環境.html#ch02">03.2</a></td></tr>
+<tr><td class="nowrap"><strong>アンロール</strong></td><td>配列がパイプラインで要素にばらされること。1件だと配列でなくなる</td><td><a href="06-制御構文と関数.html#ch03">06.3</a></td></tr>
+<tr><td class="nowrap"><strong>エイリアス</strong></td><td>コマンドの別名。5.1 と 7 で中身が違うのでスクリプトには書かない</td><td><a href="05-パイプライン.html#ch05">05.5</a></td></tr>
+<tr><td class="nowrap"><strong>calculated property</strong><br>（計算プロパティ）</td><td><code>@{ N='名前'; E={ 式 } }</code> で新しい列を作る書き方</td><td><a href="05-パイプライン.html#ch03">05.3</a></td></tr>
+<tr><td class="nowrap"><strong>実行ポリシー</strong></td><td>スクリプト実行の制限。<strong>セキュリティ機能ではない</strong></td><td><a href="03-実行環境.html#ch02">03.2</a></td></tr>
+<tr><td class="nowrap"><strong>終了エラー</strong></td><td>処理が止まるエラー。<code>catch</code> に入る</td><td><a href="08-エラー処理.html#ch01">08.1</a></td></tr>
+<tr><td class="nowrap"><strong>スコープ</strong></td><td>変数の見える範囲。<strong>読めるが書けない</strong>という非対称がある</td><td><a href="06-制御構文と関数.html#ch04">06.4</a></td></tr>
+<tr><td class="nowrap"><strong>ドットソース</strong></td><td><code>. .\lib.ps1</code>。別ファイルの関数を現在のスコープに読み込む</td><td><a href="06-制御構文と関数.html#ch04">06.4</a></td></tr>
+<tr><td class="nowrap"><strong>ドライラン</strong></td><td><code>-WhatIf</code> による事前確認。実際には変更しない</td><td><a href="09-実務パターン.html#ch02">09.2</a></td></tr>
+<tr><td class="nowrap"><strong>非終了エラー</strong></td><td>報告するが処理は続くエラー。<strong>既定では <code>catch</code> に入らない</strong></td><td><a href="08-エラー処理.html#ch01">08.1</a></td></tr>
+<tr><td class="nowrap"><strong>ヒアストリング</strong></td><td><code>@'...'@</code> による複数行の文字列。終端は必ず行頭</td><td><a href="04-変数と型.html#ch02">04.2</a></td></tr>
+<tr><td class="nowrap"><strong>プロバイダ</strong></td><td>ファイルシステムやレジストリを同じ操作で扱う仕組み</td><td><a href="07-ファイル操作.html#ch02">07.2</a></td></tr>
+<tr><td class="nowrap"><strong>プロファイル</strong></td><td>起動時に自動実行される ps1。5.1 と 7 で場所が違う</td><td><a href="03-実行環境.html#ch03">03.3</a></td></tr>
+<tr><td class="nowrap"><strong>モジュール</strong></td><td>機能拡張の単位。npm パッケージにあたる</td><td><a href="03-実行環境.html#ch03">03.3</a></td></tr>
+<tr><td class="nowrap"><strong>型制約</strong></td><td><code>[int]$x</code>。実行時に効き続け、代入のたびに変換される</td><td><a href="04-変数と型.html#ch01">04.1</a></td></tr>
+<tr><td class="nowrap"><strong>共通パラメータ</strong></td><td><code>[CmdletBinding()]</code> で使えるようになる <code>-Verbose</code> など</td><td><a href="06-制御構文と関数.html#ch02">06.2</a></td></tr>
+<tr><td class="nowrap"><strong>自動変数</strong></td><td>PowerShell が用意する変数。<code>$_</code> <code>$matches</code> <code>$PSScriptRoot</code> など</td><td><a href="05-パイプライン.html#ch03">05.3</a></td></tr>
+<tr><td class="nowrap"><strong>代替データストリーム</strong></td><td>NTFS でファイル本体とは別に付く領域。<code>Zone.Identifier</code> が入る</td><td><a href="03-実行環境.html#ch02">03.2</a></td></tr>
+<tr><td class="nowrap"><strong>動詞-名詞</strong></td><td>Cmdlet の命名規則。動詞は承認された 100 個から選ぶ</td><td><a href="05-パイプライン.html#ch05">05.5</a></td></tr>
+</table>
+</div>
+</section>
+
+</div>
+
+<footer>
+	<p>PowerShell 学習資料 付録 A1 ／ <a href="../README.html">目次に戻る</a> ／ 関連: <a href="A2-テンプレ集.html">A2. テンプレ集</a></p>
+</footer>
+
+</body>
+</html>

@@ -19,12 +19,13 @@
 		--soft: #f2f5fb;
 	}
 
-	/* 章ごとの虹色アクセント (H: 280 → 0, 280°を5章に均等分割 = 70°刻み) */
+	/* 章ごとの虹色アクセント (H: 280 → 0, 280°を6章に均等分割 = 56°刻み) */
 	.ch01 { --accent: hsl(280,78%,25%); --accent2: hsl(280,58%,65%); --soft: hsl(280,28%,95%); }
-	.ch02 { --accent: hsl(210,78%,25%); --accent2: hsl(210,58%,65%); --soft: hsl(210,28%,95%); }
-	.ch03 { --accent: hsl(140,78%,25%); --accent2: hsl(140,58%,65%); --soft: hsl(140,28%,95%); }
-	.ch04 { --accent: hsl(70,78%,25%);  --accent2: hsl(70,58%,65%);  --soft: hsl(70,28%,95%); }
-	.ch05 { --accent: hsl(0,78%,25%);   --accent2: hsl(0,58%,65%);   --soft: hsl(0,28%,95%); }
+	.ch02 { --accent: hsl(224,78%,25%); --accent2: hsl(224,58%,65%); --soft: hsl(224,28%,95%); }
+	.ch03 { --accent: hsl(168,78%,25%); --accent2: hsl(168,58%,65%); --soft: hsl(168,28%,95%); }
+	.ch04 { --accent: hsl(112,78%,25%); --accent2: hsl(112,58%,65%); --soft: hsl(112,28%,95%); }
+	.ch05 { --accent: hsl(56,78%,25%);  --accent2: hsl(56,58%,65%);  --soft: hsl(56,28%,95%); }
+	.ch06 { --accent: hsl(0,78%,25%);   --accent2: hsl(0,58%,65%);   --soft: hsl(0,28%,95%); }
 
 	* { box-sizing: border-box; }
 
@@ -241,8 +242,8 @@
 <div class="titlebar">
 	<div class="inner">
 		<h1>PowerShell 学習資料 全体構成案</h1>
-		<p>プログラミング経験のある読者を対象にした、全10ファイルのカリキュラム設計</p>
-		<p class="meta">📅 作成: 2026-08-22 / 更新: 2026-08-22 ／ ステータス: 確定（全5回・5.1と7の両対応）</p>
+		<p>プログラミング経験のある読者を対象にした、本編10章＋付録2つのカリキュラム設計</p>
+		<p class="meta">📅 作成: 2026-08-22 / 更新: 2026-08-25 ／ ステータス: 本編10章 ＋ 付録 A1・A2 完成</p>
 	</div>
 </div>
 
@@ -256,6 +257,7 @@
 		<li class="ch03"><a href="#ch03">基礎編（01〜05）の詳細</a></li>
 		<li class="ch04"><a href="#ch04">実践編（06〜09）の詳細</a></li>
 		<li class="ch05"><a href="#ch05">勉強会の進行案</a></li>
+		<li class="ch06"><a href="#ch06">付録（A1・A2）の詳細</a></li>
 	</ol>
 </nav>
 
@@ -278,8 +280,8 @@
 <svg viewBox="0 0 780 214" role="img" aria-label="2種類の読者と資料の対応">
 	<defs>
 		<linearGradient id="g-pl-1a" x1="0" y1="1" x2="0" y2="0">
-			<stop offset="0" stop-color="hsl(210,78%,25%)"/>
-			<stop offset="1" stop-color="hsl(210,58%,65%)"/>
+			<stop offset="0" stop-color="hsl(224,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(224,58%,65%)"/>
 		</linearGradient>
 		<linearGradient id="g-pl-1b" x1="0" y1="1" x2="0" y2="0">
 			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
@@ -455,7 +457,15 @@
 <tr><td class="nowrap">08</td><td class="nowrap">エラー処理</td><td><code>try/catch</code>、<code>$ErrorActionPreference</code>、終了コード、デバッグ手順</td><td class="num">4</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
 <tr><td class="nowrap">09</td><td class="nowrap">実務パターン集</td><td>ログ集計、一括リネーム、タスクスケジューラ連携、他プロセス呼び出し</td><td class="num">5</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
 <tr><td class="nowrap">10</td><td class="nowrap">ハンズオン</td><td>勉強会用の課題と解答例、詰まりやすい箇所の解説</td><td class="num">3</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
+<tr><td class="nowrap"><strong>A1</strong></td><td class="nowrap">逆引き</td><td>症状・コマンド名・JavaScript・用語の4つの入口から該当箇所へ引く索引</td><td class="num">4</td><td class="nowrap"><span class="badge b-good">完成</span></td></tr>
+<tr><td class="nowrap"><strong>A2</strong></td><td class="nowrap">テンプレ集</td><td>コピーして使う雛形。スクリプトの骨格・ログ・引数検証・ファイル処理ほか</td><td class="num">6</td><td class="nowrap"><span class="badge b-good">完成</span></td></tr>
 </table>
+</div>
+
+<div class="callout">
+<strong>付録は <code>A1-</code> <code>A2-</code> の記法にします。</strong><br>
+本編の <code>01</code>〜<code>10</code> は<strong>順に読む前提</strong>ですが、付録は<strong>必要になったときに引く</strong>ものです。番号体系を変えることで、読者が「順番に読まなくてよい」と判断できます。<br>
+ファイル名でも <code>10-</code> の後ろに並ぶため、一覧の見た目も崩れません。
 </div>
 
 <h2>読む順序の依存関係</h2>
@@ -727,6 +737,109 @@ JS の <code>return</code> の感覚で書くと、途中の <code>Write-Output<
 ① <strong>全5回・1回90分</strong>で進める<br>
 ② <strong>5.1 と 7 の両方</strong>を対象にし、差がある箇所に <span class="badge b-ps7">pwsh 7</span> <span class="badge b-ps51">5.1</span> のバッジを付ける<br>
 ③ 読者は<strong>何らかのプログラミング言語の基礎を知っている人</strong>とし、未経験者は対象外。JS 以外の経験者向けの補足は<strong>本文内の <code>.callout</code> 枠</strong>で対応し、別ファイルは作らない
+</div>
+</section>
+
+<!-- ============ 6 ============ -->
+<section class="ch06" id="ch06">
+<h1>6. 付録（A1・A2）の詳細</h1>
+
+<h2>本編との役割の違い</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th></th><th>本編 01〜10</th><th>付録 A1・A2</th></tr>
+<tr><td class="nowrap">読み方</td><td><strong>順に読む</strong></td><td><strong>必要なときに引く</strong></td></tr>
+<tr><td class="nowrap">目的</td><td>理解する</td><td>思い出す・写す</td></tr>
+<tr><td class="nowrap">構成</td><td>説明 → 図 → 例 → まとめ</td><td>表とコードが主体</td></tr>
+</table>
+</div>
+
+<h2>A1. 逆引き — 4つの入口</h2>
+
+<p>資料には <strong>Cmdlet 69種</strong>が10章に散らばっています。「あのコマンドはどの章だったか」を引けるようにします。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>節</th><th>引き方</th><th>内容</th><th>項目数の目安</th></tr>
+<tr><td class="nowrap">A1.1</td><td><strong>症状から</strong></td><td>「0 件しか返らない」「文字化けする」「try/catch が効かない」</td><td class="num">38</td></tr>
+<tr><td class="nowrap">A1.2</td><td><strong>コマンドから</strong></td><td>Cmdlet 名 → 用途と解説箇所。<strong>HTML から自動生成する</strong></td><td class="num">69</td></tr>
+<tr><td class="nowrap">A1.3</td><td><strong>JavaScript から</strong></td><td><code>filter</code> → <code>Where-Object</code> のような対応表</td><td class="num">28</td></tr>
+<tr><td class="nowrap">A1.4</td><td><strong>用語から</strong></td><td>Cmdlet・BOM・実行ポリシー・非終了エラー等の一言定義</td><td class="num">25</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>A1.2 は手書きしません。</strong><br>
+69 種 × 10 章の対応表を手で維持すると、<strong>章を追加するたびに陳腐化</strong>します。<code>src/scripts/index/build-index.ps1</code> が <code>docs/NN-*.html</code> を走査し、A1.2 のマーカー間を書き換えます。<br>
+用途の説明はスクリプト内の <code>$Purpose</code> に持たせており、<strong>未登録の Cmdlet が見つかると実行時に警告</strong>が出ます。<br>
+A1.1・A1.3・A1.4 は内容の判断が要るため手書きです。
+</div>
+
+<h3>複数の章にまたがる Cmdlet（実測）</h3>
+
+<p>全 69 種のうち <strong>21 種が3章以上</strong>に登場します。4章以上のものを挙げます。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>Cmdlet</th><th>章数</th><th>登場する章</th></tr>
+<tr><td class="mono">Get-Content</td><td class="num">8</td><td class="nowrap">01, 02, 05, 06, 07, 08, 09, 10</td></tr>
+<tr><td class="mono">Get-ChildItem</td><td class="num">7</td><td class="nowrap">01, 05, 06, 07, 08, 09, 10</td></tr>
+<tr><td class="mono">Write-Host</td><td class="num">7</td><td class="nowrap">01, 02, 04, 06, 08, 09, 10</td></tr>
+<tr><td class="mono">Get-Member</td><td class="num">5</td><td class="nowrap">03, 04, 05, 08, 10</td></tr>
+<tr><td class="mono">Get-Process</td><td class="num">5</td><td class="nowrap">01, 05, 06, 07, 10</td></tr>
+<tr><td class="mono">Set-Content</td><td class="num">5</td><td class="nowrap">02, 05, 06, 07, 10</td></tr>
+<tr><td class="mono">Test-Path</td><td class="num">5</td><td class="nowrap">03, 07, 08, 09, 10</td></tr>
+<tr><td class="mono">Join-Path</td><td class="num">4</td><td class="nowrap">06, 07, 09, 10</td></tr>
+<tr><td class="mono">New-Item</td><td class="num">4</td><td class="nowrap">03, 05, 09, 10</td></tr>
+<tr><td class="mono">Set-StrictMode</td><td class="num">4</td><td class="nowrap">04, 06, 09, 10</td></tr>
+<tr><td class="mono">Write-Verbose</td><td class="num">4</td><td class="nowrap">06, 08, 09, 10</td></tr>
+</table>
+</div>
+
+<p>残り 48 種は 1〜2 章にのみ登場します。<strong>横断する 21 種だけでも索引の価値がある</strong>ことが数字で確認できました。</p>
+
+<h2>A2. テンプレ集 — 09 との違い</h2>
+
+<p>ここが設計上もっとも重要な判断です。<strong>09 と重複させません。</strong></p>
+
+<div class="table-wrap">
+<table>
+<tr><th></th><th>09 実務パターン集</th><th>A2 テンプレ集</th></tr>
+<tr><td class="nowrap">単位</td><td><strong>完成したスクリプト5本</strong></td><td><strong>部品・骨格</strong></td></tr>
+<tr><td class="nowrap">使い方</td><td>用途が合えば流用する</td><td>どんなスクリプトでも最初に書く型</td></tr>
+<tr><td class="nowrap">例</td><td>ログ集計、一括リネーム、バックアップ</td><td><code>param</code> ＋ <code>StrictMode</code> ＋ <code>try/catch</code> ＋ <code>exit</code></td></tr>
+</table>
+</div>
+
+<div class="table-wrap">
+<table>
+<tr><th>節</th><th>テンプレート</th><th>解決すること</th></tr>
+<tr><td class="nowrap">A2.1</td><td><strong>スクリプトの骨格</strong></td><td>引数・厳格モード・エラー処理・終了コードの定型</td></tr>
+<tr><td class="nowrap">A2.2</td><td><strong>ログ出力</strong></td><td><code>Write-Log</code> 関数。無人実行の命綱（09.4 から部品として切り出す）</td></tr>
+<tr><td class="nowrap">A2.3</td><td><strong>引数の検証</strong></td><td><code>Mandatory</code> / <code>ValidateSet</code> / <code>ValidateScript</code> の使い分け</td></tr>
+<tr><td class="nowrap">A2.4</td><td><strong>ファイル処理の定型</strong></td><td>読み・書き・一覧・存在確認。<code>-Encoding</code> 込み</td></tr>
+<tr><td class="nowrap">A2.5</td><td><strong>外部コマンド呼び出し</strong></td><td>存在確認・終了コード・JSON の受け取り</td></tr>
+<tr><td class="nowrap">A2.6</td><td><strong>配布用の一式</strong></td><td>ps1 ＋ cmd ランチャー ＋ タスク登録</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>A2.3 は本編に無い内容です。</strong><br>
+<code>[ValidateSet]</code> や <code>[ValidateScript]</code> は 06.2 で触れていません。<strong>引数の検証を型と属性に任せる</strong>という PowerShell らしい書き方なので、テンプレ集で扱う価値があります。<br>
+他の節は本編の内容を<strong>部品として再構成</strong>したものです。
+</div>
+
+<h2>README への反映</h2>
+
+<p>README の逆引き索引（17項目）は<strong>残します</strong>。役割を分けます。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>場所</th><th>役割</th><th>項目数</th></tr>
+<tr><td class="nowrap">README</td><td>よくある入口だけ</td><td class="num">17</td></tr>
+<tr><td class="nowrap">A1</td><td><strong>網羅</strong></td><td class="num">160</td></tr>
+</table>
 </div>
 </section>
 

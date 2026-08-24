@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A2. テンプレ集</title>
+<style>
+	:root {
+		--navy1: #12224d;
+		--navy2: #2f5fbf;
+		--ink: #1c2330;
+		--ink-soft: #4a5568;
+		--line: #d9dfe8;
+		--code-bg: #f4f6fa;
+
+		/* 章クラス(.chNN)の外に置かれた要素用の既定値 */
+		--accent: var(--navy1);
+		--accent2: var(--navy2);
+		--soft: #f2f5fb;
+	}
+
+	/* 章ごとの虹色アクセント (H: 280 → 0, 280°を6章に均等分割 = 56°刻み) */
+	.ch01 { --accent: hsl(280,78%,25%); --accent2: hsl(280,58%,65%); --soft: hsl(280,28%,95%); }
+	.ch02 { --accent: hsl(224,78%,25%); --accent2: hsl(224,58%,65%); --soft: hsl(224,28%,95%); }
+	.ch03 { --accent: hsl(168,78%,25%); --accent2: hsl(168,58%,65%); --soft: hsl(168,28%,95%); }
+	.ch04 { --accent: hsl(112,78%,25%); --accent2: hsl(112,58%,65%); --soft: hsl(112,28%,95%); }
+	.ch05 { --accent: hsl(56,78%,25%);  --accent2: hsl(56,58%,65%);  --soft: hsl(56,28%,95%); }
+	.ch06 { --accent: hsl(0,78%,25%);   --accent2: hsl(0,58%,65%);   --soft: hsl(0,28%,95%); }
+
+	* { box-sizing: border-box; }
+
+	body {
+		margin: 0;
+		padding: 0 0 60px;
+		background: #ffffff;
+		color: var(--ink);
+		font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", "Meiryo", sans-serif;
+		line-height: 1.85;
+		font-size: 15.5px;
+	}
+
+	.wrap { max-width: 1400px; margin: 0 auto; padding: 0 30px; }
+
+	/* タイトルバー */
+	.titlebar {
+		background: linear-gradient(135deg, var(--navy1) 0%, var(--navy2) 100%);
+		color: #fff;
+		padding: 34px 30px 30px;
+		box-shadow: 0 6px 18px rgba(18,34,77,0.28);
+	}
+	.titlebar .inner { max-width: 1400px; margin: 0 auto; }
+	.titlebar h1 {
+		margin: 0 0 10px;
+		font-size: 2.1em;
+		letter-spacing: 0.02em;
+		color: #fff;
+	}
+	.titlebar p { margin: 4px 0; font-size: 0.92em; color: #d8e4ff; }
+	.titlebar .meta { font-size: 0.84em; color: #b9cdf5; }
+	.titlebar code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+
+	/* 目次 */
+	nav.toc {
+		background: linear-gradient(180deg, #f2f5fb 0%, #ffffff 100%);
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		padding: 16px 22px;
+		margin: 28px 0;
+		box-shadow: 0 2px 8px rgba(30,50,90,0.07);
+	}
+	nav.toc strong { display: block; color: var(--navy1); margin-bottom: 10px; }
+	nav.toc ol {
+		margin: 0;
+		padding-left: 0;
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		counter-reset: toc;
+	}
+	nav.toc li { counter-increment: toc; margin: 0; }
+	nav.toc a {
+		display: -webkit-box;
+		width: 310px;
+		max-width: 100%;
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		text-decoration: none;
+		text-align: left;
+		border-radius: 6px;
+		padding: 7px 10px;
+		font-size: 0.88em;
+		font-weight: 600;
+		line-height: 1.4;
+		white-space: normal;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		box-shadow: 0 1px 4px rgba(20,30,60,0.18);
+	}
+	nav.toc a::before { content: "A2." counter(toc) " "; opacity: 0.85; }
+	nav.toc a:hover { text-decoration: underline; }
+
+	/* 章 */
+	section {
+		background: linear-gradient(180deg, var(--soft) 0%, #ffffff 42%);
+		border-radius: 12px;
+		padding: 4px 26px 26px;
+		margin: 34px 0;
+		border: 1px solid var(--line);
+	}
+
+	section h1 {
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		font-size: 1.5em;
+		margin: 26px 0 20px;
+		padding: 14px 20px;
+		border-radius: 9px;
+		box-shadow: 0 5px 14px rgba(30,40,70,0.28);
+	}
+	section h1 code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+
+	h2 {
+		font-size: 1.16em;
+		color: var(--accent);
+		border-left: 7px solid var(--accent);
+		background: linear-gradient(90deg, var(--soft) 0%, rgba(255,255,255,0) 88%);
+		padding: 6px 12px;
+		margin: 30px 0 12px;
+		border-radius: 0 6px 6px 0;
+	}
+
+	h3 {
+		font-size: 1.02em;
+		color: var(--accent);
+		margin: 20px 0 8px;
+		padding-bottom: 3px;
+		border-bottom: 2px dotted var(--accent2);
+		display: inline-block;
+	}
+
+	p { margin: 10px 0; }
+	ul, ol { margin: 10px 0; padding-left: 1.6em; }
+	li { margin: 6px 0; }
+	a { color: var(--navy2); }
+
+	code {
+		background: var(--code-bg);
+		border: 1px solid var(--line);
+		border-radius: 4px;
+		padding: 1px 6px;
+		font-family: "BIZ UDゴシック", "ＭＳ ゴシック", Consolas, "Cascadia Mono", monospace;
+		font-size: 0.9em;
+		color: #17335f;
+	}
+
+	pre {
+		background: linear-gradient(180deg, #f7f9fd 0%, #eef2f9 100%);
+		border: 1px solid var(--line);
+		border-left: 5px solid var(--accent2);
+		border-radius: 8px;
+		padding: 13px 16px;
+		overflow-x: auto;
+		font-size: 0.88em;
+		line-height: 1.6;
+	}
+	pre code { background: none; border: none; padding: 0; color: #1b2b46; }
+
+	.table-wrap { overflow-x: auto; margin: 16px 0; }
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 0.93em;
+		box-shadow: 0 2px 7px rgba(40,55,90,0.12);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+	th {
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		text-align: left;
+		padding: 9px 12px;
+		font-weight: 600;
+	}
+	th code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+	td { padding: 9px 12px; border-bottom: 1px solid var(--line); background: #fff; vertical-align: top; }
+	tr:nth-child(even) td { background: #fafbfe; }
+	td.nowrap { white-space: nowrap; }
+	td.mono { font-family: "BIZ UDゴシック", "ＭＳ ゴシック", Consolas, monospace; white-space: nowrap; }
+
+	/* バッジ */
+	.badge {
+		display: inline-block;
+		font-size: 0.78em;
+		font-weight: 700;
+		color: #fff;
+		border-radius: 4px;
+		padding: 1px 9px;
+		margin-right: 7px;
+		letter-spacing: 0.04em;
+		white-space: nowrap;
+	}
+	.b-good { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
+	.b-bad  { background: linear-gradient(100deg, #a51f22, #e05a5c); }
+	.b-none { background: linear-gradient(100deg, #5a6472, #97a1ae); }
+	.b-warn { background: linear-gradient(100deg, #b8620a, #f0a548); }
+	.b-ps7  { background: linear-gradient(100deg, #1a5fa8, #4d9ae0); }
+	.b-ps51 { background: linear-gradient(100deg, #5b2d82, #9a6bc4); }
+
+	.callout {
+		background: linear-gradient(180deg, var(--soft) 0%, #ffffff 100%);
+		border: 1px solid var(--accent2);
+		border-left: 6px solid var(--accent);
+		border-radius: 0 8px 8px 0;
+		padding: 12px 18px;
+		margin: 16px 0;
+	}
+	.callout strong { color: var(--accent); }
+
+	/* SVG図 */
+	figure { margin: 20px 0; text-align: center; }
+	figure svg {
+		max-width: 100%;
+		height: auto;
+		font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", "Meiryo", sans-serif;
+	}
+	figcaption { font-size: 0.84em; color: var(--ink-soft); margin-top: 6px; }
+
+	footer {
+		max-width: 1400px;
+		margin: 40px auto 0;
+		padding: 18px 30px 0;
+		border-top: 2px solid var(--line);
+		color: var(--ink-soft);
+		font-size: 0.86em;
+	}
+	footer a { color: var(--navy2); }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>A2. テンプレ集</h1>
+		<p>コピーして使う雛形 — スクリプトの骨格・ログ・引数検証・ファイル処理・外部コマンド・配布</p>
+		<p class="meta">📅 作成: 2026-08-25 / 更新: 2026-08-25 ／ 付録（順に読む必要はありません）</p>
+	</div>
+</div>
+
+<div class="wrap">
+
+<h2>09 との違い</h2>
+
+<p><a href="09-実務パターン.html">09 実務パターン集</a>は<strong>完成したスクリプト5本</strong>でした。用途が合えばそのまま流用できますが、合わなければ使えません。</p>
+
+<p>この付録は<strong>部品</strong>です。用途に関係なく、どんなスクリプトでも最初に書く型を集めています。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th></th><th>09 実務パターン集</th><th>A2 テンプレ集（この付録）</th></tr>
+<tr><td class="nowrap">単位</td><td>完成したスクリプト</td><td>部品・骨格</td></tr>
+<tr><td class="nowrap">使い方</td><td>用途が合えば流用する</td><td>どんなスクリプトでも最初に書く</td></tr>
+<tr><td class="nowrap">例</td><td>ログ集計、一括リネーム、バックアップ</td><td><code>param</code> ＋ <code>StrictMode</code> ＋ <code>try/catch</code></td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>掲載しているコードはすべて実際に実行して確認しています。</strong><br>
+出力例は手で書いたものではなく、<strong>実行結果をそのまま貼ったもの</strong>です。エラーメッセージも同様なので、同じ文言が出れば同じ状態だと判断できます。
+</div>
+
+<nav class="toc">
+	<strong>目次</strong>
+	<ol>
+		<li class="ch01"><a href="#ch01">スクリプトの骨格</a></li>
+		<li class="ch02"><a href="#ch02">ログ出力</a></li>
+		<li class="ch03"><a href="#ch03">引数の検証</a></li>
+		<li class="ch04"><a href="#ch04">ファイル処理の定型</a></li>
+		<li class="ch05"><a href="#ch05">外部コマンド呼び出し</a></li>
+		<li class="ch06"><a href="#ch06">配布用の一式</a></li>
+	</ol>
+</nav>
+
+<!-- ============ A2.1 ============ -->
+<section class="ch01" id="ch01">
+<h1>A2.1 スクリプトの骨格</h1>
+
+<p>新しい <code>.ps1</code> を作るとき、<strong>処理を書く前にこの形を貼ります</strong>。中身が何であれ、この4層は変わりません。</p>
+
+<figure>
+<svg viewBox="0 0 700 268" role="img" aria-label="スクリプトの骨格4層">
+	<defs>
+		<linearGradient id="g-A2-1a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/>
+			<stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="20" y="14" width="660" height="46" rx="8" fill="url(#g-A2-1a)"/>
+	<text x="42" y="34" fill="#fff" font-size="13.5" font-weight="700">① 宣言</text>
+	<text x="150" y="34" fill="#fff" font-size="12.5" opacity="0.94">#Requires / [CmdletBinding()] / param</text>
+	<text x="150" y="52" fill="#fff" font-size="11.5" opacity="0.86">動く前提と、外から渡すものを決める</text>
+
+	<rect x="20" y="68" width="660" height="46" rx="8" fill="url(#g-A2-1a)"/>
+	<text x="42" y="88" fill="#fff" font-size="13.5" font-weight="700">② 安全装置</text>
+	<text x="150" y="88" fill="#fff" font-size="12.5" opacity="0.94">Set-StrictMode / $ErrorActionPreference</text>
+	<text x="150" y="106" fill="#fff" font-size="11.5" opacity="0.86">黙って間違った結果を出さないようにする</text>
+
+	<rect x="20" y="122" width="660" height="46" rx="8" fill="url(#g-A2-1a)"/>
+	<text x="42" y="142" fill="#fff" font-size="13.5" font-weight="700">③ 本体</text>
+	<text x="150" y="142" fill="#fff" font-size="12.5" opacity="0.94">try { ... }</text>
+	<text x="150" y="160" fill="#fff" font-size="11.5" opacity="0.86">ここだけがスクリプトごとに変わる</text>
+
+	<rect x="20" y="176" width="660" height="46" rx="8" fill="url(#g-A2-1a)"/>
+	<text x="42" y="196" fill="#fff" font-size="13.5" font-weight="700">④ 後始末</text>
+	<text x="150" y="196" fill="#fff" font-size="12.5" opacity="0.94">catch { ... } / exit</text>
+	<text x="150" y="214" fill="#fff" font-size="11.5" opacity="0.86">呼び出し元に成否を数値で伝える</text>
+
+	<rect x="20" y="232" width="660" height="26" rx="6" fill="#fff" stroke="var(--accent2)" stroke-width="1.6"/>
+	<text x="350" y="250" fill="var(--accent)" font-size="12.5" font-weight="600" text-anchor="middle">③ 以外は毎回同じ。だから貼るだけでよい</text>
+</svg>
+<figcaption>図 A2.1 — 骨格の4層。変わるのは ③ だけ</figcaption>
+</figure>
+
+<h2>そのまま貼れる形</h2>
+
+<pre><code>#Requires -Version 5.1
+[CmdletBinding()]
+param(
+	[Parameter(Mandatory)]
+	[string]$Path,
+
+	[string]$OutFile = (Join-Path $PSScriptRoot 'result.csv'),
+
+	[switch]$Force
+)
+
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
+
+try {
+	Write-Verbose "対象: $Path"
+
+	if (-not (Test-Path -LiteralPath $Path)) {
+		throw "パスが見つかりません: $Path"
+	}
+
+	# ここに処理を書く
+	Write-Host "処理しました: $Path"
+
+	exit 0
+}
+catch {
+	Write-Host "失敗しました: $($_.Exception.Message)" -ForegroundColor Red
+	Write-Host $_.ScriptStackTrace
+	exit 1
+}</code></pre>
+
+<h3>実行結果</h3>
+
+<pre><code>PS&gt; .\skeleton.ps1 -Path C:\work
+処理しました: C:\work
+exit=0
+
+PS&gt; .\skeleton.ps1 -Path X:\nope
+失敗しました: パスが見つかりません: X:\nope
+at &lt;ScriptBlock&gt;, C:\work\skeleton.ps1: line 19
+exit=1</code></pre>
+
+<h2>各行が何をしているか</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>行</th><th>効果</th><th>省くとどうなるか</th></tr>
+<tr><td class="mono">#Requires -Version 5.1</td><td>古い環境では実行前に止まる</td><td>途中まで動いて謎のエラーになる</td></tr>
+<tr><td class="mono">[CmdletBinding()]</td><td><code>-Verbose</code> <code>-WhatIf</code> などが使えるようになる</td><td><code>Write-Verbose</code> が何も出さない</td></tr>
+<tr><td class="mono">Set-StrictMode -Version Latest</td><td>未定義変数が即エラーになる</td><td>タイプミスが <code>$null</code> として通る</td></tr>
+<tr><td class="mono">$ErrorActionPreference = 'Stop'</td><td>非終了エラーも <code>catch</code> に入る</td><td>エラーが出ても処理が続く</td></tr>
+<tr><td class="mono">$PSScriptRoot</td><td>スクリプト自身の場所</td><td>タスク実行時にカレントが違って壊れる</td></tr>
+<tr><td class="mono">exit 0 / exit 1</td><td>呼び出し元が成否を判定できる</td><td>CI やタスクが常に成功扱いになる</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong><code>$ErrorActionPreference = 'Stop'</code> は外部コマンドには効きません。</strong><br>
+これが効くのは Cmdlet の非終了エラーだけです。<code>robocopy</code> や <code>git</code> のような <strong>exe が異常終了しても例外にはならず</strong>、<code>catch</code> を素通りします。外部コマンドの扱いは <a href="#ch05">A2.5</a> を見てください。
+</div>
+</section>
+
+<!-- ============ A2.2 ============ -->
+<section class="ch02" id="ch02">
+<h1>A2.2 ログ出力</h1>
+
+<p>人が見ていない時間に動くスクリプトでは、<strong>ログが唯一の手がかり</strong>です。<code>Write-Host</code> だけだと画面が閉じた瞬間に消えます。</p>
+
+<h2>Write-Log 関数</h2>
+
+<pre><code>$LogPath = Join-Path $PSScriptRoot 'run.log'
+
+function Write-Log {
+	[CmdletBinding()]
+	param(
+		[Parameter(Mandatory, ValueFromPipeline)]
+		[string]$Message,
+
+		[ValidateSet('INFO', 'WARN', 'ERROR')]
+		[string]$Level = 'INFO'
+	)
+	process {
+		$line = '{0} [{1}] {2}' -f (Get-Date -Format 'yyyy-MM-dd HH:mm:ss'), $Level, $Message
+		Add-Content -LiteralPath $LogPath -Value $line -Encoding UTF8
+		switch ($Level) {
+			'ERROR' { Write-Host $line -ForegroundColor Red }
+			'WARN'  { Write-Host $line -ForegroundColor Yellow }
+			default { Write-Host $line }
+		}
+	}
+}</code></pre>
+
+<h3>使い方と実行結果</h3>
+
+<pre><code>Write-Log '処理を開始しました'
+Write-Log '対象が見つかりません' -Level WARN
+'パイプでも渡せます' | Write-Log</code></pre>
+
+<pre><code>2026-08-25 00:24:32 [INFO] 処理を開始しました
+2026-08-25 00:24:32 [WARN] 対象が見つかりません
+2026-08-25 00:24:32 [INFO] パイプでも渡せます</code></pre>
+
+<p>同じ内容が <code>run.log</code> にも残ります。画面とファイルの両方に出るのが要点です。</p>
+
+<h2>この形にしている理由</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>書き方</th><th>理由</th></tr>
+<tr><td class="mono">ValueFromPipeline</td><td>パイプでも引数でも渡せる。呼び出し側の書き方を縛らない</td></tr>
+<tr><td class="mono">process { }</td><td>これが無いと<strong>パイプの最後の1件しか処理しない</strong></td></tr>
+<tr><td class="mono">ValidateSet</td><td>レベルのタイプミスが実行前に止まる</td></tr>
+<tr><td class="mono">Add-Content</td><td>追記。<code>Set-Content</code> だと毎回上書きになる</td></tr>
+<tr><td class="mono">-Encoding UTF8</td><td>省くと 5.1 の既定 ANSI で書かれ、環境によって化ける</td></tr>
+<tr><td class="mono">Join-Path $PSScriptRoot</td><td>カレントに依存しない。タスク実行でも同じ場所に出る</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>ログファイルの BOM は 5.1 と 7 で変わります。</strong><br>
+<code>-Encoding UTF8</code> は 5.1 では <strong>BOM 付き</strong>、7 では <strong>BOM 無し</strong>になります。<code>findstr</code> など BOM を解釈しないツールでログを検索すると、5.1 で書いたログは<strong>1行目だけ先頭3バイトが余分</strong>に見えます。<br>
+両方で同じにしたい場合は、7 側で <code>-Encoding utf8BOM</code> を明示します。
+</div>
+
+<h2>ログを日ごとに分ける</h2>
+
+<pre><code>$LogPath = Join-Path $PSScriptRoot ('run-{0}.log' -f (Get-Date -Format 'yyyyMMdd'))</code></pre>
+
+<p>1行変えるだけです。古いログの削除まで入れるなら次の形にします。</p>
+
+<pre><code># 30 日より古いログを消す
+Get-ChildItem -LiteralPath $PSScriptRoot -Filter 'run-*.log' |
+	Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-30) } |
+	Remove-Item -WhatIf</code></pre>
+
+<p><span class="badge b-warn">注意</span><code>-WhatIf</code> を付けたまま貼ってあります。<strong>出力を見て納得してから外してください。</strong></p>
+</section>
+
+<!-- ============ A2.3 ============ -->
+<section class="ch03" id="ch03">
+<h1>A2.3 引数の検証</h1>
+
+<p>引数のチェックを <code>if</code> で書くと、本体の先頭が検証コードで埋まります。PowerShell では<strong>属性で宣言</strong>すると、本体に入る前に弾かれます。</p>
+
+<h2>使える検証属性</h2>
+
+<pre><code>[CmdletBinding()]
+param(
+	[Parameter(Mandatory)]
+	[ValidateNotNullOrEmpty()]
+	[string]$Name,
+
+	[ValidateSet('Dev', 'Stg', 'Prod')]
+	[string]$Env = 'Dev',
+
+	[ValidateRange(1, 100)]
+	[int]$Count = 10,
+
+	[ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+	[string]$Dir = '.',
+
+	[ValidatePattern('^\d{4}-\d{2}-\d{2}$')]
+	[string]$Date = '2026-08-25'
+)</code></pre>
+
+<h3>違反したときのメッセージ</h3>
+
+<p>いずれも<strong>本体は1行も実行されません</strong>。</p>
+
+<pre><code>PS&gt; .\validate.ps1 -Name t -Env Hoge
+Cannot validate argument on parameter 'Env'. The argument "Hoge" does not
+belong to the set "Dev,Stg,Prod" specified by the ValidateSet attribute.
+
+PS&gt; .\validate.ps1 -Name t -Count 999
+Cannot validate argument on parameter 'Count'. The 999 argument is greater
+than the maximum allowed range of 100.
+
+PS&gt; .\validate.ps1 -Name t -Dir X:\nope
+Cannot validate argument on parameter 'Dir'. The " Test-Path -LiteralPath $_
+-PathType Container " validation script for the argument with value "X:\nope"
+did not return a result of True.
+
+PS&gt; .\validate.ps1 -Name t -Date 2026/08/25
+Cannot validate argument on parameter 'Date'. The argument "2026/08/25" does
+not match the "^\d{4}-\d{2}-\d{2}$" pattern.</code></pre>
+
+<h2>使い分け</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>属性</th><th>使うとき</th><th>JavaScript なら</th></tr>
+<tr><td class="mono">Mandatory</td><td>省略できない引数</td><td>先頭で <code>if (!x) throw</code></td></tr>
+<tr><td class="mono">ValidateNotNullOrEmpty</td><td>空文字も拒否したい</td><td><code>if (!x?.trim())</code></td></tr>
+<tr><td class="mono">ValidateSet</td><td>選択肢が決まっている</td><td>enum や union 型</td></tr>
+<tr><td class="mono">ValidateRange</td><td>数値の範囲</td><td><code>if (n &lt; 1 || n &gt; 100)</code></td></tr>
+<tr><td class="mono">ValidatePattern</td><td>書式が決まっている文字列</td><td><code>/^.../.test(s)</code></td></tr>
+<tr><td class="mono">ValidateScript</td><td>上記で書けない条件</td><td>任意の述語関数</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong><code>ValidateSet</code> には補完が付きます。</strong><br>
+<code>-Env </code> まで打って <kbd>Tab</kbd> を押すと <code>Dev</code> <code>Stg</code> <code>Prod</code> が順に出ます。<code>if</code> で書いた検証にはこれがありません。<strong>属性で書くと、使う人が値を知らなくても選べます。</strong>
+</div>
+
+<h2>引数どうしの関係を見る</h2>
+
+<p>「A を指定したなら B も要る」のような条件は属性では書けません。<strong>パラメータセット</strong>を使います。</p>
+
+<pre><code>[CmdletBinding(DefaultParameterSetName = 'ByName')]
+param(
+	[Parameter(Mandatory, ParameterSetName = 'ByName')]
+	[string]$Name,
+
+	[Parameter(Mandatory, ParameterSetName = 'ById')]
+	[int]$Id
+)
+
+# どちらが使われたか
+switch ($PSCmdlet.ParameterSetName) {
+	'ByName' { "名前で検索: $Name" }
+	'ById'   { "ID で検索: $Id" }
+}</code></pre>
+
+<p><code>-Name</code> と <code>-Id</code> を<strong>同時に指定するとエラー</strong>になり、どちらも指定しないと <code>-Name</code> を対話で聞かれます。</p>
+</section>
+
+<!-- ============ A2.4 ============ -->
+<section class="ch04" id="ch04">
+<h1>A2.4 ファイル処理の定型</h1>
+
+<p>ファイル操作は<strong>書き方の選択肢が多く、既定値が版で違う</strong>ところです。迷わないよう、そのまま使える形だけを並べます。</p>
+
+<h2>読む</h2>
+
+<pre><code># 行の配列として読む
+$lines = Get-Content -LiteralPath $Path -Encoding UTF8
+
+# 1つの文字列として読む（JSON・XML はこちら）
+$text = Get-Content -LiteralPath $Path -Raw -Encoding UTF8
+
+# JSON として読む
+$obj = Get-Content -LiteralPath $Path -Raw -Encoding UTF8 | ConvertFrom-Json
+
+# CSV として読む（値はすべて文字列になる）
+$rows = Import-Csv -LiteralPath $Path -Encoding UTF8
+
+# 巨大なファイルを1行ずつ（メモリに載せない）
+Get-Content -LiteralPath $Path -Encoding UTF8 | ForEach-Object {
+	# $_ が1行
+}</code></pre>
+
+<h2>書く</h2>
+
+<pre><code># 上書き
+Set-Content -LiteralPath $Path -Value $text -Encoding UTF8
+
+# 追記
+Add-Content -LiteralPath $Path -Value $line -Encoding UTF8
+
+# JSON として書く（-Depth を必ず指定する）
+$obj | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $Path -Encoding UTF8
+
+# CSV として書く
+$rows | Export-Csv -LiteralPath $Path -Encoding UTF8 -NoTypeInformation</code></pre>
+
+<div class="callout">
+<strong><code>-NoTypeInformation</code> は 7 では不要です。</strong><br>
+5.1 の <code>Export-Csv</code> は先頭に <code>#TYPE System.Management.Automation.PSCustomObject</code> という行を入れます。7 では既定で入りません。<strong>付けておけば両方で同じ結果</strong>になるので、常に付ける形にしています。
+</div>
+
+<h2>パスを組み立てる</h2>
+
+<pre><code># 連結（区切りの重複を吸収してくれる）
+$full = Join-Path $Dir 'sub' | Join-Path -ChildPath 'file.txt'
+
+# 分解
+Split-Path $full -Parent      # 親フォルダ
+Split-Path $full -Leaf        # file.txt
+Split-Path $full -LeafBase    # file        &lt;- pwsh 7 のみ
+Split-Path $full -Extension   # .txt        &lt;- pwsh 7 のみ
+
+# スクリプト自身の場所を基準にする
+$data = Join-Path $PSScriptRoot 'data'</code></pre>
+
+<p><span class="badge b-ps51">5.1</span>では <code>-LeafBase</code> と <code>-Extension</code> がありません。<code>[System.IO.Path]::GetFileNameWithoutExtension($full)</code> で代用します。</p>
+
+<h2>存在を確かめる</h2>
+
+<pre><code># あるかどうか
+if (Test-Path -LiteralPath $Path) { }
+
+# ファイルであること（フォルダを除く）
+if (Test-Path -LiteralPath $Path -PathType Leaf) { }
+
+# フォルダであること
+if (Test-Path -LiteralPath $Path -PathType Container) { }
+
+# 無ければ作る（親フォルダごと）
+if (-not (Test-Path -LiteralPath $Dir)) {
+	$null = New-Item -ItemType Directory -Path $Dir -Force
+}</code></pre>
+
+<div class="callout">
+<strong><code>-LiteralPath</code> を既定にしてください。</strong><br>
+<code>-Path</code> は値をワイルドカードとして解釈します。<code>report[2026].txt</code> のように <code>[ ]</code> を含むファイル名は<strong><code>-Path</code> では絶対に見つかりません</strong>。<br>
+ワイルドカードで検索したいときだけ <code>-Path</code> を使い、それ以外は <code>-LiteralPath</code> にします。
+</div>
+
+<h2>一覧する</h2>
+
+<pre><code># フォルダ直下のファイルだけ
+Get-ChildItem -LiteralPath $Dir -File
+
+# 再帰して拡張子で絞る
+Get-ChildItem -LiteralPath $Dir -Recurse -File -Filter '*.log'
+
+# 複数の拡張子（-Include には -Recurse が要る）
+Get-ChildItem -Path $Dir -Recurse -Include '*.log', '*.txt'
+
+# 更新日で絞る
+Get-ChildItem -LiteralPath $Dir -Recurse -File |
+	Where-Object { $_.LastWriteTime -gt (Get-Date).AddDays(-7) }</code></pre>
+
+<h2>安全に消す・移す</h2>
+
+<pre><code># まず -WhatIf で確認する
+Get-ChildItem -LiteralPath $Dir -Filter '*.tmp' | Remove-Item -WhatIf
+
+# 納得したら外す
+Get-ChildItem -LiteralPath $Dir -Filter '*.tmp' | Remove-Item
+
+# 1件ずつ確認しながら
+Get-ChildItem -LiteralPath $Dir -Filter '*.tmp' | Remove-Item -Confirm</code></pre>
+
+<p><span class="badge b-good">推奨</span>削除とリネームは<strong>必ず <code>-WhatIf</code> を付けた状態で書き始めます</strong>。出力を見てから外す手順にすると、対象の取り違えに気づけます。</p>
+</section>
+
+<!-- ============ A2.5 ============ -->
+<section class="ch05" id="ch05">
+<h1>A2.5 外部コマンド呼び出し</h1>
+
+<p><code>robocopy</code> <code>git</code> <code>node</code> のような exe は、<strong>失敗しても例外になりません</strong>。<code>try/catch</code> だけでは失敗を見逃します。</p>
+
+<h2>ラッパー関数</h2>
+
+<pre><code>function Invoke-External {
+	param(
+		[Parameter(Mandatory)][string]$Command,
+		[string[]]$Arguments = @()
+	)
+
+	if (-not (Get-Command $Command -ErrorAction SilentlyContinue)) {
+		throw "コマンドが見つかりません: $Command"
+	}
+
+	$output = &amp; $Command @Arguments 2&gt;&amp;1
+
+	if ($LASTEXITCODE -ne 0) {
+		throw ("{0} が終了コード {1} で失敗しました`n{2}" -f $Command, $LASTEXITCODE, ($output -join "`n"))
+	}
+
+	return $output
+}</code></pre>
+
+<h3>実行結果</h3>
+
+<pre><code>PS&gt; Invoke-External 'cmd.exe' @('/c', 'echo hello')
+hello
+
+PS&gt; Invoke-External 'cmd.exe' @('/c', 'exit 3')
+cmd.exe が終了コード 3 で失敗しました
+
+PS&gt; Invoke-External 'nosuchcmd.exe'
+コマンドが見つかりません: nosuchcmd.exe</code></pre>
+
+<h2>3つの要点</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>やっていること</th><th>省くとどうなるか</th></tr>
+<tr><td class="mono">Get-Command で存在確認</td><td>PATH に無いとき「用語として認識されません」という分かりにくいエラーになる</td></tr>
+<tr><td class="mono">2&gt;&amp;1 で stderr も拾う</td><td>失敗の原因が画面に流れるだけで、例外メッセージに残らない</td></tr>
+<tr><td class="mono">$LASTEXITCODE を見る</td><td><strong>失敗に気づけない</strong>。処理が続いて後段が壊れる</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>終了コード 0 = 成功とは限りません。</strong><br><code>robocopy</code> は<strong>差分が無いとき 0、コピーしたとき 1</strong> を返し、<strong>16 が致命的エラー</strong>です。この関数をそのまま使うと、正常なコピーを失敗と判定します。<br>
+コマンドごとに許容する値を渡せるよう、<code>[int[]]$OkExitCodes = @(0)</code> を引数に足して <code>$OkExitCodes -notcontains $LASTEXITCODE</code> で判定してください。
+</div>
+
+<h2>JSON を返すコマンドを受け取る</h2>
+
+<pre><code>$json = Invoke-External 'gh' @('api', 'repos/owner/name')
+$repo = $json -join "`n" | ConvertFrom-Json
+$repo.full_name</code></pre>
+
+<p><code>$output</code> は<strong>行の配列</strong>なので、<code>ConvertFrom-Json</code> に渡す前に <code>-join</code> で1つの文字列に戻します。</p>
+
+<div class="callout">
+<strong><span class="badge b-ps7">pwsh 7</span> には自動で例外にする設定があります。</strong><br>
+<code>$PSNativeCommandUseErrorActionPreference = $true</code> を立てると、外部コマンドの非ゼロ終了が <code>$ErrorActionPreference = 'Stop'</code> の対象になります。<strong>既定は <code>$false</code></strong> です。<br>
+5.1 にはこの設定が無いため、両対応のスクリプトではラッパー関数のほうが確実です。
+</div>
+</section>
+
+<!-- ============ A2.6 ============ -->
+<section class="ch06" id="ch06">
+<h1>A2.6 配布用の一式</h1>
+
+<p>自分だけが使うなら <code>.ps1</code> 1つで足ります。<strong>人に渡す・タスクに登録する</strong>なら、周辺のファイルが要ります。</p>
+
+<h2>フォルダの形</h2>
+
+<pre><code>mytool\
+├── mytool.ps1        本体
+├── mytool.cmd        ダブルクリック用のランチャー
+├── config.json       設定（コードと分ける）
+├── README.md         使い方
+└── logs\             実行ログの出力先</code></pre>
+
+<h2>cmd ランチャー</h2>
+
+<p><code>.ps1</code> はダブルクリックしても実行されません。<strong>同名の <code>.cmd</code> を添えます。</strong></p>
+
+<pre><code>@echo off
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0mytool.ps1" %*
+pause</code></pre>
+
+<div class="table-wrap">
+<table>
+<tr><th>指定</th><th>意味</th></tr>
+<tr><td class="mono">-NoProfile</td><td>個人のプロファイルを読まない。渡した相手の環境に左右されない</td></tr>
+<tr><td class="mono">-ExecutionPolicy Bypass</td><td>この実行に限って制限を回避する。<strong>環境の設定は変えない</strong></td></tr>
+<tr><td class="mono">-File "%~dp0mytool.ps1"</td><td><code>%~dp0</code> は cmd 自身の場所。<strong>カレントに依存しない</strong></td></tr>
+<tr><td class="mono">%*</td><td>cmd に渡された引数をそのまま ps1 へ流す</td></tr>
+<tr><td class="mono">pause</td><td>画面が一瞬で閉じるのを防ぐ。タスク登録時は消す</td></tr>
+</table>
+</div>
+
+<p><span class="badge b-warn">注意</span>この <code>.cmd</code> は <strong>SJIS ＋ CRLF</strong> で保存します。UTF-8 で保存すると日本語のメッセージが化けます。</p>
+
+<h2>設定をコードから分ける</h2>
+
+<pre><code>$ConfigPath = Join-Path $PSScriptRoot 'config.json'
+
+$Config = if (Test-Path -LiteralPath $ConfigPath) {
+	Get-Content -LiteralPath $ConfigPath -Raw -Encoding UTF8 | ConvertFrom-Json
+} else {
+	# 既定値。config.json が無くても動く
+	[PSCustomObject]@{
+		TargetDir = 'C:\work'
+		RetentionDays = 30
+	}
+}
+
+Write-Verbose "対象: $($Config.TargetDir)"</code></pre>
+
+<p>設定を外に出すと、<strong>渡した相手がスクリプト本体を編集せずに済みます</strong>。既定値を持たせておけば <code>config.json</code> が無くても動きます。</p>
+
+<h2>タスクスケジューラに登録する</h2>
+
+<pre><code>$action = New-ScheduledTaskAction `
+	-Execute 'powershell.exe' `
+	-Argument '-NoProfile -ExecutionPolicy Bypass -File "C:\tools\mytool\mytool.ps1"' `
+	-WorkingDirectory 'C:\tools\mytool'
+
+$trigger = New-ScheduledTaskTrigger -Daily -At '03:00'
+
+Register-ScheduledTask -TaskName 'MyTool 日次実行' `
+	-Action $action -Trigger $trigger -Description '日次のログ集計'</code></pre>
+
+<div class="callout">
+<strong>タスクからの実行は手元の実行とは別物です。</strong><br>
+実行ユーザー・カレントディレクトリ・画面の有無がすべて違います。<code>Write-Host</code> の出力は<strong>どこにも残りません</strong>し、<code>Read-Host</code> があると<strong>応答待ちのまま止まります</strong>。<br>
+登録する前に、<code>-WorkingDirectory</code> を明示し、出力を <a href="#ch02">A2.2</a> のログに寄せてください。
+</div>
+
+<h2>渡す前の確認</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>確認すること</th><th>理由</th></tr>
+<tr><td>絶対パスが埋め込まれていないか</td><td>相手の環境では存在しない</td></tr>
+<tr><td><code>$PSScriptRoot</code> を使っているか</td><td>置き場所が変わっても動く</td></tr>
+<tr><td><code>Read-Host</code> が残っていないか</td><td>タスク実行で止まる</td></tr>
+<tr><td>5.1 でも動くか</td><td>相手の環境に 7 が入っているとは限らない</td></tr>
+<tr><td><code>exit 0</code> / <code>exit 1</code> を返しているか</td><td>タスクの成否が記録に残る</td></tr>
+<tr><td>ログの出力先が書き込めるか</td><td><code>C:\Program Files</code> 配下は書けない</td></tr>
+</table>
+</div>
+</section>
+
+</div>
+
+<footer>
+	<p>PowerShell 学習資料 付録 A2 ／ <a href="../README.html">目次に戻る</a> ／ 関連: <a href="A1-逆引き.html">A1. 逆引き</a> ・ <a href="09-実務パターン.html">09. 実務パターン集</a></p>
+</footer>
+
+</body>
+</html>

@@ -213,6 +213,7 @@
 	.chapters .ttl { display: block; font-size: 1.02em; font-weight: 700; margin: 2px 0 4px; }
 	.chapters .desc { display: block; font-size: 0.82em; opacity: 0.92; line-height: 1.5; }
 
+	.cA1 a, .cA2 a { background: linear-gradient(100deg, var(--navy1), var(--navy2)); }
 	.c01 a { background: linear-gradient(100deg, hsl(280,78%,25%), hsl(280,58%,55%)); }
 	.c02 a { background: linear-gradient(100deg, hsl(249,78%,25%), hsl(249,58%,55%)); }
 	.c03 a { background: linear-gradient(100deg, hsl(218,78%,25%), hsl(218,58%,55%)); }
@@ -279,7 +280,7 @@
 	<div class="inner">
 		<h1>PowerShell 学習資料</h1>
 		<p>Windows PowerShell 5.1 と PowerShell 7 の両対応 ／ 全 10 章</p>
-		<p class="meta">📅 作成: 2026-08-22 / 更新: 2026-08-24 ／ 対象: 何らかのプログラミング言語の基礎を知っている方</p>
+		<p class="meta">📅 作成: 2026-08-22 / 更新: 2026-08-25 ／ 対象: 何らかのプログラミング言語の基礎を知っている方</p>
 	</div>
 </div>
 
@@ -294,7 +295,7 @@
 「たぶんこう動く」ではなく、<strong>実機で確かめた結果</strong>だけを載せています。バイト列・終了コード・エラーメッセージも実物です。
 </div>
 
-<h2>全 10 章</h2>
+<h2>本編 全 10 章</h2>
 
 <ul class="chapters">
 	<li class="c01"><a href="docs/01-背景.html">
@@ -339,6 +340,21 @@
 		<span class="desc">5回分の課題と解答例。つまずきポイントの解説つき</span></a></li>
 </ul>
 
+<h2>付録</h2>
+
+<p>本編は順に読む資料ですが、付録は<strong>必要になったときに引く</strong>ものです。</p>
+
+<ul class="chapters">
+	<li class="cA1"><a href="docs/A1-逆引き.html">
+		<span class="no">付録 ／ A1</span>
+		<span class="ttl">逆引き</span>
+		<span class="desc">症状・コマンド名・JavaScript・用語の4つの入口から本編へ</span></a></li>
+	<li class="cA2"><a href="docs/A2-テンプレ集.html">
+		<span class="no">付録 ／ A2</span>
+		<span class="ttl">テンプレ集</span>
+		<span class="desc">コピーして使う雛形。骨格・ログ・引数検証・ファイル処理・配布</span></a></li>
+</ul>
+
 <nav class="toc">
 	<strong>このページの内容</strong>
 	<ol>
@@ -353,11 +369,15 @@
 <h1>1. 3部構成と読む順序</h1>
 
 <figure>
-<svg viewBox="0 0 780 244" role="img" aria-label="3部構成のロードマップ">
+<svg viewBox="0 0 780 330" role="img" aria-label="3部構成のロードマップと付録">
 	<defs>
 		<linearGradient id="g-rm-1a" x1="0" y1="1" x2="0" y2="0">
 			<stop offset="0" stop-color="hsl(255,78%,25%)"/>
 			<stop offset="1" stop-color="hsl(255,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-rm-1d" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--navy1)"/>
+			<stop offset="1" stop-color="var(--navy2)"/>
 		</linearGradient>
 		<linearGradient id="g-rm-1b" x1="0" y1="1" x2="0" y2="0">
 			<stop offset="0" stop-color="hsl(150,78%,25%)"/>
@@ -400,8 +420,19 @@
 	<text x="444" y="208" fill="hsl(150,78%,22%)" font-size="13" font-weight="700" text-anchor="middle">書けるようになる</text>
 	<text x="694" y="208" fill="hsl(20,78%,30%)" font-size="13" font-weight="700" text-anchor="middle">一人で作れる</text>
 	<text x="390" y="227" fill="var(--ink-soft)" font-size="12" text-anchor="middle">各部の到達目標</text>
+
+	<line x1="14" y1="252" x2="766" y2="252" stroke="var(--line)" stroke-width="2" stroke-dasharray="6 5"/>
+	<text x="14" y="274" fill="var(--ink-soft)" font-size="12">付録 — 順に読まず、必要になったときに引く</text>
+
+	<rect x="14" y="282" width="372" height="44" rx="9" fill="url(#g-rm-1d)"/>
+	<text x="200" y="300" fill="#fff" font-size="13.5" font-weight="700" text-anchor="middle">A1 逆引き</text>
+	<text x="200" y="316" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">症状・コマンド・JavaScript・用語から引く</text>
+
+	<rect x="394" y="282" width="372" height="44" rx="9" fill="url(#g-rm-1d)"/>
+	<text x="580" y="300" fill="#fff" font-size="13.5" font-weight="700" text-anchor="middle">A2 テンプレ集</text>
+	<text x="580" y="316" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">コピーして使う雛形6種</text>
 </svg>
-<figcaption>図 1 — 01 から順に読むのが基本。02・03 は環境が整わないと以降が動かせないため必須</figcaption>
+<figcaption>図 1 — 01 から順に読むのが基本。02・03 は環境が整わないと以降が動かせないため必須。付録は本編を読み終えてからでなくてよい</figcaption>
 </figure>
 
 <h2>目的別の読み方</h2>
@@ -442,6 +473,8 @@
 
 <h2>困っていることから探す</h2>
 
+<p>ここには<strong>よくある入口だけ</strong>を並べています。網羅した索引は <a href="docs/A1-逆引き.html">A1. 逆引き</a> にあり、症状・コマンド名・JavaScript・用語の4つの入口から引けます。</p>
+
 <div class="table-wrap">
 <table>
 <tr><th>症状・やりたいこと</th><th>参照先</th></tr>
@@ -477,7 +510,8 @@
 
 <div class="callout">
 <strong>PowerShell でつまずく場面の大半は、この7行のどれかです。</strong><br>
-コマンドを暗記する必要はありません。<strong>困ったときにどれを試すかを知っていれば足ります。</strong>
+コマンドを暗記する必要はありません。<strong>困ったときにどれを試すかを知っていれば足ります。</strong><br>
+ここに無い症状は <a href="docs/A1-逆引き.html#ch01">A1.1 症状から引く</a> に約 40 項目あります。
 </div>
 
 <h2>関連ファイル</h2>
@@ -485,9 +519,11 @@
 <div class="table-wrap">
 <table>
 <tr><th>ファイル</th><th>内容</th></tr>
-<tr><td class="nowrap"><a href="docs/plan/構成案.html">docs/plan/構成案.html</a></td><td>全体のカリキュラム設計。勉強会の進行案（全5回×90分）もここ</td></tr>
+<tr><td class="nowrap"><a href="docs/plan/構成案.html">docs/plan/構成案</a></td><td>全体のカリキュラム設計。勉強会の進行案（全5回×90分）もここ</td></tr>
 <tr><td class="nowrap"><code>docs/rules/local.md</code></td><td>このプロジェクトの制作方針（ファイル形式・見出し番号・バッジ）</td></tr>
 <tr><td class="nowrap"><code>docs/rules/html-design.md</code></td><td>HTML デザインルールへの改善提案（作業記録）</td></tr>
+<tr><td class="nowrap"><a href="docs/A1-逆引き.html">docs/A1-逆引き</a></td><td>付録。4つの入口から本編へ引く索引。コマンド一覧は自動生成</td></tr>
+<tr><td class="nowrap"><a href="docs/A2-テンプレ集.html">docs/A2-テンプレ集</a></td><td>付録。コピーして使う雛形6種</td></tr>
 <tr><td class="nowrap"><code>src/scripts/</code></td><td>資料をビルドするスクリプト（下記）</td></tr>
 </table>
 </div>
@@ -550,7 +586,10 @@ pptx は <code>tmp/outline/*.json</code> を材料にするため、<strong>先�
 
 <h2>実行方法</h2>
 
-<pre><code># 1) SVG 図を PNG に書き出す（構造 JSON も同時に出力される）
+<pre><code># 0) A1 のコマンド索引を作り直す（章を増減したとき）
+.\src\scripts\index\build-index.ps1
+
+# 1) SVG 図を PNG に書き出す（構造 JSON も同時に出力される）
 .\src\scripts\figures\capture-figures.ps1
 
 # 2) pptx を生成する（-Prefix で1章だけも可）
@@ -597,13 +636,15 @@ pptx は <code>tmp/outline/*.json</code> を材料にするため、<strong>先�
 	<li><code>docs/NN-タイトル.html</code> を作る</li>
 	<li>前章のフッターにリンクを追加する</li>
 	<li><a href="docs/plan/構成案.html">構成案</a> の状態を<strong>作成済</strong>に更新する（一覧表と詳細見出しの<strong>2箇所</strong>）</li>
-	<li>Playwright の spec 2本の <code>targets</code> に追記する</li>
+	<li>共有環境の <code>targets.ts</code> に追記する</li>
 	<li>このページの章カードと逆引き索引に追加する</li>
+	<li><code>build-index.ps1</code> を実行して <a href="docs/A1-逆引き.html#ch02">A1.2 のコマンド索引</a>を作り直す</li>
+	<li>新しい Cmdlet が出たなら <a href="docs/A1-逆引き.html#ch01">A1.1</a> と <a href="docs/A1-逆引き.html#ch04">A1.4</a> も見直す</li>
 </ol>
 
 <div class="callout">
 <strong>Playwright の spec は共有環境側にあります。</strong><br>
-<code>N:\2026\PlayWright\projects\20260822-powershell-pwsh-learn\</code> に <code>capture-figures.spec.ts</code> と <code>export-outline.spec.ts</code> があります。<strong>対象ファイルの一覧は両方に書く</strong>必要があります。
+<code>N:\2026\PlayWright\projects\20260822-powershell-pwsh-learn\</code> に置いています。<strong>対象ファイルの一覧は <code>targets.ts</code> に集約</strong>してあるので、追記はそこ1箇所で済みます。
 </div>
 
 <h2>出力物の置き場所</h2>
@@ -615,7 +656,7 @@ pptx は <code>tmp/outline/*.json</code> を材料にするため、<strong>先�
 <tr><td class="nowrap"><code>docs/*.md</code></td><td>GitHub 表示用（HTML から生成）</td><td><span class="badge b-good">対象</span></td></tr>
 <tr><td class="nowrap"><code>docs/images/</code></td><td>Markdown が参照する図の PNG</td><td><span class="badge b-good">対象</span></td></tr>
 <tr><td class="nowrap"><code>src/scripts/</code></td><td>ビルド用スクリプト</td><td><span class="badge b-good">対象</span></td></tr>
-<tr><td class="nowrap"><code>tmp/figures/</code></td><td>図の PNG（46 枚）</td><td><span class="badge b-none">除外</span></td></tr>
+<tr><td class="nowrap"><code>tmp/figures/</code></td><td>図の PNG（50 枚）</td><td><span class="badge b-none">除外</span></td></tr>
 <tr><td class="nowrap"><code>tmp/outline/</code></td><td>構造 JSON</td><td><span class="badge b-none">除外</span></td></tr>
 <tr><td class="nowrap"><code>tmp/pptx/</code></td><td>pptx と PDF</td><td><span class="badge b-none">除外</span></td></tr>
 <tr><td class="nowrap"><code>etc/</code></td><td>セッションログ・<code>c.bat</code></td><td><span class="badge b-none">除外</span></td></tr>
@@ -628,7 +669,7 @@ pptx は <code>tmp/outline/*.json</code> を材料にするため、<strong>先�
 </div>
 
 <footer>
-	<p>PowerShell 学習資料 ／ 全 10 章・SVG 図 46 枚 ／ 資料の設計は <a href="docs/plan/構成案.html">構成案</a> を参照してください。</p>
+	<p>PowerShell 学習資料 ／ 本編 10 章 ＋ 付録 2 ／ SVG 図 50 枚 ／ 資料の設計は <a href="docs/plan/構成案.html">構成案</a> を参照してください。</p>
 </footer>
 
 </body>
