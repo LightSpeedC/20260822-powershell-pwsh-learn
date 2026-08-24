@@ -676,6 +676,50 @@ Node.js と違い、<strong>プロジェクトごとの <code>node_modules</code
 
 <p>拡張機能マーケットプレースで <strong>「PowerShell」（発行元 Microsoft）</strong> を入れます。これだけで補完・構文チェック・デバッグが揃います。</p>
 
+<h2>PowerShell ISE は使わない <span class="badge b-warn">選んでしまいやすい</span></h2>
+
+<p>Windows のスタートメニューには <strong>「Windows PowerShell ISE」</strong> という項目があります。VS Code が普及する前の標準的なスクリプト編集ツールで、いまも標準搭載されています。</p>
+
+<pre><code>C:\Windows\System32\WindowsPowerShell\v1.0\powershell_ise.exe</code></pre>
+
+<p>上下2ペインで「上で編集、下のコンソールで実行」ができる便利な作りですが、<strong>これから学ぶなら選ばないでください。</strong>理由は3つあります。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>理由</th><th>内容</th></tr>
+<tr><td class="nowrap">① <strong>5.1 専用</strong></td><td><span class="badge b-ps7">pwsh 7</span> では使えない。ISE のコンソールは常に <span class="badge b-ps51">5.1</span> で、7 に切り替えられない</td></tr>
+<tr><td class="nowrap">② <strong>開発が終了</strong></td><td>Microsoft がメンテナンスモードと宣言済み。新機能は追加されない。公式の推奨は VS Code</td></tr>
+<tr><td class="nowrap">③ <strong>挙動が違う</strong></td><td>ISE は別のホストなので、コンソールと動作が一致しない箇所がある（下記）</td></tr>
+</table>
+</div>
+
+<h3>ISE で動いたのに本番で動かない</h3>
+
+<div class="table-wrap">
+<table>
+<tr><th>項目</th><th>ISE</th><th>コンソール</th></tr>
+<tr><td class="mono">$host.Name</td><td class="nowrap">Windows PowerShell ISE Host</td><td class="nowrap">ConsoleHost</td></tr>
+<tr><td class="mono">$psISE</td><td><strong>使える</strong></td><td>存在しない</td></tr>
+<tr><td class="mono">Write-Progress</td><td>専用ペインに表示</td><td>画面上部に表示</td></tr>
+<tr><td class="nowrap">コンソールアプリとの対話</td><td><strong>正しく動かないことがある</strong></td><td>正常</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong><code>$psISE</code> を使ったコードは ISE 専用になります。</strong><br>
+ISE の中では快適に動きますが、<strong>タスクスケジューラから実行した途端に落ちます</strong>。09.4 で扱う無人実行では、ISE も画面も存在しません。<br>
+既存の ISE 資産を触る場合でも、<strong>動作確認は必ずコンソールで</strong>行ってください。
+</div>
+
+<div class="table-wrap">
+<table>
+<tr><th>用途</th><th>使うもの</th></tr>
+<tr><td class="nowrap">これから学ぶ・新しく書く</td><td><span class="badge b-good">推奨</span>VS Code ＋ PowerShell 拡張機能</td></tr>
+<tr><td class="nowrap">既存の ISE 資産を保守する</td><td>ISE でも可。ただし動作確認はコンソールで</td></tr>
+<tr><td class="nowrap">PowerShell 7 を使う</td><td><span class="badge b-bad">不可</span>ISE は選択肢にならない</td></tr>
+</table>
+</div>
+
 <h2>02 章の規約を設定で自動化する</h2>
 
 <p>02 章で「ps1 は BOM 付き UTF-8 ＋ CRLF」「bat は Shift-JIS ＋ CRLF」と決めました。<strong>これは手作業で守るものではありません。</strong>拡張子ごとに設定しておけば、保存するだけで正しい形式になります。</p>
