@@ -242,7 +242,7 @@
 	<div class="inner">
 		<h1>03. 実行環境と実行ポリシー</h1>
 		<p>5.1 と 7 はなぜ共存するのか、なぜ既定でスクリプトが動かないのか</p>
-		<p class="meta">📅 作成: 2026-08-22 / 更新: 2026-08-22 ／ 対象: Windows PowerShell 5.1 ＋ PowerShell 7</p>
+		<p class="meta">📅 作成: 2026-08-22 / 更新: 2026-08-24 ／ 対象: Windows PowerShell 5.1 ＋ PowerShell 7</p>
 	</div>
 </div>
 
@@ -368,6 +368,35 @@ Platform                       Win32NT</code></pre>
 } else {
     # Windows PowerShell 5.1 での処理
 }</code></pre>
+
+<h3><code>$host.Version</code> は使わない <span class="badge b-bad">間違えやすい</span></h3>
+
+<pre><code>$host.Version      # ✗ PowerShell のバージョンではない</code></pre>
+
+<div class="callout">
+<strong><code>$host</code> は「PowerShell を動かしているアプリ」を指します。</strong><br>
+コンソール・VS Code の統合ターミナル・ISE などは<strong>それぞれ別のホスト</strong>なので、<code>$host.Version</code> は環境によって異なる値を返します。PowerShell 本体のバージョンとは無関係です。<br>
+バージョンの確認には<strong>必ず <code>$PSVersionTable</code></strong> を使ってください。
+</div>
+
+<h3>もう一方のバージョンを外から調べる</h3>
+
+<p>片方で作業中でも、<strong>もう一方に問い合わせられます</strong>。共存しているからこそできる確認方法です。</p>
+
+<pre><code>powershell.exe -NoProfile -Command '$PSVersionTable.PSVersion'   # 5.1 側
+pwsh.exe       -NoProfile -Command '$PSVersionTable.PSVersion'   # 7 側</code></pre>
+
+<p>実測結果です。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>実行ファイル</th><th>PSVersion</th><th>PSEdition</th></tr>
+<tr><td class="mono">powershell.exe</td><td class="mono">5.1.26100.9168</td><td class="nowrap">Desktop</td></tr>
+<tr><td class="mono">pwsh.exe</td><td class="mono">7.6.3</td><td class="nowrap">Core</td></tr>
+</table>
+</div>
+
+<p><code>-NoProfile</code> を付けているのは、<strong>相手側のプロファイルに影響されないため</strong>です（03.3 で扱います）。</p>
 
 <h2>実務で効いてくる違い</h2>
 

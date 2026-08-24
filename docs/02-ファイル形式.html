@@ -242,7 +242,7 @@
 	<div class="inner">
 		<h1>02. ファイル形式と文字コード</h1>
 		<p>なぜ ps1 は「BOM 付き UTF-8 ＋ CRLF」でなければならないのか</p>
-		<p class="meta">📅 作成: 2026-08-22 / 更新: 2026-08-22 ／ 対象: Windows PowerShell 5.1 ＋ PowerShell 7</p>
+		<p class="meta">📅 作成: 2026-08-22 / 更新: 2026-08-24 ／ 対象: Windows PowerShell 5.1 ＋ PowerShell 7</p>
 	</div>
 </div>
 
@@ -327,6 +327,25 @@
 <div class="callout">
 <strong>この図の色は資料全体で統一します。</strong><br>
 以降の図でも <span style="color:hsl(210,78%,28%);font-weight:700">青＝ps1</span> ／ <span style="color:hsl(35,78%,30%);font-weight:700">橙＝bat・cmd</span> ／ <span style="color:hsl(140,78%,25%);font-weight:700">緑＝js</span> を保ちます。色を見ればどのファイルの話かが分かります。
+</div>
+
+<h2>いま動いているバージョンを確認する</h2>
+
+<p>この章では <span class="badge b-ps51">5.1</span> <span class="badge b-ps7">pwsh 7</span> のバッジで挙動の違いを示します。<strong>自分がどちらで動いているか</strong>は、次の1行で分かります。</p>
+
+<pre><code>$PSVersionTable.PSEdition</code></pre>
+
+<div class="table-wrap">
+<table>
+<tr><th>結果</th><th>正体</th><th>起動した実行ファイル</th></tr>
+<tr><td class="nowrap"><code>Desktop</code></td><td><span class="badge b-ps51">5.1</span> Windows PowerShell</td><td class="mono">powershell.exe</td></tr>
+<tr><td class="nowrap"><code>Core</code></td><td><span class="badge b-ps7">pwsh 7</span> PowerShell 7</td><td class="mono">pwsh.exe</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>この章のコード例は、どちらで実行するかで結果が変わります。</strong><br>
+手を動かしながら読む場合は、<strong>まず上のコマンドで確認</strong>してください。両バージョンの共存や実行ファイルの違いは <a href="03-実行環境.html">03. 実行環境と実行ポリシー</a> で詳しく扱います。
 </div>
 
 <nav class="toc">
