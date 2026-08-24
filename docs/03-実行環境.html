@@ -542,7 +542,7 @@ MachinePolicy       Undefined
   CurrentUser       Undefined
  LocalMachine    RemoteSigned</code></pre>
 
-<p>この例では <code>Process</code> が <code>Bypass</code> なので、<strong>この起動中は何も止められません</strong>。ランチャーから <code>-ExecutionPolicy Bypass</code> で起動するとこうなります。</p>
+<p>上から順に見て、最初に <code>Undefined</code> 以外だったものが採用されます。この例では <code>Process</code> の <code>Bypass</code> が効いており、<strong>下段の <code>LocalMachine</code> の <code>RemoteSigned</code> は無視されます</strong>。ランチャーから <code>-ExecutionPolicy Bypass</code> で起動すると、この行が設定されます。</p>
 
 <h2>正しい対処</h2>
 

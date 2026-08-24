@@ -242,7 +242,7 @@
 	<div class="inner">
 		<h1>06. 制御構文と関数</h1>
 		<p>構文は素直。ただし<strong>戻り値の扱いだけは経験者ほど引っかかる</strong></p>
-		<p class="meta">📅 作成: 2026-08-23 / 更新: 2026-08-23 ／ 対象: Windows PowerShell 5.1 ＋ PowerShell 7</p>
+		<p class="meta">📅 作成: 2026-08-23 / 更新: 2026-08-24 ／ 対象: Windows PowerShell 5.1 ＋ PowerShell 7</p>
 	</div>
 </div>
 
@@ -438,7 +438,7 @@ function Get-User {
 
 <h2>呼び出し方 — カンマと括弧を使わない <span class="badge b-bad">最大の罠</span></h2>
 
-<p>ここが経験者ほど間違える箇所です。PowerShell の関数は<strong>コマンドとして呼びます</strong>。</p>
+<p>ここが経験者ほど間違える箇所です。しかも<strong>エラーが出ないまま、意図と違う値が渡ります</strong>。</p>
 
 <figure>
 <svg viewBox="0 0 780 258" role="img" aria-label="関数呼び出しの正しい書き方と間違い">
@@ -755,7 +755,7 @@ $items.Count             # → 1（潰れていても復元される）</code></
 
 <h2>読めるが、書き換えられない</h2>
 
-<p>PowerShell のスコープは<strong>読み取りと書き込みで挙動が違います</strong>。</p>
+<p>同じ変数名でも、<strong>読むときと書くときで指すものが変わります</strong>。</p>
 
 <figure>
 <svg viewBox="0 0 780 250" role="img" aria-label="スコープの読み取りと書き込みの非対称">
