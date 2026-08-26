@@ -919,3 +919,7 @@ PS> $LASTEXITCODE
 > **次章の予告 — 12. COM と Office 連携**
 > 
 > Excel や Outlook を PowerShell から操作します。`Add-Type` と同じく「.NET の外側にある世界」を呼ぶ話ですが、**解放し忘れると Excel のプロセスが残り続ける**という固有の難しさがあります。
+
+---
+
+PowerShell 学習資料 11 ／ 前章: [10. ハンズオン課題](10-ハンズオン.md) ／ 次章: [12. Office と COM を操作する](12-COMとOffice.md) ／ [目次に戻る](../README.md)

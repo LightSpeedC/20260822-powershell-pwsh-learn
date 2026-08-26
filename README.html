@@ -618,8 +618,9 @@ pptx は <code>tmp/outline/*.json</code> を材料にするため、<strong>先�
 
 <h2>実行方法</h2>
 
-<pre><code># 0) A1 のコマンド索引を作り直す（章を増減したとき）
-.\src\scripts\index\build-index.ps1
+<pre><code># 0) 章を増減・改題したときに実行する2本
+.\src\scripts\nav\build-nav.ps1      # 各章フッターの前後リンク
+.\src\scripts\index\build-index.ps1  # A1.2 のコマンド索引
 
 # 1) SVG 図を PNG に書き出す（構造 JSON も同時に出力される）
 .\src\scripts\figures\capture-figures.ps1
@@ -666,11 +667,11 @@ pptx は <code>tmp/outline/*.json</code> を材料にするため、<strong>先�
 
 <ol>
 	<li><code>docs/NN-タイトル.html</code> を作る</li>
-	<li>前章のフッターにリンクを追加する</li>
+	<li><code>build-nav.ps1</code> を実行してフッターの前後リンクを作り直す（<strong>手で書かない</strong>）</li>
 	<li><a href="docs/plan/構成案.html">構成案</a> の状態を<strong>作成済</strong>に更新する（一覧表と詳細見出しの<strong>2箇所</strong>）</li>
 	<li>共有環境の <code>targets.ts</code> に追記する</li>
 	<li>このページの章カードと逆引き索引に追加する</li>
-	<li><code>build-index.ps1</code> を実行して <a href="docs/A1-逆引き.html#ch02">A1.2 のコマンド索引</a>を作り直す</li>
+	<li><code>build-index.ps1</code> を実行して <a href="docs/A1-逆引き.html#ch02">A1.2 のコマンド索引</a>を作り直す。<strong>未登録の Cmdlet があると警告が出る</strong>ので、スクリプト内の <code>$Purpose</code> に追記する</li>
 	<li>新しい Cmdlet が出たなら <a href="docs/A1-逆引き.html#ch01">A1.1</a> と <a href="docs/A1-逆引き.html#ch04">A1.4</a> も見直す</li>
 </ol>
 
