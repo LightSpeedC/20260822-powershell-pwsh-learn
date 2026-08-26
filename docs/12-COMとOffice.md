@@ -4,7 +4,7 @@
 
 📅 作成: 2026-08-26 / 更新: 2026-08-26 ／ 対象: Windows PowerShell 5.1 ＋ PowerShell 7
 
-[← 目次に戻る](../README.md)
+前章: [11. C# を埋め込む — Add-Type](11-Add-Type.md) ／ [目次に戻る](../README.md)
 
 ### この章で何ができるようになるか
 

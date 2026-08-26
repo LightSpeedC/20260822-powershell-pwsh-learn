@@ -4,6 +4,8 @@
 
 📅 作成: 2026-08-26 / 更新: 2026-08-26 ／ 対象: Windows PowerShell 5.1 ＋ PowerShell 7
 
+前章: [10. ハンズオン課題](10-ハンズオン.md) ／ 次章: [12. Office と COM を操作する](12-COMとOffice.md) ／ [目次に戻る](../README.md)
+
 ### この章で何ができるようになるか
 
 - `Add-Type` で C# のクラスをその場でコンパイルし、PowerShell から呼べる

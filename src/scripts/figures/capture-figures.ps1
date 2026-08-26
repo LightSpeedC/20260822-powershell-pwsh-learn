@@ -36,6 +36,17 @@ if (-not (Test-Path -LiteralPath $SpecDir)) {
 	exit 1
 }
 
+# 撮り直す前に出力先を空にする。
+# 上書きしかしないと、図を削除・改名したときに古い PNG が残り続け、
+# build-markdown.ps1 のコピーで docs\images に復活してしまう。
+if (Test-Path -LiteralPath $OutDir) {
+	$stale = @(Get-ChildItem -LiteralPath $OutDir -Filter '*.png' -File)
+	if ($stale.Count -gt 0) {
+		$stale | Remove-Item -Force
+		Write-Host ("  古い PNG {0} 枚を消しました" -f $stale.Count)
+	}
+}
+
 # 実行（共有環境のルートで npm を叩く）
 Write-Host "共有環境: $PlaywrightRoot"
 Write-Host "プロジェクト: $ProjectName"

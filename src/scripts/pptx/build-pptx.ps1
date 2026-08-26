@@ -304,6 +304,22 @@ function Add-FigureSlide {
 
 function Add-TableSlide {
 	param($Presentation, $Block, [string]$SectionTitle, [int]$Accent, [int]$Accent2)
+
+	# PowerPoint の表は 75 行が上限。超えるとエラーになるので、
+	# ヘッダを付け直して複数スライドに分割する（A1.2 のコマンド索引が該当）。
+	$maxRows = 75
+	$hdr     = $Block.header -and $Block.header.Count -gt 0
+	$bodyMax = $maxRows - $(if ($hdr) { 1 } else { 0 })
+	if ($Block.rows.Count -gt $bodyMax) {
+		$last = $null
+		for ($i = 0; $i -lt $Block.rows.Count; $i += $bodyMax) {
+			$to = [Math]::Min($i + $bodyMax - 1, $Block.rows.Count - 1)
+			$chunk = [PSCustomObject]@{ header = $Block.header; rows = @($Block.rows[$i..$to]) }
+			$last = Add-TableSlide -Presentation $Presentation -Block $chunk `
+				-SectionTitle $SectionTitle -Accent $Accent -Accent2 $Accent2
+		}
+		return $last
+	}
 	$slide = New-ContentSlide -Presentation $Presentation -Title $SectionTitle -Accent $Accent -Accent2 $Accent2
 
 	$hasHeader = $Block.header -and $Block.header.Count -gt 0

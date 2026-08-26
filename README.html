@@ -477,7 +477,7 @@
 <tr><td class="nowrap">PowerShell らしい書き方を知りたい</td><td><strong>05</strong>（山場）→ 04 → 06</td><td>2時間</td></tr>
 <tr><td class="nowrap">既存スクリプトを直したい</td><td>07 → 08 →（必要に応じて 04）</td><td>1.5時間</td></tr>
 <tr><td class="nowrap">業務を自動化したい</td><td>01〜09 を順に → 09 のパターンを改造</td><td>1日</td></tr>
-<tr><td class="nowrap">勉強会で使いたい</td><td><a href="docs/plan/構成案.html">構成案</a> → 10</td><td>—</td></tr>
+<tr><td class="nowrap">勉強会で使いたい</td><td><a href="#ch04">4. 勉強会で使う場合</a> → 10</td><td>—</td></tr>
 </table>
 </div>
 
@@ -533,6 +533,9 @@
 <tr><td>ログを集計したい</td><td><a href="docs/09-実務パターン.html#ch01">09.1 ログの集計</a></td></tr>
 <tr><td>安全に一括リネームしたい</td><td><a href="docs/09-実務パターン.html#ch02">09.2 <code>-WhatIf</code></a></td></tr>
 <tr><td>タスクスケジューラから動かしたい</td><td><a href="docs/09-実務パターン.html#ch04">09.4 無人実行</a></td></tr>
+<tr><td>Office ファイルを PDF にしたい</td><td><a href="docs/12-COMとOffice.html#ch02">12.2 Word・Excel・PowerPoint の PDF 化</a></td></tr>
+<tr><td>EXCEL.EXE / WINWORD.EXE が残る</td><td><a href="docs/12-COMとOffice.html#ch03">12.3 <code>ReleaseComObject</code></a></td></tr>
+<tr><td>ループが遅い。C# で書き直したい</td><td><a href="docs/11-Add-Type.html#ch06">11.6 使いどころの見極め</a></td></tr>
 </table>
 </div>
 
@@ -549,7 +552,7 @@
 <div class="callout">
 <strong>PowerShell でつまずく場面の大半は、この7行のどれかです。</strong><br>
 コマンドを暗記する必要はありません。<strong>困ったときにどれを試すかを知っていれば足ります。</strong><br>
-ここに無い症状は <a href="docs/A1-逆引き.html#ch01">A1.1 症状から引く</a> に約 40 項目あります。
+ここに無い症状は <a href="docs/A1-逆引き.html#ch01">A1.1 症状から引く</a> に 48 項目あります。
 </div>
 
 <h2>関連ファイル</h2>
@@ -588,11 +591,16 @@
 ここを理解できるかどうかで、PowerShell を「コマンドの寄せ集め」として使うか「オブジェクト指向シェル」として使えるかが分かれます。<strong>最も時間を割く回</strong>として組んでください。
 </div>
 
+<div class="callout">
+<strong>11・12 章は勉強会では扱いません。</strong><br>
+<a href="docs/11-Add-Type.html">C# の埋め込み</a>と <a href="docs/12-COMとOffice.html">COM / Office 操作</a>は、<strong>PowerShell だけでは届かない場面に限った発展編</strong>です。全5回を終えたあと、必要になった人が各自で読めば足ります。
+</div>
+
 <h2>参加する前に</h2>
 
 <ul>
 	<li><strong>PowerShell 7 を入れておいてください。</strong>5.1 は Windows に標準で入っていますが、この資料は両対応で進めます。導入手順は <a href="docs/03-実行環境.html">03. 実行環境と実行ポリシー</a> にあります</li>
-	<li><strong>スクリプトが実行できる状態にしておいてください。</strong>実行ポリシーが <code>Restricted</code> のままだと第2回以降が進みません（<a href="docs/03-実行環境.html#ch03">03.3</a>）</li>
+	<li><strong>スクリプトが実行できる状態にしておいてください。</strong>実行ポリシーが <code>Restricted</code> のままだと第2回以降が進みません（<a href="docs/03-実行環境.html#ch02">03.2</a>）</li>
 	<li>各回の該当ファイルを<strong>先に読んでおくと、解説の時間を演習に回せます</strong></li>
 </ul>
 
