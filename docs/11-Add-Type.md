@@ -66,7 +66,7 @@ $t3 = Measure-Command { $null = [Bench]::SumTo($n) }
 
 ### そもそも PowerShell では書けないもの
 
-速度とは別に、**PowerShell の文法では表現できない**ものがあります。代表が**値型（struct）** と、それを要求する Win32 API です。
+速度とは別に、**PowerShell の文法では表現できない**ものがあります。代表が<strong>値型（struct）</strong>と、それを要求する Win32 API です。
 
 ```powershell
 Add-Type -TypeDefinition @"
@@ -122,7 +122,7 @@ $t3 = Measure-Command { $null = [StrBench]::Build($n) }   # C# 側で StringBuil
 > 
 > JIT コンパイルされる言語から来ると「ループ 300 万回」は一瞬で終わる感覚があると思いますが、PowerShell では**数秒かかる**のが普通です。逆に `Get-ChildItem` や `Where-Object` のような1回あたりが重い処理では差は出ません。
 > 
-> 判断の基準は「処理の重さ」ではなく**「PowerShell の文を何回評価するか」** です。
+> 判断の基準は「処理の重さ」ではなく<strong>「PowerShell の文を何回評価するか」</strong>です。
 
 ## 11.2 `Add-Type -TypeDefinition` の基本
 
@@ -634,7 +634,7 @@ B と D の差が、この章でいちばん実務に効く数字です。**C# �
 
 ### 判断の順番
 
-1. **まず PowerShell で書いて動かす。** そのまま使えるなら終わり
+1. <strong>まず PowerShell で書いて動かす。</strong>そのまま使えるなら終わり
 2. 遅ければ `Measure-Command` で**どこが遅いか実測する**。想像で決めない
 3. 遅い部分を **.NET の型に置き換える**。多くはここで解決する
 4. それでも足りないときだけ、**ループごと C# に渡す**形で `Add-Type` を使う
@@ -795,7 +795,7 @@ PS> Measure-Command { Add-Type -Path .\MyTools.dll }
 # 5.1 → 23 ms   7 → 5 ms   どちらもエラーにならない
 ```
 
-**同じ dll を2回読み込んでもエラーになりません。** 11.4 の「型を再定義できない」という制約は、`-TypeDefinition` でソースからコンパイルする場合の話です。既に読み込み済みのアセンブリを指定した `Add-Type -Path` は、単に何もせず返ります。
+<strong>同じ dll を2回読み込んでもエラーになりません。</strong>11.4 の「型を再定義できない」という制約は、`-TypeDefinition` でソースからコンパイルする場合の話です。既に読み込み済みのアセンブリを指定した `Add-Type -Path` は、単に何もせず返ります。
 
 > [!NOTE]
 > **この dll は .NET Framework の `csc.exe` で作ったものですが、PowerShell 7（.NET 10）からもそのまま読めました。**
@@ -877,7 +877,7 @@ PS> $LASTEXITCODE
 1
 ```
 
-`csc.exe` は**`.cs` を1つ渡せば通ります**。ソース1〜2ファイルの小さなツールを作るだけなら、プロジェクトを用意する手間のぶん `csc.exe` のほうが軽い、という関係です。NuGet パッケージを使う・複数のターゲットに向けてビルドする、といった段階になったら dotnet SDK へ移ります。
+`csc.exe` は<strong>`.cs` を1つ渡せば通ります</strong>。ソース1〜2ファイルの小さなツールを作るだけなら、プロジェクトを用意する手間のぶん `csc.exe` のほうが軽い、という関係です。NuGet パッケージを使う・複数のターゲットに向けてビルドする、といった段階になったら dotnet SDK へ移ります。
 
 ### どちらを選ぶか
 
@@ -913,9 +913,9 @@ PS> $LASTEXITCODE
 
 #### 覚えておく3点
 
-1. **C# は最後の手段。** 実測して、.NET の型で足りないと分かってから使う。境界をまたぐ回数が減らないなら効果はない
-2. **5.1 と 7 ではコンパイラが別物。** 両対応させるなら C# 5 の範囲で書き、`-ReferencedAssemblies` は 7 では原則付けない
-3. **型は作り直せない。** 開発中は新しいプロセスで実行する。運用に載せるなら `csc.exe` で dll にしてしまう
+1. <strong>C# は最後の手段。</strong>実測して、.NET の型で足りないと分かってから使う。境界をまたぐ回数が減らないなら効果はない
+2. <strong>5.1 と 7 ではコンパイラが別物。</strong>両対応させるなら C# 5 の範囲で書き、`-ReferencedAssemblies` は 7 では原則付けない
+3. <strong>型は作り直せない。</strong>開発中は新しいプロセスで実行する。運用に載せるなら `csc.exe` で dll にしてしまう
 
 > [!NOTE]
 > **次章の予告 — 12. COM と Office 連携**
