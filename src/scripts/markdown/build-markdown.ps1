@@ -62,10 +62,14 @@ $mb   = [math]::Round(($imgs | Measure-Object Length -Sum).Sum / 1MB, 1)
 
 Write-Host ''
 Write-Host "=== 結果 ===" -ForegroundColor Green
+# docs\plan など下位フォルダにも Markdown が出るため再帰で拾う。
+# docs\rules\*.md は手書きのルール文書なので生成物と混ぜない。
 $mds = @(Get-ChildItem -LiteralPath $Root -Filter '*.md' -File) +
-       @(Get-ChildItem -LiteralPath (Join-Path $Root 'docs') -Filter '*.md' -File)
-foreach ($m in ($mds | Sort-Object Name)) {
-	Write-Host ('  {0,-28} {1,5} 行' -f $m.Name, (Get-Content -LiteralPath $m.FullName).Count)
+       @(Get-ChildItem -LiteralPath (Join-Path $Root 'docs') -Filter '*.md' -File -Recurse |
+         Where-Object { $_.Directory.Name -ne 'rules' })
+foreach ($m in ($mds | Sort-Object FullName)) {
+	$rel = $m.FullName.Substring($Root.Length + 1)
+	Write-Host ('  {0,-32} {1,5} 行' -f $rel, (Get-Content -LiteralPath $m.FullName).Count)
 }
 Write-Host ''
 Write-Host ("  図: {0} 枚 / {1} MB -> docs\images" -f $imgs.Count, $mb)

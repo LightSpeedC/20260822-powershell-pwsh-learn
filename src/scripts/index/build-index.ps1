@@ -24,16 +24,19 @@ $Target  = Join-Path $DocsDir 'A1-逆引き.html'
 $Examples = @(
 	'Get-FileReport','Get-User','Write-Log','Add-Tag','Get-Report','Get-One','Get-OneFixed',
 	'Get-LogSummary','Test-Return','Show-Args','Test-Param','Test-Out','Test-Write','Test-Scope',
-	'Set-Counter','Rename-Bulk','Get-Empty','Add-Prefix','Get-Foo','Get-MyFunction'
+	'Set-Counter','Rename-Bulk','Get-Empty','Add-Prefix','Get-Foo','Get-MyFunction',
+	'New-Calc','Get-IniValue','Convert-ToPdf','Remove-Type'
 )
 
 # 用途の一言説明。新しい Cmdlet が資料に入ったらここに追記する
 $Purpose = @{
 	'Add-Content'              = 'ファイルの末尾に追記する'
+	'Add-Type'                 = 'C# のソースをその場でコンパイルして型を読み込む'
 	'Convert-Path'             = '相対パスを絶対パスの文字列にする'
 	'Copy-Item'                = 'ファイル・フォルダをコピーする'
 	'Export-Clixml'            = 'オブジェクトを型ごと保存する（PowerShell 専用形式）'
 	'Export-Csv'               = 'CSV に書き出す。5.1 では -NoTypeInformation が要る'
+	'Export-Excel'             = 'ImportExcel モジュール。Excel に直接書き出す'
 	'Find-Module'              = 'PowerShell Gallery のモジュールを検索する'
 	'Format-List'              = '全プロパティを縦に並べて表示する。行き止まり'
 	'Format-Table'             = '表形式で表示する。パイプラインの最後にだけ置く'
@@ -47,6 +50,7 @@ $Purpose = @{
 	'Get-ExecutionPolicy'      = '実行ポリシーを確認する。-List でスコープ別'
 	'Get-Help'                 = 'コマンドの使い方。-Examples が最も実用的'
 	'Get-Item'                 = '1 つの項目を取得する'
+	'Get-ItemProperty'         = 'レジストリの値やファイルの属性を取得する'
 	'Get-Location'             = 'カレントディレクトリを取得する'
 	'Get-Member'               = 'オブジェクトの型・プロパティ・メソッドを調べる'
 	'Get-Module'               = '読み込み済み・利用可能なモジュールを見る'
@@ -59,14 +63,17 @@ $Purpose = @{
 	'Group-Object'             = 'キーでまとめる。Name / Count / Group を返す'
 	'Import-Clixml'            = 'Export-Clixml で保存したオブジェクトを復元する'
 	'Import-Csv'               = 'CSV を読む。値はすべて文字列になる'
+	'Import-Excel'             = 'ImportExcel モジュール。Excel を読む'
 	'Import-Module'            = 'モジュールを明示的に読み込む'
 	'Install-Module'           = 'モジュールを導入する。-Scope CurrentUser 推奨'
 	'Invoke-Command'           = 'リモートやスクリプトブロックを実行する'
 	'Invoke-WebRequest'        = 'HTTP 要求。5.1 では curl がこれのエイリアスだった'
 	'Join-Path'                = 'パスを連結する。区切りの重複を吸収する'
+	'Measure-Command'          = '実行時間を計測する'
 	'Measure-Object'           = '件数・合計・平均・最大最小を求める'
 	'Move-Item'                = 'ファイル・フォルダを移動する'
 	'New-Item'                 = 'ファイル・フォルダを作る。-Force で親ごと'
+	'New-Object'               = '.NET のインスタンスや COM オブジェクトを作る'
 	'New-ScheduledTaskAction'  = 'タスクスケジューラの実行内容を定義する'
 	'New-ScheduledTaskTrigger' = 'タスクスケジューラの起動条件を定義する'
 	'Out-File'                 = 'ファイルに書き出す。5.1 の既定は UTF-16LE'
@@ -76,6 +83,7 @@ $Purpose = @{
 	'Remove-PSBreakpoint'      = 'ブレークポイントを削除する'
 	'Rename-Item'              = '名前を変更する。-WhatIf で事前確認できる'
 	'Resolve-Path'             = '絶対パスに解決する（存在しないとエラー）'
+	'Save-Module'              = 'インストールせずにモジュールを取得する'
 	'Select-Object'            = 'プロパティを選ぶ。-ExpandProperty で値そのもの'
 	'Set-Alias'                = 'エイリアスを定義する'
 	'Set-Content'              = 'ファイルに書く。-Encoding を必ず明示する'

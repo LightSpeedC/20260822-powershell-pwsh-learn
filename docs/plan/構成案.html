@@ -19,13 +19,14 @@
 		--soft: #f2f5fb;
 	}
 
-	/* 章ごとの虹色アクセント (H: 280 → 0, 280°を6章に均等分割 = 56°刻み) */
+	/* 章ごとの虹色アクセント (H: 280 → 0, 280°を7章に均等分割 = 46.7°刻み) */
 	.ch01 { --accent: hsl(280,78%,25%); --accent2: hsl(280,58%,65%); --soft: hsl(280,28%,95%); }
-	.ch02 { --accent: hsl(224,78%,25%); --accent2: hsl(224,58%,65%); --soft: hsl(224,28%,95%); }
-	.ch03 { --accent: hsl(168,78%,25%); --accent2: hsl(168,58%,65%); --soft: hsl(168,28%,95%); }
-	.ch04 { --accent: hsl(112,78%,25%); --accent2: hsl(112,58%,65%); --soft: hsl(112,28%,95%); }
-	.ch05 { --accent: hsl(56,78%,25%);  --accent2: hsl(56,58%,65%);  --soft: hsl(56,28%,95%); }
-	.ch06 { --accent: hsl(0,78%,25%);   --accent2: hsl(0,58%,65%);   --soft: hsl(0,28%,95%); }
+	.ch02 { --accent: hsl(233.3,78%,25%); --accent2: hsl(233.3,58%,65%); --soft: hsl(233.3,28%,95%); }
+	.ch03 { --accent: hsl(186.7,78%,25%); --accent2: hsl(186.7,58%,65%); --soft: hsl(186.7,28%,95%); }
+	.ch04 { --accent: hsl(140,78%,25%); --accent2: hsl(140,58%,65%); --soft: hsl(140,28%,95%); }
+	.ch05 { --accent: hsl(93.3,78%,25%); --accent2: hsl(93.3,58%,65%); --soft: hsl(93.3,28%,95%); }
+	.ch06 { --accent: hsl(46.7,78%,25%); --accent2: hsl(46.7,58%,65%); --soft: hsl(46.7,28%,95%); }
+	.ch07 { --accent: hsl(0,78%,25%); --accent2: hsl(0,58%,65%); --soft: hsl(0,28%,95%); }
 
 	* { box-sizing: border-box; }
 
@@ -242,8 +243,8 @@
 <div class="titlebar">
 	<div class="inner">
 		<h1>PowerShell 学習資料 全体構成案</h1>
-		<p>プログラミング経験のある読者を対象にした、本編10章＋付録2つのカリキュラム設計</p>
-		<p class="meta">📅 作成: 2026-08-22 / 更新: 2026-08-25 ／ ステータス: 本編10章 ＋ 付録 A1・A2 完成</p>
+		<p>プログラミング経験のある読者を対象にした、本編12章＋付録3つのカリキュラム設計</p>
+		<p class="meta">📅 作成: 2026-08-22 / 更新: 2026-08-26 ／ ステータス: 本編12章 ＋ 付録 A1・A2・A3 完成</p>
 	</div>
 </div>
 
@@ -256,8 +257,9 @@
 		<li class="ch02"><a href="#ch02">ファイル構成とロードマップ</a></li>
 		<li class="ch03"><a href="#ch03">基礎編（01〜05）の詳細</a></li>
 		<li class="ch04"><a href="#ch04">実践編（06〜09）の詳細</a></li>
-		<li class="ch05"><a href="#ch05">勉強会の進行案</a></li>
-		<li class="ch06"><a href="#ch06">付録（A1・A2）の詳細</a></li>
+		<li class="ch05"><a href="#ch05">発展編（11・12）の詳細</a></li>
+		<li class="ch06"><a href="#ch06">勉強会の進行案</a></li>
+		<li class="ch07"><a href="#ch07">付録（A1・A2・A3）の詳細</a></li>
 	</ol>
 </nav>
 
@@ -388,58 +390,71 @@
 <section class="ch02" id="ch02">
 <h1>2. ファイル構成とロードマップ</h1>
 
-<h2>全10ファイル・3部構成</h2>
+<h2>全12ファイル・4部構成</h2>
 
 <figure>
-<svg viewBox="0 0 780 268" role="img" aria-label="3部構成のロードマップ">
+<svg viewBox="0 0 900 268" role="img" aria-label="4部構成のロードマップ">
 	<defs>
 		<linearGradient id="g-pl-2a" x1="0" y1="1" x2="0" y2="0">
-			<stop offset="0" stop-color="hsl(255,78%,25%)"/>
-			<stop offset="1" stop-color="hsl(255,58%,65%)"/>
+			<stop offset="0" stop-color="hsl(265,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(265,58%,65%)"/>
 		</linearGradient>
 		<linearGradient id="g-pl-2b" x1="0" y1="1" x2="0" y2="0">
-			<stop offset="0" stop-color="hsl(160,78%,25%)"/>
-			<stop offset="1" stop-color="hsl(160,58%,65%)"/>
+			<stop offset="0" stop-color="hsl(195,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(195,58%,65%)"/>
 		</linearGradient>
 		<linearGradient id="g-pl-2c" x1="0" y1="1" x2="0" y2="0">
-			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
-			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+			<stop offset="0" stop-color="hsl(125,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(125,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-pl-2d" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(30,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(30,58%,65%)"/>
 		</linearGradient>
 	</defs>
 
-	<rect x="14" y="34" width="236" height="150" rx="10" fill="url(#g-pl-2a)"/>
-	<text x="132" y="60" fill="#fff" font-size="16" font-weight="700" text-anchor="middle">第1部 基礎編</text>
-	<text x="132" y="84" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">01 生まれた経緯</text>
-	<text x="132" y="104" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">02 ファイル形式と文字コード</text>
-	<text x="132" y="124" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">03 実行環境と実行ポリシー</text>
-	<text x="132" y="144" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">04 変数・型・演算子</text>
-	<text x="132" y="164" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">05 パイプラインとオブジェクト</text>
+	<rect x="14" y="34" width="230" height="150" rx="10" fill="url(#g-pl-2a)"/>
+	<text x="129" y="60" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">第1部 基礎編</text>
+	<text x="129" y="84" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">01 生まれた経緯</text>
+	<text x="129" y="104" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">02 ファイル形式と文字コード</text>
+	<text x="129" y="124" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">03 実行環境と実行ポリシー</text>
+	<text x="129" y="144" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">04 変数・型・演算子</text>
+	<text x="129" y="164" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">05 パイプラインとオブジェクト</text>
 
-	<line x1="256" y1="109" x2="286" y2="109" stroke="var(--ink-soft)" stroke-width="2.5"/>
-	<polygon points="286,102 302,109 286,116" fill="var(--ink-soft)"/>
+	<line x1="250" y1="109" x2="270" y2="109" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="270,102 286,109 270,116" fill="var(--ink-soft)"/>
 
-	<rect x="308" y="34" width="236" height="150" rx="10" fill="url(#g-pl-2b)"/>
-	<text x="426" y="60" fill="#fff" font-size="16" font-weight="700" text-anchor="middle">第2部 実践編</text>
-	<text x="426" y="88" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">06 制御構文と関数</text>
-	<text x="426" y="110" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">07 ファイルとテキスト操作</text>
-	<text x="426" y="132" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">08 エラー処理とデバッグ</text>
-	<text x="426" y="154" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">09 実務パターン集</text>
+	<rect x="290" y="34" width="200" height="150" rx="10" fill="url(#g-pl-2b)"/>
+	<text x="390" y="60" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">第2部 実践編</text>
+	<text x="390" y="88" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">06 制御構文と関数</text>
+	<text x="390" y="110" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">07 ファイルとテキスト操作</text>
+	<text x="390" y="132" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">08 エラー処理とデバッグ</text>
+	<text x="390" y="154" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">09 実務パターン集</text>
 
-	<line x1="550" y1="109" x2="580" y2="109" stroke="var(--ink-soft)" stroke-width="2.5"/>
-	<polygon points="580,102 596,109 580,116" fill="var(--ink-soft)"/>
+	<line x1="496" y1="109" x2="516" y2="109" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="516,102 532,109 516,116" fill="var(--ink-soft)"/>
 
-	<rect x="602" y="34" width="164" height="150" rx="10" fill="url(#g-pl-2c)"/>
-	<text x="684" y="60" fill="#fff" font-size="16" font-weight="700" text-anchor="middle">第3部 演習</text>
-	<text x="684" y="94" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">10 ハンズオン課題</text>
-	<text x="684" y="116" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">と解答例</text>
+	<rect x="536" y="34" width="134" height="150" rx="10" fill="url(#g-pl-2c)"/>
+	<text x="603" y="60" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">第3部 演習</text>
+	<text x="603" y="100" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">10 ハンズオン課題</text>
+	<text x="603" y="122" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">と解答例</text>
 
-	<rect x="14" y="200" width="752" height="52" rx="10" fill="#fff" stroke="var(--line)" stroke-width="2"/>
-	<text x="132" y="222" fill="hsl(255,78%,32%)" font-size="12.5" font-weight="700" text-anchor="middle">「読んで分かる」</text>
-	<text x="426" y="222" fill="hsl(160,78%,25%)" font-size="12.5" font-weight="700" text-anchor="middle">「書けるようになる」</text>
-	<text x="684" y="222" fill="hsl(35,78%,30%)" font-size="12.5" font-weight="700" text-anchor="middle">「一人で作れる」</text>
-	<text x="390" y="242" fill="var(--ink-soft)" font-size="12" text-anchor="middle">各部の到達目標</text>
-</svg>
-<figcaption>図 2 — 3部構成のロードマップと到達目標</figcaption>
+	<line x1="676" y1="109" x2="696" y2="109" stroke="var(--ink-soft)" stroke-width="2.5" stroke-dasharray="5 4"/>
+	<polygon points="696,102 712,109 696,116" fill="var(--ink-soft)"/>
+
+	<rect x="716" y="34" width="170" height="150" rx="10" fill="url(#g-pl-2d)"/>
+	<text x="801" y="60" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">第4部 発展編</text>
+	<text x="801" y="94" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">11 C# を埋め込む</text>
+	<text x="801" y="116" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">12 Office と COM</text>
+	<text x="801" y="146" fill="#fff" font-size="11" text-anchor="middle" opacity="0.82">後から追加した</text>
+
+	<rect x="14" y="200" width="872" height="52" rx="10" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+	<text x="129" y="222" fill="hsl(265,78%,32%)" font-size="12" font-weight="700" text-anchor="middle">「読んで分かる」</text>
+	<text x="390" y="222" fill="hsl(195,78%,26%)" font-size="12" font-weight="700" text-anchor="middle">「書けるようになる」</text>
+	<text x="603" y="222" fill="hsl(125,78%,22%)" font-size="12" font-weight="700" text-anchor="middle">「一人で作れる」</text>
+	<text x="801" y="222" fill="hsl(30,78%,30%)" font-size="12" font-weight="700" text-anchor="middle">「限界を超える」</text>
+	<text x="450" y="242" fill="var(--ink-soft)" font-size="12" text-anchor="middle">各部の到達目標</text>
+</svg><figcaption>図 2 — 4部構成のロードマップと到達目標。第4部は本編を書き終えてから追加した</figcaption>
 </figure>
 
 <h2>ファイル一覧</h2>
@@ -457,14 +472,17 @@
 <tr><td class="nowrap">08</td><td class="nowrap">エラー処理</td><td><code>try/catch</code>、<code>$ErrorActionPreference</code>、終了コード、デバッグ手順</td><td class="num">4</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
 <tr><td class="nowrap">09</td><td class="nowrap">実務パターン集</td><td>ログ集計、一括リネーム、タスクスケジューラ連携、他プロセス呼び出し</td><td class="num">5</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
 <tr><td class="nowrap">10</td><td class="nowrap">ハンズオン</td><td>勉強会用の課題と解答例、詰まりやすい箇所の解説</td><td class="num">3</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
+<tr><td class="nowrap">11</td><td class="nowrap">Add-Type</td><td>C# をその場でコンパイルして呼ぶ。P/Invoke、型の再定義制限、<code>csc.exe</code> で exe 化</td><td class="num">7</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
+<tr><td class="nowrap">12</td><td class="nowrap">COMとOffice</td><td>Word・Excel・PowerPoint の操作と PDF 化、プロセスを残さない後始末</td><td class="num">5</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
 <tr><td class="nowrap"><strong>A1</strong></td><td class="nowrap">逆引き</td><td>症状・コマンド名・JavaScript・用語の4つの入口から該当箇所へ引く索引</td><td class="num">4</td><td class="nowrap"><span class="badge b-good">完成</span></td></tr>
 <tr><td class="nowrap"><strong>A2</strong></td><td class="nowrap">テンプレ集</td><td>コピーして使う雛形。スクリプトの骨格・ログ・引数検証・ファイル処理ほか</td><td class="num">6</td><td class="nowrap"><span class="badge b-good">完成</span></td></tr>
+<tr><td class="nowrap"><strong>A3</strong></td><td class="nowrap">モジュール</td><td>業務で使えるモジュール厳選8本。選ぶ基準、導入とオフライン配布</td><td class="num">4</td><td class="nowrap"><span class="badge b-good">完成</span></td></tr>
 </table>
 </div>
 
 <div class="callout">
-<strong>付録は <code>A1-</code> <code>A2-</code> の記法にします。</strong><br>
-本編の <code>01</code>〜<code>10</code> は<strong>順に読む前提</strong>ですが、付録は<strong>必要になったときに引く</strong>ものです。番号体系を変えることで、読者が「順番に読まなくてよい」と判断できます。<br>
+<strong>付録は <code>A1-</code> <code>A2-</code> <code>A3-</code> の記法にします。</strong><br>
+本編の <code>01</code>〜<code>12</code> は<strong>順に読む前提</strong>ですが、付録は<strong>必要になったときに引く</strong>ものです。番号体系を変えることで、読者が「順番に読まなくてよい」と判断できます。<br>
 ファイル名でも <code>10-</code> の後ろに並ぶため、一覧の見た目も崩れません。
 </div>
 
@@ -556,7 +574,7 @@
 	<rect x="10" y="236" width="760" height="30" rx="8" fill="#fff" stroke="hsl(140,58%,55%)" stroke-width="2"/>
 	<text x="390" y="256" fill="hsl(140,78%,22%)" font-size="13.5" font-weight="700" text-anchor="middle">両方で正しく読めるのは「UTF-8（BOM 付き）」だけ</text>
 </svg>
-<figcaption>図 4 — 5.1 と 7 は「BOM がない場合」の既定解釈が逆。BOM 付き UTF-8 が唯一の共通解</figcaption>
+<figcaption>図 3 — 5.1 と 7 は「BOM がない場合」の既定解釈が逆。BOM 付き UTF-8 が唯一の共通解</figcaption>
 </figure>
 
 <p><span class="badge b-warn">注意</span>3行目に注目してください。<strong>Shift-JIS の ps1 は 5.1 では動くが 7 では壊れます</strong>。「今まで動いていたスクリプトが pwsh に変えた途端に文字化けする」典型的な原因がこれです。02.2 ではこの逆転を必ず扱います。</p>
@@ -662,7 +680,65 @@ JS の <code>return</code> の感覚で書くと、途中の <code>Write-Output<
 
 <!-- ============ 5 ============ -->
 <section class="ch05" id="ch05">
-<h1>5. 勉強会の進行案</h1>
+<h1>5. 発展編（11・12）の詳細</h1>
+
+<h2>本編を書き終えてから足した理由</h2>
+
+<p>当初の構成は 01〜10 の3部構成でした。11・12 は<strong>本編を一通り書き終えたあとに追加</strong>したもので、性格が本編とは違います。</p>
+
+<ul>
+	<li><strong>全員には要らない</strong>。01〜10 を読めば業務の大半は書けます。11・12 は「PowerShell だけでは届かない場面」に限った話です</li>
+	<li><strong>順番に依存しない</strong>。11 と 12 の間に前後関係はありません。必要なほうだけ読めます</li>
+	<li><strong>踏む罠が本編より深い</strong>。実行時にしか分からない制約（型の再定義、COM の解放漏れ）が中心です</li>
+</ul>
+
+<div class="callout">
+<strong>付録にせず本編の章にしたのは、内容が「引く」ものではなく「読む」ものだからです。</strong><br>
+A1〜A3 は必要な行だけ拾えば用が足りますが、11・12 は前提から順に読まないと危険な操作（プロセスが残る、型が固定される）を含みます。そのため<strong>第4部として本編の続き</strong>に置き、README のロードマップでも「必要になってからでよい」と明示しています。
+</div>
+
+<h2>11. C# を埋め込む — Add-Type <span class="badge b-good">完成</span></h2>
+
+<p>全7節。<strong>すべてのコードを 5.1 と 7 の両方で実行して確認</strong>しています。</p>
+
+<ul>
+	<li>11.1 なぜ C# を書くのか — まず PowerShell で書き、遅いと<strong>実測してから</strong>使う</li>
+	<li>11.2 <code>Add-Type -TypeDefinition</code> の基本</li>
+	<li>11.3 5.1 と 7 でコンパイラが違う — csc.exe (.NET Framework) と Roslyn (.NET)</li>
+	<li>11.4 同じ型を2回定義できない — <strong>キャッシュキーはソース文字列そのもの</strong></li>
+	<li>11.5 Win32 API を呼ぶ — <code>-MemberDefinition</code> と <code>DllImport</code></li>
+	<li>11.6 使いどころの見極め</li>
+	<li>11.7 事前にコンパイルして exe を配る — <code>csc.exe</code> を直接使う</li>
+</ul>
+
+<div class="callout">
+<strong>実測で「7 のほうが速い」が崩れました。</strong><br>
+<code>StringBuilder</code> を PowerShell から回すループは <span class="badge b-ps51">5.1</span> が 48〜58ms、<span class="badge b-ps7">pwsh 7</span> が 191〜200ms で<strong>7 が約4倍遅い</strong>という結果でした。C# の静的メソッドを1回ずつ呼ぶ形も、30万回で PowerShell のみ 818ms に対し C# 呼び出し 1,809ms と逆に遅くなります。<strong>ループごと C# に渡して初めて 4ms</strong> になります。<br>
+「C# にすれば速い」ではなく<strong>「境界をまたぐ回数を減らせば速い」</strong>が正しい理解で、11.1 と 11.6 の骨子にしました。
+</div>
+
+<h2>12. Office と COM を操作する <span class="badge b-good">完成</span></h2>
+
+<p>全5節。Word・Excel・PowerPoint の COM を実際に動かして確認しています。</p>
+
+<ul>
+	<li>12.1 COM とは何か — <code>New-Object -ComObject</code>。<strong>VBA のオブジェクトモデルがそのまま使える</strong></li>
+	<li>12.2 Office ファイルの PDF 化 — 3種すべて成功。<strong>引数の順序が Word と Excel で逆</strong></li>
+	<li>12.3 後始末 — <code>Quit()</code> だけではプロセスが残る。<code>ReleaseComObject</code> と <code>try/finally</code></li>
+	<li>12.4 COM を使わない選択肢 — <code>ImportExcel</code>・CSV との使い分け</li>
+	<li>12.5 実例 — このリポジトリの <code>build-pptx.ps1</code> が踏んだ罠</li>
+</ul>
+
+<div class="callout">
+<strong>12.5 は自分たちのコードを教材にしています。</strong><br>
+<code>src/scripts/pptx/build-pptx.ps1</code> は資料の pptx を作るために PowerPoint COM を使っており、<code>ExportAsFixedFormat</code> が PowerShell の遅延バインディングで通らず <code>SaveAs</code> で回避した経緯がコメントとして残っていました。<strong>資料を作る道具そのものが実例</strong>になっています。<br>
+なお <code>SaveAs</code> が「名前 2.pptx」を作るという既存コメントだけは再現できず、<strong>未再現と明記</strong>して載せています。
+</div>
+</section>
+
+<!-- ============ 6 ============ -->
+<section class="ch06" id="ch06">
+<h1>6. 勉強会の進行案</h1>
 
 <h2>全5回・1回90分</h2>
 
@@ -718,7 +794,7 @@ JS の <code>return</code> の感覚で書くと、途中の <code>Write-Output<
 
 	<text x="390" y="128" fill="var(--ink-soft)" font-size="13" text-anchor="middle">解説とハンズオンを同量にする。聞くだけの回にしない</text>
 </svg>
-<figcaption>図 3 — 90分の配分。手を動かす時間を解説と同量確保する</figcaption>
+<figcaption>図 4 — 90分の配分。手を動かす時間を解説と同量確保する</figcaption>
 </figure>
 
 <h2>事前準備（主催側）</h2>
@@ -741,8 +817,8 @@ JS の <code>return</code> の感覚で書くと、途中の <code>Write-Output<
 </section>
 
 <!-- ============ 6 ============ -->
-<section class="ch06" id="ch06">
-<h1>6. 付録（A1・A2）の詳細</h1>
+<section class="ch07" id="ch07">
+<h1>7. 付録（A1・A2・A3）の詳細</h1>
 
 <h2>本編との役割の違い</h2>
 
@@ -757,7 +833,7 @@ JS の <code>return</code> の感覚で書くと、途中の <code>Write-Output<
 
 <h2>A1. 逆引き — 4つの入口</h2>
 
-<p>資料には <strong>Cmdlet 69種</strong>が10章に散らばっています。「あのコマンドはどの章だったか」を引けるようにします。</p>
+<p>資料には <strong>Cmdlet 76種</strong>が12章に散らばっています。「あのコマンドはどの章だったか」を引けるようにします。</p>
 
 <div class="table-wrap">
 <table>
@@ -830,6 +906,30 @@ A1.1・A1.3・A1.4 は内容の判断が要るため手書きです。
 他の節は本編の内容を<strong>部品として再構成</strong>したものです。
 </div>
 
+<h2>A3. モジュール — 導入せずに書いた付録</h2>
+
+<p>全4節。<strong>業務で効くものだけを8本</strong>選び、うち4本を詳しく扱います。網羅は目的にしていません。</p>
+
+<ul>
+	<li>A3.1 選ぶときの判断基準 — 提供元・最終更新日・5.1／7 の両対応・依存の重さ</li>
+	<li>A3.2 リストと概要 — 8本の一覧。<strong>外したものとその理由</strong>も書く</li>
+	<li>A3.3 詳細 — <code>PSScriptAnalyzer</code>／<code>ImportExcel</code>／<code>SecretManagement</code>＋<code>SecretStore</code>／<code>Pester</code></li>
+	<li>A3.4 導入と運用 — <code>-Scope CurrentUser</code>、<code>Save-Module</code> でのオフライン配布、<code>#Requires -Modules</code></li>
+</ul>
+
+<div class="callout">
+<strong>この付録だけは、コードを実行して確かめていません。</strong><br>
+モジュールを導入すると検証環境が変わってしまうため、<code>Install-Module</code> を実行せずに書きました。そのぶん<strong>出力例を載せていません</strong>。<code>Find-Module</code> や <code>Get-Module -ListAvailable</code> のように<strong>読み取りだけで確かめられるものは実物を貼り</strong>、それ以外はコード例のみに留めています。<br>
+A3.3 の冒頭にも同じ断りを置き、読者に対して未検証であることを隠していません。
+</div>
+
+<div class="callout">
+<strong>選定の根拠として使えない数字が2つ見つかりました。</strong><br>
+<code>Find-Module</code> が返す <code>lastUpdated</code> は<strong>常に実行当日</strong>を指します。<code>ImportExcel</code> の実際の公開は 2024-10-21 なのに当日の日付が返るため、<strong>約2年の開きが見えません</strong>。更新日を見るなら <code>PublishedDate</code> を使います。<br>
+ダウンロード数も当てになりません。<code>PSWindowsUpdate</code> は <strong>2,147,474,038</strong> という <code>Int32</code> 上限（2,147,483,647）直下の飽和値を返しました。<br>
+この2つを A3.1 の柱にしています。
+</div>
+
 <h2>README への反映</h2>
 
 <p>README の逆引き索引（17項目）は<strong>残します</strong>。役割を分けます。</p>
@@ -846,7 +946,7 @@ A1.1・A1.3・A1.4 は内容の判断が要るため手書きです。
 </div>
 
 <footer>
-	<p>PowerShell 学習資料 — 全体構成案（確定）／ この構成に沿って <code>docs/02-ファイル形式.html</code> から順に作成します。</p>
+	<p>PowerShell 学習資料 — 全体構成案 ／ <a href="../../README.html">目次に戻る</a></p>
 </footer>
 
 </body>

@@ -332,13 +332,16 @@ param(
 	[Parameter(Mandatory)]
 	[string]$Path,
 
-	[string]$OutFile = (Join-Path $PSScriptRoot 'result.csv'),
+	[string]$OutFile,
 
 	[switch]$Force
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+
+# 既定値は param() の外で入れる（理由は下の callout）
+if (-not $OutFile) { $OutFile = Join-Path $PSScriptRoot 'result.csv' }
 
 try {
 	Write-Verbose "対象: $Path"
@@ -379,8 +382,20 @@ exit=1</code></pre>
 <tr><td class="mono">Set-StrictMode -Version Latest</td><td>未定義変数が即エラーになる</td><td>タイプミスが <code>$null</code> として通る</td></tr>
 <tr><td class="mono">$ErrorActionPreference = 'Stop'</td><td>非終了エラーも <code>catch</code> に入る</td><td>エラーが出ても処理が続く</td></tr>
 <tr><td class="mono">$PSScriptRoot</td><td>スクリプト自身の場所</td><td>タスク実行時にカレントが違って壊れる</td></tr>
+<tr><td class="mono">if (-not $OutFile) { ... }</td><td>既定値を <code>param()</code> の外で入れる</td><td><span class="badge b-ps51">5.1</span> で <code>$PSScriptRoot</code> が空になり起動時に落ちる</td></tr>
 <tr><td class="mono">exit 0 / exit 1</td><td>呼び出し元が成否を判定できる</td><td>CI やタスクが常に成功扱いになる</td></tr>
 </table>
+</div>
+
+<div class="callout">
+<strong><span class="badge b-ps51">5.1</span> <code>[CmdletBinding()]</code> を付けると、<code>param()</code> の既定値の中で <code>$PSScriptRoot</code> が空文字列になります。</strong><br>
+そのため <code>[string]$OutFile = (Join-Path $PSScriptRoot 'result.csv')</code> と書くと、<strong>引数を省略した瞬間に起動時点で落ちます</strong>。
+<pre><code>Join-Path : Cannot bind argument to parameter 'Path' because it is an empty string.
+At C:\work\skeleton.ps1:6 char:31
++     [string]$OutFile = (Join-Path $PSScriptRoot 'result.csv')
++                                  ~~~~~~~~~~~~~</code></pre>
+<code>$PSCommandPath</code> に替えても同じく空です。<span class="badge b-ps7">pwsh 7</span> では両方とも正しく入るため、<strong>7 で書いて 5.1 で配ると初めて発覚します</strong>。<br>
+<code>[CmdletBinding()]</code> を外せば 5.1 でも既定値の中で使えますが、<code>-Verbose</code> が効かなくなるので本末転倒です。<strong>既定値は <code>param()</code> の外で入れてください。</strong>
 </div>
 
 <div class="callout">

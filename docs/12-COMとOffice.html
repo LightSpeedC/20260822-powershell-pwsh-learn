@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>12. Office と COM を操作する</title>
+<style>
+	:root {
+		--navy1: #12224d;
+		--navy2: #2f5fbf;
+		--ink: #1c2330;
+		--ink-soft: #4a5568;
+		--line: #d9dfe8;
+		--code-bg: #f4f6fa;
+
+		/* 章クラス(.chNN)の外に置かれた要素用の既定値 */
+		--accent: var(--navy1);
+		--accent2: var(--navy2);
+		--soft: #f2f5fb;
+	}
+
+	/* 章ごとの虹色アクセント (H: 280 → 0, 280°を5章に均等分割 = 70°刻み) */
+	.ch01 { --accent: hsl(280,78%,25%); --accent2: hsl(280,58%,65%); --soft: hsl(280,28%,95%); }
+	.ch02 { --accent: hsl(210,78%,25%); --accent2: hsl(210,58%,65%); --soft: hsl(210,28%,95%); }
+	.ch03 { --accent: hsl(140,78%,25%); --accent2: hsl(140,58%,65%); --soft: hsl(140,28%,95%); }
+	.ch04 { --accent: hsl(70,78%,25%);  --accent2: hsl(70,58%,65%);  --soft: hsl(70,28%,95%); }
+	.ch05 { --accent: hsl(0,78%,25%);   --accent2: hsl(0,58%,65%);   --soft: hsl(0,28%,95%); }
+
+	* { box-sizing: border-box; }
+
+	body {
+		margin: 0;
+		padding: 0 0 60px;
+		background: #ffffff;
+		color: var(--ink);
+		font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", "Meiryo", sans-serif;
+		line-height: 1.85;
+		font-size: 15.5px;
+	}
+
+	.wrap { max-width: 1400px; margin: 0 auto; padding: 0 30px; }
+
+	/* タイトルバー */
+	.titlebar {
+		background: linear-gradient(135deg, var(--navy1) 0%, var(--navy2) 100%);
+		color: #fff;
+		padding: 34px 30px 30px;
+		box-shadow: 0 6px 18px rgba(18,34,77,0.28);
+	}
+	.titlebar .inner { max-width: 1400px; margin: 0 auto; }
+	.titlebar h1 {
+		margin: 0 0 10px;
+		font-size: 2.1em;
+		letter-spacing: 0.02em;
+		color: #fff;
+	}
+	.titlebar p { margin: 4px 0; font-size: 0.92em; color: #d8e4ff; }
+	.titlebar .meta { font-size: 0.84em; color: #b9cdf5; }
+	.titlebar code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+
+	/* 目次 */
+	nav.toc {
+		background: linear-gradient(180deg, #f2f5fb 0%, #ffffff 100%);
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		padding: 16px 22px;
+		margin: 28px 0;
+		box-shadow: 0 2px 8px rgba(30,50,90,0.07);
+	}
+	nav.toc strong { display: block; color: var(--navy1); margin-bottom: 10px; }
+	nav.toc ol {
+		margin: 0;
+		padding-left: 0;
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		counter-reset: toc;
+	}
+	nav.toc li { counter-increment: toc; margin: 0; }
+	nav.toc a {
+		display: -webkit-box;
+		width: 310px;
+		max-width: 100%;
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		text-decoration: none;
+		text-align: left;
+		border-radius: 6px;
+		padding: 7px 10px;
+		font-size: 0.88em;
+		font-weight: 600;
+		line-height: 1.4;
+		white-space: normal;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		box-shadow: 0 1px 4px rgba(20,30,60,0.18);
+	}
+	nav.toc a::before { content: "12." counter(toc) " "; opacity: 0.85; }
+	nav.toc a:hover { text-decoration: underline; }
+
+	/* 章 */
+	section {
+		background: linear-gradient(180deg, var(--soft) 0%, #ffffff 42%);
+		border-radius: 12px;
+		padding: 4px 26px 26px;
+		margin: 34px 0;
+		border: 1px solid var(--line);
+	}
+
+	section h1 {
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		font-size: 1.5em;
+		margin: 26px 0 20px;
+		padding: 14px 20px;
+		border-radius: 9px;
+		box-shadow: 0 5px 14px rgba(30,40,70,0.28);
+	}
+	section h1 code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+
+	h2 {
+		font-size: 1.16em;
+		color: var(--accent);
+		border-left: 7px solid var(--accent);
+		background: linear-gradient(90deg, var(--soft) 0%, rgba(255,255,255,0) 88%);
+		padding: 6px 12px;
+		margin: 30px 0 12px;
+		border-radius: 0 6px 6px 0;
+	}
+
+	h3 {
+		font-size: 1.02em;
+		color: var(--accent);
+		margin: 20px 0 8px;
+		padding-bottom: 3px;
+		border-bottom: 2px dotted var(--accent2);
+		display: inline-block;
+	}
+
+	p { margin: 10px 0; }
+	ul, ol { margin: 10px 0; padding-left: 1.6em; }
+	li { margin: 6px 0; }
+
+	code {
+		background: var(--code-bg);
+		border: 1px solid var(--line);
+		border-radius: 4px;
+		padding: 1px 6px;
+		font-family: "BIZ UDゴシック", "ＭＳ ゴシック", Consolas, "Cascadia Mono", monospace;
+		font-size: 0.9em;
+		color: #17335f;
+	}
+
+	pre {
+		background: linear-gradient(180deg, #f7f9fd 0%, #eef2f9 100%);
+		border: 1px solid var(--line);
+		border-left: 5px solid var(--accent2);
+		border-radius: 8px;
+		padding: 13px 16px;
+		overflow-x: auto;
+		font-size: 0.88em;
+		line-height: 1.6;
+	}
+	pre code { background: none; border: none; padding: 0; color: #1b2b46; }
+
+	.table-wrap { overflow-x: auto; margin: 16px 0; }
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 0.93em;
+		box-shadow: 0 2px 7px rgba(40,55,90,0.12);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+	th {
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		text-align: left;
+		padding: 9px 12px;
+		font-weight: 600;
+	}
+	th code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+	td { padding: 9px 12px; border-bottom: 1px solid var(--line); background: #fff; vertical-align: top; }
+	tr:nth-child(even) td { background: #fafbfe; }
+	td.nowrap { white-space: nowrap; }
+	td.mono { font-family: "BIZ UDゴシック", "ＭＳ ゴシック", Consolas, monospace; white-space: nowrap; }
+	td.num { text-align: right; white-space: nowrap; }
+
+	/* バッジ */
+	.badge {
+		display: inline-block;
+		font-size: 0.78em;
+		font-weight: 700;
+		color: #fff;
+		border-radius: 4px;
+		padding: 1px 9px;
+		margin-right: 7px;
+		letter-spacing: 0.04em;
+		white-space: nowrap;
+	}
+	.b-good { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
+	.b-bad  { background: linear-gradient(100deg, #a51f22, #e05a5c); }
+	.b-none { background: linear-gradient(100deg, #5a6472, #97a1ae); }
+	.b-warn { background: linear-gradient(100deg, #b8620a, #f0a548); }
+	.b-ps7  { background: linear-gradient(100deg, #1a5fa8, #4d9ae0); }
+	.b-ps51 { background: linear-gradient(100deg, #5b2d82, #9a6bc4); }
+
+	.callout {
+		background: linear-gradient(180deg, var(--soft) 0%, #ffffff 100%);
+		border: 1px solid var(--accent2);
+		border-left: 6px solid var(--accent);
+		border-radius: 0 8px 8px 0;
+		padding: 12px 18px;
+		margin: 16px 0;
+	}
+	.callout strong { color: var(--accent); }
+
+	/* SVG図 */
+	figure { margin: 20px 0; text-align: center; }
+	figure svg {
+		max-width: 100%;
+		height: auto;
+		font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", "Meiryo", sans-serif;
+	}
+	figcaption { font-size: 0.84em; color: var(--ink-soft); margin-top: 6px; }
+
+	footer {
+		max-width: 1400px;
+		margin: 40px auto 0;
+		padding: 18px 30px 0;
+		border-top: 2px solid var(--line);
+		color: var(--ink-soft);
+		font-size: 0.86em;
+	}
+	footer a { color: var(--navy2); }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>12. Office と COM を操作する</h1>
+		<p>Word・Excel・PowerPoint を PowerShell から動かす — 実測で確かめた落とし穴つき</p>
+		<p class="meta">📅 作成: 2026-08-26 / 更新: 2026-08-26 ／ 対象: Windows PowerShell 5.1 ＋ PowerShell 7</p>
+	</div>
+</div>
+
+<div class="wrap">
+
+<p><a href="../README.html">← 目次に戻る</a></p>
+
+<h2>この章で何ができるようになるか</h2>
+
+<ul>
+	<li>Word・Excel・PowerPoint を <strong>PowerShell から起動して PDF に変換</strong>できる</li>
+	<li>COM を使ったあと <strong>プロセスを確実に終わらせる</strong>書き方が身につく</li>
+	<li>COM を<strong>使うべきでない場面</strong>を判断できる</li>
+	<li>VBA で書いていた処理を<strong>そのままの発想で PowerShell に移せる</strong></li>
+</ul>
+
+<div class="callout">
+<strong>この章のコードと出力は、すべてこの資料の作業マシン上で実際に実行して確認しています。</strong><br>
+Office は <code>Word.Application.16</code> / <code>Excel.Application.16</code> / <code>PowerPoint.Application.16</code> が登録された環境（Microsoft Office 2016 世代のオブジェクトモデル）です。エラーメッセージは実際に出た文言をそのまま載せています。
+</div>
+
+<nav class="toc">
+	<strong>目次</strong>
+	<ol>
+		<li class="ch01"><a href="#ch01">COM とは何か</a></li>
+		<li class="ch02"><a href="#ch02">Office ファイルの PDF 化</a></li>
+		<li class="ch03"><a href="#ch03">後始末 — プロセスが残る</a></li>
+		<li class="ch04"><a href="#ch04">COM を使わない選択肢</a></li>
+		<li class="ch05"><a href="#ch05">実例 — build-pptx.ps1</a></li>
+	</ol>
+</nav>
+
+<!-- ============ 12.1 ============ -->
+<section class="ch01" id="ch01">
+<h1>12.1 COM とは何か</h1>
+
+<h2>「別のアプリを外から操作する」ための仕組み</h2>
+
+<p><strong>COM</strong>（Component Object Model）は、<strong>あるプロセスが公開しているオブジェクトを、別のプロセスから呼び出す</strong>ための Windows の仕組みです。Office はこの仕組みでオブジェクトモデルを公開しているので、PowerShell から Word や Excel を「外側のリモコン」として動かせます。</p>
+
+<p>PowerShell 側の入口は <code>New-Object -ComObject</code> ひとつだけです。</p>
+
+<figure>
+<svg viewBox="0 0 780 274" role="img" aria-label="PowerShell から COM 経由で Office を操作する構造">
+	<defs>
+		<linearGradient id="g-12-1a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(280,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(280,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-12-1b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(210,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(210,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-12-1c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="10" y="26" width="212" height="86" rx="9" fill="url(#g-12-1a)"/>
+	<text x="116" y="52" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">powershell.exe</text>
+	<text x="116" y="74" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">New-Object -ComObject</text>
+	<text x="116" y="94" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">自分のプロセス</text>
+
+	<rect x="262" y="26" width="212" height="86" rx="9" fill="#fff" stroke="hsl(280,58%,55%)" stroke-width="2"/>
+	<text x="368" y="52" fill="hsl(280,78%,25%)" font-size="14" font-weight="700" text-anchor="middle">COM の境界</text>
+	<text x="368" y="74" fill="var(--ink)" font-size="11.5" text-anchor="middle">呼び出しを別プロセスへ運ぶ</text>
+	<text x="368" y="94" fill="var(--ink-soft)" font-size="11" text-anchor="middle">値はここで .NET ⇄ Windows 型に変換</text>
+
+	<rect x="514" y="26" width="256" height="86" rx="9" fill="url(#g-12-1b)"/>
+	<text x="642" y="50" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">WINWORD.EXE / EXCEL.EXE</text>
+	<text x="642" y="70" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">POWERPNT.EXE</text>
+	<text x="642" y="94" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">Office 本体が起動して待機する</text>
+
+	<line x1="228" y1="60" x2="244" y2="60" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="244,53 260,60 244,67" fill="var(--ink-soft)"/>
+	<line x1="480" y1="60" x2="496" y2="60" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="496,53 512,60 496,67" fill="var(--ink-soft)"/>
+	<line x1="508" y1="86" x2="492" y2="86" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="492,79 476,86 492,93" fill="var(--ink-soft)"/>
+	<line x1="256" y1="86" x2="240" y2="86" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="240,79 224,86 240,93" fill="var(--ink-soft)"/>
+
+	<rect x="10" y="132" width="760" height="130" rx="9" fill="url(#g-12-1c)"/>
+	<text x="390" y="158" fill="#fff" font-size="13.5" font-weight="700" text-anchor="middle">VBA で書いていたコードは、そのままの構造で移せる</text>
+	<text x="200" y="186" fill="#fff" font-size="12" text-anchor="middle" opacity="0.9">VBA</text>
+	<text x="580" y="186" fill="#fff" font-size="12" text-anchor="middle" opacity="0.9">PowerShell</text>
+	<text x="200" y="210" fill="#fff" font-size="12" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Set xl = CreateObject("Excel.Application")</text>
+	<text x="580" y="210" fill="#fff" font-size="12" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">$xl = New-Object -ComObject Excel.Application</text>
+	<text x="200" y="232" fill="#fff" font-size="12" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">xl.Workbooks.Add</text>
+	<text x="580" y="232" fill="#fff" font-size="12" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">$xl.Workbooks.Add()</text>
+	<text x="200" y="252" fill="#fff" font-size="12" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">ws.Cells(1, 1).Value2 = "商品"</text>
+	<text x="580" y="252" fill="#fff" font-size="12" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">$ws.Cells.Item(1,1).Value2 = '商品'</text>
+</svg>
+<figcaption>図 12.1 — 呼ぶ相手は同じオブジェクトモデル。書き方の外側だけが変わる</figcaption>
+</figure>
+
+<h2>使えるかどうかはレジストリで分かる</h2>
+
+<p>COM のオブジェクトは <strong>ProgID</strong>（<code>Excel.Application</code> のような名前）で指定します。登録されているかはレジストリで確認できます。</p>
+
+<pre><code>foreach ($p in 'Word.Application','Excel.Application','PowerPoint.Application') {
+    $v = (Get-ItemProperty "HKLM:\SOFTWARE\Classes\$p\CurVer").'(default)'
+    "{0} -&gt; {1}" -f $p, $v
+}</code></pre>
+
+<pre><code>Word.Application -&gt; Word.Application.16
+Excel.Application -&gt; Excel.Application.16
+PowerPoint.Application -&gt; PowerPoint.Application.16</code></pre>
+
+<p>末尾の <code>.16</code> が Office のバージョン系列です。<strong>この <code>CurVer</code> が引けなければ、そのアプリはインストールされていません。</strong>スクリプトの冒頭で確認しておくと、実行してから固まるより親切です。</p>
+
+<h3>登録されていない ProgID を指定すると</h3>
+
+<pre><code>PS&gt; New-Object -ComObject Foo.Bar.Application</code></pre>
+
+<div class="table-wrap">
+<table>
+<tr><th>実行環境</th><th>実際のエラー</th></tr>
+<tr><td class="nowrap"><span class="badge b-ps51">5.1</span></td><td>CLSID {00000000-0000-0000-0000-000000000000} を含むコンポーネントの COM クラス ファクトリを取得中に、次のエラーが発生しました: 80040154 クラスが登録されていません (HRESULT からの例外:0x80040154 (REGDB_E_CLASSNOTREG))。</td></tr>
+<tr><td class="nowrap"><span class="badge b-ps7">pwsh 7</span></td><td>Retrieving the COM class factory for component with CLSID {00000000-0000-0000-0000-000000000000} failed due to the following error: 80040154 クラスが登録されていません (0x80040154 (REGDB_E_CLASSNOTREG)).</td></tr>
+</table>
+</div>
+
+<p>肝心の <code>REGDB_E_CLASSNOTREG</code> は同じです。<strong>7 では英語の枠に日本語のメッセージが混ざります</strong>が、これは PowerShell 側の言語リソースの違いで、意味は変わりません。</p>
+
+<h2>返ってくるのは <code>System.__ComObject</code></h2>
+
+<pre><code>$sh = New-Object -ComObject WScript.Shell
+$sh.GetType().FullName
+[System.Runtime.InteropServices.Marshal]::IsComObject($sh)
+$sh.SpecialFolders.Item('Desktop')</code></pre>
+
+<pre><code>System.__ComObject
+True
+C:\Users\&lt;username&gt;\Desktop</code></pre>
+
+<p><code>GetType()</code> は必ず <code>System.__ComObject</code> を返します。<strong>実体の型名は分かりません</strong>。C# の <code>dynamic</code> と同じで、メンバーの解決は呼び出しのたびに実行時に行われます。それでも <code>Get-Member</code> は型ライブラリを読んでメンバーを列挙してくれます。</p>
+
+<pre><code>$x = New-Object -ComObject Excel.Application
+$x | Get-Member -MemberType Property | Select-Object -First 8</code></pre>
+
+<pre><code>  ActiveCell  (Property)
+  ActiveChart  (Property)
+  ActiveDialog  (Property)
+  ActiveEncryptionSession  (Property)
+  ActiveMenuBar  (Property)
+  ActivePrinter  (Property)
+  ActiveProtectedViewWindow  (Property)
+  ActiveSheet  (Property)</code></pre>
+
+<p>列挙できた総数は <span class="badge b-ps51">5.1</span> で <strong>468 件</strong>、<span class="badge b-ps7">pwsh 7</span> で <strong>331 件</strong>でした。<strong>数が違っても呼べるメンバーは同じ</strong>で、違うのは PowerShell 側が事前に見せてくれる一覧の作り方です。VBA のオブジェクトブラウザー代わりに <code>Get-Member</code> を使うときは、<strong>7 で見えないメンバーが 5.1 で見つかることがある</strong>と覚えておいてください。</p>
+
+<h2>画面に出さない — <code>Visible</code> の扱いはアプリごとに違う</h2>
+
+<p>自動処理でウィンドウが出てくると、実行中にユーザーが誤ってクリックできてしまいます。Word と Excel は <code>Visible</code> を <code>$false</code> にできます。</p>
+
+<pre><code>$word.Visible  = $false
+$excel.Visible = $false
+$excel.DisplayAlerts = $false    # 「保存しますか」等のダイアログを出さない</code></pre>
+
+<p><strong>PowerPoint だけは非表示にできません。</strong>実際に試すと、5.1 と 7 で違う段階で止まります。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>書き方</th><th>結果</th></tr>
+<tr><td class="mono">$ppt.Visible = $false <span class="badge b-ps51">5.1</span></td><td><span class="badge b-bad">失敗</span>「Visible」の設定中に例外が発生しました: "値 "False" を型 "Microsoft.Office.Core.MsoTriState" に変換できません。エラー: "'System.Boolean' から 'Microsoft.Office.Core.MsoTriState' への無効なキャストです。""</td></tr>
+<tr><td class="mono">$ppt.Visible = $false <span class="badge b-ps7">pwsh 7</span></td><td><span class="badge b-bad">失敗</span>Application.Visible : 無効な要求です。アプリケーション ウィンドウを非表示に設定することはできません。</td></tr>
+<tr><td class="mono">$ppt.Visible = 0</td><td><span class="badge b-bad">失敗</span>Application.Visible : 無効な要求です。アプリケーション ウィンドウを非表示に設定することはできません。（5.1・7 共通）</td></tr>
+<tr><td class="mono">$ppt.Visible = -1</td><td><span class="badge b-good">成功</span>msoTrue。表示のまま</td></tr>
+<tr><td class="mono">$ppt.WindowState = 2</td><td><span class="badge b-good">成功</span>最小化はできる</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>5.1 は <code>$false</code> を <code>MsoTriState</code> に変換できず、7 は変換できます。</strong><br>
+つまり 7 のほうが 1 歩先に進んで、PowerPoint 自身の「非表示にはできません」という拒否に到達します。<strong>同じコードでもエラーの出所が違う</strong>ので、5.1 で「型の問題だ」と判断して <code>0</code> に書き換えても解決しません。<br>
+Office の定数は本来 <code>MsoTriState</code> のような列挙型で、<code>msoFalse = 0</code> / <code>msoTrue = -1</code> です。VBA では <code>msoTrue</code> と名前で書けますが、<strong>PowerShell には定数名が来ないので数値を自分で書きます</strong>。
+</div>
+</section>
+
+<!-- ============ 12.2 ============ -->
+<section class="ch02" id="ch02">
+<h1>12.2 Office ファイルの PDF 化</h1>
+
+<h2>実務で一番使うのがこれ</h2>
+
+<p>COM を持ち出す理由の大半は <strong>PDF 化</strong>です。Office の描画エンジンをそのまま使うので、レイアウトが崩れません。3 つのアプリで<strong>メソッド名も定数も引数の順番も違う</strong>のが厄介なところです。</p>
+
+<figure>
+<svg viewBox="0 0 780 300" role="img" aria-label="Word・Excel・PowerPoint の PDF 化方法の違い">
+	<defs>
+		<linearGradient id="g-12-2a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(240,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(240,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-12-2b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-12-2c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(20,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(20,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="12" y="24" width="244" height="150" rx="9" fill="url(#g-12-2a)"/>
+	<text x="134" y="50" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">Word</text>
+	<text x="134" y="76" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">$doc.ExportAsFixedFormat(</text>
+	<text x="134" y="94" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">    $pdf, 17)</text>
+	<text x="134" y="120" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.88">wdExportFormatPDF = 17</text>
+	<text x="134" y="142" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.88">引数は （パス, 形式）</text>
+	<text x="134" y="162" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.8">SaveAs2($pdf, 17) でも可</text>
+
+	<rect x="268" y="24" width="244" height="150" rx="9" fill="url(#g-12-2b)"/>
+	<text x="390" y="50" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">Excel</text>
+	<text x="390" y="76" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">$book.ExportAsFixedFormat(</text>
+	<text x="390" y="94" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">    0, $pdf)</text>
+	<text x="390" y="120" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.88">xlTypePDF = 0</text>
+	<text x="390" y="142" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.88">引数は （形式, パス）</text>
+	<text x="390" y="162" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.8">Word と順番が逆</text>
+
+	<rect x="524" y="24" width="244" height="150" rx="9" fill="url(#g-12-2c)"/>
+	<text x="646" y="50" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">PowerPoint</text>
+	<text x="646" y="76" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">$pres.SaveAs($pdf, 32)</text>
+	<text x="646" y="102" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.88">ppSaveAsPDF = 32</text>
+	<text x="646" y="124" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.88">引数は （パス, 形式）</text>
+	<text x="646" y="150" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">ExportAsFixedFormat は使えない</text>
+	<text x="646" y="166" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">引数が解決できずエラーになる</text>
+
+	<rect x="12" y="192" width="756" height="94" rx="9" fill="#fff" stroke="var(--accent2)" stroke-width="2"/>
+	<text x="390" y="216" fill="var(--accent)" font-size="13.5" font-weight="700" text-anchor="middle">ExportAsFixedFormat で落ちたら SaveAs に形式番号を渡す</text>
+	<text x="390" y="240" fill="var(--ink)" font-size="12.5" text-anchor="middle">ExportAsFixedFormat は省略可能な引数が多く、PowerShell の遅延バインディングが解決に失敗しやすい</text>
+	<text x="390" y="260" fill="var(--ink)" font-size="12.5" text-anchor="middle">実測では Word と Excel は ExportAsFixedFormat / SaveAs のどちらでも PDF を作れた</text>
+	<text x="390" y="278" fill="var(--ink-soft)" font-size="12" text-anchor="middle">PowerPoint だけは SaveAs(パス, 32) 一択</text>
+</svg>
+<figcaption>図 12.2 — 「同じ Office だから同じ書き方」は通用しない</figcaption>
+</figure>
+
+<h2>定数の一覧</h2>
+
+<p>VBA なら <code>wdExportFormatPDF</code> と名前で書けますが、<strong>PowerShell には定数名が来ないので数値をそのまま書きます</strong>。よく使うものだけ挙げます。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>アプリ</th><th>定数名</th><th>値</th><th>意味</th></tr>
+<tr><td class="nowrap">Word</td><td class="mono">wdExportFormatPDF</td><td class="num">17</td><td><code>ExportAsFixedFormat</code> の形式指定</td></tr>
+<tr><td class="nowrap">Word</td><td class="mono">wdFormatPDF</td><td class="num">17</td><td><code>SaveAs2</code> の形式指定（同じ値）</td></tr>
+<tr><td class="nowrap">Word</td><td class="mono">wdFormatXMLDocument</td><td class="num">16</td><td>.docx で保存</td></tr>
+<tr><td class="nowrap">Excel</td><td class="mono">xlTypePDF</td><td class="num">0</td><td><code>ExportAsFixedFormat</code> の形式指定</td></tr>
+<tr><td class="nowrap">Excel</td><td class="mono">xlOpenXMLWorkbook</td><td class="num">51</td><td>.xlsx で保存</td></tr>
+<tr><td class="nowrap">PowerPoint</td><td class="mono">ppSaveAsPDF</td><td class="num">32</td><td><code>SaveAs</code> で PDF 保存</td></tr>
+<tr><td class="nowrap">PowerPoint</td><td class="mono">ppSaveAsOpenXMLPresentation</td><td class="num">24</td><td>.pptx で保存</td></tr>
+<tr><td class="nowrap">PowerPoint</td><td class="mono">ppLayoutBlank</td><td class="num">12</td><td>白紙レイアウトのスライド</td></tr>
+<tr><td class="nowrap">共通</td><td class="mono">msoFalse / msoTrue</td><td class="num">0 / -1</td><td><code>MsoTriState</code> の値</td></tr>
+</table>
+</div>
+
+<h2>3 つまとめて動かす</h2>
+
+<p>以下はそのまま実行できます。<strong>後始末（12.3）まで含めた完成形</strong>です。</p>
+
+<pre><code>$ErrorActionPreference = 'Stop'
+$dir = 'C:\work\pdf'
+New-Item -ItemType Directory -Force -Path $dir | Out-Null
+
+# ---------- Word ----------
+$word = $null; $doc = $null
+try {
+    $word = New-Object -ComObject Word.Application
+    $word.Visible = $false
+    $word.DisplayAlerts = 0                 # wdAlertsNone
+    $doc = $word.Documents.Add()
+    $doc.Content.Text = "Word から PDF を作る"
+    $doc.ExportAsFixedFormat("$dir\word.pdf", 17)      # wdExportFormatPDF
+}
+finally {
+    if ($doc)  { $doc.Close(0);  [void][System.Runtime.InteropServices.Marshal]::ReleaseComObject($doc) }
+    if ($word) { $word.Quit();   [void][System.Runtime.InteropServices.Marshal]::ReleaseComObject($word) }
+}
+
+# ---------- Excel ----------
+$excel = $null; $book = $null; $sheet = $null
+try {
+    $excel = New-Object -ComObject Excel.Application
+    $excel.Visible = $false
+    $excel.DisplayAlerts = $false
+    $book  = $excel.Workbooks.Add()
+    $sheet = $book.Worksheets.Item(1)
+    $sheet.Cells.Item(1,1).Value2 = '商品'
+    $sheet.Cells.Item(1,2).Value2 = '数量'
+    $book.ExportAsFixedFormat(0, "$dir\excel.pdf")     # xlTypePDF, パスの順
+}
+finally {
+    if ($sheet) { [void][System.Runtime.InteropServices.Marshal]::ReleaseComObject($sheet) }
+    if ($book)  { $book.Close($false); [void][System.Runtime.InteropServices.Marshal]::ReleaseComObject($book) }
+    if ($excel) { $excel.Quit();       [void][System.Runtime.InteropServices.Marshal]::ReleaseComObject($excel) }
+}
+
+# ---------- PowerPoint ----------
+$ppt = $null; $pres = $null; $slide = $null; $box = $null
+try {
+    $ppt   = New-Object -ComObject PowerPoint.Application   # Visible は変更できない
+    $pres  = $ppt.Presentations.Add()
+    $slide = $pres.Slides.Add(1, 12)                        # ppLayoutBlank
+    $box   = $slide.Shapes.AddTextbox(1, 60, 60, 600, 120)
+    $box.TextFrame.TextRange.Text = 'PowerPoint から PDF を作る'
+    $pres.SaveAs("$dir\ppt.pdf", 32)                        # ppSaveAsPDF
+}
+finally {
+    if ($box)   { [void][System.Runtime.InteropServices.Marshal]::ReleaseComObject($box) }
+    if ($slide) { [void][System.Runtime.InteropServices.Marshal]::ReleaseComObject($slide) }
+    if ($pres)  { $pres.Close(); [void][System.Runtime.InteropServices.Marshal]::ReleaseComObject($pres) }
+    if ($ppt)   { $ppt.Quit();   [void][System.Runtime.InteropServices.Marshal]::ReleaseComObject($ppt) }
+}
+
+[GC]::Collect(); [GC]::WaitForPendingFinalizers()
+Start-Sleep -Seconds 3
+"残っているプロセス: " + (@(Get-Process WINWORD,EXCEL,POWERPNT -ErrorAction SilentlyContinue).Count) + " 個"</code></pre>
+
+<h3>実行結果</h3>
+
+<pre><code>Word  ExportAsFixedFormat            62608 バイト    225 ms
+Excel ExportAsFixedFormat            52996 バイト    221 ms
+PowerPoint SaveAs(32)                58246 バイト    175 ms
+残っているプロセス: 0 個</code></pre>
+
+<p><span class="badge b-ps51">5.1</span><span class="badge b-ps7">pwsh 7</span> <strong>どちらでも 3 種とも成功しました。</strong>所要時間も同程度です（7 では PowerPoint が 864 ms かかった回もありましたが、これは Office 側の起動状態による差です）。</p>
+
+<h2><code>ExportAsFixedFormat</code> が使えないとき</h2>
+
+<p>PowerPoint で <code>ExportAsFixedFormat</code> を呼ぶと、<strong>PDF を作る前に引数の解決で落ちます</strong>。</p>
+
+<pre><code>PS&gt; $pres.ExportAsFixedFormat($pdf, 2)</code></pre>
+
+<div class="table-wrap">
+<table>
+<tr><th>実行環境</th><th>実際のエラー</th></tr>
+<tr><td class="nowrap"><span class="badge b-ps51">5.1</span></td><td>"ExportAsFixedFormat" の設定中に例外が発生しました: 型 "int" の "2" 値を型 "Object" に変換できません。</td></tr>
+<tr><td class="nowrap"><span class="badge b-ps7">pwsh 7</span></td><td>Exception setting "ExportAsFixedFormat": Cannot convert the "2" value of type "int" to type "Object".</td></tr>
+</table>
+</div>
+
+<p><code>ExportAsFixedFormat</code> は省略可能な引数を十数個持つメソッドです。PowerShell は COM のメソッドを<strong>実行時に名前で探して呼ぶ</strong>ため、省略された引数をどう埋めるかを決められず、この段階で失敗します。<strong>回避策は <code>SaveAs</code> に PDF の形式番号を渡すこと</strong>です。</p>
+
+<pre><code>$pres.SaveAs($pdf, 32)      # ppSaveAsPDF = 32 → 成功（49224 バイト）</code></pre>
+
+<div class="callout">
+<strong>このプロジェクトの <code>build-pptx.ps1</code> が実際にこの回避策を使っています。</strong><br>
+12.5 でそのコードを見ます。「なぜ <code>SaveAs</code> なのか」がコメント 1 行で書かれていますが、その裏には上のエラーがあります。
+</div>
+</section>
+
+<!-- ============ 12.3 ============ -->
+<section class="ch03" id="ch03">
+<h1>12.3 後始末 — <code>Quit()</code> だけではプロセスが残る</h1>
+
+<h2>実測してみる</h2>
+
+<p>「終わったら <code>Quit()</code> を呼べばよい」と考えるのが自然ですが、<strong>それだけでは Office のプロセスは終わりません</strong>。3 つのアプリで計測しました。</p>
+
+<pre><code>function Count($n) { @(Get-Process $n -ErrorAction SilentlyContinue).Count }
+
+$x  = New-Object -ComObject Excel.Application
+$x.Visible = $false
+$wb = $x.Workbooks.Add()
+$wb.Close($false)
+$x.Quit()
+Start-Sleep -Seconds 3
+"Quit() 直後（Release なし） : {0}" -f (Count 'EXCEL')
+
+[void][System.Runtime.InteropServices.Marshal]::ReleaseComObject($wb)
+[void][System.Runtime.InteropServices.Marshal]::ReleaseComObject($x)
+$wb = $null; $x = $null
+[GC]::Collect(); [GC]::WaitForPendingFinalizers()
+Start-Sleep -Seconds 3
+"ReleaseComObject + GC のあと : {0}" -f (Count 'EXCEL')</code></pre>
+
+<h3>実行結果 <span class="badge b-ps51">5.1</span></h3>
+
+<pre><code>--- Excel ---
+開始前の EXCEL.EXE : 0
+Quit() 直後（Release なし） : 1
+ReleaseComObject + GC のあと : 0
+--- PowerPoint ---
+開始前の POWERPNT.EXE : 0
+Quit() 直後（Release なし） : 1
+ReleaseComObject + GC のあと : 0
+--- Word ---
+開始前の WINWORD.EXE : 0
+Quit() 直後（Release なし） : 1
+ReleaseComObject + GC のあと : 0</code></pre>
+
+<p><span class="badge b-ps7">pwsh 7</span> でも Excel と PowerPoint は同じ結果でした。<strong>Word だけは 7 で <code>Quit()</code> 直後に <code>0</code> になりました</strong>が、これは <code>Quit()</code> の後に参照が残っていなかった偶然に近く、<strong>頼れる差ではありません</strong>。</p>
+
+<figure>
+<svg viewBox="0 0 780 268" role="img" aria-label="COM オブジェクトの解放とプロセス終了の関係">
+	<defs>
+		<linearGradient id="g-12-3a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-12-3b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<text x="14" y="20" fill="var(--ink)" font-size="13" font-weight="700">A. Quit() だけを呼んだ場合</text>
+
+	<rect x="14" y="30" width="150" height="52" rx="8" fill="url(#g-12-3a)"/>
+	<text x="89" y="52" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">$app.Quit()</text>
+	<text x="89" y="70" fill="#fff" font-size="11" text-anchor="middle" opacity="0.88">終了を依頼する</text>
+
+	<line x1="170" y1="56" x2="186" y2="56" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="186,49 202,56 186,63" fill="var(--ink-soft)"/>
+
+	<rect x="208" y="30" width="252" height="52" rx="8" fill="#fff" stroke="hsl(0,58%,60%)" stroke-width="2"/>
+	<text x="334" y="52" fill="#a51f22" font-size="12.5" font-weight="700" text-anchor="middle">PowerShell 側にまだ参照が残っている</text>
+	<text x="334" y="70" fill="var(--ink)" font-size="11.5" text-anchor="middle">$app / $book / $sheet …</text>
+
+	<line x1="466" y1="56" x2="482" y2="56" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="482,49 498,56 482,63" fill="var(--ink-soft)"/>
+
+	<rect x="504" y="30" width="262" height="52" rx="8" fill="url(#g-12-3a)"/>
+	<text x="635" y="52" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">EXCEL.EXE が残ったまま</text>
+	<text x="635" y="70" fill="#fff" font-size="11" text-anchor="middle" opacity="0.88">3 秒後に数えても 1 個</text>
+
+	<text x="14" y="118" fill="var(--ink)" font-size="13" font-weight="700">B. 参照を解放してから GC を回した場合</text>
+
+	<rect x="14" y="128" width="150" height="52" rx="8" fill="url(#g-12-3b)"/>
+	<text x="89" y="150" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">$app.Quit()</text>
+	<text x="89" y="168" fill="#fff" font-size="11" text-anchor="middle" opacity="0.88">終了を依頼する</text>
+
+	<line x1="170" y1="154" x2="186" y2="154" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="186,147 202,154 186,161" fill="var(--ink-soft)"/>
+
+	<rect x="208" y="128" width="252" height="52" rx="8" fill="url(#g-12-3b)"/>
+	<text x="334" y="150" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">ReleaseComObject を子から順に</text>
+	<text x="334" y="168" fill="#fff" font-size="11" text-anchor="middle" opacity="0.88">[GC]::Collect() で取りこぼしも回収</text>
+
+	<line x1="466" y1="154" x2="482" y2="154" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="482,147 498,154 482,161" fill="var(--ink-soft)"/>
+
+	<rect x="504" y="128" width="262" height="52" rx="8" fill="url(#g-12-3b)"/>
+	<text x="635" y="150" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">プロセスが消える</text>
+	<text x="635" y="168" fill="#fff" font-size="11" text-anchor="middle" opacity="0.88">3 秒後に数えて 0 個</text>
+
+	<rect x="14" y="198" width="752" height="58" rx="8" fill="#fff" stroke="var(--accent2)" stroke-width="2"/>
+	<text x="390" y="222" fill="var(--accent)" font-size="13" font-weight="700" text-anchor="middle">Office は「誰も見ていない」と分かって初めて終了する</text>
+	<text x="390" y="244" fill="var(--ink)" font-size="12.5" text-anchor="middle">Quit() は終了の依頼にすぎず、参照が 1 つでも残っていれば待ち続ける</text>
+</svg>
+<figcaption>図 12.3 — 解放するのは「終わらせるため」ではなく「終わってよいと伝えるため」</figcaption>
+</figure>
+
+<h2>子オブジェクトを 1 つ忘れるだけで残る</h2>
+
+<p>12.2 のスクリプトから <strong><code>$sheet</code> と <code>$slide</code> の解放だけを外して</strong>実行すると、こうなります。</p>
+
+<pre><code>Word  ExportAsFixedFormat            62608 バイト    250 ms
+Excel ExportAsFixedFormat            52996 バイト    247 ms
+PowerPoint SaveAs(32)                58246 バイト    169 ms
+残: EXCEL
+残: POWERPNT
+残っているプロセス: 2 個</code></pre>
+
+<p><strong>残ったのは、解放し忘れた子オブジェクトを持つ Excel と PowerPoint だけ</strong>です。Word は <code>$doc</code> しか作っておらず、それは解放していたので消えました。<code>$sheet</code> と <code>$slide</code> の解放を戻すと <code>0 個</code> になります。</p>
+
+<div class="callout">
+<strong>ドットでつないだ途中のオブジェクトも、参照として数えられます。</strong><br>
+<code>$excel.Workbooks.Add()</code> と書くと <code>Workbooks</code> コレクションのオブジェクトが一時的に作られますが、<strong>変数に入っていないので解放できません</strong>。<code>[GC]::Collect()</code> はこれを回収するために置いています。<br>
+逆に言えば、<strong>解放が必要なオブジェクトはできるだけ変数に受ける</strong>のが確実です。VBA では気にしなくてよかった部分で、ここだけは書き方を変える必要があります。
+</div>
+
+<h2>解放漏れが招く実害</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>起きること</th><th>具体的な症状</th></tr>
+<tr><td class="nowrap">プロセスが積み上がる</td><td>定期実行のたびに <code>WINWORD.EXE</code> が 1 つずつ増える。数十個溜まるとメモリを食い尽くす</td></tr>
+<tr><td class="nowrap">ファイルがロックされる</td><td>残ったプロセスが対象ファイルを掴んだままになり、次回の書き込みが失敗する</td></tr>
+<tr><td class="nowrap">次回起動が壊れる</td><td>溜まったプロセスを強制終了すると、次に Office を起動した人に「ドキュメントの回復」が出る</td></tr>
+<tr><td class="nowrap">対話セッションで顕在化</td><td>スクリプトが終われば OS が回収するが、<strong>コンソールで手打ちしている間や常駐スクリプトでは回収されない</strong></td></tr>
+</table>
+</div>
+
+<h2>ひな形</h2>
+
+<p><strong>COM を触るコードは必ず <code>try</code> / <code>finally</code> で囲みます。</strong>途中で例外が出ても <code>finally</code> は必ず通るので、プロセスが取り残されません。</p>
+
+<pre><code>function Convert-ToPdf {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)][string]$Source,
+        [Parameter(Mandatory)][string]$Destination
+    )
+
+    Set-StrictMode -Version Latest
+    $ErrorActionPreference = 'Stop'
+
+    # 変数は try の外で宣言する（finally から見えるようにするため）
+    $word = $null
+    $doc  = $null
+    try {
+        $word = New-Object -ComObject Word.Application
+        $word.Visible = $false
+        $word.DisplayAlerts = 0
+
+        # 読み取り専用で開く（元ファイルを壊さない）
+        #   引数: パス, ConfirmConversions, ReadOnly
+        $doc = $word.Documents.Open($Source, $false, $true)
+        $doc.ExportAsFixedFormat($Destination, 17)
+    }
+    finally {
+        if ($doc) {
+            $doc.Close(0)                    # wdDoNotSaveChanges
+            [void][System.Runtime.InteropServices.Marshal]::ReleaseComObject($doc)
+        }
+        if ($word) {
+            $word.Quit()
+            [void][System.Runtime.InteropServices.Marshal]::ReleaseComObject($word)
+        }
+        $doc = $null; $word = $null
+        [GC]::Collect(); [GC]::WaitForPendingFinalizers()
+    }
+}</code></pre>
+
+<div class="callout">
+<strong>解放は「子 → 親」の順に行います。</strong><br>
+親（<code>Application</code>）を先に解放すると、子（<code>Document</code>）の解放時に相手のプロセスがもういない、という状態になり得ます。<strong>作った順の逆にたどる</strong>と覚えてください。C# の <code>using</code> や Java の try-with-resources が入れ子を閉じる順序と同じです。<br>
+<code>[GC]::Collect()</code> を 2 回呼ぶ流儀もありますが、実測では <code>Collect()</code> → <code>WaitForPendingFinalizers()</code> の 1 セットで 3 種とも <code>0</code> になりました。
+</div>
+</section>
+
+<!-- ============ 12.4 ============ -->
+<section class="ch04" id="ch04">
+<h1>12.4 COM を使わない選択肢</h1>
+
+<h2>COM の代償</h2>
+
+<p>ここまで見たとおり、COM には固有のコストがあります。</p>
+
+<ul>
+	<li><strong>対象の Office がインストールされている必要がある</strong>。サーバーや CI では使えないことが多い</li>
+	<li><strong>プロセスの後始末が要る</strong>（12.3）</li>
+	<li><strong>1 件ごとの呼び出しが遅い</strong>。セル 1 つの代入がプロセス境界をまたぐ</li>
+	<li><strong>実行中のユーザー操作と干渉する</strong>。PowerPoint はウィンドウを隠せない（12.1）</li>
+</ul>
+
+<p>やりたいことが「表形式のデータを xlsx に書き出す／読み込む」だけなら、<strong>Office を起動しない道具がある</strong>ので、そちらを使ったほうが速くて安全です。</p>
+
+<h2>ImportExcel — Office が無くても xlsx を扱える</h2>
+
+<p><a href="https://www.powershellgallery.com/packages/ImportExcel">PowerShell Gallery</a> で配布されているモジュールです（実測時点の最新は <strong>7.8.10</strong>、作者 Douglas Finke）。内部で Open XML を直接読み書きするので、<strong>Excel をインストールしていないマシンでも動きます</strong>。</p>
+
+<pre><code>Install-Module ImportExcel -Scope CurrentUser</code></pre>
+
+<pre><code>$data = @(
+    [PSCustomObject]@{ 商品='りんご'; 数量=12; 単価=180 }
+    [PSCustomObject]@{ 商品='みかん'; 数量=30; 単価=95  }
+    [PSCustomObject]@{ 商品='ぶどう'; 数量=5;  単価=640 }
+)
+
+$data | Export-Excel -Path .\売上.xlsx -WorksheetName '売上' -AutoSize -TableName 'Sales'
+
+$back = Import-Excel -Path .\売上.xlsx -WorksheetName '売上'
+$back | Format-Table -AutoSize</code></pre>
+
+<h3>実行結果 <span class="badge b-ps51">5.1</span></h3>
+
+<pre><code>ImportExcel 7.8.10 を読み込み
+Office の COM は使うか: EXCEL.EXE = 0 個
+Export-Excel: 736 ms  3583 バイト
+EXCEL.EXE = 0 個（書き出し後）
+読み戻し: 3 行
+
+商品  数量  単価
+--  --  --
+りんご 12 180
+みかん 30  95
+ぶどう  5 640
+
+合計金額: 8210</code></pre>
+
+<p><strong><code>EXCEL.EXE</code> は最後まで 0 個</strong>です。書き出しの前後どちらでも Excel は起動していません。<span class="badge b-ps7">pwsh 7</span> では同じ処理が 421 ms でした。</p>
+
+<h3>読み戻した値の型に注意 <span class="badge b-warn">5.1 と 7 で見え方が違う</span></h3>
+
+<p>同じ xlsx を <code>Import-Excel</code> で読み戻して <code>Format-Table</code> に流すと、表示が変わります。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>実行環境</th><th>数量の表示</th><th>単価の表示</th></tr>
+<tr><td class="nowrap"><span class="badge b-ps51">5.1</span></td><td class="num">12</td><td class="num">180</td></tr>
+<tr><td class="nowrap"><span class="badge b-ps7">pwsh 7</span></td><td class="num">12.00</td><td class="num">180.00</td></tr>
+</table>
+</div>
+
+<p>xlsx の数値は内部的に浮動小数点なので、<strong>7 のほうが素直に <code>double</code> として表示している</strong>だけです。値そのものは同じで、合計はどちらも <code>8210</code> になります。<strong>表示をそろえたいなら受け取り側で <code>[int]</code> に落とします</strong>。</p>
+
+<h2>CSV で済むなら CSV</h2>
+
+<p>相手が人ではなくプログラムなら、<strong>そもそも xlsx にする必要がない</strong>ことがほとんどです。速度差は歴然としています。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>方法</th><th>200 行の書き出し <span class="badge b-ps7">pwsh 7</span></th><th>出力サイズ</th><th>Office が要るか</th></tr>
+<tr><td class="nowrap"><code>Export-Csv</code></td><td class="num">8 ms</td><td class="num">4,576 バイト</td><td><span class="badge b-good">不要</span></td></tr>
+<tr><td class="nowrap"><code>Export-Excel</code>（ImportExcel）</td><td class="num">360 ms</td><td class="num">6,476 バイト</td><td><span class="badge b-good">不要</span></td></tr>
+<tr><td class="nowrap">COM ＋ 配列を一括代入</td><td class="num">175 ms</td><td class="num">13,058 バイト</td><td><span class="badge b-bad">必要</span></td></tr>
+<tr><td class="nowrap">COM ＋ セルを 1 つずつ代入</td><td class="num">1,094 ms</td><td class="num">—</td><td><span class="badge b-bad">必要</span></td></tr>
+</table>
+</div>
+
+<p>COM の時間には <strong>Excel の起動時間が含まれていません</strong>（起動後の書き込みだけを計測しています）。実際にはここに数百 ms〜数秒が上乗せされます。<span class="badge b-ps51">5.1</span> でセルを 1 つずつ代入した場合は 1,549 ms でした。</p>
+
+<h2>どれを選ぶか</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>やりたいこと</th><th>選ぶもの</th><th>理由</th></tr>
+<tr><td class="nowrap">データの受け渡し</td><td><code>Export-Csv</code> / <code>Import-Csv</code></td><td>最速。依存なし。差分も見やすい</td></tr>
+<tr><td class="nowrap">人が開く表を作る</td><td>ImportExcel</td><td>書式・列幅・テーブル・グラフまで扱える。Office 不要</td></tr>
+<tr><td class="nowrap">既存の xlsx を読む</td><td>ImportExcel</td><td>読むだけなら COM を持ち出す理由がない</td></tr>
+<tr><td class="nowrap">PDF に変換する</td><td><span class="badge b-bad">COM</span></td><td>Office の描画エンジンでしか同じ見た目にならない</td></tr>
+<tr><td class="nowrap">Word / PowerPoint を作る</td><td><span class="badge b-bad">COM</span></td><td>ImportExcel は Excel 専用</td></tr>
+<tr><td class="nowrap">xlsm のマクロを実行する</td><td><span class="badge b-bad">COM</span></td><td>VBA を動かせるのは Excel 本体だけ</td></tr>
+<tr><td class="nowrap">印刷・差し込み印刷</td><td><span class="badge b-bad">COM</span></td><td>プリンター制御は Office のオブジェクトモデル経由</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>ImportExcel をインストールできない現場もあります。</strong><br>
+社内ポリシーで PowerShell Gallery への接続が塞がれている場合、<code>Save-Module -Path &lt;フォルダ&gt;</code> で持ち込んで <code>$env:PSModulePath</code> に足す方法が使えます。この章の検証もその方式で行いました。<br>
+その場合でも <strong>モジュールの入手経路が監査対象になる</strong>ので、勝手に持ち込まず先に確認してください。
+</div>
+</section>
+
+<!-- ============ 12.5 ============ -->
+<section class="ch05" id="ch05">
+<h1>12.5 実例 — <code>build-pptx.ps1</code></h1>
+
+<h2>この資料自身が COM で作られている</h2>
+
+<p>この学習資料には、HTML から PowerPoint スライドを生成するスクリプト <code>src\scripts\pptx\build-pptx.ps1</code> があります。<strong>本章で説明した罠を、実際に踏んで回避した跡が残っています。</strong></p>
+
+<h3>本体（566 行目付近）</h3>
+
+<pre><code>$app = $null
+try {
+    $app = New-Object -ComObject PowerPoint.Application
+    foreach ($jf in $jsonFiles) {
+        ...
+        $result.Presentation.SaveAs($outPath, $ppSaveAsPptx)
+        ...
+    }
+}
+finally {
+    if ($app) { try { $app.Quit() } catch {} }
+}</code></pre>
+
+<h3>PDF 化の部分（586 行目付近）</h3>
+
+<pre><code>if ($Pdf) {
+    # ExportAsFixedFormat は PowerShell の COM バインドで引数が解決できないため
+    # SaveAs の PDF 形式（ppSaveAsPDF = 32）を使う
+    $pdfPath = [System.IO.Path]::ChangeExtension($outPath, '.pdf')
+    if (Test-Path -LiteralPath $pdfPath) { Remove-Item -LiteralPath $pdfPath -Force }
+    $result.Presentation.SaveAs($pdfPath, $ppSaveAsPdf)
+    ...
+}</code></pre>
+
+<p>定数はファイル冒頭でまとめて定義されています（52〜60 行目）。</p>
+
+<pre><code>$msoTrue        = -1
+$msoFalse       = 0
+$ppLayoutBlank  = 12
+$ppSaveAsPptx   = 24
+$ppSaveAsPdf    = 32</code></pre>
+
+<h2>踏んだ罠と回避策</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>#</th><th>罠</th><th>スクリプトでの回避策</th></tr>
+<tr><td class="nowrap">1</td><td><code>ExportAsFixedFormat</code> が引数を解決できない</td><td><code>SaveAs($pdfPath, 32)</code> に置き換えた（12.2 で再現したエラーそのもの）</td></tr>
+<tr><td class="nowrap">2</td><td><code>Visible</code> を <code>$false</code> にできない</td><td><strong>そもそも触っていない</strong>。PowerPoint は非表示にできないため（12.1）</td></tr>
+<tr><td class="nowrap">3</td><td>定数名が使えない</td><td>冒頭で <code>$ppSaveAsPdf = 32</code> のように数値へ名前を付けた</td></tr>
+<tr><td class="nowrap">4</td><td>途中で例外が出るとプロセスが残る</td><td><code>try</code> / <code>finally</code> で必ず <code>Quit()</code> を通す</td></tr>
+<tr><td class="nowrap">5</td><td><code>SaveAs</code> が既存ファイルを上書きせず「名前 2.pptx」を作ることがある<br><span class="badge b-none">未再現</span></td><td>保存の前に <code>Remove-Item</code> で消す</td></tr>
+</table>
+</div>
+
+<p>5 番だけは<strong>本章の検証では再現できませんでした</strong>。同じパスへ 2 回 <code>SaveAs</code> しても <code>deck.pptx</code> のままで、<code>deck 2.pptx</code> は作られません。<strong>特定の手順でだけ起きる現象</strong>と考えられますが、<strong>保存前に消しておく対処自体は無害</strong>なので、そのまま残す判断が妥当です。</p>
+
+<div class="callout">
+<strong>このスクリプトは <code>ReleaseComObject</code> を呼んでいません。</strong><br>
+12.3 の計測どおり、<code>Quit()</code> だけでは <code>POWERPNT.EXE</code> は残ります。ただし <strong>スクリプトが終了すればプロセスごと参照が消えるため、実害が出ていない</strong>だけです。<br>
+同じコードを<strong>コンソールに貼って対話的に実行すると、セッションを閉じるまで PowerPoint が残ります</strong>。長時間動き続けるスクリプトに組み込むなら、12.3 のひな形に書き換えてください。
+</div>
+
+<h2>もう 1 つの落とし穴 — 値に被った「皮」 <span class="badge b-ps51">5.1 でのみ発生</span></h2>
+
+<p>この章の検証中に、<strong>再現性のある厄介な挙動</strong>を見つけました。<code>Join-Path</code> の戻り値を <strong>そのまま Word のメソッドに渡すと、5.1 では応答が返ってきません</strong>。エラーも出ず、ただ止まります。</p>
+
+<pre><code># 止まる（5.1）
+$docx = Join-Path $dir 'sample.docx'
+$doc.SaveAs2($docx)
+
+# 動く（5.1 / 7 とも）
+$docx = "$dir\sample.docx"
+$doc.SaveAs2($docx)
+
+# 動く（5.1 / 7 とも）— 明示的に文字列へ落とす
+$docx = [string](Join-Path $dir 'sample.docx')
+$doc.SaveAs2($docx)</code></pre>
+
+<p>同じ検証スクリプトをホストだけ変えて 5 回ずつ実行した結果です。<strong>実行のたびに同じ結果になりました。</strong></p>
+
+<div class="table-wrap">
+<table>
+<tr><th>呼び出し</th><th>パスの作り方</th><th><span class="badge b-ps51">5.1</span></th><th><span class="badge b-ps7">pwsh 7</span></th></tr>
+<tr><td class="mono">$doc.SaveAs2($p)</td><td class="nowrap">Join-Path の戻り値</td><td class="nowrap"><span class="badge b-bad">30 秒待っても応答なし</span></td><td class="nowrap"><span class="badge b-good">成功</span></td></tr>
+<tr><td class="mono">$doc.SaveAs2($p, 16)</td><td class="nowrap">Join-Path の戻り値</td><td class="nowrap"><span class="badge b-bad">応答なし</span></td><td class="nowrap"><span class="badge b-good">成功</span></td></tr>
+<tr><td class="mono">$doc.ExportAsFixedFormat($p, 17)</td><td class="nowrap">Join-Path の戻り値</td><td class="nowrap"><span class="badge b-bad">応答なし</span></td><td class="nowrap"><span class="badge b-good">成功</span></td></tr>
+<tr><td class="mono">$doc.SaveAs2($p)</td><td class="nowrap">"$dir\name.docx"</td><td class="nowrap"><span class="badge b-good">成功</span></td><td class="nowrap"><span class="badge b-good">成功</span></td></tr>
+<tr><td class="mono">$doc.ExportAsFixedFormat($p, 17)</td><td class="nowrap">"$dir\name.pdf"</td><td class="nowrap"><span class="badge b-good">成功</span></td><td class="nowrap"><span class="badge b-good">成功</span></td></tr>
+</table>
+</div>
+
+<p>同じ現象は Excel でも形を変えて出ます。<strong><code>PSCustomObject</code> のプロパティ値をそのまま二次元配列に詰めて <code>Range.Value2</code> に一括代入すると、5.1 では例外になります。</strong></p>
+
+<pre><code># 5.1 では失敗する
+for ($i = 0; $i -lt 200; $i++) {
+    $arr[$i,0] = $data[$i].番号
+    $arr[$i,1] = $data[$i].商品
+    $arr[$i,2] = $data[$i].数量
+}
+$sheet.Range($sheet.Cells.Item(1,1), $sheet.Cells.Item(200,3)).Value2 = $arr</code></pre>
+
+<pre><code>プログラムの実行を続行するための十分なメモリがありませんでした。
+    + CategoryInfo          : OperationStopped: (:) [], OutOfMemoryException
+    + FullyQualifiedErrorId : System.OutOfMemoryException</code></pre>
+
+<p>200 行 × 3 列でメモリが足りなくなるはずがありません。<strong>詰める時点で型を明示すると、そのまま通ります。</strong></p>
+
+<pre><code>for ($i = 0; $i -lt 200; $i++) {
+    $arr[$i,0] = [int]$data[$i].番号
+    $arr[$i,1] = [string]$data[$i].商品
+    $arr[$i,2] = [int]$data[$i].数量
+}</code></pre>
+
+<div class="table-wrap">
+<table>
+<tr><th>配列の詰め方</th><th><span class="badge b-ps51">5.1</span></th><th><span class="badge b-ps7">pwsh 7</span></th></tr>
+<tr><td class="nowrap">キャストなし（PSCustomObject の値をそのまま）</td><td class="nowrap"><span class="badge b-bad">OutOfMemoryException</span></td><td class="nowrap"><span class="badge b-good">成功 154 ms</span></td></tr>
+<tr><td class="nowrap"><code>[int]</code> / <code>[string]</code> を明示</td><td class="nowrap"><span class="badge b-good">成功 16 ms</span></td><td class="nowrap"><span class="badge b-good">成功 5 ms</span></td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>PowerShell は変数の値に「PSObject」という薄い包みを被せて持ち歩きます。</strong><br>
+包みは PowerShell の中では透明で、<code>GetType()</code> は <code>System.String</code> を返します。ところが <strong>COM の境界を越えるときにこの包みが剥がれず、相手に正しい型が伝わらないことがある</strong> — というのが上の 2 つの症状に共通する説明です。5.1 でだけ起きるのは、7 で COM への値の受け渡しが作り直されているためです。<br>
+<strong>対策は 1 つで足ります。COM のメソッドに渡す値は <code>[string]</code> / <code>[int]</code> などで明示的にキャストする。</strong>キャストのコストはゼロに近く、5.1 でも 7 でも安全になります。
+</div>
+
+<h2>もう 1 つ — 同じ代入文に違う型を流すと落ちる <span class="badge b-warn">5.1・7 共通</span></h2>
+
+<p>ループの中で <code>Value2</code> に数値と文字列を交互に代入すると、<strong>2 回目で必ず落ちます</strong>。</p>
+
+<pre><code>foreach ($d in $data) {
+    $sheet.Cells.Item($r,1).Value2 = $d.番号     # Int32
+    $sheet.Cells.Item($r,2).Value2 = $d.商品     # String → ここで落ちる
+    $r++
+}</code></pre>
+
+<div class="table-wrap">
+<table>
+<tr><th>実行環境</th><th>実際のエラー</th></tr>
+<tr><td class="nowrap"><span class="badge b-ps51">5.1</span></td><td>指定されたキャストは有効ではありません。（<code>System.InvalidCastException</code>）</td></tr>
+<tr><td class="nowrap"><span class="badge b-ps7">pwsh 7</span></td><td>Unable to cast object of type 'System.String' to type 'System.Int32'.</td></tr>
+</table>
+</div>
+
+<p>PowerShell は <strong>COM メンバーの呼び出し方を最初の 1 回で決めて覚え、以降は使い回します</strong>。<code>Value2</code> に最初 <code>Int32</code> を渡すと「ここは <code>Int32</code> を渡す場所だ」と覚えてしまい、次に <code>String</code> が来て破綻します。</p>
+
+<h3>回避策</h3>
+
+<div class="table-wrap">
+<table>
+<tr><th>方法</th><th>書き方</th><th>結果</th></tr>
+<tr><td class="nowrap">型をそろえる</td><td class="mono">$c.Value2 = [string]$d.商品</td><td><span class="badge b-good">成功</span>全部 <code>[string]</code> にすれば落ちない</td></tr>
+<tr><td class="nowrap">二次元配列で一括代入</td><td class="mono">$sheet.Range(...).Value2 = $arr</td><td><span class="badge b-good">成功</span>型が混在していても通る。<strong>最速</strong></td></tr>
+</table>
+</div>
+
+<p>200 行の書き込みで、<strong>セルを 1 つずつ代入すると 1,094 ms、配列で一括代入すると 175 ms</strong>でした。<strong>速度・安全性のどちらでも一括代入が有利</strong>です。</p>
+
+<div class="callout">
+<strong>VBA 経験者へ — ここが VBA と最も違う点です。</strong><br>
+VBA では <code>Cells(1,1).Value2</code> に数値でも文字列でも代入できます。<code>Variant</code> がすべてを吸収するからです。PowerShell は <code>Variant</code> を持たず、<strong>呼び出しごとに型を決めて .NET から COM へ変換する</strong>ため、この差が出ます。<br>
+VBA のコードを移植して「なぜか 2 行目で落ちる」場合は、まずこれを疑ってください。
+</div>
+</section>
+
+<h2>この章のまとめ</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>やること</th><th>書き方</th><th>注意点</th></tr>
+<tr><td class="nowrap">起動</td><td><code>New-Object -ComObject Excel.Application</code></td><td>ProgID は <code>HKLM:\SOFTWARE\Classes</code> で確認できる</td></tr>
+<tr><td class="nowrap">画面を隠す</td><td><code>$app.Visible = $false</code></td><td><strong>PowerPoint は不可</strong>。<code>WindowState = 2</code> で最小化まで</td></tr>
+<tr><td class="nowrap">PDF 化</td><td>Word <code>(パス, 17)</code> ／ Excel <code>(0, パス)</code> ／ PowerPoint <code>SaveAs(パス, 32)</code></td><td>引数の順番がアプリごとに違う</td></tr>
+<tr><td class="nowrap">終了</td><td><code>Quit()</code> ＋ <code>ReleaseComObject</code> ＋ <code>[GC]::Collect()</code></td><td><code>try</code>/<code>finally</code> で必ず通す。<strong>子から親の順</strong></td></tr>
+<tr><td class="nowrap">値を渡す</td><td><code>[string]$path</code> のように明示キャスト</td><td>5.1 は <code>Join-Path</code> の戻り値で固まることがある</td></tr>
+<tr><td class="nowrap">大量データ</td><td>二次元配列を <code>Range.Value2</code> に一括代入</td><td>セル単位より <strong>6 倍以上速い</strong></td></tr>
+<tr><td class="nowrap">そもそも使わない</td><td><code>Export-Csv</code> ／ ImportExcel</td><td>Office 不要。PDF・Word・マクロ以外はほぼ代替できる</td></tr>
+</table>
+</div>
+
+<h3>覚えておく3点</h3>
+
+<ol>
+	<li><strong><code>Quit()</code> は終了の依頼にすぎない</strong>。参照が 1 つでも残っていれば Office は待ち続ける。<code>ReleaseComObject</code> を子から親の順に呼び、<code>[GC]::Collect()</code> で取りこぼしを回収する</li>
+	<li><strong>COM に渡す値は型を明示する</strong>。<code>[string]</code> / <code>[int]</code> を付けるだけで、5.1 特有の「固まる」「メモリ不足になる」が消える</li>
+	<li><strong>PDF 化とマクロ以外は COM を使わない</strong>。CSV と ImportExcel のほうが速く、Office のインストールにも依存しない</li>
+</ol>
+
+<div class="callout">
+<strong>11 章とのつながり</strong><br>
+COM で足りない処理は、11 章の <code>Add-Type</code> で C# を埋め込み、.NET のクラスを直接呼ぶ方向に進みます。PDF の結合や画像処理のように <strong>Office が関与しない加工</strong>は、.NET のライブラリのほうが素直に書けます。
+</div>
+
+</div>
+
+<footer>
+	<p>PowerShell 学習資料 12 ／ 前章: <a href="11-Add-Type.html">11. C# を埋め込む — Add-Type</a> ／ <a href="../README.html">目次に戻る</a></p>
+</footer>
+
+</body>
+</html>

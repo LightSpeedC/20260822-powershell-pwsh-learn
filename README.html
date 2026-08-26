@@ -213,17 +213,19 @@
 	.chapters .ttl { display: block; font-size: 1.02em; font-weight: 700; margin: 2px 0 4px; }
 	.chapters .desc { display: block; font-size: 0.82em; opacity: 0.92; line-height: 1.5; }
 
-	.cA1 a, .cA2 a { background: linear-gradient(100deg, var(--navy1), var(--navy2)); }
+	.cA1 a, .cA2 a, .cA3 a { background: linear-gradient(100deg, var(--navy1), var(--navy2)); }
 	.c01 a { background: linear-gradient(100deg, hsl(280,78%,25%), hsl(280,58%,55%)); }
-	.c02 a { background: linear-gradient(100deg, hsl(249,78%,25%), hsl(249,58%,55%)); }
-	.c03 a { background: linear-gradient(100deg, hsl(218,78%,25%), hsl(218,58%,55%)); }
-	.c04 a { background: linear-gradient(100deg, hsl(187,78%,25%), hsl(187,58%,55%)); }
-	.c05 a { background: linear-gradient(100deg, hsl(156,78%,25%), hsl(156,58%,55%)); }
-	.c06 a { background: linear-gradient(100deg, hsl(124,78%,25%), hsl(124,58%,55%)); }
-	.c07 a { background: linear-gradient(100deg, hsl(93,78%,25%),  hsl(93,58%,55%)); }
-	.c08 a { background: linear-gradient(100deg, hsl(62,78%,25%),  hsl(62,58%,55%)); }
-	.c09 a { background: linear-gradient(100deg, hsl(31,78%,25%),  hsl(31,58%,55%)); }
-	.c10 a { background: linear-gradient(100deg, hsl(0,78%,25%),   hsl(0,58%,55%)); }
+	.c02 a { background: linear-gradient(100deg, hsl(255,78%,25%), hsl(255,58%,55%)); }
+	.c03 a { background: linear-gradient(100deg, hsl(229,78%,25%), hsl(229,58%,55%)); }
+	.c04 a { background: linear-gradient(100deg, hsl(204,78%,25%), hsl(204,58%,55%)); }
+	.c05 a { background: linear-gradient(100deg, hsl(178,78%,25%), hsl(178,58%,55%)); }
+	.c06 a { background: linear-gradient(100deg, hsl(153,78%,25%), hsl(153,58%,55%)); }
+	.c07 a { background: linear-gradient(100deg, hsl(127,78%,25%), hsl(127,58%,55%)); }
+	.c08 a { background: linear-gradient(100deg, hsl(102,78%,25%), hsl(102,58%,55%)); }
+	.c09 a { background: linear-gradient(100deg, hsl(76,78%,25%), hsl(76,58%,55%)); }
+	.c10 a { background: linear-gradient(100deg, hsl(51,78%,25%), hsl(51,58%,55%)); }
+	.c11 a { background: linear-gradient(100deg, hsl(25,78%,25%), hsl(25,58%,55%)); }
+	.c12 a { background: linear-gradient(100deg, hsl(0,78%,25%), hsl(0,58%,55%)); }
 
 	/* バッジ */
 	.badge {
@@ -279,8 +281,8 @@
 <div class="titlebar">
 	<div class="inner">
 		<h1>PowerShell 学習資料</h1>
-		<p>Windows PowerShell 5.1 と PowerShell 7 の両対応 ／ 全 10 章</p>
-		<p class="meta">📅 作成: 2026-08-22 / 更新: 2026-08-25 ／ 対象: 何らかのプログラミング言語の基礎を知っている方</p>
+		<p>Windows PowerShell 5.1 と PowerShell 7 の両対応 ／ 全 12 章 ＋ 付録3本</p>
+		<p class="meta">📅 作成: 2026-08-22 / 更新: 2026-08-26 ／ 対象: 何らかのプログラミング言語の基礎を知っている方</p>
 	</div>
 </div>
 
@@ -295,7 +297,7 @@
 「たぶんこう動く」ではなく、<strong>実機で確かめた結果</strong>だけを載せています。バイト列・終了コード・エラーメッセージも実物です。
 </div>
 
-<h2>本編 全 10 章</h2>
+<h2>本編 全 12 章</h2>
 
 <ul class="chapters">
 	<li class="c01"><a href="docs/01-背景.html">
@@ -338,6 +340,14 @@
 		<span class="no">第3部 演習 ／ 10</span>
 		<span class="ttl">ハンズオン課題</span>
 		<span class="desc">5回分の課題と解答例。つまずきポイントの解説つき</span></a></li>
+	<li class="c11"><a href="docs/11-Add-Type.html">
+		<span class="no">第4部 発展編 ／ 11</span>
+		<span class="ttl">C# を埋め込む — Add-Type</span>
+		<span class="desc">PowerShell では書けない・遅い場面を C# で補う。csc.exe で exe にして配る</span></a></li>
+	<li class="c12"><a href="docs/12-COMとOffice.html">
+		<span class="no">第4部 発展編 ／ 12</span>
+		<span class="ttl">Office と COM を操作する</span>
+		<span class="desc">Word・Excel・PowerPoint の PDF 化。プロセスが残らない後始末</span></a></li>
 </ul>
 
 <h2>付録</h2>
@@ -353,12 +363,16 @@
 		<span class="no">付録 ／ A2</span>
 		<span class="ttl">テンプレ集</span>
 		<span class="desc">コピーして使う雛形。骨格・ログ・引数検証・ファイル処理・配布</span></a></li>
+	<li class="cA3"><a href="docs/A3-モジュール.html">
+		<span class="no">付録 ／ A3</span>
+		<span class="ttl">業務で使えるモジュール</span>
+		<span class="desc">厳選8本。選ぶ基準と、導入・オフライン配布の実務</span></a></li>
 </ul>
 
 <nav class="toc">
 	<strong>このページの内容</strong>
 	<ol>
-		<li class="ch01"><a href="#ch01">3部構成と読む順序</a></li>
+		<li class="ch01"><a href="#ch01">4部構成と読む順序</a></li>
 		<li class="ch02"><a href="#ch02">目的から引く — 逆引き索引</a></li>
 		<li class="ch03"><a href="#ch03">資料のメンテナンス</a></li>
 	</ol>
@@ -366,73 +380,90 @@
 
 <!-- ============ 1 ============ -->
 <section class="ch01" id="ch01">
-<h1>1. 3部構成と読む順序</h1>
+<h1>1. 4部構成と読む順序</h1>
 
 <figure>
-<svg viewBox="0 0 780 330" role="img" aria-label="3部構成のロードマップと付録">
+<svg viewBox="0 0 900 330" role="img" aria-label="4部構成のロードマップと付録">
 	<defs>
 		<linearGradient id="g-rm-1a" x1="0" y1="1" x2="0" y2="0">
-			<stop offset="0" stop-color="hsl(255,78%,25%)"/>
-			<stop offset="1" stop-color="hsl(255,58%,65%)"/>
+			<stop offset="0" stop-color="hsl(265,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(265,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-rm-1b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(195,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(195,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-rm-1c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(125,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(125,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-rm-1e" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(30,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(30,58%,65%)"/>
 		</linearGradient>
 		<linearGradient id="g-rm-1d" x1="0" y1="1" x2="0" y2="0">
 			<stop offset="0" stop-color="var(--navy1)"/>
 			<stop offset="1" stop-color="var(--navy2)"/>
 		</linearGradient>
-		<linearGradient id="g-rm-1b" x1="0" y1="1" x2="0" y2="0">
-			<stop offset="0" stop-color="hsl(150,78%,25%)"/>
-			<stop offset="1" stop-color="hsl(150,58%,65%)"/>
-		</linearGradient>
-		<linearGradient id="g-rm-1c" x1="0" y1="1" x2="0" y2="0">
-			<stop offset="0" stop-color="hsl(20,78%,25%)"/>
-			<stop offset="1" stop-color="hsl(20,58%,65%)"/>
-		</linearGradient>
 	</defs>
 
-	<rect x="14" y="24" width="252" height="146" rx="10" fill="url(#g-rm-1a)"/>
-	<text x="140" y="50" fill="#fff" font-size="16" font-weight="700" text-anchor="middle">第1部 基礎編</text>
-	<text x="140" y="74" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">01 生まれた経緯</text>
-	<text x="140" y="94" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">02 ファイル形式と文字コード</text>
-	<text x="140" y="114" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">03 実行環境と実行ポリシー</text>
-	<text x="140" y="134" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">04 変数・型・演算子</text>
-	<text x="140" y="154" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">05 パイプラインとオブジェクト</text>
+	<rect x="14" y="24" width="230" height="146" rx="10" fill="url(#g-rm-1a)"/>
+	<text x="129" y="50" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">第1部 基礎編</text>
+	<text x="129" y="74" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">01 生まれた経緯</text>
+	<text x="129" y="94" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">02 ファイル形式と文字コード</text>
+	<text x="129" y="114" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">03 実行環境と実行ポリシー</text>
+	<text x="129" y="134" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">04 変数・型・演算子</text>
+	<text x="129" y="154" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">05 パイプラインとオブジェクト</text>
 
-	<line x1="272" y1="97" x2="296" y2="97" stroke="var(--ink-soft)" stroke-width="2.5"/>
-	<polygon points="296,90 312,97 296,104" fill="var(--ink-soft)"/>
+	<line x1="250" y1="97" x2="270" y2="97" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="270,90 286,97 270,104" fill="var(--ink-soft)"/>
 
-	<rect x="318" y="24" width="252" height="146" rx="10" fill="url(#g-rm-1b)"/>
-	<text x="444" y="50" fill="#fff" font-size="16" font-weight="700" text-anchor="middle">第2部 実践編</text>
-	<text x="444" y="80" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">06 制御構文と関数</text>
-	<text x="444" y="102" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">07 ファイル・テキスト操作</text>
-	<text x="444" y="124" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">08 エラー処理とデバッグ</text>
-	<text x="444" y="146" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">09 実務パターン集</text>
+	<rect x="290" y="24" width="200" height="146" rx="10" fill="url(#g-rm-1b)"/>
+	<text x="390" y="50" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">第2部 実践編</text>
+	<text x="390" y="80" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">06 制御構文と関数</text>
+	<text x="390" y="102" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">07 ファイル・テキスト操作</text>
+	<text x="390" y="124" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">08 エラー処理とデバッグ</text>
+	<text x="390" y="146" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">09 実務パターン集</text>
 
-	<line x1="576" y1="97" x2="600" y2="97" stroke="var(--ink-soft)" stroke-width="2.5"/>
-	<polygon points="600,90 616,97 600,104" fill="var(--ink-soft)"/>
+	<line x1="496" y1="97" x2="516" y2="97" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="516,90 532,97 516,104" fill="var(--ink-soft)"/>
 
-	<rect x="622" y="24" width="144" height="146" rx="10" fill="url(#g-rm-1c)"/>
-	<text x="694" y="50" fill="#fff" font-size="16" font-weight="700" text-anchor="middle">第3部 演習</text>
-	<text x="694" y="92" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">10 ハンズオン課題</text>
-	<text x="694" y="114" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.93">全5回分</text>
+	<rect x="536" y="24" width="134" height="146" rx="10" fill="url(#g-rm-1c)"/>
+	<text x="603" y="50" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">第3部 演習</text>
+	<text x="603" y="92" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">10 ハンズオン課題</text>
+	<text x="603" y="114" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">全5回分</text>
 
-	<rect x="14" y="186" width="752" height="48" rx="9" fill="#fff" stroke="var(--line)" stroke-width="2"/>
-	<text x="140" y="208" fill="hsl(255,78%,32%)" font-size="13" font-weight="700" text-anchor="middle">読んで分かる</text>
-	<text x="444" y="208" fill="hsl(150,78%,22%)" font-size="13" font-weight="700" text-anchor="middle">書けるようになる</text>
-	<text x="694" y="208" fill="hsl(20,78%,30%)" font-size="13" font-weight="700" text-anchor="middle">一人で作れる</text>
-	<text x="390" y="227" fill="var(--ink-soft)" font-size="12" text-anchor="middle">各部の到達目標</text>
+	<line x1="676" y1="97" x2="696" y2="97" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="696,90 712,97 696,104" fill="var(--ink-soft)"/>
 
-	<line x1="14" y1="252" x2="766" y2="252" stroke="var(--line)" stroke-width="2" stroke-dasharray="6 5"/>
+	<rect x="716" y="24" width="170" height="146" rx="10" fill="url(#g-rm-1e)"/>
+	<text x="801" y="50" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">第4部 発展編</text>
+	<text x="801" y="82" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">11 C# を埋め込む</text>
+	<text x="801" y="104" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">12 Office と COM</text>
+	<text x="801" y="132" fill="#fff" font-size="11" text-anchor="middle" opacity="0.82">必要になってからでよい</text>
+
+	<rect x="14" y="186" width="872" height="48" rx="9" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+	<text x="129" y="208" fill="hsl(265,78%,32%)" font-size="12.5" font-weight="700" text-anchor="middle">読んで分かる</text>
+	<text x="390" y="208" fill="hsl(195,78%,26%)" font-size="12.5" font-weight="700" text-anchor="middle">書けるようになる</text>
+	<text x="603" y="208" fill="hsl(125,78%,22%)" font-size="12.5" font-weight="700" text-anchor="middle">一人で作れる</text>
+	<text x="801" y="208" fill="hsl(30,78%,30%)" font-size="12.5" font-weight="700" text-anchor="middle">限界を超える</text>
+	<text x="450" y="227" fill="var(--ink-soft)" font-size="12" text-anchor="middle">各部の到達目標</text>
+
+	<line x1="14" y1="252" x2="886" y2="252" stroke="var(--line)" stroke-width="2" stroke-dasharray="6 5"/>
 	<text x="14" y="274" fill="var(--ink-soft)" font-size="12">付録 — 順に読まず、必要になったときに引く</text>
 
-	<rect x="14" y="282" width="372" height="44" rx="9" fill="url(#g-rm-1d)"/>
-	<text x="200" y="300" fill="#fff" font-size="13.5" font-weight="700" text-anchor="middle">A1 逆引き</text>
-	<text x="200" y="316" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">症状・コマンド・JavaScript・用語から引く</text>
+	<rect x="14" y="282" width="285" height="44" rx="9" fill="url(#g-rm-1d)"/>
+	<text x="156" y="300" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">A1 逆引き</text>
+	<text x="156" y="316" fill="#fff" font-size="11" text-anchor="middle" opacity="0.9">症状・コマンド・JavaScript・用語から引く</text>
 
-	<rect x="394" y="282" width="372" height="44" rx="9" fill="url(#g-rm-1d)"/>
-	<text x="580" y="300" fill="#fff" font-size="13.5" font-weight="700" text-anchor="middle">A2 テンプレ集</text>
-	<text x="580" y="316" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">コピーして使う雛形6種</text>
-</svg>
-<figcaption>図 1 — 01 から順に読むのが基本。02・03 は環境が整わないと以降が動かせないため必須。付録は本編を読み終えてからでなくてよい</figcaption>
+	<rect x="307" y="282" width="285" height="44" rx="9" fill="url(#g-rm-1d)"/>
+	<text x="449" y="300" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">A2 テンプレ集</text>
+	<text x="449" y="316" fill="#fff" font-size="11" text-anchor="middle" opacity="0.9">コピーして使う雛形6種</text>
+
+	<rect x="600" y="282" width="286" height="44" rx="9" fill="url(#g-rm-1d)"/>
+	<text x="743" y="300" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">A3 モジュール</text>
+	<text x="743" y="316" fill="#fff" font-size="11" text-anchor="middle" opacity="0.9">業務で使える厳選8本と導入の実務</text>
+</svg><figcaption>図 1 — 01 から順に読むのが基本。02・03 は環境が整わないと以降が動かせないため必須。第4部と付録は、必要になったときに読めばよい</figcaption>
 </figure>
 
 <h2>目的別の読み方</h2>
@@ -524,6 +555,7 @@
 <tr><td class="nowrap"><code>docs/rules/html-design.md</code></td><td>HTML デザインルールへの改善提案（作業記録）</td></tr>
 <tr><td class="nowrap"><a href="docs/A1-逆引き.html">docs/A1-逆引き</a></td><td>付録。4つの入口から本編へ引く索引。コマンド一覧は自動生成</td></tr>
 <tr><td class="nowrap"><a href="docs/A2-テンプレ集.html">docs/A2-テンプレ集</a></td><td>付録。コピーして使う雛形6種</td></tr>
+<tr><td class="nowrap"><a href="docs/A3-モジュール.html">docs/A3-モジュール</a></td><td>付録。業務で使えるモジュール厳選8本と、導入・オフライン配布</td></tr>
 <tr><td class="nowrap"><code>src/scripts/</code></td><td>資料をビルドするスクリプト（下記）</td></tr>
 </table>
 </div>
@@ -656,7 +688,7 @@ pptx は <code>tmp/outline/*.json</code> を材料にするため、<strong>先�
 <tr><td class="nowrap"><code>docs/*.md</code></td><td>GitHub 表示用（HTML から生成）</td><td><span class="badge b-good">対象</span></td></tr>
 <tr><td class="nowrap"><code>docs/images/</code></td><td>Markdown が参照する図の PNG</td><td><span class="badge b-good">対象</span></td></tr>
 <tr><td class="nowrap"><code>src/scripts/</code></td><td>ビルド用スクリプト</td><td><span class="badge b-good">対象</span></td></tr>
-<tr><td class="nowrap"><code>tmp/figures/</code></td><td>図の PNG（50 枚）</td><td><span class="badge b-none">除外</span></td></tr>
+<tr><td class="nowrap"><code>tmp/figures/</code></td><td>図の PNG（63 枚）</td><td><span class="badge b-none">除外</span></td></tr>
 <tr><td class="nowrap"><code>tmp/outline/</code></td><td>構造 JSON</td><td><span class="badge b-none">除外</span></td></tr>
 <tr><td class="nowrap"><code>tmp/pptx/</code></td><td>pptx と PDF</td><td><span class="badge b-none">除外</span></td></tr>
 <tr><td class="nowrap"><code>etc/</code></td><td>セッションログ・<code>c.bat</code></td><td><span class="badge b-none">除外</span></td></tr>
@@ -669,7 +701,7 @@ pptx は <code>tmp/outline/*.json</code> を材料にするため、<strong>先�
 </div>
 
 <footer>
-	<p>PowerShell 学習資料 ／ 本編 10 章 ＋ 付録 2 ／ SVG 図 50 枚 ／ 資料の設計は <a href="docs/plan/構成案.html">構成案</a> を参照してください。</p>
+	<p>PowerShell 学習資料 ／ 本編 12 章 ＋ 付録 3 ／ SVG 図 63 枚 ／ 資料の設計は <a href="docs/plan/構成案.html">構成案</a> を参照してください。</p>
 </footer>
 
 </body>

@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A3. 業務で使えるモジュール</title>
+<style>
+	:root {
+		--navy1: #12224d;
+		--navy2: #2f5fbf;
+		--ink: #1c2330;
+		--ink-soft: #4a5568;
+		--line: #d9dfe8;
+		--code-bg: #f4f6fa;
+
+		/* 章クラス(.chNN)の外に置かれた要素用の既定値 */
+		--accent: var(--navy1);
+		--accent2: var(--navy2);
+		--soft: #f2f5fb;
+	}
+
+	/* 章ごとの虹色アクセント (H: 280 → 0, 280°を4章に均等分割 = 93.3°刻み) */
+	.ch01 { --accent: hsl(280,78%,25%);   --accent2: hsl(280,58%,65%);   --soft: hsl(280,28%,95%); }
+	.ch02 { --accent: hsl(186.7,78%,25%); --accent2: hsl(186.7,58%,65%); --soft: hsl(186.7,28%,95%); }
+	.ch03 { --accent: hsl(93.3,78%,25%);  --accent2: hsl(93.3,58%,65%);  --soft: hsl(93.3,28%,95%); }
+	.ch04 { --accent: hsl(0,78%,25%);     --accent2: hsl(0,58%,65%);     --soft: hsl(0,28%,95%); }
+
+	* { box-sizing: border-box; }
+
+	body {
+		margin: 0;
+		padding: 0 0 60px;
+		background: #ffffff;
+		color: var(--ink);
+		font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", "Meiryo", sans-serif;
+		line-height: 1.85;
+		font-size: 15.5px;
+	}
+
+	.wrap { max-width: 1400px; margin: 0 auto; padding: 0 30px; }
+
+	/* タイトルバー */
+	.titlebar {
+		background: linear-gradient(135deg, var(--navy1) 0%, var(--navy2) 100%);
+		color: #fff;
+		padding: 34px 30px 30px;
+		box-shadow: 0 6px 18px rgba(18,34,77,0.28);
+	}
+	.titlebar .inner { max-width: 1400px; margin: 0 auto; }
+	.titlebar h1 {
+		margin: 0 0 10px;
+		font-size: 2.1em;
+		letter-spacing: 0.02em;
+		color: #fff;
+	}
+	.titlebar p { margin: 4px 0; font-size: 0.92em; color: #d8e4ff; }
+	.titlebar .meta { font-size: 0.84em; color: #b9cdf5; }
+	.titlebar code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+
+	/* 目次 */
+	nav.toc {
+		background: linear-gradient(180deg, #f2f5fb 0%, #ffffff 100%);
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		padding: 16px 22px;
+		margin: 28px 0;
+		box-shadow: 0 2px 8px rgba(30,50,90,0.07);
+	}
+	nav.toc strong { display: block; color: var(--navy1); margin-bottom: 10px; }
+	nav.toc ol {
+		margin: 0;
+		padding-left: 0;
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		counter-reset: toc;
+	}
+	nav.toc li { counter-increment: toc; margin: 0; }
+	nav.toc a {
+		display: -webkit-box;
+		width: 310px;
+		max-width: 100%;
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		text-decoration: none;
+		text-align: left;
+		border-radius: 6px;
+		padding: 7px 10px;
+		font-size: 0.88em;
+		font-weight: 600;
+		line-height: 1.4;
+		white-space: normal;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		box-shadow: 0 1px 4px rgba(20,30,60,0.18);
+	}
+	nav.toc a::before { content: "A3." counter(toc) " "; opacity: 0.85; }
+	nav.toc a:hover { text-decoration: underline; }
+
+	/* 章 */
+	section {
+		background: linear-gradient(180deg, var(--soft) 0%, #ffffff 42%);
+		border-radius: 12px;
+		padding: 4px 26px 26px;
+		margin: 34px 0;
+		border: 1px solid var(--line);
+	}
+
+	section h1 {
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		font-size: 1.5em;
+		margin: 26px 0 20px;
+		padding: 14px 20px;
+		border-radius: 9px;
+		box-shadow: 0 5px 14px rgba(30,40,70,0.28);
+	}
+	section h1 code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+
+	h2 {
+		font-size: 1.16em;
+		color: var(--accent);
+		border-left: 7px solid var(--accent);
+		background: linear-gradient(90deg, var(--soft) 0%, rgba(255,255,255,0) 88%);
+		padding: 6px 12px;
+		margin: 30px 0 12px;
+		border-radius: 0 6px 6px 0;
+	}
+
+	h3 {
+		font-size: 1.02em;
+		color: var(--accent);
+		margin: 20px 0 8px;
+		padding-bottom: 3px;
+		border-bottom: 2px dotted var(--accent2);
+		display: inline-block;
+	}
+
+	p { margin: 10px 0; }
+	ul, ol { margin: 10px 0; padding-left: 1.6em; }
+	li { margin: 6px 0; }
+	a { color: var(--navy2); }
+
+	code {
+		background: var(--code-bg);
+		border: 1px solid var(--line);
+		border-radius: 4px;
+		padding: 1px 6px;
+		font-family: "BIZ UDゴシック", "ＭＳ ゴシック", Consolas, "Cascadia Mono", monospace;
+		font-size: 0.9em;
+		color: #17335f;
+	}
+
+	pre {
+		background: linear-gradient(180deg, #f7f9fd 0%, #eef2f9 100%);
+		border: 1px solid var(--line);
+		border-left: 5px solid var(--accent2);
+		border-radius: 8px;
+		padding: 13px 16px;
+		overflow-x: auto;
+		font-size: 0.88em;
+		line-height: 1.6;
+	}
+	pre code { background: none; border: none; padding: 0; color: #1b2b46; }
+
+	.table-wrap { overflow-x: auto; margin: 16px 0; }
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 0.93em;
+		box-shadow: 0 2px 7px rgba(40,55,90,0.12);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+	th {
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		text-align: left;
+		padding: 9px 12px;
+		font-weight: 600;
+	}
+	th code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+	td { padding: 9px 12px; border-bottom: 1px solid var(--line); background: #fff; vertical-align: top; }
+	tr:nth-child(even) td { background: #fafbfe; }
+	td.nowrap { white-space: nowrap; }
+	td.mono { font-family: "BIZ UDゴシック", "ＭＳ ゴシック", Consolas, monospace; white-space: nowrap; }
+	td.num { text-align: right; white-space: nowrap; font-family: "BIZ UDゴシック", "ＭＳ ゴシック", Consolas, monospace; }
+
+	/* バッジ */
+	.badge {
+		display: inline-block;
+		font-size: 0.78em;
+		font-weight: 700;
+		color: #fff;
+		border-radius: 4px;
+		padding: 1px 9px;
+		margin-right: 7px;
+		letter-spacing: 0.04em;
+		white-space: nowrap;
+	}
+	.b-good { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
+	.b-bad  { background: linear-gradient(100deg, #a51f22, #e05a5c); }
+	.b-none { background: linear-gradient(100deg, #5a6472, #97a1ae); }
+	.b-warn { background: linear-gradient(100deg, #b8620a, #f0a548); }
+	.b-ps7  { background: linear-gradient(100deg, #1a5fa8, #4d9ae0); }
+	.b-ps51 { background: linear-gradient(100deg, #5b2d82, #9a6bc4); }
+
+	.callout {
+		background: linear-gradient(180deg, var(--soft) 0%, #ffffff 100%);
+		border: 1px solid var(--accent2);
+		border-left: 6px solid var(--accent);
+		border-radius: 0 8px 8px 0;
+		padding: 12px 18px;
+		margin: 16px 0;
+	}
+	.callout strong { color: var(--accent); }
+
+	/* SVG図 */
+	figure { margin: 20px 0; text-align: center; }
+	figure svg {
+		max-width: 100%;
+		height: auto;
+		font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", "Meiryo", sans-serif;
+	}
+	figcaption { font-size: 0.84em; color: var(--ink-soft); margin-top: 6px; }
+
+	footer {
+		max-width: 1400px;
+		margin: 40px auto 0;
+		padding: 18px 30px 0;
+		border-top: 2px solid var(--line);
+		color: var(--ink-soft);
+		font-size: 0.86em;
+	}
+	footer a { color: var(--navy2); }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>A3. 業務で使えるモジュール</h1>
+		<p>何を入れるか、何を入れないか — 選定基準・8本の一覧・4本の詳細・導入と運用</p>
+		<p class="meta">📅 作成: 2026-08-26 / 更新: 2026-08-26 ／ 付録（順に読む必要はありません）</p>
+	</div>
+</div>
+
+<div class="wrap">
+
+<h2>03.3 との違い</h2>
+
+<p><a href="03-実行環境.html#ch03">03.3 プロファイルとモジュール</a>では<strong>仕組み</strong>を扱いました。どこを探し、どう入れ、どこに置かれるかです。</p>
+
+<p>この付録はその続きで、<strong>どれを入れるか</strong>を扱います。仕組みが分かっても、ギャラリーに並ぶ大量のモジュールから選ぶ作業は別に残ります。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th></th><th>03.3 プロファイルとモジュール</th><th>A3 業務で使えるモジュール（この付録）</th></tr>
+<tr><td class="nowrap">扱うもの</td><td>モジュールという仕組み</td><td>個々のモジュール</td></tr>
+<tr><td class="nowrap">答える問い</td><td>どうやって入れるか</td><td>何を入れるか・入れてよいか</td></tr>
+<tr><td class="nowrap">例</td><td><code>Install-Module</code> の書き方と <code>$env:PSModulePath</code></td><td><code>PSScriptAnalyzer</code> を入れるべきか</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>この付録に載せた版数・公開日・依存数は、すべて 2026-08-26 に <code>Find-Module</code> を実行して得た値です。</strong><br>
+ギャラリーは毎日更新されるので、読む時点では違う値になっています。同じコマンドを手元で打てば、その時点の値が出ます。<strong>数字そのものより、どのコマンドで確かめたかを持ち帰ってください。</strong>
+</div>
+
+<nav class="toc">
+	<strong>目次</strong>
+	<ol>
+		<li class="ch01"><a href="#ch01">選ぶときの判断基準</a></li>
+		<li class="ch02"><a href="#ch02">リストと概要</a></li>
+		<li class="ch03"><a href="#ch03">詳細 — 4本を掘り下げる</a></li>
+		<li class="ch04"><a href="#ch04">導入と運用</a></li>
+	</ol>
+</nav>
+
+<!-- ============ A3.1 ============ -->
+<section class="ch01" id="ch01">
+<h1>A3.1 選ぶときの判断基準</h1>
+
+<p>モジュールは一度入れると<strong>その PC のどのスクリプトからも見えます</strong>。プロジェクト単位で隔離する仕組みがないぶん、入れる判断がそのまま PC の状態として残ります。</p>
+
+<p>ギャラリーのページを眺めて決めるのではなく、<strong>次の6つを順に確かめます</strong>。どれも <code>Find-Module</code> だけで確認でき、ダウンロードは要りません。</p>
+
+<figure>
+<svg viewBox="0 0 760 330" role="img" aria-label="モジュールを採用するかどうかの6つの判断基準">
+	<defs>
+		<linearGradient id="g-A3-1a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/>
+			<stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+	</defs>
+
+	<text x="14" y="18" fill="var(--accent)" font-size="12" font-weight="700">判断基準</text>
+	<text x="222" y="18" fill="var(--accent)" font-size="12" font-weight="700">何を見るか</text>
+	<text x="486" y="18" fill="var(--accent)" font-size="12" font-weight="700">これで落ちる例</text>
+
+	<rect x="14" y="26" width="192" height="38" rx="7" fill="url(#g-A3-1a)"/>
+	<text x="30" y="50" fill="#fff" font-size="12.5" font-weight="700">① 提供元が公式か</text>
+	<text x="222" y="50" fill="var(--ink)" font-size="12">Author / CompanyName / ProjectUri</text>
+	<text x="486" y="50" fill="var(--ink-soft)" font-size="12">GitHub へのリンクが無い</text>
+
+	<rect x="14" y="70" width="192" height="38" rx="7" fill="url(#g-A3-1a)"/>
+	<text x="30" y="94" fill="#fff" font-size="12.5" font-weight="700">② 最終更新日</text>
+	<text x="222" y="94" fill="var(--ink)" font-size="12">PublishedDate（lastUpdated は不可）</text>
+	<text x="486" y="94" fill="var(--ink-soft)" font-size="12">issue が何年も放置されている</text>
+
+	<rect x="14" y="114" width="192" height="38" rx="7" fill="url(#g-A3-1a)"/>
+	<text x="30" y="138" fill="#fff" font-size="12.5" font-weight="700">③ 5.1 と 7 の両対応</text>
+	<text x="222" y="138" fill="var(--ink)" font-size="12">Tags の PSEdition_Core / _Desktop</text>
+	<text x="486" y="138" fill="var(--ink-soft)" font-size="12">配布先が 5.1 なのに 7 専用</text>
+
+	<rect x="14" y="158" width="192" height="38" rx="7" fill="url(#g-A3-1a)"/>
+	<text x="30" y="182" fill="#fff" font-size="12.5" font-weight="700">④ 依存の重さ</text>
+	<text x="222" y="182" fill="var(--ink)" font-size="12">-IncludeDependencies の件数</text>
+	<text x="486" y="182" fill="var(--ink-soft)" font-size="12">1本のつもりが 40 フォルダ増える</text>
+
+	<rect x="14" y="202" width="192" height="38" rx="7" fill="url(#g-A3-1a)"/>
+	<text x="30" y="226" fill="#fff" font-size="12.5" font-weight="700">⑤ DL 数は見ない</text>
+	<text x="222" y="226" fill="var(--ink)" font-size="12">downloadCount は判断に使わない</text>
+	<text x="486" y="226" fill="var(--ink-soft)" font-size="12">21 億という値が返ることがある</text>
+
+	<rect x="14" y="246" width="192" height="38" rx="7" fill="url(#g-A3-1a)"/>
+	<text x="30" y="270" fill="#fff" font-size="12.5" font-weight="700">⑥ 出口があるか</text>
+	<text x="222" y="270" fill="var(--ink)" font-size="12">後継の有無・消し方が分かるか</text>
+	<text x="486" y="270" fill="var(--ink-soft)" font-size="12">提供終了後も PC に残り続ける</text>
+
+	<rect x="14" y="294" width="732" height="28" rx="6" fill="#fff" stroke="var(--accent2)" stroke-width="1.6"/>
+	<text x="380" y="313" fill="var(--accent)" font-size="12.5" font-weight="600" text-anchor="middle">6つとも Find-Module だけで確認できる。入れてから判断しない</text>
+</svg>
+<figcaption>図 A3.1 — 入れる前に確かめる6項目</figcaption>
+</figure>
+
+<h2>① 提供元が公式か</h2>
+
+<p>ギャラリーは誰でも公開できます。名前だけでは本家か模倣かが分かりません。<code>Find-Module</code> の返す <code>Author</code>・<code>CompanyName</code>・<code>ProjectUri</code> を見ます。</p>
+
+<pre><code>Find-Module -Name PSScriptAnalyzer | Format-List Name, Author, CompanyName, ProjectUri</code></pre>
+
+<div class="table-wrap">
+<table>
+<tr><th>種類</th><th>見分け方</th><th>この付録での例</th></tr>
+<tr><td class="nowrap">Microsoft 公式</td><td><code>Author</code> が <code>Microsoft Corporation</code>、<code>ProjectUri</code> が <code>github.com/PowerShell/…</code></td><td>PSScriptAnalyzer / SecretManagement / PSResourceGet / Microsoft.Graph</td></tr>
+<tr><td class="nowrap">コミュニティの定番</td><td>個人名やチーム名だが、<code>ProjectUri</code> の GitHub が現役で動いている</td><td>Pester / ImportExcel / dbatools</td></tr>
+<tr><td class="nowrap">出所不明</td><td><code>ProjectUri</code> が無い、説明が数行しかない</td><td>採用しない</td></tr>
+</table>
+</div>
+
+<p><code>ProjectUri</code> は<strong>開いて確かめます</strong>。star 数ではなく、直近の issue に返事が付いているかを見ます。</p>
+
+<h2>② 最終更新日</h2>
+
+<p>更新日は <code>PublishedDate</code> で見ます。</p>
+
+<pre><code>Find-Module -Name ImportExcel | Select-Object Name, Version, PublishedDate</code></pre>
+
+<pre><code>Name          : ImportExcel
+Version       : 7.8.10
+PublishedDate : 2024/10/21 23:45:09</code></pre>
+
+<h3>似た名前の値に引っかからない</h3>
+
+<p>メタデータには <code>lastUpdated</code> という、いかにも更新日らしい項目があります。両方を並べて見ます。</p>
+
+<pre><code>(Find-Module -Name ImportExcel).AdditionalMetadata |
+	Select-Object published, lastUpdated</code></pre>
+
+<pre><code>published   : 2024/10/21 23:45:09 +09:00
+lastUpdated : 2026/08/26 00:00:01 +09:00</code></pre>
+
+<p>同じモジュールで<strong>2 年近い開きがあります</strong>。<code>lastUpdated</code> はギャラリー側のフィードを作り直した時刻で、どのモジュールを調べても<strong>実行した当日</strong>が返ります。4 本試して 4 本とも当日でした。</p>
+
+<div class="callout">
+<strong>ギャラリーの Web ページに出る「Last Updated」も同じ値です。</strong><br>
+ブラウザで見て「先週更新されている」と読めても、実際の最終公開は何年も前ということが起こります。<strong>ページの表示ではなく <code>PublishedDate</code> を見てください。</strong>
+</div>
+
+<h3>更新が止まっている＝除外、ではない</h3>
+
+<p>ImportExcel は 2024-10 で止まっていますが、Excel ファイルの読み書きという役割は変わりません。<strong>役割が完成しているモジュールは更新されないのが正常</strong>です。</p>
+
+<p>逆に、動く環境が変わり続けるもの（クラウド API のクライアント、SQL Server 運用）が 2 年止まっていたら、それは危険信号です。<strong>更新日は単独では判断できず、何をするモジュールかとセットで見ます。</strong></p>
+
+<h2>③ 5.1 と 7 の両方で動くか</h2>
+
+<p>タグに <code>PSEdition_Desktop</code>（＝Windows PowerShell 5.1）と <code>PSEdition_Core</code>（＝PowerShell 7）が入っています。</p>
+
+<pre><code>(Find-Module -Name Pester).Tags | Where-Object { $_ -like 'PSEdition_*' }</code></pre>
+
+<div class="table-wrap">
+<table>
+<tr><th>モジュール</th><th>PSEdition タグ</th><th>読み方</th></tr>
+<tr><td class="mono">Pester</td><td class="nowrap">Core + Desktop</td><td>両方で動く</td></tr>
+<tr><td class="mono">Microsoft.Graph</td><td class="nowrap">Core + Desktop</td><td>両方で動く</td></tr>
+<tr><td class="mono">Microsoft.PowerShell.PSResourceGet</td><td class="nowrap">Desktop + Core</td><td>両方で動く</td></tr>
+<tr><td class="mono">Microsoft.PowerShell.SecretManagement</td><td class="nowrap">Core のみ</td><td>タグ上は 7 専用。ただしマニフェストの <code>PowerShellVersion</code> は <code>5.1</code></td></tr>
+<tr><td class="mono">PSWindowsUpdate</td><td class="nowrap">Desktop のみ</td><td>5.1 前提</td></tr>
+<tr><td class="mono">PSScriptAnalyzer</td><td class="nowrap">（タグ無し）</td><td>判断材料にならない</td></tr>
+<tr><td class="mono">ImportExcel</td><td class="nowrap">（タグ無し）</td><td>判断材料にならない</td></tr>
+<tr><td class="mono">dbatools</td><td class="nowrap">（タグ無し）</td><td>判断材料にならない</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>PSEdition タグは任意の項目で、付いていないほうが多数派です。</strong><br>
+上の 8 本のうち 3 本はタグそのものがなく、SecretManagement は<strong>タグと <code>PowerShellVersion</code> が食い違って</strong>います。タグは「付いていれば手がかり」程度に扱い、最後は <code>ProjectUri</code> の README で確かめてください。
+</div>
+
+<h2>④ 依存の重さ</h2>
+
+<p><code>-IncludeDependencies</code> を付けると、<strong>ダウンロードせずに</strong>依存を含む全件が一覧できます。返る件数がそのまま「増えるフォルダの数」です。</p>
+
+<pre><code>Find-Module -Name PSScriptAnalyzer -IncludeDependencies | Measure-Object</code></pre>
+
+<pre><code>Count : 1</code></pre>
+
+<pre><code>Find-Module -Name Microsoft.Graph -IncludeDependencies | Measure-Object</code></pre>
+
+<pre><code>Count : 40</code></pre>
+
+<div class="table-wrap">
+<table>
+<tr><th>モジュール</th><th>依存を含む合計</th><th>内訳</th></tr>
+<tr><td class="mono">PSScriptAnalyzer</td><td class="num">1</td><td>単体</td></tr>
+<tr><td class="mono">Pester</td><td class="num">1</td><td>単体</td></tr>
+<tr><td class="mono">ImportExcel</td><td class="num">1</td><td>単体（EPPlus を同梱している）</td></tr>
+<tr><td class="mono">Microsoft.PowerShell.SecretManagement</td><td class="num">1</td><td>単体</td></tr>
+<tr><td class="mono">Microsoft.PowerShell.SecretStore</td><td class="num">2</td><td>＋ SecretManagement</td></tr>
+<tr><td class="mono">dbatools</td><td class="num">2</td><td>＋ dbatools.library</td></tr>
+<tr><td class="mono">Microsoft.Graph</td><td class="num">40</td><td>＋ Microsoft.Graph.* が 39 本</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>Microsoft.Graph は分野ごとに分かれたモジュールを束ねる「全部入り」です。</strong><br>
+39 本の内訳は <code>Microsoft.Graph.Users</code> <code>Microsoft.Graph.Mail</code> <code>Microsoft.Graph.Teams</code> のような分野別で、実際に使うのは<strong>認証用の <code>Microsoft.Graph.Authentication</code> と、扱う分野の 1〜2 本だけ</strong>です。束ね役を入れずに必要なものを名指しで入れれば、40 本が 2〜3 本で済みます。
+</div>
+
+<h2>⑤ ダウンロード数を信用しない</h2>
+
+<p>ギャラリーで最初に目に入るのがダウンロード数です。これを選定根拠にできない例が実際にあります。</p>
+
+<pre><code>Find-Module -Name PSWindowsUpdate | ForEach-Object { $_.AdditionalMetadata.downloadCount }</code></pre>
+
+<pre><code>2147474038</code></pre>
+
+<p>21 億 4747 万。世界人口の 4 分の 1 が 1 回ずつ入れた計算になります。この値は <code>Int32</code> の上限 <code>2147483647</code> の<strong>わずか 9,609 下</strong>で、上限に張り付いた飽和値と読むのが自然です。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>モジュール</th><th>downloadCount</th></tr>
+<tr><td class="mono">PSWindowsUpdate</td><td class="num">2,147,474,038</td></tr>
+<tr><td class="mono">Pester</td><td class="num">40,923,786</td></tr>
+<tr><td class="mono">Microsoft.Graph</td><td class="num">24,139,812</td></tr>
+<tr><td class="mono">ImportExcel</td><td class="num">22,940,663</td></tr>
+<tr><td class="mono">PSScriptAnalyzer</td><td class="num">13,672,377</td></tr>
+<tr><td class="mono">dbatools</td><td class="num">9,179,989</td></tr>
+<tr><td class="mono">Microsoft.PowerShell.SecretManagement</td><td class="num">8,015,820</td></tr>
+<tr><td class="mono">Microsoft.PowerShell.SecretStore</td><td class="num">6,267,075</td></tr>
+<tr><td class="mono">Microsoft.PowerShell.PSResourceGet</td><td class="num">5,023,128</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>桁が正しく見えるものも、人数を表してはいません。</strong><br>
+この数はインストール操作の回数です。CI が毎回まっさらな環境で <code>Install-Module</code> を実行すれば、1 つのリポジトリが 1 日に何百も積み増します。<strong>測っているのは人気ではなく自動化の回数</strong>で、しかも他のモジュールと比べられる保証がありません。
+</div>
+
+<h2>⑥ 廃止されたモジュールは自分で消さない限り居座る</h2>
+
+<p>この PC には <code>AzureRM</code> が残っています。</p>
+
+<pre><code>Get-Module -ListAvailable AzureRM | Select-Object Name, Version, ModuleBase</code></pre>
+
+<pre><code>Name       : AzureRM
+Version    : 5.7.0
+ModuleBase : C:\Program Files\WindowsPowerShell\Modules\AzureRM\5.7.0</code></pre>
+
+<p>AzureRM は Azure 操作の旧モジュールで、後継の <code>Az</code> に置き換わっています。それでも<strong>提供終了はギャラリー側の話であって、入れた PC からは何も起きません</strong>。残るものを数えます。</p>
+
+<pre><code>Get-ChildItem 'C:\Program Files\WindowsPowerShell\Modules' -Directory |
+	Where-Object Name -like 'Azure*' |
+	ForEach-Object { Get-ChildItem $_.FullName -Recurse -File } |
+	Measure-Object -Property Length -Sum |
+	Select-Object @{n='Files';e={$_.Count}}, @{n='SizeMB';e={[math]::Round($_.Sum/1MB)}}</code></pre>
+
+<pre><code>Files  : 1124
+SizeMB : 215</code></pre>
+
+<p><strong>57 フォルダ・1,124 ファイル・215 MB</strong>。ファイルの最終更新は <strong>2018-04-06</strong> で、8 年前のまま <code>AllUsers</code> スコープに置かれています。しかも <code>AzureRM.*</code> は 53 個に分かれているので、<code>Uninstall-Module AzureRM</code> だけでは本体の 1 フォルダしか消えません。</p>
+
+<div class="callout">
+<strong>残っているだけでなく、補完の邪魔をします。</strong><br>
+これらは <code>Get-Module -ListAvailable</code> に出続け、<kbd>Tab</kbd> 補完の候補にも <code>Get-AzureRmVM</code> のような<strong>もう使えない Cmdlet 名が並びます</strong>。後継の <code>Az</code> を入れると <code>Get-AzVM</code> と紛らわしい名前が同時に候補に出ます。<br>
+入れる前に<strong>「これはどうやって消すのか」を確認しておく</strong>のが ⑥ の意味です。掃除の手順は <a href="#ch04">A3.4</a> にあります。
+</div>
+</section>
+
+<!-- ============ A3.2 ============ -->
+<section class="ch02" id="ch02">
+<h1>A3.2 リストと概要</h1>
+
+<p>8 本に絞りました。<strong>網羅は目的ではありません。</strong>職種を問わず効くものを先に置き、対象がはっきり決まっているものを後ろに置いています。</p>
+
+<figure>
+<svg viewBox="0 0 760 320" role="img" aria-label="8本のモジュールを「どの職種でも効く」と「対象が決まっている」に分けた図">
+	<defs>
+		<linearGradient id="g-A3-2a" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="hsl(280,78%,25%)"/><stop offset="1" stop-color="hsl(280,58%,65%)"/></linearGradient>
+		<linearGradient id="g-A3-2b" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="hsl(240,78%,25%)"/><stop offset="1" stop-color="hsl(240,58%,65%)"/></linearGradient>
+		<linearGradient id="g-A3-2c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="hsl(200,78%,25%)"/><stop offset="1" stop-color="hsl(200,58%,65%)"/></linearGradient>
+		<linearGradient id="g-A3-2d" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="hsl(160,78%,25%)"/><stop offset="1" stop-color="hsl(160,58%,65%)"/></linearGradient>
+		<linearGradient id="g-A3-2e" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="hsl(120,78%,25%)"/><stop offset="1" stop-color="hsl(120,58%,65%)"/></linearGradient>
+		<linearGradient id="g-A3-2f" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="hsl(80,78%,25%)"/><stop offset="1" stop-color="hsl(80,58%,65%)"/></linearGradient>
+		<linearGradient id="g-A3-2g" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="hsl(40,78%,25%)"/><stop offset="1" stop-color="hsl(40,58%,65%)"/></linearGradient>
+		<linearGradient id="g-A3-2h" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="hsl(0,78%,25%)"/><stop offset="1" stop-color="hsl(0,58%,65%)"/></linearGradient>
+	</defs>
+
+	<text x="14" y="18" fill="var(--accent)" font-size="13" font-weight="700">どの職種でも効く — まずこの4本</text>
+
+	<rect x="14" y="28" width="175" height="96" rx="9" fill="url(#g-A3-2a)"/>
+	<text x="101" y="52" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">PSScriptAnalyzer</text>
+	<text x="101" y="76" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">書いたコードを</text>
+	<text x="101" y="94" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">その場で点検する</text>
+	<text x="101" y="114" fill="#fff" font-size="11" text-anchor="middle" opacity="0.8">依存 1 本</text>
+
+	<rect x="201" y="28" width="175" height="96" rx="9" fill="url(#g-A3-2b)"/>
+	<text x="288" y="52" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">Pester</text>
+	<text x="288" y="76" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">スクリプトを</text>
+	<text x="288" y="94" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">テストで守る</text>
+	<text x="288" y="114" fill="#fff" font-size="11" text-anchor="middle" opacity="0.8">依存 1 本</text>
+
+	<rect x="388" y="28" width="175" height="96" rx="9" fill="url(#g-A3-2c)"/>
+	<text x="475" y="52" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">ImportExcel</text>
+	<text x="475" y="76" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">Excel を入れずに</text>
+	<text x="475" y="94" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">xlsx を読み書き</text>
+	<text x="475" y="114" fill="#fff" font-size="11" text-anchor="middle" opacity="0.8">依存 1 本</text>
+
+	<rect x="575" y="28" width="175" height="96" rx="9" fill="url(#g-A3-2d)"/>
+	<text x="662" y="52" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">SecretManagement</text>
+	<text x="662" y="76" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">平文パスワードを</text>
+	<text x="662" y="94" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">コードから消す</text>
+	<text x="662" y="114" fill="#fff" font-size="11" text-anchor="middle" opacity="0.8">＋ SecretStore で 2 本</text>
+
+	<text x="14" y="158" fill="var(--accent)" font-size="13" font-weight="700">対象が決まっている — 当てはまる人だけ</text>
+
+	<rect x="14" y="168" width="175" height="96" rx="9" fill="url(#g-A3-2e)"/>
+	<text x="101" y="192" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">PSResourceGet</text>
+	<text x="101" y="216" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">モジュール管理の</text>
+	<text x="101" y="234" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">次世代コマンド</text>
+	<text x="101" y="254" fill="#fff" font-size="11" text-anchor="middle" opacity="0.8">7.4 以降は同梱</text>
+
+	<rect x="201" y="168" width="175" height="96" rx="9" fill="url(#g-A3-2f)"/>
+	<text x="288" y="192" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">dbatools</text>
+	<text x="288" y="216" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">SQL Server の</text>
+	<text x="288" y="234" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">運用・移行</text>
+	<text x="288" y="254" fill="#fff" font-size="11" text-anchor="middle" opacity="0.8">依存 2 本</text>
+
+	<rect x="388" y="168" width="175" height="96" rx="9" fill="url(#g-A3-2g)"/>
+	<text x="475" y="192" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">Microsoft.Graph</text>
+	<text x="475" y="216" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">Microsoft 365 と</text>
+	<text x="475" y="234" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">Entra ID の操作</text>
+	<text x="475" y="254" fill="#fff" font-size="11" text-anchor="middle" opacity="0.8">依存 40 本</text>
+
+	<rect x="575" y="168" width="175" height="96" rx="9" fill="url(#g-A3-2h)"/>
+	<text x="662" y="192" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">PSWindowsUpdate</text>
+	<text x="662" y="216" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">Windows Update を</text>
+	<text x="662" y="234" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">遠隔から流す</text>
+	<text x="662" y="254" fill="#fff" font-size="11" text-anchor="middle" opacity="0.8">5.1 前提</text>
+
+	<rect x="14" y="278" width="736" height="30" rx="6" fill="#fff" stroke="var(--accent2)" stroke-width="1.6"/>
+	<text x="382" y="298" fill="var(--accent)" font-size="12.5" font-weight="600" text-anchor="middle">上の段は「入れて損がない」。下の段は「使う対象があるときだけ」</text>
+</svg>
+<figcaption>図 A3.2 — 8本の位置づけ。上下で採用の基準が違う</figcaption>
+</figure>
+
+<h2>一覧</h2>
+
+<p>版数・公開日・依存数は <code>Find-Module</code> の実測値です（2026-08-26 時点）。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>モジュール</th><th>用途</th><th>提供元</th><th>最新版</th><th>最終公開</th><th>依存</th><th>対応</th></tr>
+<tr>
+	<td class="mono">PSScriptAnalyzer</td>
+	<td>スクリプトの静的解析。書式と危険な書き方を指摘する</td>
+	<td class="nowrap">Microsoft</td>
+	<td class="nowrap">1.25.0</td>
+	<td class="nowrap">2026-03-20</td>
+	<td class="num">1</td>
+	<td class="nowrap">5.1 / 7</td>
+</tr>
+<tr>
+	<td class="mono">Pester</td>
+	<td>テストフレームワーク。<code>Describe</code> / <code>It</code> / <code>Should</code></td>
+	<td class="nowrap">Pester Team</td>
+	<td class="nowrap">6.1.0</td>
+	<td class="nowrap">2026-08-11</td>
+	<td class="num">1</td>
+	<td class="nowrap">5.1 / 7</td>
+</tr>
+<tr>
+	<td class="mono">ImportExcel</td>
+	<td>xlsx の読み書き。<strong>Excel を入れていない PC でも動く</strong></td>
+	<td class="nowrap">Douglas Finke</td>
+	<td class="nowrap">7.8.10</td>
+	<td class="nowrap">2024-10-21</td>
+	<td class="num">1</td>
+	<td class="nowrap">5.1 / 7</td>
+</tr>
+<tr>
+	<td class="mono">Microsoft.PowerShell.SecretManagement<br>＋ Microsoft.PowerShell.SecretStore</td>
+	<td>資格情報の保管。窓口（Management）と金庫（Store）の2本セット</td>
+	<td class="nowrap">Microsoft</td>
+	<td class="nowrap">1.1.2<br>1.0.6</td>
+	<td class="nowrap">2022-01-27<br>2022-01-27</td>
+	<td class="num">2</td>
+	<td class="nowrap">5.1 / 7</td>
+</tr>
+<tr>
+	<td class="mono">Microsoft.PowerShell.PSResourceGet</td>
+	<td><code>Install-Module</code> の後継。<code>Install-PSResource</code> は速く、同じ名前の別版を並べて持てる</td>
+	<td class="nowrap">Microsoft</td>
+	<td class="nowrap">1.2.0</td>
+	<td class="nowrap">2026-03-11</td>
+	<td class="num">1</td>
+	<td class="nowrap">5.1 / 7</td>
+</tr>
+<tr>
+	<td class="mono">dbatools</td>
+	<td>SQL Server の運用・移行。バックアップ、インスタンス間のコピー、健全性チェック</td>
+	<td class="nowrap">dbatools team</td>
+	<td class="nowrap">2.8.4</td>
+	<td class="nowrap">2026-07-31</td>
+	<td class="num">2</td>
+	<td class="nowrap">5.1 / 7</td>
+</tr>
+<tr>
+	<td class="mono">Microsoft.Graph</td>
+	<td>Microsoft 365 / Entra ID の操作。ユーザー・グループ・メール・Teams</td>
+	<td class="nowrap">Microsoft</td>
+	<td class="nowrap">2.39.0</td>
+	<td class="nowrap">2026-08-03</td>
+	<td class="num">40</td>
+	<td class="nowrap">5.1 / 7</td>
+</tr>
+<tr>
+	<td class="mono">PSWindowsUpdate</td>
+	<td>Windows Update の一覧・適用・再起動制御を遠隔から行う</td>
+	<td class="nowrap">Michal Gajda</td>
+	<td class="nowrap">2.2.1.5</td>
+	<td class="nowrap">2024-07-20</td>
+	<td class="num">1</td>
+	<td class="nowrap">5.1 中心</td>
+</tr>
+</table>
+</div>
+
+<h2>どれから入れるか</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>あなたの状況</th><th>入れるもの</th></tr>
+<tr><td>PowerShell で何かを書いている</td><td class="mono">PSScriptAnalyzer</td></tr>
+<tr><td>書いたスクリプトを<strong>人に渡す・タスクに登録する</strong></td><td class="mono">Pester</td></tr>
+<tr><td>入力または成果物が <strong>Excel</strong> ファイル</td><td class="mono">ImportExcel</td></tr>
+<tr><td>スクリプトの中に<strong>パスワードや API キーを直接書いている</strong></td><td class="mono">SecretManagement + SecretStore</td></tr>
+<tr><td>SQL Server を管理している</td><td class="mono">dbatools</td></tr>
+<tr><td>Microsoft 365 / Entra ID のユーザー管理を自動化したい</td><td class="mono">Microsoft.Graph.Authentication ＋ 必要な分野だけ</td></tr>
+<tr><td>複数台の Windows に更新をまとめて当てたい</td><td class="mono">PSWindowsUpdate</td></tr>
+<tr><td>モジュールを大量に入れ直す運用がある</td><td class="mono">Microsoft.PowerShell.PSResourceGet</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>Microsoft 365 まわりで見つかる古い記事は <code>AzureAD</code> と <code>MSOnline</code> を使っています。</strong><br>
+どちらも提供終了済みで、後継が <code>Microsoft.Graph</code> です。<strong>両方ともギャラリーからはまだ取得できてしまう</strong>ため、記事のコマンドをそのまま打つと入ってしまいます。<code>Connect-AzureAD</code> や <code>Connect-MsolService</code> が出てきた記事は、それだけで古いと判断してかまいません。
+</div>
+
+<h2>この一覧に入れなかったもの</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>入れなかったもの</th><th>理由</th></tr>
+<tr><td class="mono">posh-git / Terminal-Icons</td><td>プロンプトやファイル一覧の<strong>見た目を変えるだけ</strong>で、書いたスクリプトの動作は 1 行も変わらない。しかも効くのは入れた本人の画面だけで、渡した相手の環境には何も起きない</td></tr>
+<tr><td class="mono">PSFramework</td><td>ログ・設定・並列処理をまとめて提供する大きなフレームワーク。<strong>専用の書き方を覚える必要があり</strong>、<a href="A2-テンプレ集.html">A2 テンプレ集</a>の <code>Write-Log</code> と <code>param</code> で足りる範囲を大きく超える</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ============ A3.3 ============ -->
+<section class="ch03" id="ch03">
+<h1>A3.3 詳細 — 4本を掘り下げる</h1>
+
+<div class="callout">
+<strong>この節のコード例は使い方を示すものです。出力例は載せていません。</strong><br>
+本資料の他の節は、掲載したコマンドをすべて実行して<strong>その結果を貼って</strong>います。ここで扱う 4 本はこの PC に導入していないため、同じことができません。<strong>実行していないコマンドの出力を推測で書くくらいなら、出力そのものを省くという判断です。</strong>手元で入れて、出力はご自分の画面で確かめてください。
+</div>
+
+<h2>PSScriptAnalyzer — 書いた直後に見つける</h2>
+
+<p>構文としては通るが、後で問題になる書き方を指摘します。<strong>JavaScript の ESLint、C# の Roslyn Analyzer にあたる位置づけ</strong>です。</p>
+
+<p>VS Code の PowerShell 拡張は内部でこれを使っているので、拡張を入れた人は<strong>すでに結果だけは見ています</strong>（エディタ上の緑の波線）。単体で入れると、同じ判定を<strong>コマンドラインと CI から</strong>呼べるようになります。</p>
+
+<pre><code># 1ファイルを見る
+Invoke-ScriptAnalyzer -Path .\deploy.ps1
+
+# フォルダごと再帰する
+Invoke-ScriptAnalyzer -Path .\src -Recurse
+
+# 深刻なものだけに絞る
+Invoke-ScriptAnalyzer -Path .\src -Recurse -Severity Error, Warning
+
+# どんな規則があるか見る
+Get-ScriptAnalyzerRule | Select-Object RuleName, Severity, CommonName
+
+# 自動で直せるものを直す
+Invoke-ScriptAnalyzer -Path .\deploy.ps1 -Fix</code></pre>
+
+<h3>よく出る指摘</h3>
+
+<div class="table-wrap">
+<table>
+<tr><th>規則名</th><th>何を言っているか</th></tr>
+<tr><td class="mono">PSAvoidUsingCmdletAliases</td><td><code>ls</code> <code>%</code> <code>?</code> などの別名を使っている。<strong>渡した相手のプロファイルで別名が上書きされていると壊れる</strong></td></tr>
+<tr><td class="mono">PSUseDeclaredVarsMoreThanAssignments</td><td>代入したのに一度も読んでいない変数がある。<strong>変数名のタイプミスの兆候</strong></td></tr>
+<tr><td class="mono">PSAvoidUsingPlainTextForPassword</td><td>パスワードを <code>[string]</code> の引数で受けている</td></tr>
+<tr><td class="mono">PSAvoidUsingConvertToSecureStringWithPlainText</td><td>平文から <code>SecureString</code> を作っている。暗号化した気になるだけで元の平文がコードに残る</td></tr>
+<tr><td class="mono">PSUseSingularNouns</td><td>関数名の名詞が複数形になっている（<code>Get-Files</code> → <code>Get-File</code>）</td></tr>
+<tr><td class="mono">PSAvoidUsingWriteHost</td><td><code>Write-Host</code> はパイプに乗らず、変数にも受けられない</td></tr>
+</table>
+</div>
+
+<h3>プロジェクトごとに規則を決める</h3>
+
+<p>既定の規則をそのまま全部使うと、既存のスクリプトでは指摘が数百件出ます。設定ファイルに置いて絞ります。</p>
+
+<pre><code># PSScriptAnalyzerSettings.psd1
+@{
+	Severity = @('Error', 'Warning')
+
+	ExcludeRules = @(
+		'PSUseSingularNouns'
+		'PSAvoidUsingWriteHost'
+	)
+}</code></pre>
+
+<pre><code>Invoke-ScriptAnalyzer -Path .\src -Recurse -Settings .\PSScriptAnalyzerSettings.psd1</code></pre>
+
+<div class="callout">
+<strong><code>-Fix</code> はファイルを書き換えます。</strong><br>
+差分を確認せずに走らせると、何が変わったか分からなくなります。<strong>バージョン管理下で、変更が未コミットでない状態から実行してください。</strong>直せるのは別名の展開や空白の整形など機械的なものだけで、<code>Write-Host</code> の置き換えのような判断が要る指摘は直りません。
+</div>
+
+<h2>ImportExcel — Excel を入れずに xlsx を読み書きする</h2>
+
+<p>Excel ファイルを PowerShell から扱う方法には、<strong>Excel 本体を COM で起動する</strong>やり方があります。ImportExcel はそれとは別の道で、<strong>EPPlus という .NET のライブラリを同梱していて Excel を必要としません</strong>。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th></th><th>Excel を COM で操作</th><th>ImportExcel</th></tr>
+<tr><td class="nowrap">Excel の導入</td><td>必要</td><td>不要</td></tr>
+<tr><td class="nowrap">サーバーでの実行</td><td>非対応（Microsoft が非推奨としている）</td><td>問題なし</td></tr>
+<tr><td class="nowrap">タスクスケジューラ</td><td>画面が無いと不安定</td><td>問題なし</td></tr>
+<tr><td class="nowrap">できること</td><td>Excel にできることすべて（マクロ・印刷・再計算）</td><td>読み書き・書式・グラフ・ピボット</td></tr>
+<tr><td class="nowrap">速度</td><td>遅い（アプリの起動を伴う）</td><td>速い</td></tr>
+</table>
+</div>
+
+<pre><code># 読む（1行 = 1オブジェクト。Import-Csv と同じ形で返る）
+$rows = Import-Excel -Path .\売上.xlsx
+
+# シートを指定する
+$rows = Import-Excel -Path .\売上.xlsx -WorksheetName '2026年8月'
+
+# 見出しが3行目から始まるブック
+$rows = Import-Excel -Path .\売上.xlsx -StartRow 3
+
+# 見出し行が無いので自分で名前を付ける
+$rows = Import-Excel -Path .\売上.xlsx -NoHeader -HeaderName '日付','商品','金額'</code></pre>
+
+<pre><code># 書く（テーブル書式と自動列幅を付ける）
+$rows | Export-Excel -Path .\集計.xlsx -AutoSize -TableName '売上'
+
+# 既存ブックに別シートとして足す
+$rows | Export-Excel -Path .\集計.xlsx -WorksheetName '明細' -Append
+
+# 書き終わったら Excel で開く
+$rows | Export-Excel -Path .\集計.xlsx -AutoSize -Show
+
+# ピボットテーブルを付ける
+$rows | Export-Excel -Path .\集計.xlsx -AutoSize `
+	-IncludePivotTable -PivotRows '商品' -PivotData @{ '金額' = 'Sum' }</code></pre>
+
+<h3><code>Import-Csv</code> との違い</h3>
+
+<div class="table-wrap">
+<table>
+<tr><th></th><th><code>Import-Csv</code></th><th><code>Import-Excel</code></th></tr>
+<tr><td class="nowrap">文字コード</td><td>BOM と <code>-Encoding</code> の指定次第で化ける</td><td>関係ない（xlsx の中は常に UTF-8）</td></tr>
+<tr><td class="nowrap">値の型</td><td><strong>すべて <code>[string]</code></strong></td><td>数値は <code>[double]</code>、日付は <code>[datetime]</code> で返る</td></tr>
+<tr><td class="nowrap">複数シート</td><td>概念が無い</td><td><code>-WorksheetName</code> で選ぶ</td></tr>
+<tr><td class="nowrap">見出しの位置</td><td>1 行目固定</td><td><code>-StartRow</code> でずらせる</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>返るのは「表示されている文字」ではなく「セルに入っている実体」です。</strong><br>
+画面に <code>2026/08/26</code> と見えていても、そのセルが文字列として入力されていれば <code>[string]</code> が返り、日付として入力されていれば <code>[datetime]</code> が返ります。<strong>同じ列でも行によって型が違う</strong>ことすらあります。<br>
+集計の前に <code>$rows[0].日付.GetType().Name</code> で 1 件だけ確認してください。
+</div>
+
+<h2>SecretManagement + SecretStore — 平文パスワードをコードから消す</h2>
+
+<p>2 本セットになっているのは、<strong>役割が分かれているから</strong>です。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>モジュール</th><th>役割</th><th>言い換えると</th></tr>
+<tr><td class="mono">Microsoft.PowerShell.SecretManagement</td><td><code>Get-Secret</code> / <code>Set-Secret</code> という統一された窓口を提供する。自分では何も保管しない</td><td>金庫の<strong>受付</strong></td></tr>
+<tr><td class="mono">Microsoft.PowerShell.SecretStore</td><td>暗号化したファイルに実際に保管する。ユーザー単位</td><td><strong>金庫</strong>そのもの</td></tr>
+<tr><td>Az.KeyVault / SecretManagement.KeePass など</td><td>SecretStore の代わりに差せる別の金庫</td><td>金庫の<strong>差し替え</strong></td></tr>
+</table>
+</div>
+
+<p>この分け方の利点は、<strong>スクリプト側のコードが金庫の種類に依存しないこと</strong>です。手元では SecretStore、本番では Azure Key Vault、という切り替えが <code>Register-SecretVault</code> の 1 行だけで済みます。</p>
+
+<pre><code># 金庫を登録する（最初の1回だけ）
+Register-SecretVault -Name LocalStore `
+	-ModuleName Microsoft.PowerShell.SecretStore `
+	-DefaultVault
+
+# しまう（値は対話で聞かれる。コマンド履歴に残らない）
+Set-Secret -Name 'DbPassword'
+
+# 資格情報として丸ごとしまう
+Set-Secret -Name 'SvcAccount' -Secret (Get-Credential)</code></pre>
+
+<pre><code># 取り出す（既定で [SecureString] が返る）
+$sec = Get-Secret -Name 'DbPassword'
+
+# PSCredential としてしまったものは PSCredential で返る
+$cred = Get-Secret -Name 'SvcAccount'
+Invoke-Command -ComputerName SRV01 -Credential $cred -ScriptBlock { hostname }
+
+# 名前だけ一覧する（値は出ない）
+Get-SecretInfo
+
+# 登録してある金庫を見る
+Get-SecretVault</code></pre>
+
+<h3>更新が 2022 年で止まっていることをどう見るか</h3>
+
+<p>この 2 本の最終公開は <strong>2022-01-27</strong> です。<a href="#ch01">A3.1</a> の ② に照らすと 4 年半動いていません。それでも採用する理由は 3 つあります。</p>
+
+<ul>
+	<li>Microsoft 公式で、<code>ProjectUri</code> の GitHub は現役（issue に返答が付いている）</li>
+	<li>やることが「窓口を提供する」だけで、<strong>機能を足す余地がほとんど無い</strong></li>
+	<li>実際に動く部分（金庫）は差し替え可能なので、金庫側が更新されれば恩恵を受けられる</li>
+</ul>
+
+<p>更新日は<strong>単独では判断材料にならない</strong>という ② の話が、そのまま当てはまる例です。</p>
+
+<div class="callout">
+<strong>無人実行には追加の設定が要り、そこで安全性が下がります。</strong><br>
+SecretStore は既定で<strong>マスターパスワードを対話で聞きます</strong>。タスクスケジューラから使うには <code>Set-SecretStoreConfiguration -Authentication None -Interaction None</code> にする必要がありますが、この状態は<strong>同じユーザーで動く任意のプロセスが中身を読める</strong>ことを意味します。<br>
+無人実行が要件にあるなら、ローカルファイルの金庫ではなく Azure Key Vault のような外部の金庫を選ぶ、という判断になります。
+</div>
+
+<h2>Pester — 同梱の 3.4.0 は使えない</h2>
+
+<p>Pester は Windows に同梱されています。この PC で見るとこうなります。</p>
+
+<pre><code>Get-Module -ListAvailable Pester | Select-Object Name, Version, ModuleBase</code></pre>
+
+<pre><code>Name       : Pester
+Version    : 3.4.0
+ModuleBase : C:\Program Files\WindowsPowerShell\Modules\Pester\3.4.0</code></pre>
+
+<p>一方、ギャラリーの最新は <strong>6.1.0</strong>（2026-08-11 公開）です。<strong>メジャーバージョンが 3 つ離れています。</strong></p>
+
+<p>問題は数字の差ではなく、<strong>3 系と 5 系以降で書き方が別物になっている</strong>ことです。同梱の 3.4.0 のまま最近の記事のコードを打つと、Pester の使い方が間違っているのではなく<strong>構文エラー</strong>になります。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th></th><th>3.x（同梱版）</th><th>5.x 以降</th></tr>
+<tr><td class="nowrap">アサーション</td><td class="mono">Should Be 5</td><td class="mono">Should -Be 5</td></tr>
+<tr><td class="nowrap">前処理</td><td class="mono">BeforeEach のみ</td><td class="mono">BeforeAll / BeforeEach</td></tr>
+<tr><td class="nowrap">実行時の構造</td><td>ファイルを上から実行する</td><td><strong>探索と実行の 2 段階</strong>に分かれる</td></tr>
+<tr><td class="nowrap">CI 連携</td><td>終了コードを自分で組み立てる</td><td class="mono">Invoke-Pester -CI</td></tr>
+</table>
+</div>
+
+<h3>書き方</h3>
+
+<p>JavaScript 経験者には Jest の <code>describe</code> / <code>it</code>、Java・C# 経験者には JUnit の <code>@Test</code> や MSTest の <code>[TestMethod]</code> と同じ構造です。<code>Should -Be</code> が assert にあたります。</p>
+
+<pre><code># tests\calc.tests.ps1
+BeforeAll {
+	. (Join-Path $PSScriptRoot '..\src\calc.ps1')
+}
+
+Describe 'Add-Number' {
+
+	It '2 と 3 を足すと 5 になる' {
+		Add-Number 2 3 | Should -Be 5
+	}
+
+	It '数値でない値を渡すと例外になる' {
+		{ Add-Number 'a' 1 } | Should -Throw
+	}
+
+	It '複数の入力をまとめて確かめる' -ForEach @(
+		@{ A = 1; B = 1; Expected = 2 }
+		@{ A = 0; B = 5; Expected = 5 }
+		@{ A = -3; B = 3; Expected = 0 }
+	) {
+		Add-Number $A $B | Should -Be $Expected
+	}
+}</code></pre>
+
+<pre><code># 実行する
+Invoke-Pester -Path .\tests
+
+# CI 用（失敗すると終了コードが 0 以外になる）
+Invoke-Pester -Path .\tests -CI</code></pre>
+
+<h3>新しい版を入れても古い版は消えない</h3>
+
+<p><code>Install-Module Pester -Scope CurrentUser</code> をしても、<code>C:\Program Files\WindowsPowerShell\Modules\Pester\3.4.0</code> はそのまま残ります。<strong>両方が見える状態</strong>になるので、スクリプト側で版を名指しします。</p>
+
+<pre><code># スクリプトの先頭で明示する
+#Requires -Modules @{ ModuleName = 'Pester'; ModuleVersion = '5.0' }
+
+# または読み込み時に指定する
+Import-Module Pester -MinimumVersion 5.0</code></pre>
+
+<div class="callout">
+<strong>同梱の 3.4.0 は <code>Uninstall-Module</code> では消せません。</strong><br>
+これは <code>Install-Module</code> が入れたものではなく <strong>Windows の一部として配置されたファイル</strong>で、<code>Uninstall-Module</code> は「PowerShellGet の管理下にない」として拒否します。フォルダを手で消すには所有権の取得と管理者権限が要り、Windows の更新で戻ることもあります。<br>
+消そうとせず、<strong>新しい版を入れて版を名指しする</strong>のが現実的な対処です。
+</div>
+</section>
+
+<!-- ============ A3.4 ============ -->
+<section class="ch04" id="ch04">
+<h1>A3.4 導入と運用</h1>
+
+<h2>入れるときは <code>-Scope CurrentUser</code> を付ける</h2>
+
+<p><code>Install-Module</code> の既定は <code>AllUsers</code> で、<strong>管理者権限が要り、PC を使う全員に影響します</strong>。個人の作業で入れるなら <code>CurrentUser</code> です。</p>
+
+<pre><code>Install-Module -Name PSScriptAnalyzer -Scope CurrentUser</code></pre>
+
+<div class="table-wrap">
+<table>
+<tr><th></th><th><code>-Scope CurrentUser</code></th><th><code>-Scope AllUsers</code>（既定）</th></tr>
+<tr><td class="nowrap">管理者権限</td><td>不要</td><td>必要</td></tr>
+<tr><td class="nowrap">影響範囲</td><td>自分だけ</td><td>その PC の全ユーザー</td></tr>
+<tr><td class="nowrap">置き場所 <span class="badge b-ps7">pwsh 7</span></td><td class="mono">~\Documents\PowerShell\Modules</td><td class="mono">C:\Program Files\PowerShell\Modules</td></tr>
+<tr><td class="nowrap">置き場所 <span class="badge b-ps51">5.1</span></td><td class="mono">~\Documents\WindowsPowerShell\Modules</td><td class="mono">C:\Program Files\WindowsPowerShell\Modules</td></tr>
+<tr><td class="nowrap">消すとき</td><td>フォルダを消せば済む</td><td>管理者権限が要る</td></tr>
+</table>
+</div>
+
+<p>探しに行く場所は <code>$env:PSModulePath</code> に並んでいます。この PC の <span class="badge b-ps7">pwsh 7</span> ではこうなっていました（ユーザー名は伏せています）。</p>
+
+<pre><code>$env:PSModulePath -split ';'</code></pre>
+
+<pre><code>C:\Users\&lt;username&gt;\Documents\PowerShell\Modules
+C:\Program Files\PowerShell\Modules
+c:\program files\powershell\7\Modules
+C:\Users\&lt;username&gt;\Documents\WindowsPowerShell\Modules
+C:\Users\&lt;username&gt;\AppData\Local\Google\Cloud SDK\google-cloud-sdk\platform\PowerShell
+C:\Program Files\WindowsPowerShell\Modules
+C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules</code></pre>
+
+<p>7 の一覧には <strong>5.1 側の <code>AllUsers</code> フォルダも入っています</strong>。<a href="#ch01">A3.1</a> ⑥ の AzureRM が 7 からも見えていたのはこのためです。他社製ツール（この PC では Google Cloud SDK）が自分の場所を差し込んでいることもあります。</p>
+
+<div class="callout">
+<strong>逆向きには通っていません。</strong><br>
+5.1 の <code>$env:PSModulePath</code> には <code>Documents\PowerShell\Modules</code>（7 の <code>CurrentUser</code>）が<strong>含まれません</strong>。<code>Install-Module -Scope CurrentUser</code> を 7 で実行したモジュールは、5.1 からは見えないままです。<strong>両方で使うなら、両方のシェルで <code>Install-Module</code> を実行します。</strong>
+</div>
+
+<h2>オフライン環境へ配る — <code>Save-Module</code></h2>
+
+<p>インターネットに出られない PC には <code>Install-Module</code> が使えません。出られる PC で<strong>ダウンロードだけ</strong>して、フォルダごと運びます。</p>
+
+<pre><code># 出られる PC で、依存ごとフォルダに落とす
+Save-Module -Name ImportExcel -Path C:\work\offline
+
+# 版を固定したいとき
+Save-Module -Name Pester -RequiredVersion 6.1.0 -Path C:\work\offline</code></pre>
+
+<pre><code>C:\work\offline\
+└── ImportExcel\
+    └── 7.8.10\
+        ├── ImportExcel.psd1
+        ├── ImportExcel.psm1
+        └── ...</code></pre>
+
+<pre><code># 出られない PC で、CurrentUser のモジュールフォルダへ丸ごとコピーする
+Copy-Item C:\work\offline\ImportExcel `
+	-Destination "$HOME\Documents\PowerShell\Modules" -Recurse
+
+# 見えるようになったか確認する
+Get-Module -ListAvailable ImportExcel</code></pre>
+
+<p><code>Save-Module</code> は<strong>依存も一緒に落とします</strong>。<a href="#ch01">A3.1</a> ④ で数えた通り、<code>Microsoft.Graph</code> なら 40 フォルダになります。運ぶ前に <code>Find-Module -IncludeDependencies</code> で件数を見ておくと、想定外の容量に驚かずに済みます。</p>
+
+<div class="callout">
+<strong>持ち込んだファイルはブロックされていることがあります。</strong><br>
+別の PC からコピーした <code>.dll</code> には <a href="03-実行環境.html#ch02">03.2</a> で扱った <code>Zone.Identifier</code>（代替データストリーム）が付き、読み込み時に警告が出るか失敗します。USB メモリやネットワーク共有を経由したときに起きます。<br>
+コピー後に一度通してください: <code>Get-ChildItem &lt;モジュールのフォルダ&gt; -Recurse | Unblock-File</code>
+</div>
+
+<h2>依存を明示する — <code>#Requires -Modules</code></h2>
+
+<p><a href="03-実行環境.html#ch03">03.3</a> の通り、PowerShell には <code>package.json</code> にあたるものがありません。<strong>必要なモジュールはスクリプト自身に書きます。</strong></p>
+
+<pre><code>#Requires -Version 5.1
+#Requires -Modules ImportExcel
+
+# 版まで縛る
+#Requires -Modules @{ ModuleName = 'Pester'; ModuleVersion = '5.0' }
+
+# 複数まとめて
+#Requires -Modules ImportExcel, PSScriptAnalyzer
+
+# 管理者権限も要求できる
+#Requires -RunAsAdministrator</code></pre>
+
+<p>足りない環境で実行すると、<strong>本体が 1 行も動く前に</strong>止まり、不足しているモジュール名がエラーに出ます。<code>Import-Module</code> を本体の途中に書いた場合と違って、<strong>ファイルを半分処理してから失敗する</strong>ことがありません。</p>
+
+<div class="callout">
+<strong><code>#Requires</code> は自動でインストールはしません。</strong><br>
+<code>npm install</code> にあたるコマンドは PowerShell にありません。<strong>止めて知らせるだけ</strong>です。<br>
+配布するなら、<code>#Requires</code> で止まることを前提に、README か添付の <code>.cmd</code> に <code>Install-Module ... -Scope CurrentUser</code> の手順を書き添えてください。
+</div>
+
+<h2>廃止モジュールを掃除する</h2>
+
+<h3>まず何が入っているかを見る</h3>
+
+<pre><code># 導入済みを名前順に見る
+Get-Module -ListAvailable |
+	Select-Object Name, Version, ModuleBase |
+	Sort-Object Name
+
+# 同じ名前で複数の版が入っているものを探す
+Get-Module -ListAvailable |
+	Group-Object Name |
+	Where-Object Count -gt 1 |
+	Select-Object Name, Count
+
+# ギャラリーから入れたものだけに絞る
+Get-InstalledModule | Select-Object Name, Version, InstalledDate</code></pre>
+
+<h3>消す</h3>
+
+<pre><code># PowerShellGet で入れたものを消す
+Uninstall-Module -Name PSWindowsUpdate -AllVersions
+
+# 何が消えるか先に見る
+Uninstall-Module -Name PSWindowsUpdate -AllVersions -WhatIf</code></pre>
+
+<div class="table-wrap">
+<table>
+<tr><th>状況</th><th>判断</th></tr>
+<tr><td>提供終了が公式に告知されている（<code>AzureRM</code>→<code>Az</code>、<code>AzureAD</code>/<code>MSOnline</code>→<code>Microsoft.Graph</code>）</td><td>消す。<strong>補完の候補に残り続けるのが実害</strong></td></tr>
+<tr><td>同じ名前で複数版が入っている</td><td>古いほうを消す。ただし Windows 同梱版は消せないことがある</td></tr>
+<tr><td>入れた覚えがない</td><td>消す前に <code>Get-Command -Module &lt;名前&gt;</code> で何が増えているか見る</td></tr>
+<tr><td><code>Get-InstalledModule</code> に出てこない</td><td>PowerShellGet 管理下ではない。<code>Uninstall-Module</code> は効かない</td></tr>
+</table>
+</div>
+
+<p><a href="#ch01">A3.1</a> ⑥ の <code>AzureRM</code> のように<strong>多数のモジュールに分かれているもの</strong>は、<code>Uninstall-Module AzureRM</code> だけでは束ね役の 1 フォルダしか消えません。<code>AzureRM.*</code> の 53 個も対象にする必要があります。<code>AllUsers</code> に入っているので、いずれにせよ管理者権限が要ります。</p>
+
+<div class="callout">
+<strong>これが 8 年残ったのは、消し方が分からなかったからではありません。</strong><br>
+215 MB は今のディスクでは無視できる大きさで、起動を遅くするわけでもありません。<strong>実害が補完候補の汚れだけなので、掃除の優先順位がいつまでも上がりません。</strong>定期的に <code>Get-InstalledModule</code> を眺める習慣がないかぎり、存在自体を思い出す機会がないまま残り続けます。
+</div>
+
+<h2>会社の PC での制約</h2>
+
+<h3>実行ポリシー</h3>
+
+<p>モジュール自体は実行ポリシーの影響を受けませんが、<strong>モジュールを呼ぶスクリプトが動かなければ意味がありません</strong>。スコープごとの設定を見ます。</p>
+
+<pre><code>Get-ExecutionPolicy -List</code></pre>
+
+<p><span class="badge b-ps51">5.1</span> この PC での結果です。</p>
+
+<pre><code>        Scope ExecutionPolicy
+        ----- ---------------
+MachinePolicy       Undefined
+   UserPolicy       Undefined
+      Process          Bypass
+  CurrentUser       Undefined
+ LocalMachine      Restricted</code></pre>
+
+<p><span class="badge b-ps7">pwsh 7</span> 同じ PC の 7 では <code>LocalMachine</code> が <code>RemoteSigned</code> でした。<strong>実行ポリシーは 5.1 と 7 で別々に保存されています。</strong>「7 では動くのに 5.1 では動かない」の原因がこれということがあります。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>スコープ</th><th>誰が決めるか</th><th>個人で変えられるか</th></tr>
+<tr><td class="nowrap">MachinePolicy</td><td>グループポリシー（情報システム部門）</td><td>変えられない。<strong>他のどのスコープより優先される</strong></td></tr>
+<tr><td class="nowrap">UserPolicy</td><td>グループポリシー（ユーザー単位）</td><td>変えられない</td></tr>
+<tr><td class="nowrap">Process</td><td>起動時の <code>-ExecutionPolicy</code> 引数</td><td>変えられる。<strong>そのプロセスの間だけ</strong></td></tr>
+<tr><td class="nowrap">CurrentUser</td><td><code>Set-ExecutionPolicy -Scope CurrentUser</code></td><td>変えられる（管理者権限なしで）</td></tr>
+<tr><td class="nowrap">LocalMachine</td><td><code>Set-ExecutionPolicy</code></td><td>管理者権限が要る</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>上の出力で <code>Process</code> が <code>Bypass</code> になっているのは、このセッションを <code>-ExecutionPolicy Bypass</code> 付きで起動したからです。</strong><br>
+<code>Process</code> は環境変数 <code>$env:PSExecutionPolicyPreference</code> で子プロセスに引き継がれます。<code>.cmd</code> ランチャー（<a href="A2-テンプレ集.html#ch06">A2.6</a>）から起動したスクリプトが、そこからさらに別のシェルを呼ぶと<strong>Bypass が伝播します</strong>。<code>Get-ExecutionPolicy -List</code> の結果を見るときは、そのシェルをどう起動したかも一緒に思い出してください。
+</div>
+
+<h3>プロキシ</h3>
+
+<p><code>Find-Module</code> が <code>Unable to resolve package source 'https://www.powershellgallery.com/api/v2'</code> で失敗するときは、たいていプロキシです。</p>
+
+<pre><code>$proxy = 'http://proxy.example.co.jp:8080'
+
+# 認証なしのプロキシ
+Find-Module -Name ImportExcel -Proxy $proxy
+
+# 認証ありのプロキシ
+Find-Module -Name ImportExcel -Proxy $proxy -ProxyCredential (Get-Credential)</code></pre>
+
+<p><code>-Proxy</code> と <code>-ProxyCredential</code> は <code>Install-Module</code>・<code>Save-Module</code> にも同じように付きます。毎回打つのが面倒なら、プロファイル（<a href="03-実行環境.html#ch03">03.3</a>）に <code>$PSDefaultParameterValues</code> で既定値を置けます。</p>
+
+<h3><span class="badge b-ps51">5.1</span> もう一段の壁 — TLS 1.2 と古い PowerShellGet</h3>
+
+<p>5.1 では、プロキシを越えても通信自体が失敗することがあります。この PC の 5.1 を見ます。</p>
+
+<pre><code>Get-Module -ListAvailable PowerShellGet | Select-Object Name, Version, ModuleBase</code></pre>
+
+<pre><code>Name       : PowerShellGet
+Version    : 1.0.0.1
+ModuleBase : C:\Program Files\WindowsPowerShell\Modules\PowerShellGet\1.0.0.1</code></pre>
+
+<p>Windows 同梱の <code>1.0.0.1</code> です。7 側は <code>2.2.5</code> でした。この古い版は既定で TLS 1.0/1.1 を使おうとしますが、<strong>PowerShell Gallery は TLS 1.2 以上しか受け付けません</strong>。</p>
+
+<pre><code># そのセッションだけ TLS 1.2 にする
+[Net.ServicePointManager]::SecurityProtocol =
+	[Net.SecurityProtocolType]::Tls12
+
+# そのうえで PowerShellGet 自体を新しくする
+Install-Module -Name PowerShellGet -Scope CurrentUser -Force</code></pre>
+
+<p><strong>5.1 で最初につまずくのはたいていここ</strong>で、モジュール名を間違えているわけでもプロキシの設定が悪いわけでもありません。7 側は <code>2.2.5</code> が同梱されているのでこの手当てが要りません。</p>
+
+<h3>PSResourceGet は 7 に同梱済み</h3>
+
+<p><a href="#ch02">A3.2</a> の一覧に <code>Microsoft.PowerShell.PSResourceGet</code> を入れましたが、この PC ではすでに使える状態でした。</p>
+
+<pre><code>Get-Module -ListAvailable Microsoft.PowerShell.PSResourceGet |
+	Select-Object Name, Version, ModuleBase</code></pre>
+
+<pre><code>Name       : Microsoft.PowerShell.PSResourceGet
+Version    : 1.2.0
+ModuleBase : C:\program files\powershell\7\Modules\Microsoft.PowerShell.PSResourceGet</code></pre>
+
+<p>PowerShell 7.4 以降に同梱されています（この PC は 7.6.3）。一方、<strong>5.1 側では 0 件</strong>でした。<code>Install-PSResource</code> を 5.1 で使いたければ、そちらには別途入れる必要があります。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>やること</th><th>PowerShellGet（旧）</th><th>PSResourceGet（新）</th></tr>
+<tr><td class="nowrap">探す</td><td class="mono">Find-Module</td><td class="mono">Find-PSResource</td></tr>
+<tr><td class="nowrap">入れる</td><td class="mono">Install-Module</td><td class="mono">Install-PSResource</td></tr>
+<tr><td class="nowrap">落とすだけ</td><td class="mono">Save-Module</td><td class="mono">Save-PSResource</td></tr>
+<tr><td class="nowrap">消す</td><td class="mono">Uninstall-Module</td><td class="mono">Uninstall-PSResource</td></tr>
+<tr><td class="nowrap">導入済みを見る</td><td class="mono">Get-InstalledModule</td><td class="mono">Get-InstalledPSResource</td></tr>
+</table>
+</div>
+
+<p>この付録が <code>Find-Module</code> で通しているのは、<strong>5.1 と 7 のどちらでも同じコマンドが使えるから</strong>です。7 だけを相手にする場面では <code>Find-PSResource</code> のほうが速く動きます。</p>
+
+<h2>入れる前の確認</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>確認すること</th><th>使うもの</th></tr>
+<tr><td><code>ProjectUri</code> を実際に開いて、issue に返事が付いているか見たか</td><td class="mono">Find-Module | Format-List ProjectUri</td></tr>
+<tr><td>更新日を <code>PublishedDate</code> で見たか（<code>lastUpdated</code> ではなく）</td><td class="mono">Select-Object PublishedDate</td></tr>
+<tr><td>依存を含めて何フォルダ増えるか数えたか</td><td class="mono">Find-Module -IncludeDependencies</td></tr>
+<tr><td>使うほう（5.1 か 7 か）のシェルで実行しているか</td><td class="mono">$PSVersionTable.PSVersion</td></tr>
+<tr><td><code>-Scope CurrentUser</code> を付けたか</td><td class="mono">Install-Module -Scope CurrentUser</td></tr>
+<tr><td>スクリプトに依存を書いたか</td><td class="mono">#Requires -Modules</td></tr>
+<tr><td>配布先がオフラインなら運ぶ手順を用意したか</td><td class="mono">Save-Module → Copy-Item → Unblock-File</td></tr>
+<tr><td>消し方（後継の有無・<code>Uninstall-Module</code> が効くか）を確認したか</td><td class="mono">Get-InstalledModule</td></tr>
+</table>
+</div>
+</section>
+
+</div>
+
+<footer>
+	<p>PowerShell 学習資料 付録 A3 ／ <a href="../README.html">目次に戻る</a> ／ 関連: <a href="A1-逆引き.html">A1. 逆引き</a> ・ <a href="A2-テンプレ集.html">A2. テンプレ集</a></p>
+</footer>
+
+</body>
+</html>

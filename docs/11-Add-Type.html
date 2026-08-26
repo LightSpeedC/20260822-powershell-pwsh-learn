@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>11. C# を埋め込む — Add-Type</title>
+<style>
+	:root {
+		--navy1: #12224d;
+		--navy2: #2f5fbf;
+		--ink: #1c2330;
+		--ink-soft: #4a5568;
+		--line: #d9dfe8;
+		--code-bg: #f4f6fa;
+
+		/* 章クラス(.chNN)の外に置かれた要素用の既定値 */
+		--accent: var(--navy1);
+		--accent2: var(--navy2);
+		--soft: #f2f5fb;
+	}
+
+	/* 章ごとの虹色アクセント (H: 280 → 0, 280°を7章に均等分割 = 46.7°刻み) */
+	.ch01 { --accent: hsl(280,78%,25%);   --accent2: hsl(280,58%,65%);   --soft: hsl(280,28%,95%); }
+	.ch02 { --accent: hsl(233.3,78%,25%); --accent2: hsl(233.3,58%,65%); --soft: hsl(233.3,28%,95%); }
+	.ch03 { --accent: hsl(186.7,78%,25%); --accent2: hsl(186.7,58%,65%); --soft: hsl(186.7,28%,95%); }
+	.ch04 { --accent: hsl(140,78%,25%);   --accent2: hsl(140,58%,65%);   --soft: hsl(140,28%,95%); }
+	.ch05 { --accent: hsl(93.3,78%,25%);  --accent2: hsl(93.3,58%,65%);  --soft: hsl(93.3,28%,95%); }
+	.ch06 { --accent: hsl(46.7,78%,25%);  --accent2: hsl(46.7,58%,65%);  --soft: hsl(46.7,28%,95%); }
+	.ch07 { --accent: hsl(0,78%,25%);     --accent2: hsl(0,58%,65%);     --soft: hsl(0,28%,95%); }
+
+	* { box-sizing: border-box; }
+
+	body {
+		margin: 0;
+		padding: 0 0 60px;
+		background: #ffffff;
+		color: var(--ink);
+		font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", "Meiryo", sans-serif;
+		line-height: 1.85;
+		font-size: 15.5px;
+	}
+
+	.wrap { max-width: 1400px; margin: 0 auto; padding: 0 30px; }
+
+	/* タイトルバー */
+	.titlebar {
+		background: linear-gradient(135deg, var(--navy1) 0%, var(--navy2) 100%);
+		color: #fff;
+		padding: 34px 30px 30px;
+		box-shadow: 0 6px 18px rgba(18,34,77,0.28);
+	}
+	.titlebar .inner { max-width: 1400px; margin: 0 auto; }
+	.titlebar h1 {
+		margin: 0 0 10px;
+		font-size: 2.1em;
+		letter-spacing: 0.02em;
+		color: #fff;
+	}
+	.titlebar p { margin: 4px 0; font-size: 0.92em; color: #d8e4ff; }
+	.titlebar .meta { font-size: 0.84em; color: #b9cdf5; }
+	.titlebar code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+
+	/* 目次 */
+	nav.toc {
+		background: linear-gradient(180deg, #f2f5fb 0%, #ffffff 100%);
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		padding: 16px 22px;
+		margin: 28px 0;
+		box-shadow: 0 2px 8px rgba(30,50,90,0.07);
+	}
+	nav.toc strong { display: block; color: var(--navy1); margin-bottom: 10px; }
+	nav.toc ol {
+		margin: 0;
+		padding-left: 0;
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		counter-reset: toc;
+	}
+	nav.toc li { counter-increment: toc; margin: 0; }
+	nav.toc a {
+		display: -webkit-box;
+		width: 310px;
+		max-width: 100%;
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		text-decoration: none;
+		text-align: left;
+		border-radius: 6px;
+		padding: 7px 10px;
+		font-size: 0.88em;
+		font-weight: 600;
+		line-height: 1.4;
+		white-space: normal;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		box-shadow: 0 1px 4px rgba(20,30,60,0.18);
+	}
+	nav.toc a::before { content: "11." counter(toc) " "; opacity: 0.85; }
+	nav.toc a:hover { text-decoration: underline; }
+
+	/* 章 */
+	section {
+		background: linear-gradient(180deg, var(--soft) 0%, #ffffff 42%);
+		border-radius: 12px;
+		padding: 4px 26px 26px;
+		margin: 34px 0;
+		border: 1px solid var(--line);
+	}
+
+	section h1 {
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		font-size: 1.5em;
+		margin: 26px 0 20px;
+		padding: 14px 20px;
+		border-radius: 9px;
+		box-shadow: 0 5px 14px rgba(30,40,70,0.28);
+	}
+	section h1 code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+
+	h2 {
+		font-size: 1.16em;
+		color: var(--accent);
+		border-left: 7px solid var(--accent);
+		background: linear-gradient(90deg, var(--soft) 0%, rgba(255,255,255,0) 88%);
+		padding: 6px 12px;
+		margin: 30px 0 12px;
+		border-radius: 0 6px 6px 0;
+	}
+
+	h3 {
+		font-size: 1.02em;
+		color: var(--accent);
+		margin: 20px 0 8px;
+		padding-bottom: 3px;
+		border-bottom: 2px dotted var(--accent2);
+		display: inline-block;
+	}
+
+	p { margin: 10px 0; }
+	ul, ol { margin: 10px 0; padding-left: 1.6em; }
+	li { margin: 6px 0; }
+
+	code {
+		background: var(--code-bg);
+		border: 1px solid var(--line);
+		border-radius: 4px;
+		padding: 1px 6px;
+		font-family: "BIZ UDゴシック", "ＭＳ ゴシック", Consolas, "Cascadia Mono", monospace;
+		font-size: 0.9em;
+		color: #17335f;
+	}
+
+	pre {
+		background: linear-gradient(180deg, #f7f9fd 0%, #eef2f9 100%);
+		border: 1px solid var(--line);
+		border-left: 5px solid var(--accent2);
+		border-radius: 8px;
+		padding: 13px 16px;
+		overflow-x: auto;
+		font-size: 0.88em;
+		line-height: 1.6;
+	}
+	pre code { background: none; border: none; padding: 0; color: #1b2b46; }
+
+	.table-wrap { overflow-x: auto; margin: 16px 0; }
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 0.93em;
+		box-shadow: 0 2px 7px rgba(40,55,90,0.12);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+	th {
+		background: linear-gradient(100deg, var(--accent) 0%, var(--accent2) 100%);
+		color: #fff;
+		text-align: left;
+		padding: 9px 12px;
+		font-weight: 600;
+	}
+	th code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+	td { padding: 9px 12px; border-bottom: 1px solid var(--line); background: #fff; vertical-align: top; }
+	tr:nth-child(even) td { background: #fafbfe; }
+	td.nowrap { white-space: nowrap; }
+	td.mono { font-family: "BIZ UDゴシック", "ＭＳ ゴシック", Consolas, monospace; white-space: nowrap; }
+	td.num { text-align: right; white-space: nowrap; }
+
+	/* バッジ */
+	.badge {
+		display: inline-block;
+		font-size: 0.78em;
+		font-weight: 700;
+		color: #fff;
+		border-radius: 4px;
+		padding: 1px 9px;
+		margin-right: 7px;
+		letter-spacing: 0.04em;
+		white-space: nowrap;
+	}
+	.b-good { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
+	.b-bad  { background: linear-gradient(100deg, #a51f22, #e05a5c); }
+	.b-none { background: linear-gradient(100deg, #5a6472, #97a1ae); }
+	.b-warn { background: linear-gradient(100deg, #b8620a, #f0a548); }
+	.b-ps7  { background: linear-gradient(100deg, #1a5fa8, #4d9ae0); }
+	.b-ps51 { background: linear-gradient(100deg, #5b2d82, #9a6bc4); }
+
+	.callout {
+		background: linear-gradient(180deg, var(--soft) 0%, #ffffff 100%);
+		border: 1px solid var(--accent2);
+		border-left: 6px solid var(--accent);
+		border-radius: 0 8px 8px 0;
+		padding: 12px 18px;
+		margin: 16px 0;
+	}
+	.callout strong { color: var(--accent); }
+
+	/* SVG図 */
+	figure { margin: 20px 0; text-align: center; }
+	figure svg {
+		max-width: 100%;
+		height: auto;
+		font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", "Meiryo", sans-serif;
+	}
+	figcaption { font-size: 0.84em; color: var(--ink-soft); margin-top: 6px; }
+
+	footer {
+		max-width: 1400px;
+		margin: 40px auto 0;
+		padding: 18px 30px 0;
+		border-top: 2px solid var(--line);
+		color: var(--ink-soft);
+		font-size: 0.86em;
+	}
+	footer a { color: var(--navy2); }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>11. C# を埋め込む — Add-Type</h1>
+		<p>PowerShell の中で C# をコンパイルして呼ぶ。速度と Win32 API のための最後の手段</p>
+		<p class="meta">📅 作成: 2026-08-26 / 更新: 2026-08-26 ／ 対象: Windows PowerShell 5.1 ＋ PowerShell 7</p>
+	</div>
+</div>
+
+<div class="wrap">
+
+<h2>この章で何ができるようになるか</h2>
+
+<ul>
+	<li><code>Add-Type</code> で C# のクラスをその場でコンパイルし、PowerShell から呼べる</li>
+	<li>5.1 と 7 で<strong>コンパイラそのものが違う</strong>ことを理解し、動かないコードの原因を切り分けられる</li>
+	<li><code>DllImport</code> で <strong>Win32 API</strong> を直接呼べる</li>
+	<li>「C# にすべきか」を<strong>実測で判断</strong>できる。そして <code>csc.exe</code> で exe にする選択肢も持てる</li>
+</ul>
+
+<div class="callout">
+<strong>掲載しているコード・出力・エラーメッセージは、すべて Windows PowerShell 5.1 と PowerShell 7 の両方で実行して採取したものです。</strong><br>
+測定環境は Windows PowerShell <strong>5.1.26100.9168</strong>（.NET Framework 4.8.9337.0）と PowerShell <strong>7.6.3</strong>（.NET 10.0.9）。所要時間の数値は同一 PC・同一条件での実測値で、実行のたびに数割は揺れます。<strong>桁が変わるかどうか</strong>だけを見てください。
+</div>
+
+<nav class="toc">
+	<strong>目次</strong>
+	<ol>
+		<li class="ch01"><a href="#ch01">なぜ C# を書くのか</a></li>
+		<li class="ch02"><a href="#ch02">Add-Type -TypeDefinition の基本</a></li>
+		<li class="ch03"><a href="#ch03">5.1 と 7 でコンパイラが違う</a></li>
+		<li class="ch04"><a href="#ch04">同じ型を2回定義できない</a></li>
+		<li class="ch05"><a href="#ch05">Win32 API を呼ぶ（P/Invoke）</a></li>
+		<li class="ch06"><a href="#ch06">使いどころの見極め</a></li>
+		<li class="ch07"><a href="#ch07">事前にコンパイルして exe を配る</a></li>
+	</ol>
+</nav>
+
+<!-- ============ 11.1 ============ -->
+<section class="ch01" id="ch01">
+<h1>11.1 なぜ C# を書くのか</h1>
+
+<h2>PowerShell が苦手なのは「回数」</h2>
+
+<p>PowerShell は<strong>1行ごとに解釈しながら実行する</strong>言語です。1回の処理が重い分には差が出ませんが、<strong>同じ処理を何十万回も回す</strong>と、その解釈のコストがそのまま積み上がります。</p>
+
+<p>1 から 300 万までの合計を求めるだけの処理を、3通りで測りました。</p>
+
+<pre><code>$n = 3000000
+
+Add-Type -TypeDefinition @"
+public static class Bench
+{
+    public static long SumTo(int n)
+    {
+        long s = 0;
+        for (int i = 1; i &lt;= n; i++) { s += i; }
+        return s;
+    }
+}
+"@
+
+$t1 = Measure-Command { $sum = 0L; for ($i = 1; $i -le $n; $i++) { $sum += $i } }
+$t2 = Measure-Command { $null = (1..$n | Measure-Object -Sum).Sum }
+$t3 = Measure-Command { $null = [Bench]::SumTo($n) }</code></pre>
+
+<div class="table-wrap">
+<table>
+<tr><th>書き方</th><th>5.1</th><th>pwsh 7</th><th>備考</th></tr>
+<tr><td class="nowrap">PowerShell の <code>for</code></td><td class="num">9,524 ms</td><td class="num">3,204 ms</td><td>素直に書いた場合</td></tr>
+<tr><td class="nowrap">パイプライン <code>Measure-Object</code></td><td class="num">9,258 ms</td><td class="num">3,902 ms</td><td>速くはならない</td></tr>
+<tr><td class="nowrap"><code>Add-Type</code> の C#</td><td class="num">6 ms</td><td class="num">13 ms</td><td><span class="badge b-good">1000 倍超</span></td></tr>
+</table>
+</div>
+
+<p>差は 250 倍から 1700 倍です。<strong>同じアルゴリズムでこれだけ開く</strong>のは、言語の実行方式が違うためで、書き方の工夫では埋まりません。</p>
+
+<h2>そもそも PowerShell では書けないもの</h2>
+
+<p>速度とは別に、<strong>PowerShell の文法では表現できない</strong>ものがあります。代表が<strong>値型（struct）</strong>と、それを要求する Win32 API です。</p>
+
+<pre><code>Add-Type -TypeDefinition @"
+using System.Runtime.InteropServices;
+
+[StructLayout(LayoutKind.Sequential)]
+public struct RECT { public int Left, Top, Right, Bottom; }
+"@
+
+class PsPoint { [int]$X; [int]$Y }      # PowerShell の class
+
+[RECT].IsValueType        # → True
+[PsPoint].IsValueType     # → False
+[System.Runtime.InteropServices.Marshal]::SizeOf([type]'RECT')   # → 16</code></pre>
+
+<p>PowerShell の <code>class</code> は<strong>必ず参照型</strong>になります。メモリ上の並びを固定した構造体は作れないため、<code>RECT</code> のような構造体を受け渡す API は C# を経由するしかありません。</p>
+
+<h2>それでも、まず PowerShell で書く</h2>
+
+<figure>
+<svg viewBox="0 0 800 330" role="img" aria-label="C# を書くかどうかの判断フロー">
+	<defs>
+		<linearGradient id="g-11-1a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(255,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(255,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-11-1b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(200,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(200,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-11-1c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-11-1d" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-11-1e" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="14" y="20" width="176" height="66" rx="9" fill="url(#g-11-1a)"/>
+	<text x="102" y="46" fill="#fff" font-size="13.5" font-weight="700" text-anchor="middle">① PowerShell で書く</text>
+	<text x="102" y="68" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">まず動くものを作る</text>
+
+	<line x1="196" y1="53" x2="212" y2="53" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="212,46 228,53 212,60" fill="var(--ink-soft)"/>
+
+	<rect x="234" y="20" width="176" height="66" rx="9" fill="url(#g-11-1b)"/>
+	<text x="322" y="46" fill="#fff" font-size="13.5" font-weight="700" text-anchor="middle">② 実測する</text>
+	<text x="322" y="68" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Measure-Command</text>
+
+	<line x1="416" y1="53" x2="432" y2="53" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="432,46 448,53 432,60" fill="var(--ink-soft)"/>
+
+	<rect x="454" y="20" width="176" height="66" rx="9" fill="url(#g-11-1c)"/>
+	<text x="542" y="46" fill="#fff" font-size="13.5" font-weight="700" text-anchor="middle">③ 許容できる？</text>
+	<text x="542" y="68" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">できるなら、ここで終わり</text>
+
+	<line x1="636" y1="53" x2="652" y2="53" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="652,46 668,53 652,60" fill="var(--ink-soft)"/>
+
+	<rect x="674" y="20" width="112" height="66" rx="9" fill="url(#g-11-1c)"/>
+	<text x="730" y="52" fill="#fff" font-size="13.5" font-weight="700" text-anchor="middle">完成</text>
+	<text x="730" y="72" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">C# は不要</text>
+
+	<line x1="542" y1="92" x2="542" y2="118" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="535,118 542,134 549,118" fill="var(--ink-soft)"/>
+	<text x="576" y="110" fill="var(--ink-soft)" font-size="11.5" font-weight="700" text-anchor="middle">遅い</text>
+
+	<rect x="410" y="140" width="264" height="66" rx="9" fill="url(#g-11-1d)"/>
+	<text x="542" y="166" fill="#fff" font-size="13.5" font-weight="700" text-anchor="middle">④ .NET の型に置き換える</text>
+	<text x="542" y="188" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">StringBuilder / HashSet / List</text>
+
+	<line x1="542" y1="212" x2="542" y2="238" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="535,238 542,254 549,238" fill="var(--ink-soft)"/>
+	<text x="602" y="230" fill="var(--ink-soft)" font-size="11.5" font-weight="700" text-anchor="middle">それでも遅い</text>
+
+	<rect x="410" y="260" width="264" height="60" rx="9" fill="url(#g-11-1e)"/>
+	<text x="542" y="285" fill="#fff" font-size="13.5" font-weight="700" text-anchor="middle">⑤ Add-Type で C# を書く</text>
+	<text x="542" y="306" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">ここまで来て初めて</text>
+
+	<rect x="14" y="140" width="376" height="180" rx="9" fill="#fff" stroke="var(--accent2)" stroke-width="2"/>
+	<text x="202" y="166" fill="var(--accent)" font-size="13.5" font-weight="700" text-anchor="middle">④ で終わることが多い</text>
+	<text x="202" y="192" fill="var(--ink)" font-size="12.5" text-anchor="middle">文字列連結 20,000 回の実測（pwsh 7）</text>
+	<text x="202" y="216" fill="var(--ink)" font-size="12.5" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">$s += "..."      1,514 ms</text>
+	<text x="202" y="238" fill="var(--ink)" font-size="12.5" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">StringBuilder      200 ms</text>
+	<text x="202" y="260" fill="var(--ink)" font-size="12.5" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Add-Type (C#)        4 ms</text>
+	<text x="202" y="288" fill="var(--ink-soft)" font-size="12" text-anchor="middle">.NET の型に変えるだけで 7 倍。</text>
+	<text x="202" y="308" fill="var(--ink-soft)" font-size="12" text-anchor="middle">C# を足す価値があるかは、そのあとの話</text>
+</svg>
+<figcaption>図 11.1 — <code>Add-Type</code> は最初の選択肢ではなく、④ を試したあとの選択肢</figcaption>
+</figure>
+
+<h3>文字列連結の実測</h3>
+
+<pre><code>$n = 20000
+$t1 = Measure-Command { $s = ''; for ($i = 0; $i -lt $n; $i++) { $s += "$i," } }
+$t2 = Measure-Command {
+    $sb = [System.Text.StringBuilder]::new()
+    for ($i = 0; $i -lt $n; $i++) { [void]$sb.Append($i).Append(',') }
+    $null = $sb.ToString()
+}
+$t3 = Measure-Command { $null = [StrBench]::Build($n) }   # C# 側で StringBuilder を回す</code></pre>
+
+<div class="table-wrap">
+<table>
+<tr><th>書き方</th><th>5.1</th><th>pwsh 7</th></tr>
+<tr><td class="nowrap">PowerShell で <code>$s += "..."</code></td><td class="num">1,525 ms</td><td class="num">1,514 ms</td></tr>
+<tr><td class="nowrap">PowerShell から <code>StringBuilder</code></td><td class="num">56 ms</td><td class="num">200 ms</td></tr>
+<tr><td class="nowrap"><code>Add-Type</code> の C#</td><td class="num">16 ms</td><td class="num">4 ms</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>この表の <code>StringBuilder</code> の行だけ、5.1 のほうが 7 より速くなっています。</strong><br>
+何度測っても 5.1 が 48〜58 ms、7 が 191〜200 ms でした。<strong>「7 のほうが必ず速い」は成り立ちません</strong>。.NET のメソッド1回ごとの呼び出しコストは 7 のほうが高く、<code>for</code> ループ自体の速さ（7 が約3倍速い）と打ち消し合った結果です。<br>
+自分の処理がどちらの性質を持つかは、コードを見ても分かりません。<strong>両方の環境で測る</strong>以外に方法はありません。
+</div>
+
+<div class="callout">
+<strong>Java・C# の経験がある方へ</strong><br>
+JIT コンパイルされる言語から来ると「ループ 300 万回」は一瞬で終わる感覚があると思いますが、PowerShell では<strong>数秒かかる</strong>のが普通です。逆に <code>Get-ChildItem</code> や <code>Where-Object</code> のような1回あたりが重い処理では差は出ません。<br>
+判断の基準は「処理の重さ」ではなく<strong>「PowerShell の文を何回評価するか」</strong>です。
+</div>
+</section>
+
+<!-- ============ 11.2 ============ -->
+<section class="ch02" id="ch02">
+<h1>11.2 <code>Add-Type -TypeDefinition</code> の基本</h1>
+
+<h2>C# のソースを文字列で渡すだけ</h2>
+
+<p><code>Add-Type -TypeDefinition</code> に C# のソースコードを文字列で渡すと、<strong>その場でコンパイルされ、そのセッションで型が使えるようになります</strong>。プロジェクトファイルもビルド手順もありません。</p>
+
+<pre><code>Add-Type -TypeDefinition @"
+public class Temperature
+{
+    public double Celsius { get; private set; }
+    public Temperature(double celsius) { Celsius = celsius; }
+    public double ToFahrenheit() { return Celsius * 9.0 / 5.0 + 32.0; }
+    public static Temperature FromFahrenheit(double f) { return new Temperature((f - 32.0) * 5.0 / 9.0); }
+    public override string ToString() { return Celsius.ToString("0.0") + " degC"; }
+}
+"@</code></pre>
+
+<p>ソースは <code>@"</code> 〜 <code>"@</code>（ヒアストリング）で囲みます。C# の中に <code>$</code> が現れると PowerShell が変数展開してしまうため、<strong>変数を埋め込まないなら <code>@'</code> 〜 <code>'@</code>（シングルクォート版）のほうが安全</strong>です。</p>
+
+<h2>3通りの呼び方</h2>
+
+<pre><code>$t = [Temperature]::new(25)              # コンストラクタ（推奨）
+$t.ToFahrenheit()                        # → 77
+$t.ToString()                            # → 25.0 degC
+
+$t2 = New-Object Temperature 100         # New-Object でも同じ
+$t2.ToFahrenheit()                       # → 212
+
+[Temperature]::FromFahrenheit(451)       # 静的メソッド → 232.8 degC</code></pre>
+
+<p>C# 側で書いた <code>public</code> メンバは、そのまま PowerShell のメンバとして見えます。</p>
+
+<pre><code>PS&gt; $t | Get-Member -MemberType Method, Property | Select-Object Name, MemberType
+
+Name         MemberType
+----         ----------
+Equals           Method
+GetHashCode      Method
+GetType          Method
+ToFahrenheit     Method
+ToString         Method
+Celsius        Property</code></pre>
+
+<h2><code>-PassThru</code> で型情報を受け取る</h2>
+
+<p><code>Add-Type</code> は既定では何も出力しません。<code>-PassThru</code> を付けると、<strong>作られた型（<code>System.Type</code>）が返ります</strong>。</p>
+
+<pre><code>PS&gt; Add-Type -TypeDefinition $src -PassThru | Format-Table Name, IsPublic, BaseType -AutoSize
+
+Name        IsPublic BaseType
+----        -------- --------
+Temperature     True System.Object</code></pre>
+
+<h2>できたアセンブリはどこにあるか</h2>
+
+<p>ディスクには何も残りません。<strong>メモリ上のアセンブリ</strong>として、実行中のプロセスにだけ読み込まれます。</p>
+
+<pre><code>PS&gt; Add-Type -TypeDefinition 'public class Loc { }'
+PS&gt; "[" + [Loc].Assembly.Location + "]"
+[]
+PS&gt; [Loc].Assembly.FullName.Split(',')[0]
+xi04rcin</code></pre>
+
+<p><code>Location</code> は<strong>空文字列</strong>、アセンブリ名は<strong>実行のたびに変わるランダムな文字列</strong>です。この「ファイルとして残らない」性質が、次章以降の制約（型を作り直せない・毎回コンパイル時間がかかる）の原因になります。</p>
+
+<div class="callout">
+<strong>5.1 では、<code>public</code> なメソッドもプロパティも無いクラスを定義すると警告が出ます。</strong><br>
+<code>WARNING: The generated type defines no public methods or properties.</code><br>
+上の <code>Loc</code> のような空クラスがこれにあたります。<span class="badge b-ps7">pwsh 7</span>では同じコードでも警告は出ません。
+</div>
+
+<div class="callout">
+<strong>Java・C# の経験がある方へ</strong><br>
+<code>[Temperature]::new(25)</code> の <code>::</code> は<strong>静的メンバへのアクセス</strong>で、C# の <code>.</code> にあたります。コンストラクタも <code>new</code> という名前の静的メソッドとして扱われるため、この書き方になります。<br>
+インスタンスのメンバは <code>$t.ToFahrenheit()</code> のように <code>.</code> です。<strong><code>::</code> が静的、<code>.</code> がインスタンス</strong>と覚えてください。
+</div>
+</section>
+
+<!-- ============ 11.3 ============ -->
+<section class="ch03" id="ch03">
+<h1>11.3 5.1 と 7 でコンパイラが違う</h1>
+
+<h2>別プロセスの <code>csc.exe</code> か、プロセス内の Roslyn か</h2>
+
+<figure>
+<svg viewBox="0 0 800 286" role="img" aria-label="5.1 と 7 の Add-Type のコンパイル経路の違い">
+	<defs>
+		<linearGradient id="g-11-3a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(280,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(280,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-11-3b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(200,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(200,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-11-3c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-11-3d" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<text x="200" y="20" fill="var(--ink)" font-size="13.5" font-weight="700" text-anchor="middle">Windows PowerShell 5.1</text>
+	<text x="600" y="20" fill="var(--ink)" font-size="13.5" font-weight="700" text-anchor="middle">PowerShell 7</text>
+	<line x1="400" y1="6" x2="400" y2="232" stroke="var(--line)" stroke-width="2" stroke-dasharray="5 4"/>
+
+	<rect x="26" y="34" width="348" height="52" rx="8" fill="url(#g-11-3a)"/>
+	<text x="200" y="56" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">Add-Type -TypeDefinition</text>
+	<text x="200" y="76" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">ソース文字列を受け取る</text>
+
+	<line x1="200" y1="90" x2="200" y2="104" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="193,104 200,120 207,104" fill="var(--ink-soft)"/>
+
+	<rect x="26" y="124" width="348" height="52" rx="8" fill="url(#g-11-3b)"/>
+	<text x="200" y="146" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">一時 .cs ファイルに書き出す</text>
+	<text x="200" y="166" fill="#fff" font-size="11" text-anchor="middle" opacity="0.9" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">%TEMP%\xxxxxxxx.0.cs</text>
+
+	<line x1="200" y1="180" x2="200" y2="194" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="193,194 200,210 207,194" fill="var(--ink-soft)"/>
+
+	<rect x="26" y="214" width="348" height="60" rx="8" fill="url(#g-11-3c)"/>
+	<text x="200" y="238" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">csc.exe を別プロセスで起動</text>
+	<text x="200" y="258" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">.NET Framework 同梱 ／ C# 5 まで</text>
+
+	<rect x="426" y="34" width="348" height="52" rx="8" fill="url(#g-11-3a)"/>
+	<text x="600" y="56" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">Add-Type -TypeDefinition</text>
+	<text x="600" y="76" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">ソース文字列を受け取る</text>
+
+	<line x1="600" y1="90" x2="600" y2="194" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="593,194 600,210 607,194" fill="var(--ink-soft)"/>
+	<text x="600" y="150" fill="var(--ink-soft)" font-size="12" font-weight="700" text-anchor="middle">ファイルを経由しない</text>
+
+	<rect x="426" y="214" width="348" height="60" rx="8" fill="url(#g-11-3d)"/>
+	<text x="600" y="238" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">Roslyn がプロセス内でコンパイル</text>
+	<text x="600" y="258" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">最新の C# ／ 2回目以降は高速</text>
+</svg>
+<figcaption>図 11.2 — エラーメッセージに一時ファイルのパスが出るかどうかで、どちらが動いているか判別できる</figcaption>
+</figure>
+
+<p>この違いは、<strong>エラーメッセージの形</strong>にそのまま現れます。同じ間違った C# を両方に食わせた結果です。</p>
+
+<pre><code># 5.1 — ファイルパスが出る。CS 番号が無い
+C:\Users\&lt;username&gt;\AppData\Local\Temp\wp4uszhu.0.cs(1) : 'int' は無効です。
+
+# pwsh 7 — 行と列。CS 番号が付く
+(1,76): error CS0234: 型または名前空間の名前 'Forms' が名前空間 'System.Windows' に存在しません (アセンブリ参照があることを確認してください)</code></pre>
+
+<h2>書ける C# のバージョンが違う</h2>
+
+<p>5.1 が呼ぶ <code>csc.exe</code> は <strong>C# 5 までしか受け付けません</strong>。同じソースを両方でコンパイルした結果です。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>C# の機能</th><th>例</th><th>5.1</th><th>pwsh 7</th></tr>
+<tr><td class="nowrap"><code>var</code>（C# 3）</td><td class="mono">var x = 1;</td><td><span class="badge b-good">OK</span></td><td><span class="badge b-good">OK</span></td></tr>
+<tr><td class="nowrap"><code>async</code>/<code>await</code>（C# 5）</td><td class="mono">await Task.Delay(1);</td><td><span class="badge b-good">OK</span></td><td><span class="badge b-good">OK</span></td></tr>
+<tr><td class="nowrap">式形式メンバ（C# 6）</td><td class="mono">public static string N =&gt; "a";</td><td><span class="badge b-bad">NG</span></td><td><span class="badge b-good">OK</span></td></tr>
+<tr><td class="nowrap"><code>nameof</code>（C# 6）</td><td class="mono">nameof(L2)</td><td><span class="badge b-bad">NG</span></td><td><span class="badge b-good">OK</span></td></tr>
+<tr><td class="nowrap">文字列補間（C# 6）</td><td class="mono">$"value={n}"</td><td><span class="badge b-bad">NG</span></td><td><span class="badge b-good">OK</span></td></tr>
+<tr><td class="nowrap"><code>out var</code>（C# 7）</td><td class="mono">int.TryParse(s, out int v)</td><td><span class="badge b-bad">NG</span></td><td><span class="badge b-good">OK</span></td></tr>
+<tr><td class="nowrap"><code>record</code>・<code>init</code>（C# 9）</td><td class="mono">public record M2(int X);</td><td><span class="badge b-bad">NG</span></td><td><span class="badge b-good">OK</span></td></tr>
+<tr><td class="nowrap">ファイルスコープ名前空間（C# 10）</td><td class="mono">namespace Demo;</td><td><span class="badge b-bad">NG</span></td><td><span class="badge b-good">OK</span></td></tr>
+<tr><td class="nowrap">生文字列リテラル（C# 11）</td><td class="mono">"""abc"""</td><td><span class="badge b-bad">NG</span></td><td><span class="badge b-good">OK</span></td></tr>
+</table>
+</div>
+
+<p>5.1 で C# 6 の文字列補間を使ったときの実際のエラーです。<code>$</code> が理解できていません。</p>
+
+<pre><code>C:\Users\&lt;username&gt;\AppData\Local\Temp\tjem3wc3.0.cs(4) : 文字 '$' は予期されていません。</code></pre>
+
+<div class="callout">
+<strong>両対応させるなら、C# 5 の範囲で書くのが唯一の方法です。</strong><br>
+具体的には <code>var</code> と <code>async</code> までを使い、<strong>文字列補間・式形式メンバ・<code>out var</code>・<code>nameof</code> は使わない</strong>。文字列の組み立ては <code>"a" + b</code> か <code>string.Format()</code> にします。<br>
+7 専用だと割り切れるなら、この制約はまったく気にしなくて構いません。
+</div>
+
+<h2><code>-Language</code> と <code>-CompilerOptions</code></h2>
+
+<p>5.1 は C# 以外の言語も受け付けます。7 は <strong>C# のみ</strong>です。</p>
+
+<pre><code>PS&gt; $t = (Get-Command Add-Type).Parameters['Language'].ParameterType
+PS&gt; [Enum]::GetNames($t) -join ', '
+
+# 5.1 → CSharp, CSharpVersion3, CSharpVersion2, VisualBasic, JScript
+# 7   → CSharp</code></pre>
+
+<p>実際に 5.1 で Visual Basic のクラスを定義すると通ります。7 では<strong>パラメータの束縛の時点で</strong>失敗します。</p>
+
+<pre><code># pwsh 7
+Add-Type: Cannot bind parameter 'Language'. Cannot convert value "VisualBasic" to type
+"Microsoft.PowerShell.Commands.Language". Error: "Unable to match the identifier name
+VisualBasic to a valid enumerator name. ...</code></pre>
+
+<p>コンパイラに追加のオプションを渡すパラメータも、名前ごと入れ替わっています。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>目的</th><th>5.1</th><th>pwsh 7</th></tr>
+<tr><td class="nowrap">コンパイラへの追加指定</td><td class="mono">-CompilerParameters</td><td class="mono">-CompilerOptions</td></tr>
+<tr><td>渡すもの</td><td><code>CompilerParameters</code> オブジェクト（CodeDom）</td><td><code>csc</code> のスイッチを文字列で</td></tr>
+</table>
+</div>
+
+<h2><code>-ReferencedAssemblies</code> の意味が逆になる</h2>
+
+<p>ここが最も混乱する箇所です。<strong>同じコードで、5.1 は参照を足さないと通らず、7 は参照を足すと通らなくなります</strong>。</p>
+
+<pre><code>$src = 'using System.Xml.Linq;
+public class R { public static string V() { return XDocument.Parse("&lt;a/&gt;").Root.Name.LocalName; } }'</code></pre>
+
+<div class="table-wrap">
+<table>
+<tr><th>指定</th><th>5.1</th><th>pwsh 7</th></tr>
+<tr><td class="nowrap">指定なし</td><td><span class="badge b-bad">NG</span><code>System</code> に <code>Xml</code> が無い</td><td><span class="badge b-good">OK</span></td></tr>
+<tr><td class="nowrap"><code>-ReferencedAssemblies System.Xml.Linq</code></td><td><span class="badge b-bad">NG</span><code>System.Xml</code> も要る</td><td><span class="badge b-bad">NG</span>CS0103</td></tr>
+<tr><td class="nowrap"><code>-ReferencedAssemblies System.Xml.Linq, System.Xml</code></td><td><span class="badge b-good">OK</span></td><td>—</td></tr>
+<tr><td class="nowrap"><code>-ReferencedAssemblies &lt;dll のフルパス&gt;</code></td><td>—</td><td><span class="badge b-good">OK</span></td></tr>
+<tr><td class="nowrap"><code>-ReferencedAssemblies System.Windows.Forms</code>（WinForms を使う場合）</td><td><span class="badge b-good">OK</span></td><td><span class="badge b-good">OK</span></td></tr>
+</table>
+</div>
+
+<p>7 の挙動は「参照が足りない」のではなく、<strong><code>-ReferencedAssemblies</code> を指定すると既定の参照集合が置き換わる</strong>ためです。無関係なアセンブリを1つ指定しただけで、それまで見えていた <code>System.Xml</code> が見えなくなります。</p>
+
+<pre><code># pwsh 7 — System.Windows.Forms を指定しただけで System.Xml が消える
+Add-Type -TypeDefinition $src -ReferencedAssemblies 'System.Windows.Forms'
+(1,14): error CS0234: 型または名前空間の名前 'Xml' が名前空間 'System' に存在しません</code></pre>
+
+<div class="callout">
+<strong><span class="badge b-ps7">pwsh 7</span>まず <code>-ReferencedAssemblies</code> を付けずに試してください。</strong><br>
+7 の既定の参照集合には、そのプロセスに読み込み済みのアセンブリが含まれます。PowerShell が起動時に読み込んでいるものは<strong>何も指定しなくても使えます</strong>。<br>
+それでも足りないときだけ、<strong><code>[型].Assembly.Location</code> で取ったフルパス</strong>を渡します。<code>System.Xml.Linq</code> のようなアセンブリ名を渡すと、実体のない転送専用の dll を掴んで <code>CS0103</code> になります。
+</div>
+
+<h2>コンパイルにかかる時間も違う</h2>
+
+<p>同じセッションで、内容の違うクラスを3回続けて定義したときの所要時間です。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>回数</th><th>5.1</th><th>pwsh 7</th></tr>
+<tr><td class="nowrap">1 回目</td><td class="num">182 ms</td><td class="num">686 ms</td></tr>
+<tr><td class="nowrap">2 回目</td><td class="num">132 ms</td><td class="num">23 ms</td></tr>
+<tr><td class="nowrap">3 回目</td><td class="num">125 ms</td><td class="num">19 ms</td></tr>
+</table>
+</div>
+
+<p>5.1 は毎回 <code>csc.exe</code> というプロセスを起動するため、<strong>何回目でも同じくらいかかります</strong>。7 は初回に Roslyn を読み込むぶん重いものの、<strong>2回目以降は 20 ms 程度</strong>まで落ちます。</p>
+</section>
+
+<!-- ============ 11.4 ============ -->
+<section class="ch04" id="ch04">
+<h1>11.4 同じ型を2回定義できない</h1>
+
+<h2>一度作った型は、そのセッションでは変えられない</h2>
+
+<p><code>Add-Type</code> で作った型は、実行中のプロセスに<strong>読み込まれたまま外れません</strong>。同じ名前で内容の違う型を定義しようとすると、エラーになります。</p>
+
+<figure>
+<svg viewBox="0 0 800 292" role="img" aria-label="型の再定義がエラーになる仕組み">
+	<defs>
+		<linearGradient id="g-11-4a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(200,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(200,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-11-4b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-11-4c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="20" y="24" width="760" height="112" rx="10" fill="#fff" stroke="var(--accent2)" stroke-width="2"/>
+	<text x="400" y="48" fill="var(--accent)" font-size="13.5" font-weight="700" text-anchor="middle">ひとつの PowerShell プロセス</text>
+
+	<rect x="46" y="62" width="200" height="56" rx="8" fill="url(#g-11-4a)"/>
+	<text x="146" y="86" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">1回目の Add-Type</text>
+	<text x="146" y="106" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">Point2 が載る</text>
+
+	<line x1="252" y1="90" x2="268" y2="90" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="268,83 284,90 268,97" fill="var(--ink-soft)"/>
+
+	<rect x="290" y="62" width="200" height="56" rx="8" fill="url(#g-11-4a)"/>
+	<text x="390" y="86" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">Point2 は使える</text>
+	<text x="390" y="106" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">アンロードはできない</text>
+
+	<line x1="496" y1="90" x2="512" y2="90" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="512,83 528,90 512,97" fill="var(--ink-soft)"/>
+
+	<rect x="534" y="62" width="220" height="56" rx="8" fill="url(#g-11-4b)"/>
+	<text x="644" y="86" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">2回目の Add-Type</text>
+	<text x="644" y="106" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">already exists でエラー</text>
+
+	<text x="400" y="164" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="middle">開発中の回避策</text>
+
+	<rect x="20" y="180" width="245" height="96" rx="9" fill="url(#g-11-4c)"/>
+	<text x="142" y="204" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">① 新しいプロセスで試す</text>
+	<text x="142" y="226" fill="#fff" font-size="11" text-anchor="middle" opacity="0.92" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">pwsh -NoProfile -File x.ps1</text>
+	<text x="142" y="248" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.85">最も確実。毎回まっさら</text>
+	<text x="142" y="266" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.85">起動のぶんだけ遅い</text>
+
+	<rect x="277" y="180" width="245" height="96" rx="9" fill="url(#g-11-4c)"/>
+	<text x="399" y="204" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">② 型名を毎回変える</text>
+	<text x="399" y="226" fill="#fff" font-size="11" text-anchor="middle" opacity="0.92" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Calc_&lt;GUID&gt; + -PassThru</text>
+	<text x="399" y="248" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.85">同一セッションで差し替え可</text>
+	<text x="399" y="266" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.85">型は増える一方</text>
+
+	<rect x="534" y="180" width="246" height="96" rx="9" fill="url(#g-11-4c)"/>
+	<text x="657" y="204" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">③ dll にして配る</text>
+	<text x="657" y="226" fill="#fff" font-size="11" text-anchor="middle" opacity="0.92" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">csc.exe → Add-Type -Path</text>
+	<text x="657" y="248" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.85">2回読んでもエラーにならない</text>
+	<text x="657" y="266" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.85">11.7 で扱う</text>
+</svg>
+<figcaption>図 11.3 — .NET のアセンブリは一度読み込むと外せない。だから「上書き」ではなくエラーになる</figcaption>
+</figure>
+
+<h2>実際のエラー</h2>
+
+<pre><code>Add-Type -TypeDefinition 'public class Point2 { public int X; }'
+Add-Type -TypeDefinition 'public class Point2 { public int X; public int Y; }'</code></pre>
+
+<h3><span class="badge b-ps51">5.1</span>エラーは1つ</h3>
+
+<pre><code>Add-Type : Cannot add type. The type name 'Point2' already exists.
+At C:\work\t20-raw.ps1:2 char:1
++ Add-Type -TypeDefinition 'public class Point2 { public int X; public  ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (Point2:String) [Add-Type], Exception
+    + FullyQualifiedErrorId : TYPE_ALREADY_EXISTS,Microsoft.PowerShell.Commands.AddTypeCommand</code></pre>
+
+<h3><span class="badge b-ps7">pwsh 7</span>エラーは2つ</h3>
+
+<pre><code>Add-Type: C:\work\t20-raw.ps1:2
+Line |
+   2 |  Add-Type -TypeDefinition 'public class Point2 { public int X; public  …
+     |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Cannot add type. The type name 'Point2' already exists.
+Add-Type: C:\work\t20-raw.ps1:2
+Line |
+   2 |  Add-Type -TypeDefinition 'public class Point2 { public int X; public  …
+     |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Cannot add type. Compilation errors occurred.</code></pre>
+
+<p><code>try / catch</code> で捕まえたときの中身も違います。<strong>エラー ID で分岐を書いている場合は要注意</strong>です。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th></th><th>5.1</th><th>pwsh 7</th></tr>
+<tr><td class="nowrap">捕まる例外の型</td><td class="mono">System.Exception</td><td class="mono">System.InvalidOperationException</td></tr>
+<tr><td class="nowrap"><code>Exception.Message</code></td><td>Cannot add type. The type name 'Dup' already exists.</td><td>Cannot add type. Compilation errors occurred.</td></tr>
+<tr><td class="nowrap"><code>FullyQualifiedErrorId</code></td><td class="mono">TYPE_ALREADY_EXISTS</td><td class="mono">COMPILER_ERRORS</td></tr>
+</table>
+</div>
+
+<p>エラーの後に <code>[Dup]::V()</code> を呼ぶと、<strong>1回目の実装がそのまま返ります</strong>。「エラーは出たが古いほうが生きている」という、いちばん気づきにくい状態です。</p>
+
+<h2>ソースが1文字も違わなければ、エラーにならない</h2>
+
+<p><code>Add-Type</code> は<strong>渡されたソース文字列そのものを覚えていて</strong>、完全に一致していれば2回目は何もせずに成功します。</p>
+
+<pre><code>$src = 'public class Same { public static int V() { return 1; } }'
+Add-Type -TypeDefinition $src            # 1回目 → OK
+Add-Type -TypeDefinition $src            # 2回目 → OK（何も起きない）</code></pre>
+
+<p>ところが<strong>末尾に空白を1つ足しただけ</strong>で、別のソースとみなされてエラーになります。</p>
+
+<pre><code>Add-Type -TypeDefinition 'public class WS { public static int V() { return 1; } }'
+Add-Type -TypeDefinition 'public class WS { public static int V() { return 1; } } '
+# → Cannot add type. The type name 'WS' already exists.   （5.1・7 とも同じ）</code></pre>
+
+<div class="callout">
+<strong>スクリプトの先頭に置いた <code>Add-Type</code> が、2回目の実行で急にエラーを出すことがあります。</strong><br>
+判定は<strong>型名ではなくソース文字列の一致</strong>なので、C# 側を1文字でも直せば「別のソース・同じ型名」になります。<strong>コードを直した直後の再実行だけが落ちる</strong>ため、原因が編集内容そのものだと誤解しがちです。<br>
+なお、型を取り除く <code>Remove-Type</code> のようなコマンドは<strong>存在しません</strong>。
+</div>
+
+<h2>開発中の回避策</h2>
+
+<h3>① 新しいプロセスで実行する</h3>
+
+<pre><code>pwsh.exe -NoProfile -ExecutionPolicy Bypass -File .\dev.ps1</code></pre>
+
+<p>いちばん確実です。プロセスが終われば型も消えるので、何度でも作り直せます。C# を書き換えながら試す間は、<strong>対話セッションで <code>Add-Type</code> を打たない</strong>のが結局いちばん速く進みます。</p>
+
+<h3>② 型名を毎回変える</h3>
+
+<p>同じセッションで差し替えたいなら、型名にランダムな文字列を付け、<code>-PassThru</code> で返る型オブジェクトを保持して呼びます。</p>
+
+<pre><code>function New-Calc([int]$factor) {
+    $name = 'Calc_' + [guid]::NewGuid().ToString('N')
+    $src  = "public static class $name { public static int Mul(int x) { return x * $factor; } }"
+    Add-Type -TypeDefinition $src -PassThru
+}
+
+$v1 = New-Calc 2
+$v1::Mul(10)        # → 20
+
+$v2 = New-Calc 3
+$v2::Mul(10)        # → 30   エラーにならない</code></pre>
+
+<p><code>[型名]::</code> という角括弧の記法は使えなくなり、<strong><code>$v1::Mul()</code> のように変数から呼ぶ</strong>形になります。型はセッション内に溜まり続けますが、開発中なら問題になりません。</p>
+
+<div class="callout">
+<strong>Java・C# の経験がある方へ</strong><br>
+この制約は PowerShell 固有ではなく、<strong>.NET のアセンブリは一度読み込むとアンロードできない</strong>という仕様そのものです。Java のクラスローダーを差し替えてホットリロードする、という手が使えません。<br>
+だからこそ、実運用では「セッション内で作り直す」前提を捨て、<strong>あらかじめ dll にコンパイルしておく</strong>のが定石になります（11.7）。
+</div>
+</section>
+
+<!-- ============ 11.5 ============ -->
+<section class="ch05" id="ch05">
+<h1>11.5 Win32 API を呼ぶ（P/Invoke）</h1>
+
+<h2><code>-MemberDefinition</code> は「クラスの中身だけ」を渡す</h2>
+
+<p>Win32 API を呼ぶだけなら、クラス全体を書く必要はありません。<code>-MemberDefinition</code> に<strong>メンバの宣言だけ</strong>を渡すと、<code>Add-Type</code> がクラスの外枠を組み立ててくれます。</p>
+
+<pre><code>$sig = @"
+[DllImport("kernel32.dll")]
+public static extern ulong GetTickCount64();
+
+[DllImport("user32.dll")]
+public static extern int GetSystemMetrics(int nIndex);
+"@
+
+Add-Type -MemberDefinition $sig -Name 'Native' -Namespace 'Demo'</code></pre>
+
+<p><code>-Name</code> がクラス名、<code>-Namespace</code> が名前空間になり、<code>[Demo.Native]</code> という型ができます。</p>
+
+<pre><code>PS&gt; [Demo.Native]::GetTickCount64()
+1214534562
+
+PS&gt; [Demo.Native]::GetSystemMetrics(0)     # SM_CXSCREEN
+1536
+PS&gt; [Demo.Native]::GetSystemMetrics(1)     # SM_CYSCREEN
+864
+PS&gt; [Demo.Native]::GetSystemMetrics(80)    # SM_CMONITORS
+1</code></pre>
+
+<p>5.1・7 のどちらでも同じ結果です。<code>DllImport</code> は OS の関数を直接呼ぶだけなので、<strong>ここにバージョン差はありません</strong>。</p>
+
+<h2>構造体を受け取る</h2>
+
+<p>出力引数に構造体を要求する API は、<code>struct</code> を自分で定義して <code>[ref]</code> で渡します。</p>
+
+<pre><code>Add-Type -TypeDefinition @"
+using System.Runtime.InteropServices;
+
+[StructLayout(LayoutKind.Sequential)]
+public struct RECT { public int Left, Top, Right, Bottom; }
+
+public static class Win
+{
+    [DllImport("user32.dll")]
+    public static extern bool GetWindowRect(System.IntPtr hWnd, out RECT lpRect);
+
+    [DllImport("user32.dll")]
+    public static extern System.IntPtr GetDesktopWindow();
+}
+"@
+
+$r  = New-Object RECT
+$ok = [Win]::GetWindowRect([Win]::GetDesktopWindow(), [ref]$r)</code></pre>
+
+<pre><code>PS&gt; $ok
+True
+PS&gt; "Left=$($r.Left) Top=$($r.Top) Right=$($r.Right) Bottom=$($r.Bottom)"
+Left=0 Top=0 Right=1536 Bottom=864</code></pre>
+
+<p>C# 側の <code>out</code> 引数には、PowerShell からは <code>[ref]</code> を付けて渡します。<code>[StructLayout(LayoutKind.Sequential)]</code> は<strong>フィールドを宣言順にメモリへ並べる</strong>指定で、API が期待する並びと一致させるために必要です。</p>
+
+<h2>実用例 — INI ファイルを読む</h2>
+
+<p><code>GetPrivateProfileString</code> は、文字列バッファを渡して書き込んでもらう典型的な API です。VBA から呼んだことがある方も多いはずです。</p>
+
+<pre><code>$sig = @"
+[DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+public static extern uint GetPrivateProfileString(
+    string lpAppName, string lpKeyName, string lpDefault,
+    System.Text.StringBuilder lpReturnedString, uint nSize, string lpFileName);
+"@
+
+Add-Type -MemberDefinition $sig -Name 'Ini' -Namespace 'Win32'
+
+function Get-IniValue([string]$Path, [string]$Section, [string]$Key, [string]$Default = '') {
+    $buf = New-Object System.Text.StringBuilder 1024
+    $len = [Win32.Ini]::GetPrivateProfileString($Section, $Key, $Default, $buf, $buf.Capacity, $Path)
+    $buf.ToString(0, $len)
+}</code></pre>
+
+<p>読ませた INI と、その結果です。</p>
+
+<pre><code>[Database]
+Server=db01.example.jp
+Port=5432
+
+[App]
+Timeout=90</code></pre>
+
+<pre><code>PS&gt; Get-IniValue .\sample.ini 'Database' 'Server'
+db01.example.jp
+PS&gt; Get-IniValue .\sample.ini 'App' 'Timeout' '30'
+90
+PS&gt; Get-IniValue .\sample.ini 'App' 'NoSuchKey' '(既定値)'
+(既定値)</code></pre>
+
+<p>キーが無ければ第3引数の既定値が返ります。<code>CharSet = CharSet.Unicode</code> を付けているので、<strong><code>GetPrivateProfileStringW</code> のほうが呼ばれ、日本語の値もそのまま読めます</strong>。</p>
+
+<div class="callout">
+<strong>この INI が BOM 付き UTF-8 で保存されていると、<code>[Database]</code> だけが読めなくなります。</strong><br>
+実測した結果です。同じ内容のファイルを BOM の有無だけ変えて読ませると、<strong>BOM 付きでは <code>Database/Server</code> が既定値に落ち、<code>App/Timeout</code> は 90 が返りました</strong>。BOM の3バイトが最初のセクション名の直前に居座り、<code>[Database]</code> が別の名前として扱われるためです。<br>
+Win32 の INI API が理解するのは <strong>ANSI か UTF-16LE</strong> だけで、UTF-8 の BOM は想定されていません。02 章で扱った BOM の話が、ここでは「先頭のセクションだけ消える」という形で出てきます。
+</div>
+
+<div class="callout">
+<strong><code>-UsingNamespace 'System.Runtime.InteropServices'</code> を付けると、逆にコンパイルが失敗します。</strong><br>
+<code>-MemberDefinition</code> は <code>DllImport</code> を使う前提なので、この <code>using</code> を<strong>最初から自動で入れています</strong>。重ねて指定すると <code>CS0105</code>（重複した using）になり、しかも警告がエラー扱いのため止まります。5.1・7 の両方で同じです。
+<pre><code>(3,7): error CS0105: 'System.Runtime.InteropServices' の using ディレクティブは、
+この名前空間で既に使用されています</code></pre>
+</div>
+
+<div class="callout">
+<strong>Java・C# の経験がある方へ</strong><br>
+<code>DllImport</code> は Java の JNI にあたりますが、<strong>C 側のグルーコードを書く必要がありません</strong>。宣言だけで .NET が呼び出し規約とマーシャリングを面倒みます。<br>
+シグネチャの型を間違えても<strong>コンパイルは通ります</strong>。実行時にスタックが壊れてプロセスごと落ちるので、引数の型と個数は必ず公式のドキュメントと突き合わせてください。
+</div>
+</section>
+
+<!-- ============ 11.6 ============ -->
+<section class="ch06" id="ch06">
+<h1>11.6 使いどころの見極め</h1>
+
+<h2>境界をまたぐ回数を減らさないと、速くならない</h2>
+
+<p><code>Add-Type</code> で C# を用意しても、<strong>PowerShell から1回ずつ呼んでいては効果がありません</strong>。同じ合計処理を、C# の呼び方だけ変えて測りました（30 万回）。</p>
+
+<pre><code>$n = 300000
+
+$t1 = Measure-Command { $s = 0L; for ($i = 1; $i -le $n; $i++) { $s = $s + $i } }
+$t2 = Measure-Command { $s = 0L; for ($i = 1; $i -le $n; $i++) { $s = [B4]::Add($s, $i) } }
+$t3 = Measure-Command { $s = 0L; for ($i = 1; $i -le $n; $i++) { $s = [PsCalc]::Add($s, $i) } }
+$t4 = Measure-Command { $null = [B4]::SumTo($n) }</code></pre>
+
+<div class="table-wrap">
+<table>
+<tr><th>呼び方</th><th>5.1</th><th>pwsh 7</th><th>評価</th></tr>
+<tr><td class="nowrap">A PowerShell だけ</td><td class="num">774 ms</td><td class="num">818 ms</td><td>基準</td></tr>
+<tr><td class="nowrap">B 1回ずつ C# を呼ぶ</td><td class="num">702 ms</td><td class="num">1,809 ms</td><td><span class="badge b-bad">効果なし</span>7 では遅くなった</td></tr>
+<tr><td class="nowrap">C 1回ずつ PowerShell の <code>class</code> を呼ぶ</td><td class="num">2,143 ms</td><td class="num">2,670 ms</td><td><span class="badge b-bad">最も遅い</span></td></tr>
+<tr><td class="nowrap">D ループごと C# に渡す</td><td class="num">14 ms</td><td class="num">4 ms</td><td><span class="badge b-good">50〜200 倍</span></td></tr>
+</table>
+</div>
+
+<p>B と D の差が、この章でいちばん実務に効く数字です。<strong>C# にするのは「1回の計算」ではなく「ループそのもの」</strong>。境界をまたぐ回数が減らないなら、C# を書く意味はありません。</p>
+
+<div class="callout">
+<strong>PowerShell の <code>class</code> は速度対策になりません。</strong><br>
+C の行が示すとおり、静的メソッドを 30 万回呼ぶだけで、素の <code>for</code> より 2.6〜3.3 倍<strong>遅く</strong>なりました。PowerShell の <code>class</code> は<strong>コードの整理のための機能</strong>であって、実行方式は関数と変わりません。
+</div>
+
+<h2>先に .NET の型を試す</h2>
+
+<p>11.1 で見たとおり、文字列連結は <code>StringBuilder</code> に変えるだけで 7〜27 倍になりました。同じことが集合演算やリスト操作にも当てはまります。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>やりたいこと</th><th>PowerShell だけで書くと</th><th>先に試す .NET の型</th></tr>
+<tr><td class="nowrap">文字列を大量に連結</td><td class="mono">$s += "..."</td><td class="mono">[System.Text.StringBuilder]</td></tr>
+<tr><td class="nowrap">配列に要素を足し続ける</td><td class="mono">$a += $x</td><td class="mono">[System.Collections.Generic.List[object]]</td></tr>
+<tr><td class="nowrap">含まれるか判定</td><td class="mono">$a -contains $x</td><td class="mono">[System.Collections.Generic.HashSet[string]]</td></tr>
+<tr><td class="nowrap">1行ずつ読む</td><td class="mono">Get-Content</td><td class="mono">[System.IO.StreamReader]</td></tr>
+</table>
+</div>
+
+<p>いずれも <strong><code>Add-Type</code> なしで、PowerShell からそのまま使えます</strong>。型を1つ差し替えるだけなので、C# を書き起こすのに比べて手間も保守コストも桁違いに小さくて済みます。</p>
+
+<h2>保守コストで見た比較</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>観点</th><th>PowerShell だけ</th><th>.NET の型を使う</th><th><code>Add-Type</code> で C#</th></tr>
+<tr><td class="nowrap">速度</td><td>基準</td><td>数倍〜数十倍</td><td>数十倍〜1000 倍</td></tr>
+<tr><td class="nowrap">読める人</td><td>チーム全員</td><td>ほぼ全員</td><td><strong>C# が読める人だけ</strong></td></tr>
+<tr><td class="nowrap">直すとき</td><td>その場で書き換え</td><td>その場で書き換え</td><td>C# を直して再実行。<strong>セッションを作り直す</strong>（11.4）</td></tr>
+<tr><td class="nowrap">5.1 と 7 の差</td><td>小さい</td><td>小さい</td><td><strong>大きい</strong>（11.3）</td></tr>
+<tr><td class="nowrap">起動コスト</td><td>なし</td><td>なし</td><td>毎回 20〜180 ms（11.3）</td></tr>
+<tr><td class="nowrap">デバッグ</td><td>行単位で追える</td><td>行単位で追える</td><td>C# の中は <strong><code>Write-Host</code> も効かない</strong></td></tr>
+</table>
+</div>
+
+<h2>判断の順番</h2>
+
+<ol>
+	<li><strong>まず PowerShell で書いて動かす。</strong>そのまま使えるなら終わり</li>
+	<li>遅ければ <code>Measure-Command</code> で<strong>どこが遅いか実測する</strong>。想像で決めない</li>
+	<li>遅い部分を <strong>.NET の型に置き換える</strong>。多くはここで解決する</li>
+	<li>それでも足りないときだけ、<strong>ループごと C# に渡す</strong>形で <code>Add-Type</code> を使う</li>
+	<li>Win32 API のように<strong>他に手段がない</strong>場合は、最初から <code>Add-Type</code> でよい</li>
+</ol>
+
+<div class="callout">
+<strong>C# を書くと決めたら、その部分だけを切り出して独立させてください。</strong><br>
+PowerShell と C# が交互に出てくるスクリプトは、<strong>読む人が2つの言語を行き来する</strong>ことになります。「入力を受け取り、計算し、結果を返す」1つの関数に閉じ込め、呼び出し側からは通常の PowerShell 関数に見えるようにしておくと、後から C# を捨てて書き直すこともできます。<br>
+そこまで切り出せたなら、次の 11.7 の選択肢——<strong>そもそも実行時にコンパイルしない</strong>——も視野に入ります。
+</div>
+</section>
+
+<!-- ============ 11.7 ============ -->
+<section class="ch07" id="ch07">
+<h1>11.7 事前にコンパイルして exe を配る</h1>
+
+<h2>もう一つの選択肢</h2>
+
+<p>ここまでの <code>Add-Type</code> は、<strong>実行するたびにメモリ上でコンパイルする</strong>方式でした。もう一つ、<strong>事前に1回だけコンパイルして <code>.exe</code> や <code>.dll</code> を作っておく</strong>という選択肢があります。</p>
+
+<figure>
+<svg viewBox="0 0 800 300" role="img" aria-label="Add-Type と事前コンパイルの配布経路の違い">
+	<defs>
+		<linearGradient id="g-11-7a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(280,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(280,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-11-7b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(200,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(200,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-11-7c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-11-7d" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+	</defs>
+
+	<text x="20" y="22" fill="var(--ink)" font-size="13.5" font-weight="700">Add-Type（11.2〜11.6）</text>
+
+	<rect x="20" y="34" width="170" height="54" rx="8" fill="url(#g-11-7a)"/>
+	<text x="105" y="56" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">ps1 に C# を同梱</text>
+	<text x="105" y="76" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">ソースを配る</text>
+
+	<line x1="196" y1="61" x2="212" y2="61" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="212,54 228,61 212,68" fill="var(--ink-soft)"/>
+
+	<rect x="234" y="34" width="200" height="54" rx="8" fill="url(#g-11-7b)"/>
+	<text x="334" y="56" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">実行のたびにコンパイル</text>
+	<text x="334" y="76" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">20〜180 ms／回</text>
+
+	<line x1="440" y1="61" x2="456" y2="61" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="456,54 472,61 456,68" fill="var(--ink-soft)"/>
+
+	<rect x="478" y="34" width="180" height="54" rx="8" fill="url(#g-11-7b)"/>
+	<text x="568" y="56" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">メモリ上の型</text>
+	<text x="568" y="76" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">プロセスが終われば消える</text>
+
+	<rect x="672" y="34" width="108" height="54" rx="8" fill="#fff" stroke="hsl(0,58%,60%)" stroke-width="2"/>
+	<text x="726" y="56" fill="#a51f22" font-size="12" font-weight="700" text-anchor="middle">再定義は</text>
+	<text x="726" y="74" fill="#a51f22" font-size="12" font-weight="700" text-anchor="middle">できない</text>
+
+	<line x1="20" y1="106" x2="780" y2="106" stroke="var(--line)" stroke-width="2" stroke-dasharray="5 4"/>
+
+	<text x="20" y="134" fill="var(--ink)" font-size="13.5" font-weight="700">csc.exe で事前コンパイル（11.7）</text>
+
+	<rect x="20" y="146" width="170" height="54" rx="8" fill="url(#g-11-7c)"/>
+	<text x="105" y="168" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">.cs を書く</text>
+	<text x="105" y="188" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">開発者の手元だけ</text>
+
+	<line x1="196" y1="173" x2="212" y2="173" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="212,166 228,173 212,180" fill="var(--ink-soft)"/>
+
+	<rect x="234" y="146" width="200" height="54" rx="8" fill="url(#g-11-7d)"/>
+	<text x="334" y="168" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">csc.exe で1回ビルド</text>
+	<text x="334" y="188" fill="#fff" font-size="11" text-anchor="middle" opacity="0.9" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">/target:exe ／ /target:library</text>
+
+	<line x1="440" y1="173" x2="456" y2="173" stroke="var(--ink-soft)" stroke-width="2.5"/>
+	<polygon points="456,166 472,173 456,180" fill="var(--ink-soft)"/>
+
+	<rect x="478" y="146" width="180" height="54" rx="8" fill="url(#g-11-7c)"/>
+	<text x="568" y="168" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">Sum.exe / MyTools.dll</text>
+	<text x="568" y="188" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">ファイルとして残る</text>
+
+	<rect x="672" y="146" width="108" height="54" rx="8" fill="#fff" stroke="hsl(140,58%,55%)" stroke-width="2"/>
+	<text x="726" y="168" fill="hsl(140,78%,25%)" font-size="12" font-weight="700" text-anchor="middle">何度読んでも</text>
+	<text x="726" y="186" fill="hsl(140,78%,25%)" font-size="12" font-weight="700" text-anchor="middle">エラーなし</text>
+
+	<rect x="20" y="216" width="760" height="72" rx="9" fill="#fff" stroke="var(--accent2)" stroke-width="2"/>
+	<text x="400" y="240" fill="var(--accent)" font-size="13.5" font-weight="700" text-anchor="middle">配る先に要るもの</text>
+	<text x="400" y="264" fill="var(--ink)" font-size="12.5" text-anchor="middle">上：PowerShell と C# ソース（実行環境のコンパイラに依存する）</text>
+	<text x="400" y="282" fill="var(--ink)" font-size="12.5" text-anchor="middle">下：exe ひとつ。PowerShell すら要らない</text>
+</svg>
+<figcaption>図 11.4 — 同じ C# でも、いつコンパイルするかで配布物と制約が変わる</figcaption>
+</figure>
+
+<h2>コンパイラはすでに入っている</h2>
+
+<p>Visual Studio も dotnet SDK も要りません。<strong>.NET Framework 4.x が入っている Windows には、必ず <code>csc.exe</code> があります</strong>。この PC で実際に見つかったものです。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>コンパイラ</th><th>場所</th><th>バージョン</th></tr>
+<tr><td class="nowrap"><strong>.NET Framework 同梱</strong></td><td class="mono">C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe</td><td class="nowrap"><strong>4.8.9221.0</strong></td></tr>
+<tr><td class="nowrap">旧版（残存）</td><td class="mono">…\Framework64\v3.5\csc.exe</td><td class="nowrap">3.5.30729.9151</td></tr>
+<tr><td class="nowrap">旧版（残存）</td><td class="mono">…\Framework64\v2.0.50727\csc.exe</td><td class="nowrap">8.0.50727.9157</td></tr>
+<tr><td class="nowrap">Visual Studio の Roslyn</td><td class="mono">…\VisualStudio\2022\Community\MSBuild\Current\Bin\Roslyn\csc.exe</td><td class="nowrap">4.500.23.12814</td></tr>
+<tr><td class="nowrap">dotnet SDK</td><td class="mono">C:\Program Files\dotnet\dotnet.exe</td><td class="nowrap">7.0.202</td></tr>
+</table>
+</div>
+
+<p>下の2つは<strong>インストールした人にしかありません</strong>。上の <code>Framework64\v4.0.30319\csc.exe</code> だけが、追加インストールなしでどの Windows にもあります。<strong>開発ツールを入れられない業務 PC でも、小さなツールを1本ビルドできる</strong>——これが実務上の価値です。</p>
+
+<div class="callout">
+<strong><span class="badge b-ps51">5.1</span><code>csc.exe</code> の場所は、5.1 なら実行中のランタイムから引けます。</strong>
+<pre><code>$dir = [System.Runtime.InteropServices.RuntimeEnvironment]::GetRuntimeDirectory()
+Join-Path $dir 'csc.exe'
+# 5.1 → C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe  （存在する）
+# 7   → C:\Program Files\PowerShell\7\csc.exe                    （存在しない）</code></pre>
+7 は .NET 上で動いているため、この方法では <code>pwsh.exe</code> のフォルダを指してしまいます。<strong>7 から使うなら、パスを直接書く</strong>のが確実です。
+</div>
+
+<h2>exe を作る</h2>
+
+<p><code>Sum.cs</code> — 1 から n までの合計を出すだけのコンソールアプリです。<strong>終了コードを返す</strong>ように書いておきます（08 章）。</p>
+
+<pre><code>using System;
+
+class Program
+{
+    static int Main(string[] args)
+    {
+        if (args.Length != 1)
+        {
+            Console.Error.WriteLine("使い方: Sum.exe &lt;n&gt;");
+            return 1;
+        }
+        int n;
+        if (!int.TryParse(args[0], out n))
+        {
+            Console.Error.WriteLine("数値を指定してください: " + args[0]);
+            return 2;
+        }
+        long s = 0;
+        for (int i = 1; i &lt;= n; i++) { s += i; }
+        Console.WriteLine(s);
+        return 0;
+    }
+}</code></pre>
+
+<pre><code>PS&gt; $csc = 'C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe'
+PS&gt; &amp; $csc /nologo /target:exe /out:Sum.exe Sum.cs
+PS&gt; $LASTEXITCODE
+0
+PS&gt; Get-Item .\Sum.exe | Select-Object Name, Length
+
+Name    Length
+----    ------
+Sum.exe   4096</code></pre>
+
+<p>4 KB の exe が1つできます。動かします。<strong>カレントの実行ファイルは <code>.\</code> を付けて呼びます</strong>（03 章）。</p>
+
+<pre><code>PS&gt; .\Sum.exe 3000000
+4500001500000
+PS&gt; $LASTEXITCODE
+0
+
+PS&gt; .\Sum.exe
+使い方: Sum.exe &lt;n&gt;
+PS&gt; $LASTEXITCODE
+1
+
+PS&gt; .\Sum.exe abc
+数値を指定してください: abc
+PS&gt; $LASTEXITCODE
+2</code></pre>
+
+<p>プロセスの起動を含めて 66 ms でした。11.1 で <code>Add-Type</code> の C# が 6〜13 ms だったのと比べると重く見えますが、<strong>そちらにはコンパイルの 20〜180 ms が別途かかっています</strong>。1回きりの実行なら exe のほうが速く終わります。</p>
+
+<h2>dll を作って PowerShell から読む</h2>
+
+<p><code>/target:library</code> にすると dll になります。こちらのほうが実務では使い出があります。</p>
+
+<pre><code>using System;
+
+namespace MyTools
+{
+    public static class Calc
+    {
+        public static long SumTo(int n)
+        {
+            long s = 0;
+            for (int i = 1; i &lt;= n; i++) { s += i; }
+            return s;
+        }
+
+        public static string Reverse(string s)
+        {
+            char[] a = s.ToCharArray();
+            Array.Reverse(a);
+            return new string(a);
+        }
+    }
+}</code></pre>
+
+<pre><code>PS&gt; &amp; $csc /nologo /target:library /out:MyTools.dll Calc.cs
+PS&gt; $LASTEXITCODE
+0</code></pre>
+
+<p>できた dll は <code>Add-Type -Path</code> で読み込みます。</p>
+
+<pre><code>PS&gt; Add-Type -Path .\MyTools.dll
+PS&gt; [MyTools.Calc]::SumTo(1000)
+500500
+PS&gt; [MyTools.Calc]::Reverse('PowerShell')
+llehSrewoP
+PS&gt; [MyTools.Calc].Assembly.Location
+C:\work\MyTools.dll</code></pre>
+
+<p>11.2 の <code>-TypeDefinition</code> と違い、<strong><code>Location</code> にちゃんとパスが入ります</strong>。そして重要なのは次の点です。</p>
+
+<pre><code>PS&gt; Measure-Command { Add-Type -Path .\MyTools.dll }
+# 5.1 → 23 ms   7 → 5 ms   どちらもエラーにならない</code></pre>
+
+<p><strong>同じ dll を2回読み込んでもエラーになりません。</strong>11.4 の「型を再定義できない」という制約は、<code>-TypeDefinition</code> でソースからコンパイルする場合の話です。既に読み込み済みのアセンブリを指定した <code>Add-Type -Path</code> は、単に何もせず返ります。</p>
+
+<div class="callout">
+<strong>この dll は .NET Framework の <code>csc.exe</code> で作ったものですが、PowerShell 7（.NET 10）からもそのまま読めました。</strong><br>
+使っている型が <code>System.Array</code> や <code>System.String</code> のような基本的なものだけだからです。<strong>WinForms や WCF のように .NET Framework 固有の機能に触れると、7 側では読み込みに失敗します</strong>。両方で使う dll は、依存を基本型に絞って書いてください。
+</div>
+
+<h2>コンパイルの失敗を検知する</h2>
+
+<p><code>csc.exe</code> は<strong>例外を投げません</strong>。成否は終了コードで判定します（08.3）。わざと2箇所間違えた <code>.cs</code> を食わせた結果です。</p>
+
+<pre><code>PS&gt; &amp; $csc /nologo /target:exe /out:Bad3.exe Bad3.cs
+Bad3.cs(7,17): error CS0029: 型 'string' を型 'int' に暗黙的に変換できません。
+Bad3.cs(8,17): error CS0117: 'System.Console' に 'WirteLine' の定義がありません。
+PS&gt; $LASTEXITCODE
+1
+PS&gt; Test-Path .\Bad3.exe
+False</code></pre>
+
+<p>エラーが2つあっても終了コードは <code>1</code>、そして<strong>出力ファイルは作られません</strong>。判定は <code>-ne 0</code> で足ります（<code>robocopy</code> のような例外的な規則はありません）。</p>
+
+<h3>ビルド用ラッパ</h3>
+
+<pre><code>[CmdletBinding()]
+param(
+    [string]$Source,
+    [string]$Output
+)
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
+
+if (-not $Source) { $Source = Join-Path $PSScriptRoot 'Sum.cs' }
+if (-not $Output) { $Output = Join-Path $PSScriptRoot 'Sum.exe' }
+
+$csc = 'C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe'
+if (-not (Test-Path -LiteralPath $csc)) { throw "csc.exe が見つかりません: $csc" }
+
+Write-Host "コンパイル: $Source"
+&amp; $csc /nologo /target:exe /optimize+ /out:$Output $Source
+if ($LASTEXITCODE -ne 0) { throw "コンパイルに失敗しました (終了コード: $LASTEXITCODE)" }
+
+Write-Host "生成: $Output ($((Get-Item $Output).Length) バイト)"</code></pre>
+
+<pre><code>PS&gt; .\build.ps1
+コンパイル: C:\work\Sum.cs
+生成: C:\work\Sum.exe (4096 バイト)
+
+PS&gt; .\build.ps1 -Source .\Bad3.cs -Output .\Bad3.exe
+コンパイル: C:\work\Bad3.cs
+Bad3.cs(7,17): error CS0029: 型 'string' を型 'int' に暗黙的に変換できません。
+Bad3.cs(8,17): error CS0117: 'System.Console' に 'WirteLine' の定義がありません。
+コンパイルに失敗しました (終了コード: 1)</code></pre>
+
+<p>5.1・7 のどちらで実行しても同じ結果になります。<code>csc.exe</code> は外部プログラムなので、<strong>呼び出し側の PowerShell のバージョンには影響されません</strong>。11.3 で見たようなコンパイラの差が消えるのも、事前コンパイルの利点です。</p>
+
+<div class="callout">
+<strong>ただし <code>Framework64\v4.0.30319\csc.exe</code> が受け付ける C# も、5.1 の <code>Add-Type</code> と同じ C# 5 までです。</strong><br>
+<code>/langversion</code> に 6 を渡すと、有効な値そのものが返ってきます。
+<pre><code>error CS1617: /langversion に対する無効なオプション '6' です。
+ISO-1、ISO-2、3、4、5、または Default でなければなりません。</code></pre>
+5.1 の <code>Add-Type</code> がこの <code>csc.exe</code> を呼んでいるのですから、当然の一致です。C# 6 以降を使いたい場合は Visual Studio 同梱の Roslyn 版 <code>csc.exe</code> か dotnet SDK が要ります。
+</div>
+
+<h2><code>dotnet build</code> との違い</h2>
+
+<p>dotnet SDK が入っているなら <code>dotnet build</code> も使えますが、<strong>プロジェクトファイルが要ります</strong>。<code>.cs</code> を直接渡すことはできません。</p>
+
+<pre><code>PS&gt; dotnet build Sum.cs
+MSBuild version 17.5.0+6f08c67f3 for .NET
+C:\work\Sum.cs(1,1): error MSB4025: プロジェクト ファイルを読み込めませんでした。
+Data at the root level is invalid. Line 1, position 1.
+PS&gt; $LASTEXITCODE
+1</code></pre>
+
+<p><code>csc.exe</code> は<strong><code>.cs</code> を1つ渡せば通ります</strong>。ソース1〜2ファイルの小さなツールを作るだけなら、プロジェクトを用意する手間のぶん <code>csc.exe</code> のほうが軽い、という関係です。NuGet パッケージを使う・複数のターゲットに向けてビルドする、といった段階になったら dotnet SDK へ移ります。</p>
+
+<h2>どちらを選ぶか</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>観点</th><th><code>Add-Type</code></th><th><code>csc.exe</code> を直接叩く</th></tr>
+<tr><td class="nowrap">コンパイル時期</td><td>実行のたび（メモリ上）</td><td>事前に1回</td></tr>
+<tr><td class="nowrap">成果物</td><td>なし（プロセス内の型）</td><td><code>.exe</code> / <code>.dll</code></td></tr>
+<tr><td class="nowrap">配布</td><td>ps1 に C# ソースを同梱</td><td>exe を配るだけ。<strong>PowerShell 不要</strong></td></tr>
+<tr><td class="nowrap">起動コスト</td><td>毎回コンパイル分かかる</td><td>ゼロ</td></tr>
+<tr><td class="nowrap">型の再定義</td><td>セッション内で不可（11.4）</td><td>無関係</td></tr>
+<tr><td class="nowrap">5.1 と 7 の差</td><td>大きい（11.3）</td><td>なし（外部プログラムのため）</td></tr>
+<tr><td class="nowrap">ソースの隠蔽</td><td>できない</td><td>C# ソースは配らなくてよい</td></tr>
+<tr><td class="nowrap">手軽さ</td><td>ps1 1本で完結</td><td>ビルド手順が1つ増える</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>ビルド成果物を git に入れるかどうかは、先に決めておいてください。</strong><br>
+exe や dll を配布物として扱うなら、<strong>誰がどのソースからビルドしたか</strong>を追える必要があります。<code>.cs</code> とビルド用の ps1 を一緒に置き、ビルドは常にそのスクリプト経由で行う——このくらいの決め事があれば十分です。<br>
+逆に、C# が数十行で済むうちは <code>Add-Type</code> のまま ps1 に同梱しておくほうが、管理する物が1つで済みます。
+</div>
+</section>
+
+<h2>この章のまとめ</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>節</th><th>要点</th></tr>
+<tr><td class="nowrap">11.1</td><td>差が出るのは<strong>回数の多いループ</strong>。まず PowerShell で書き、<code>Measure-Command</code> で実測してから判断する</td></tr>
+<tr><td class="nowrap">11.2</td><td><code>Add-Type -TypeDefinition</code> でその場コンパイル。できた型は<strong>メモリ上のみ</strong>（<code>Location</code> が空）</td></tr>
+<tr><td class="nowrap">11.3</td><td>5.1 は <code>csc.exe</code>（C# 5 まで）、7 は Roslyn。<strong><code>-ReferencedAssemblies</code> の要否が逆</strong>になる</td></tr>
+<tr><td class="nowrap">11.4</td><td>同じ型名は再定義できない。判定は<strong>ソース文字列の完全一致</strong>。開発中は別プロセスで実行する</td></tr>
+<tr><td class="nowrap">11.5</td><td><code>-MemberDefinition</code> ＋ <code>DllImport</code> が P/Invoke の最短形。<code>-UsingNamespace</code> で <code>InteropServices</code> を足さない</td></tr>
+<tr><td class="nowrap">11.6</td><td>C# に渡すのは<strong>1回の計算ではなくループごと</strong>。先に .NET の型を試す</td></tr>
+<tr><td class="nowrap">11.7</td><td><code>csc.exe</code> はどの Windows にもある。事前ビルドすれば<strong>再定義の制約もバージョン差も消える</strong></td></tr>
+</table>
+</div>
+
+<h3>覚えておく3点</h3>
+
+<ol>
+	<li><strong>C# は最後の手段。</strong>実測して、.NET の型で足りないと分かってから使う。境界をまたぐ回数が減らないなら効果はない</li>
+	<li><strong>5.1 と 7 ではコンパイラが別物。</strong>両対応させるなら C# 5 の範囲で書き、<code>-ReferencedAssemblies</code> は 7 では原則付けない</li>
+	<li><strong>型は作り直せない。</strong>開発中は新しいプロセスで実行する。運用に載せるなら <code>csc.exe</code> で dll にしてしまう</li>
+</ol>
+
+<div class="callout">
+<strong>次章の予告 — 12. COM と Office 連携</strong><br>
+Excel や Outlook を PowerShell から操作します。<code>Add-Type</code> と同じく「.NET の外側にある世界」を呼ぶ話ですが、<strong>解放し忘れると Excel のプロセスが残り続ける</strong>という固有の難しさがあります。
+</div>
+
+</div>
+
+<footer>
+	<p>PowerShell 学習資料 11 ／ 前章: <a href="10-ハンズオン.html">10. ハンズオン課題</a> ／ 次章: <a href="12-COMとOffice.html">12. COM と Office 連携</a></p>
+	<p><a href="../README.html">README（目次）へ戻る</a></p>
+</footer>
+
+</body>
+</html>

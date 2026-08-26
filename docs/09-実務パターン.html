@@ -613,11 +613,14 @@ What if: Performing the operation "→ photo-3.jpg" on target "IMG_0003.JPG".</c
 param(
     [Parameter(Mandatory)][string]$Source,
     [Parameter(Mandatory)][string]$Destination,
-    [string]$LogDir = (Join-Path $PSScriptRoot 'logs')
+    [string]$LogDir
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+
+# 既定値は param() の外で入れる（5.1 では param() の中で $PSScriptRoot が空になる）
+if (-not $LogDir) { $LogDir = Join-Path $PSScriptRoot 'logs' }
 
 if (-not (Test-Path -LiteralPath $Source)) { throw "コピー元がありません: $Source" }
 New-Item -ItemType Directory -Force -Path $LogDir | Out-Null
@@ -646,6 +649,11 @@ Write-Host "結果: $label" -ForegroundColor Green
 Write-Host "ログ: $logFile"
 
 exit 0</code></pre>
+
+<div class="callout">
+<strong><span class="badge b-ps51">5.1</span> <code>$LogDir</code> の既定値を <code>param()</code> の中に書いてはいけません。</strong><br>
+<code>[CmdletBinding()]</code> が付いていると、5.1 では <code>param()</code> の既定値を評価する時点で <code>$PSScriptRoot</code> がまだ空です。<code>-LogDir</code> を省略した瞬間に <code>Cannot bind argument to parameter 'Path' because it is an empty string.</code> で落ちます。<span class="badge b-ps7">pwsh 7</span> では起きないため<strong>気づかないまま配布してしまいます</strong>。詳細は <a href="A2-テンプレ集.html#ch01">A2.1</a> を見てください。
+</div>
 
 <div class="callout">
 <strong><code>/MIR</code> はコピー先の余分なファイルを<strong>削除します</strong>。</strong><br>

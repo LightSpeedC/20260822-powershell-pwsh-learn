@@ -377,6 +377,25 @@
 <tr><td>変数がいつ変わったか追いたい</td><td class="mono">Set-PSBreakpoint -Variable x -Mode Write</td><td><a href="08-エラー処理.html#ch04">08.4</a></td></tr>
 </table>
 </div>
+
+<h2>PowerShell だけでは届かない</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>やりたいこと・症状</th><th>手がかり</th><th>参照</th></tr>
+<tr><td>ループが遅い。C# で書き直したい</td><td class="mono">Add-Type -TypeDefinition</td><td><a href="11-Add-Type.html#ch02">11.2</a></td></tr>
+<tr><td>C# にしたのに速くならない</td><td>1件ずつ呼ぶと逆に遅い。<strong>ループごと渡す</strong></td><td><a href="11-Add-Type.html#ch06">11.6</a></td></tr>
+<tr><td class="mono">The type name 'X' already exists.</td><td>セッション内で型は再定義できない。ソース文字列が1文字でも違うと別物扱い</td><td><a href="11-Add-Type.html#ch04">11.4</a></td></tr>
+<tr><td>Win32 API を呼びたい</td><td class="mono">Add-Type -MemberDefinition</td><td><a href="11-Add-Type.html#ch05">11.5</a></td></tr>
+<tr><td>PowerShell なしで動く exe にしたい</td><td class="mono">csc.exe</td><td><a href="11-Add-Type.html#ch07">11.7</a></td></tr>
+<tr><td>Word・Excel・PowerPoint を操作したい</td><td class="mono">New-Object -ComObject</td><td><a href="12-COMとOffice.html#ch01">12.1</a></td></tr>
+<tr><td>Office ファイルを PDF にしたい</td><td class="mono">ExportAsFixedFormat / SaveAs</td><td><a href="12-COMとOffice.html#ch02">12.2</a></td></tr>
+<tr><td>EXCEL.EXE / WINWORD.EXE が残る</td><td class="mono">ReleaseComObject</td><td><a href="12-COMとOffice.html#ch03">12.3</a></td></tr>
+<tr><td>Office が入っていない PC で Excel を扱いたい</td><td class="mono">ImportExcel</td><td><a href="12-COMとOffice.html#ch04">12.4</a> ／ <a href="A3-モジュール.html#ch03">A3.3</a></td></tr>
+<tr><td>どのモジュールを入れるべきか分からない</td><td>更新日と依存の重さで選ぶ</td><td><a href="A3-モジュール.html#ch01">A3.1</a></td></tr>
+<tr><td>ネットに繋がらない PC にモジュールを入れたい</td><td class="mono">Save-Module</td><td><a href="A3-モジュール.html#ch04">A3.4</a></td></tr>
+</table>
+</div>
 </section>
 
 <!-- ============ A1.2 ============ -->
@@ -396,27 +415,30 @@
 <table>
 <tr><th>Cmdlet</th><th>用途</th><th>登場する章</th></tr>
 <tr><td class="mono">Add-Content</td><td>ファイルの末尾に追記する</td><td class="nowrap">09</td></tr>
+<tr><td class="mono">Add-Type</td><td>C# のソースをその場でコンパイルして型を読み込む</td><td class="nowrap">10 / 11 / 12</td></tr>
 <tr><td class="mono">Convert-Path</td><td>相対パスを絶対パスの文字列にする</td><td class="nowrap">07</td></tr>
 <tr><td class="mono">Copy-Item</td><td>ファイル・フォルダをコピーする</td><td class="nowrap">09</td></tr>
 <tr><td class="mono">Export-Clixml</td><td>オブジェクトを型ごと保存する（PowerShell 専用形式）</td><td class="nowrap">07</td></tr>
-<tr><td class="mono">Export-Csv</td><td>CSV に書き出す。5.1 では -NoTypeInformation が要る</td><td class="nowrap">05 / 07 / 10</td></tr>
+<tr><td class="mono">Export-Csv</td><td>CSV に書き出す。5.1 では -NoTypeInformation が要る</td><td class="nowrap">05 / 07 / 10 / 12</td></tr>
+<tr><td class="mono">Export-Excel</td><td>ImportExcel モジュール。Excel に直接書き出す</td><td class="nowrap">12</td></tr>
 <tr><td class="mono">Find-Module</td><td>PowerShell Gallery のモジュールを検索する</td><td class="nowrap">03</td></tr>
 <tr><td class="mono">Format-List</td><td>全プロパティを縦に並べて表示する。行き止まり</td><td class="nowrap">05 / 08 / 10</td></tr>
-<tr><td class="mono">Format-Table</td><td>表形式で表示する。パイプラインの最後にだけ置く</td><td class="nowrap">05 / 09 / 10</td></tr>
+<tr><td class="mono">Format-Table</td><td>表形式で表示する。パイプラインの最後にだけ置く</td><td class="nowrap">05 / 09 / 10 / 11 / 12</td></tr>
 <tr><td class="mono">Get-Alias</td><td>エイリアスの一覧・逆引き</td><td class="nowrap">05</td></tr>
-<tr><td class="mono">Get-ChildItem</td><td>ファイル・フォルダを列挙する</td><td class="nowrap">01 / 05 / 06 / 07 / 08 / 09 / 10</td></tr>
+<tr><td class="mono">Get-ChildItem</td><td>ファイル・フォルダを列挙する</td><td class="nowrap">01 / 05 / 06 / 07 / 08 / 09 / 10 / 11</td></tr>
 <tr><td class="mono">Get-CimInstance</td><td>WMI 情報を取得する（7 では Get-WmiObject の代替）</td><td class="nowrap">03</td></tr>
-<tr><td class="mono">Get-Command</td><td>コマンドを探す。動詞・名詞・モジュールで絞れる</td><td class="nowrap">05 / 09 / 10</td></tr>
-<tr><td class="mono">Get-Content</td><td>ファイルを読む。既定は行の配列、-Raw で 1 文字列</td><td class="nowrap">01 / 02 / 05 / 06 / 07 / 08 / 09 / 10</td></tr>
+<tr><td class="mono">Get-Command</td><td>コマンドを探す。動詞・名詞・モジュールで絞れる</td><td class="nowrap">05 / 09 / 10 / 11</td></tr>
+<tr><td class="mono">Get-Content</td><td>ファイルを読む。既定は行の配列、-Raw で 1 文字列</td><td class="nowrap">01 / 02 / 05 / 06 / 07 / 08 / 09 / 10 / 11</td></tr>
 <tr><td class="mono">Get-Date</td><td>現在日時の取得と書式化</td><td class="nowrap">05 / 09 / 10</td></tr>
 <tr><td class="mono">Get-Error</td><td>直前のエラーを全プロパティ展開して表示する</td><td class="nowrap">08</td></tr>
 <tr><td class="mono">Get-ExecutionPolicy</td><td>実行ポリシーを確認する。-List でスコープ別</td><td class="nowrap">03</td></tr>
 <tr><td class="mono">Get-Help</td><td>コマンドの使い方。-Examples が最も実用的</td><td class="nowrap">05 / 10</td></tr>
-<tr><td class="mono">Get-Item</td><td>1 つの項目を取得する</td><td class="nowrap">03 / 04</td></tr>
+<tr><td class="mono">Get-Item</td><td>1 つの項目を取得する</td><td class="nowrap">03 / 04 / 11</td></tr>
+<tr><td class="mono">Get-ItemProperty</td><td>レジストリの値やファイルの属性を取得する</td><td class="nowrap">12</td></tr>
 <tr><td class="mono">Get-Location</td><td>カレントディレクトリを取得する</td><td class="nowrap">07</td></tr>
-<tr><td class="mono">Get-Member</td><td>オブジェクトの型・プロパティ・メソッドを調べる</td><td class="nowrap">03 / 04 / 05 / 08 / 10</td></tr>
+<tr><td class="mono">Get-Member</td><td>オブジェクトの型・プロパティ・メソッドを調べる</td><td class="nowrap">03 / 04 / 05 / 08 / 10 / 11 / 12</td></tr>
 <tr><td class="mono">Get-Module</td><td>読み込み済み・利用可能なモジュールを見る</td><td class="nowrap">03</td></tr>
-<tr><td class="mono">Get-Process</td><td>実行中のプロセスを取得する</td><td class="nowrap">01 / 05 / 06 / 07 / 10</td></tr>
+<tr><td class="mono">Get-Process</td><td>実行中のプロセスを取得する</td><td class="nowrap">01 / 05 / 06 / 07 / 10 / 12</td></tr>
 <tr><td class="mono">Get-PSBreakpoint</td><td>設定済みのブレークポイントを一覧する</td><td class="nowrap">08</td></tr>
 <tr><td class="mono">Get-Random</td><td>乱数・ランダムな要素を得る</td><td class="nowrap">10</td></tr>
 <tr><td class="mono">Get-Service</td><td>Windows サービスを取得する</td><td class="nowrap">05</td></tr>
@@ -424,42 +446,46 @@
 <tr><td class="mono">Get-WmiObject</td><td>7 で削除済み。Get-CimInstance に置き換える</td><td class="nowrap">01 / 03 / 05</td></tr>
 <tr><td class="mono">Group-Object</td><td>キーでまとめる。Name / Count / Group を返す</td><td class="nowrap">05 / 09 / 10</td></tr>
 <tr><td class="mono">Import-Clixml</td><td>Export-Clixml で保存したオブジェクトを復元する</td><td class="nowrap">07</td></tr>
-<tr><td class="mono">Import-Csv</td><td>CSV を読む。値はすべて文字列になる</td><td class="nowrap">05 / 07</td></tr>
+<tr><td class="mono">Import-Csv</td><td>CSV を読む。値はすべて文字列になる</td><td class="nowrap">05 / 07 / 12</td></tr>
+<tr><td class="mono">Import-Excel</td><td>ImportExcel モジュール。Excel を読む</td><td class="nowrap">12</td></tr>
 <tr><td class="mono">Import-Module</td><td>モジュールを明示的に読み込む</td><td class="nowrap">03</td></tr>
-<tr><td class="mono">Install-Module</td><td>モジュールを導入する。-Scope CurrentUser 推奨</td><td class="nowrap">03</td></tr>
+<tr><td class="mono">Install-Module</td><td>モジュールを導入する。-Scope CurrentUser 推奨</td><td class="nowrap">03 / 12</td></tr>
 <tr><td class="mono">Invoke-Command</td><td>リモートやスクリプトブロックを実行する</td><td class="nowrap">01</td></tr>
 <tr><td class="mono">Invoke-WebRequest</td><td>HTTP 要求。5.1 では curl がこれのエイリアスだった</td><td class="nowrap">05</td></tr>
-<tr><td class="mono">Join-Path</td><td>パスを連結する。区切りの重複を吸収する</td><td class="nowrap">06 / 07 / 09 / 10</td></tr>
-<tr><td class="mono">Measure-Object</td><td>件数・合計・平均・最大最小を求める</td><td class="nowrap">05</td></tr>
+<tr><td class="mono">Join-Path</td><td>パスを連結する。区切りの重複を吸収する</td><td class="nowrap">06 / 07 / 09 / 10 / 11 / 12</td></tr>
+<tr><td class="mono">Measure-Command</td><td>実行時間を計測する</td><td class="nowrap">11</td></tr>
+<tr><td class="mono">Measure-Object</td><td>件数・合計・平均・最大最小を求める</td><td class="nowrap">05 / 11</td></tr>
 <tr><td class="mono">Move-Item</td><td>ファイル・フォルダを移動する</td><td class="nowrap">09</td></tr>
-<tr><td class="mono">New-Item</td><td>ファイル・フォルダを作る。-Force で親ごと</td><td class="nowrap">03 / 05 / 09 / 10</td></tr>
+<tr><td class="mono">New-Item</td><td>ファイル・フォルダを作る。-Force で親ごと</td><td class="nowrap">03 / 05 / 09 / 10 / 12</td></tr>
+<tr><td class="mono">New-Object</td><td>.NET のインスタンスや COM オブジェクトを作る</td><td class="nowrap">11 / 12</td></tr>
 <tr><td class="mono">New-ScheduledTaskAction</td><td>タスクスケジューラの実行内容を定義する</td><td class="nowrap">09</td></tr>
 <tr><td class="mono">New-ScheduledTaskTrigger</td><td>タスクスケジューラの起動条件を定義する</td><td class="nowrap">09</td></tr>
 <tr><td class="mono">Out-File</td><td>ファイルに書き出す。5.1 の既定は UTF-16LE</td><td class="nowrap">02 / 07</td></tr>
-<tr><td class="mono">Out-Null</td><td>出力を捨てる。ループ内では $null = のほうが速い</td><td class="nowrap">06 / 09 / 10</td></tr>
+<tr><td class="mono">Out-Null</td><td>出力を捨てる。ループ内では $null = のほうが速い</td><td class="nowrap">06 / 09 / 10 / 12</td></tr>
 <tr><td class="mono">Register-ScheduledTask</td><td>タスクを登録する</td><td class="nowrap">09</td></tr>
-<tr><td class="mono">Remove-Item</td><td>削除する。-WhatIf で事前確認できる</td><td class="nowrap">01 / 08 / 09</td></tr>
+<tr><td class="mono">Remove-Item</td><td>削除する。-WhatIf で事前確認できる</td><td class="nowrap">01 / 08 / 09 / 12</td></tr>
 <tr><td class="mono">Remove-PSBreakpoint</td><td>ブレークポイントを削除する</td><td class="nowrap">08</td></tr>
 <tr><td class="mono">Rename-Item</td><td>名前を変更する。-WhatIf で事前確認できる</td><td class="nowrap">09</td></tr>
 <tr><td class="mono">Resolve-Path</td><td>絶対パスに解決する（存在しないとエラー）</td><td class="nowrap">07</td></tr>
-<tr><td class="mono">Select-Object</td><td>プロパティを選ぶ。-ExpandProperty で値そのもの</td><td class="nowrap">01 / 05 / 10</td></tr>
+<tr><td class="mono">Save-Module</td><td>インストールせずにモジュールを取得する</td><td class="nowrap">12</td></tr>
+<tr><td class="mono">Select-Object</td><td>プロパティを選ぶ。-ExpandProperty で値そのもの</td><td class="nowrap">01 / 05 / 10 / 11 / 12</td></tr>
 <tr><td class="mono">Set-Alias</td><td>エイリアスを定義する</td><td class="nowrap">03 / 05</td></tr>
 <tr><td class="mono">Set-Content</td><td>ファイルに書く。-Encoding を必ず明示する</td><td class="nowrap">02 / 05 / 06 / 07 / 10</td></tr>
 <tr><td class="mono">Set-ExecutionPolicy</td><td>実行ポリシーを変更する。-Scope CurrentUser 推奨</td><td class="nowrap">03 / 10</td></tr>
 <tr><td class="mono">Set-PSBreakpoint</td><td>行・変数・コマンドにブレークポイントを置く</td><td class="nowrap">08</td></tr>
 <tr><td class="mono">Set-PSDebug</td><td>実行行のトレースを有効にする</td><td class="nowrap">08</td></tr>
-<tr><td class="mono">Set-StrictMode</td><td>未定義変数などを即エラーにする。先頭に書く</td><td class="nowrap">04 / 06 / 09 / 10</td></tr>
+<tr><td class="mono">Set-StrictMode</td><td>未定義変数などを即エラーにする。先頭に書く</td><td class="nowrap">04 / 06 / 09 / 10 / 11 / 12</td></tr>
 <tr><td class="mono">Split-Path</td><td>パスを親・末尾に分解する</td><td class="nowrap">07</td></tr>
-<tr><td class="mono">Start-Sleep</td><td>指定秒だけ待つ</td><td class="nowrap">05</td></tr>
+<tr><td class="mono">Start-Sleep</td><td>指定秒だけ待つ</td><td class="nowrap">05 / 12</td></tr>
 <tr><td class="mono">Stop-Process</td><td>プロセスを終了する</td><td class="nowrap">01</td></tr>
 <tr><td class="mono">Stop-Service</td><td>サービスを停止する</td><td class="nowrap">05</td></tr>
-<tr><td class="mono">Test-Path</td><td>存在を確認する。-PathType でファイル／フォルダを区別</td><td class="nowrap">03 / 07 / 08 / 09 / 10</td></tr>
+<tr><td class="mono">Test-Path</td><td>存在を確認する。-PathType でファイル／フォルダを区別</td><td class="nowrap">03 / 07 / 08 / 09 / 10 / 11 / 12</td></tr>
 <tr><td class="mono">Unblock-File</td><td>ダウンロード由来の印（Zone.Identifier）を外す</td><td class="nowrap">03</td></tr>
 <tr><td class="mono">Update-Help</td><td>ヘルプを取得・更新する</td><td class="nowrap">05</td></tr>
 <tr><td class="mono">Wait-Debugger</td><td>その場でデバッガに入る</td><td class="nowrap">08</td></tr>
 <tr><td class="mono">Write-Debug</td><td>-Debug 指定時だけ出るメッセージ</td><td class="nowrap">08</td></tr>
 <tr><td class="mono">Write-Error</td><td>非終了エラーを出す。catch には入らない</td><td class="nowrap">08</td></tr>
-<tr><td class="mono">Write-Host</td><td>画面に出す。戻り値には混ざらない</td><td class="nowrap">01 / 02 / 04 / 06 / 08 / 09 / 10</td></tr>
+<tr><td class="mono">Write-Host</td><td>画面に出す。戻り値には混ざらない</td><td class="nowrap">01 / 02 / 04 / 06 / 08 / 09 / 10 / 11</td></tr>
 <tr><td class="mono">Write-Output</td><td>本来の出力。戻り値に混ざる</td><td class="nowrap">08</td></tr>
 <tr><td class="mono">Write-Progress</td><td>進捗を表示する</td><td class="nowrap">03</td></tr>
 <tr><td class="mono">Write-Verbose</td><td>-Verbose 指定時だけ出る。消さずに残せる</td><td class="nowrap">06 / 08 / 09 / 10</td></tr>

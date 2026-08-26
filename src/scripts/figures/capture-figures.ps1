@@ -9,9 +9,10 @@
 	ブラウザで描画してから撮るため、CSS 変数 (--accent 等) が解決済みの状態になり、
 	フォントも本文と完全に一致する。出力した PNG は pptx 生成が利用する。
 
-	書き出す対象ファイルの一覧は、共有環境側の spec に定義されている:
-	  N:\2026\PlayWright\projects\20260822-powershell-pwsh-learn\capture-figures.spec.ts
-	資料を追加したら、この spec の targets にも追記すること。
+	書き出す対象ファイルの一覧は、共有環境側の targets.ts に集約されている:
+	  N:\2026\PlayWright\projects\20260822-powershell-pwsh-learn\targets.ts
+	capture-figures / export-outline / export-markdown の3つが同じ一覧を読むため、
+	資料を追加したときの追記先はこの1ファイルだけでよい。
 #>
 
 $ErrorActionPreference = 'Stop'
