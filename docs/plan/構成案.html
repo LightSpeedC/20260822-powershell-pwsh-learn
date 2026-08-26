@@ -19,14 +19,15 @@
 		--soft: #f2f5fb;
 	}
 
-	/* 章ごとの虹色アクセント (H: 280 → 0, 280°を7章に均等分割 = 46.7°刻み) */
+	/* 章ごとの虹色アクセント (H: 280 → 0, 280°を8章に均等分割 = 40°刻み) */
 	.ch01 { --accent: hsl(280,78%,25%); --accent2: hsl(280,58%,65%); --soft: hsl(280,28%,95%); }
-	.ch02 { --accent: hsl(233.3,78%,25%); --accent2: hsl(233.3,58%,65%); --soft: hsl(233.3,28%,95%); }
-	.ch03 { --accent: hsl(186.7,78%,25%); --accent2: hsl(186.7,58%,65%); --soft: hsl(186.7,28%,95%); }
-	.ch04 { --accent: hsl(140,78%,25%); --accent2: hsl(140,58%,65%); --soft: hsl(140,28%,95%); }
-	.ch05 { --accent: hsl(93.3,78%,25%); --accent2: hsl(93.3,58%,65%); --soft: hsl(93.3,28%,95%); }
-	.ch06 { --accent: hsl(46.7,78%,25%); --accent2: hsl(46.7,58%,65%); --soft: hsl(46.7,28%,95%); }
-	.ch07 { --accent: hsl(0,78%,25%); --accent2: hsl(0,58%,65%); --soft: hsl(0,28%,95%); }
+	.ch02 { --accent: hsl(240,78%,25%); --accent2: hsl(240,58%,65%); --soft: hsl(240,28%,95%); }
+	.ch03 { --accent: hsl(200,78%,25%); --accent2: hsl(200,58%,65%); --soft: hsl(200,28%,95%); }
+	.ch04 { --accent: hsl(160,78%,25%); --accent2: hsl(160,58%,65%); --soft: hsl(160,28%,95%); }
+	.ch05 { --accent: hsl(120,78%,25%); --accent2: hsl(120,58%,65%); --soft: hsl(120,28%,95%); }
+	.ch06 { --accent: hsl(80,78%,25%); --accent2: hsl(80,58%,65%); --soft: hsl(80,28%,95%); }
+	.ch07 { --accent: hsl(40,78%,25%); --accent2: hsl(40,58%,65%); --soft: hsl(40,28%,95%); }
+	.ch08 { --accent: hsl(0,78%,25%); --accent2: hsl(0,58%,65%); --soft: hsl(0,28%,95%); }
 
 	* { box-sizing: border-box; }
 
@@ -260,6 +261,7 @@
 		<li class="ch05"><a href="#ch05">発展編（11・12）の詳細</a></li>
 		<li class="ch06"><a href="#ch06">勉強会の進行案</a></li>
 		<li class="ch07"><a href="#ch07">付録（A1・A2・A3）の詳細</a></li>
+		<li class="ch08"><a href="#ch08">資料のビルドと運用</a></li>
 	</ol>
 </nav>
 
@@ -461,22 +463,22 @@
 
 <div class="table-wrap">
 <table>
-<tr><th>No.</th><th>タイトル</th><th>扱う内容</th><th>章数</th><th>状態</th></tr>
-<tr><td class="nowrap">01</td><td class="nowrap">背景</td><td>DOS/cmd の限界、Bash との比較、PowerShell の設計思想、Node.js との立場の違い</td><td class="num">4</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
-<tr><td class="nowrap">02</td><td class="nowrap">ファイル形式</td><td><strong>BOM の有無で 5.1 と 7 の解釈が逆になる</strong>（本資料の最重要点）、CRLF、<code>.ps1</code>／<code>.cmd</code>／<code>.bat</code> の使い分け、cmd ランチャー</td><td class="num">4</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
-<tr><td class="nowrap">03</td><td class="nowrap">実行環境</td><td>Windows PowerShell 5.1 と PowerShell 7 (pwsh) の違い、実行ポリシー、プロファイル、VS Code</td><td class="num">4</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
-<tr><td class="nowrap">04</td><td class="nowrap">変数と型</td><td>変数・型・演算子・配列・ハッシュテーブル。JS との対比を全節に配置</td><td class="num">5</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
-<tr><td class="nowrap">05</td><td class="nowrap">パイプライン</td><td>オブジェクトパイプ、<code>Where-Object</code>／<code>ForEach-Object</code>／<code>Select-Object</code>、Cmdlet の命名規則</td><td class="num">5</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
-<tr><td class="nowrap">06</td><td class="nowrap">制御構文と関数</td><td><code>if</code>／<code>foreach</code>／<code>switch</code>、関数、パラメータ、スコープ</td><td class="num">4</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
-<tr><td class="nowrap">07</td><td class="nowrap">ファイル操作</td><td>パス操作、<code>Get-Content</code>／<code>Set-Content</code> のエンコーディング、CSV/JSON</td><td class="num">4</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
-<tr><td class="nowrap">08</td><td class="nowrap">エラー処理</td><td><code>try/catch</code>、<code>$ErrorActionPreference</code>、終了コード、デバッグ手順</td><td class="num">4</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
-<tr><td class="nowrap">09</td><td class="nowrap">実務パターン集</td><td>ログ集計、一括リネーム、タスクスケジューラ連携、他プロセス呼び出し</td><td class="num">5</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
-<tr><td class="nowrap">10</td><td class="nowrap">ハンズオン</td><td>勉強会用の課題と解答例、詰まりやすい箇所の解説</td><td class="num">3</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
-<tr><td class="nowrap">11</td><td class="nowrap">Add-Type</td><td>C# をその場でコンパイルして呼ぶ。P/Invoke、型の再定義制限、<code>csc.exe</code> で exe 化</td><td class="num">7</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
-<tr><td class="nowrap">12</td><td class="nowrap">COMとOffice</td><td>Word・Excel・PowerPoint の操作と PDF 化、プロセスを残さない後始末</td><td class="num">5</td><td class="nowrap"><span class="badge b-good">作成済</span></td></tr>
-<tr><td class="nowrap"><strong>A1</strong></td><td class="nowrap">逆引き</td><td>症状・コマンド名・JavaScript・用語の4つの入口から該当箇所へ引く索引</td><td class="num">4</td><td class="nowrap"><span class="badge b-good">完成</span></td></tr>
-<tr><td class="nowrap"><strong>A2</strong></td><td class="nowrap">テンプレ集</td><td>コピーして使う雛形。スクリプトの骨格・ログ・引数検証・ファイル処理ほか</td><td class="num">6</td><td class="nowrap"><span class="badge b-good">完成</span></td></tr>
-<tr><td class="nowrap"><strong>A3</strong></td><td class="nowrap">モジュール</td><td>業務で使えるモジュール厳選8本。選ぶ基準、導入とオフライン配布</td><td class="num">4</td><td class="nowrap"><span class="badge b-good">完成</span></td></tr>
+<tr><th>No.</th><th>タイトル</th><th>扱う内容</th><th>章数</th></tr>
+<tr><td class="nowrap">01</td><td class="nowrap">背景</td><td>DOS/cmd の限界、Bash との比較、PowerShell の設計思想、Node.js との立場の違い</td><td class="num">4</td></tr>
+<tr><td class="nowrap">02</td><td class="nowrap">ファイル形式</td><td><strong>BOM の有無で 5.1 と 7 の解釈が逆になる</strong>（本資料の最重要点）、CRLF、<code>.ps1</code>／<code>.cmd</code>／<code>.bat</code> の使い分け、cmd ランチャー</td><td class="num">4</td></tr>
+<tr><td class="nowrap">03</td><td class="nowrap">実行環境</td><td>Windows PowerShell 5.1 と PowerShell 7 (pwsh) の違い、実行ポリシー、プロファイル、VS Code</td><td class="num">4</td></tr>
+<tr><td class="nowrap">04</td><td class="nowrap">変数と型</td><td>変数・型・演算子・配列・ハッシュテーブル。JS との対比を全節に配置</td><td class="num">5</td></tr>
+<tr><td class="nowrap">05</td><td class="nowrap">パイプライン</td><td>オブジェクトパイプ、<code>Where-Object</code>／<code>ForEach-Object</code>／<code>Select-Object</code>、Cmdlet の命名規則</td><td class="num">5</td></tr>
+<tr><td class="nowrap">06</td><td class="nowrap">制御構文と関数</td><td><code>if</code>／<code>foreach</code>／<code>switch</code>、関数、パラメータ、スコープ</td><td class="num">4</td></tr>
+<tr><td class="nowrap">07</td><td class="nowrap">ファイル操作</td><td>パス操作、<code>Get-Content</code>／<code>Set-Content</code> のエンコーディング、CSV/JSON</td><td class="num">4</td></tr>
+<tr><td class="nowrap">08</td><td class="nowrap">エラー処理</td><td><code>try/catch</code>、<code>$ErrorActionPreference</code>、終了コード、デバッグ手順</td><td class="num">4</td></tr>
+<tr><td class="nowrap">09</td><td class="nowrap">実務パターン集</td><td>ログ集計、一括リネーム、タスクスケジューラ連携、他プロセス呼び出し</td><td class="num">5</td></tr>
+<tr><td class="nowrap">10</td><td class="nowrap">ハンズオン</td><td>勉強会用の課題と解答例、詰まりやすい箇所の解説</td><td class="num">3</td></tr>
+<tr><td class="nowrap">11</td><td class="nowrap">Add-Type</td><td>C# をその場でコンパイルして呼ぶ。P/Invoke、型の再定義制限、<code>csc.exe</code> で exe 化</td><td class="num">7</td></tr>
+<tr><td class="nowrap">12</td><td class="nowrap">COMとOffice</td><td>Word・Excel・PowerPoint の操作と PDF 化、プロセスを残さない後始末</td><td class="num">5</td></tr>
+<tr><td class="nowrap">A1</td><td class="nowrap">逆引き</td><td>症状・コマンド名・JavaScript・用語の4つの入口から該当箇所へ引く索引</td><td class="num">4</td></tr>
+<tr><td class="nowrap">A2</td><td class="nowrap">テンプレ集</td><td>コピーして使う雛形。スクリプトの骨格・ログ・引数検証・ファイル処理ほか</td><td class="num">6</td></tr>
+<tr><td class="nowrap">A3</td><td class="nowrap">モジュール</td><td>業務で使えるモジュール厳選8本。選ぶ基準、導入とオフライン配布</td><td class="num">4</td></tr>
 </table>
 </div>
 
@@ -505,11 +507,11 @@
 <section class="ch03" id="ch03">
 <h1>3. 基礎編（01〜05）の詳細</h1>
 
-<h2>01. 背景 <span class="badge b-good">作成済</span></h2>
+<h2>01. 背景</h2>
 
 <p>DOS/cmd の限界 → Bash の強み → PowerShell が必要だった理由 → 設計思想 → 他言語との立場、の4章構成。SVG図4枚で、テキストパイプとオブジェクトパイプの違いを視覚化済み。</p>
 
-<h2>02. ファイル形式と文字コード <span class="badge b-good">作成済</span></h2>
+<h2>02. ファイル形式と文字コード</h2>
 
 <p>この資料で最初に「決まりごと」が出てくる章です。<strong>理由を説明せずに規則だけ書くと必ず忘れられる</strong>ので、文字コードの仕組みから入ります。</p>
 
@@ -584,7 +586,7 @@
 BOM なしの ps1 に日本語を書いて 5.1 で実行し、文字化けを目の前で起こす。さらに同じファイルを 7 で実行して正常に動くことを見せると、上の表が体感として入ります。「規則」が「実害の回避策」に変わります。
 </div>
 
-<h2>03. 実行環境と実行ポリシー <span class="badge b-good">作成済</span></h2>
+<h2>03. 実行環境と実行ポリシー</h2>
 
 <div class="table-wrap">
 <table>
@@ -596,7 +598,7 @@ BOM なしの ps1 に日本語を書いて 5.1 で実行し、文字化けを目
 </table>
 </div>
 
-<h2>04. 変数・型・演算子 <span class="badge b-good">作成済</span></h2>
+<h2>04. 変数・型・演算子</h2>
 
 <p>読者Aの既知知識に最も接続しやすい章。<strong>全節で JS のコードを左、PowerShell を右に並べます。</strong></p>
 
@@ -615,7 +617,7 @@ arr.filter(x =&gt; x &gt; 1);         $arr | Where-Object { $_ -gt 1 }
 	<li>04.5 <code>$null</code>・真偽値・型変換の癖</li>
 </ul>
 
-<h2>05. パイプラインとオブジェクト <span class="badge b-good">作成済</span></h2>
+<h2>05. パイプラインとオブジェクト</h2>
 
 <ul>
 	<li>05.1 パイプに流れるのはオブジェクト — 01 の復習から入る</li>
@@ -630,7 +632,7 @@ arr.filter(x =&gt; x &gt; 1);         $arr | Where-Object { $_ -gt 1 }
 <section class="ch04" id="ch04">
 <h1>4. 実践編（06〜09）の詳細</h1>
 
-<h2>06. 制御構文と関数 <span class="badge b-good">作成済</span></h2>
+<h2>06. 制御構文と関数</h2>
 
 <ul>
 	<li>06.1 <code>if</code>／<code>foreach</code>／<code>while</code>／<code>switch</code> — JS との構文差</li>
@@ -665,7 +667,7 @@ JS の <code>return</code> の感覚で書くと、途中の <code>Write-Output<
 	<li>08.4 <code>Write-Verbose</code>／ブレークポイント／<code>Set-PSDebug</code></li>
 </ul>
 
-<h2>09. 実務パターン集 <span class="badge b-good">作成済</span></h2>
+<h2>09. 実務パターン集</h2>
 
 <p>ここまでの知識を組み合わせた「そのまま使える」スクリプト集。各パターンは<strong>50行以内</strong>に収め、写経できる長さにします。</p>
 
@@ -697,7 +699,7 @@ JS の <code>return</code> の感覚で書くと、途中の <code>Write-Output<
 A1〜A3 は必要な行だけ拾えば用が足りますが、11・12 は前提から順に読まないと危険な操作（プロセスが残る、型が固定される）を含みます。そのため<strong>第4部として本編の続き</strong>に置き、README のロードマップでも「必要になってからでよい」と明示しています。
 </div>
 
-<h2>11. C# を埋め込む — Add-Type <span class="badge b-good">完成</span></h2>
+<h2>11. C# を埋め込む — Add-Type</h2>
 
 <p>全7節。<strong>すべてのコードを 5.1 と 7 の両方で実行して確認</strong>しています。</p>
 
@@ -717,7 +719,7 @@ A1〜A3 は必要な行だけ拾えば用が足りますが、11・12 は前提�
 「C# にすれば速い」ではなく<strong>「境界をまたぐ回数を減らせば速い」</strong>が正しい理解で、11.1 と 11.6 の骨子にしました。
 </div>
 
-<h2>12. Office と COM を操作する <span class="badge b-good">完成</span></h2>
+<h2>12. Office と COM を操作する</h2>
 
 <p>全5節。Word・Excel・PowerPoint の COM を実際に動かして確認しています。</p>
 
@@ -742,16 +744,7 @@ A1〜A3 は必要な行だけ拾えば用が足りますが、11・12 は前提�
 
 <h2>全5回・1回90分</h2>
 
-<div class="table-wrap">
-<table>
-<tr><th>回</th><th>扱うファイル</th><th>ゴール</th><th>ハンズオン</th></tr>
-<tr><td class="nowrap">第1回</td><td class="nowrap">01・02</td><td>PowerShell が何を解決する道具かを言える</td><td>BOM なしで文字化けを再現する</td></tr>
-<tr><td class="nowrap">第2回</td><td class="nowrap">03・04</td><td>自分の PC でスクリプトを実行できる</td><td>環境構築 ＋ Hello World の ps1 と cmd ランチャー</td></tr>
-<tr><td class="nowrap">第3回</td><td class="nowrap">05</td><td><code>Get-Member</code> で自力で調べられる</td><td>プロセス一覧をメモリ順に並べて上位5件を出す</td></tr>
-<tr><td class="nowrap">第4回</td><td class="nowrap">06・07</td><td>関数に切り出したスクリプトが書ける</td><td>指定フォルダのファイル一覧を CSV 出力</td></tr>
-<tr><td class="nowrap">第5回</td><td class="nowrap">08・09・10</td><td>実務スクリプトを1本完成させる</td><td>ログ集計スクリプトを課題形式で作る</td></tr>
-</table>
-</div>
+<p>各回の進行表は<strong>受講者が見るもの</strong>なので <a href="../../README.html#ch04">README の4章「勉強会で使う場合」</a> に置いています。ここでは<strong>主催する側の準備</strong>だけを扱います。</p>
 
 <h2>1回あたりの時間配分</h2>
 
@@ -941,6 +934,147 @@ A3.3 の冒頭にも同じ断りを置き、読者に対して未検証である
 <tr><td class="nowrap">A1</td><td><strong>網羅</strong></td><td class="num">160</td></tr>
 </table>
 </div>
+</section>
+
+<!-- ============ 8 ============ -->
+<section class="ch08" id="ch08">
+<h1>8. 資料のビルドと運用</h1>
+
+<p>ここから先は<strong>資料を作る側の手順</strong>です。読むだけなら必要ありません。</p>
+
+<h2>HTML を編集したら再生成が必要</h2>
+
+<figure>
+<svg viewBox="0 0 780 250" role="img" aria-label="資料から pptx を生成するパイプライン">
+	<defs>
+		<linearGradient id="g-pl-8a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(255,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(255,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-pl-8b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(200,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(200,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="g-pl-8c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/>
+			<stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="270" y="16" width="240" height="46" rx="9" fill="url(#g-pl-8a)"/>
+	<text x="390" y="45" fill="#fff" font-size="14" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">docs/NN-*.html</text>
+
+	<path d="M330 64 V 84 H 180 V 100" fill="none" stroke="var(--ink-soft)" stroke-width="2"/>
+	<polygon points="173,100 180,116 187,100" fill="var(--ink-soft)"/>
+	<path d="M450 64 V 84 H 600 V 100" fill="none" stroke="var(--ink-soft)" stroke-width="2"/>
+	<polygon points="593,100 600,116 607,100" fill="var(--ink-soft)"/>
+
+	<text x="390" y="82" fill="var(--ink-soft)" font-size="11.5" font-weight="700" text-anchor="middle">capture-figures.ps1（Playwright）</text>
+
+	<rect x="40" y="122" width="280" height="52" rx="9" fill="url(#g-pl-8b)"/>
+	<text x="180" y="145" fill="#fff" font-size="13" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">tmp/figures/*.png</text>
+	<text x="180" y="164" fill="#fff" font-size="11" text-anchor="middle" opacity="0.9">SVG 図を 3 倍 DPI で撮影</text>
+
+	<rect x="460" y="122" width="280" height="52" rx="9" fill="url(#g-pl-8b)"/>
+	<text x="600" y="145" fill="#fff" font-size="13" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">tmp/outline/*.json</text>
+	<text x="600" y="164" fill="#fff" font-size="11" text-anchor="middle" opacity="0.9">見出し・本文・章の色を抽出</text>
+
+	<path d="M180 176 V 194 H 330 V 206" fill="none" stroke="var(--ink-soft)" stroke-width="2"/>
+	<path d="M600 176 V 194 H 450 V 206" fill="none" stroke="var(--ink-soft)" stroke-width="2"/>
+
+	<rect x="270" y="204" width="240" height="40" rx="9" fill="url(#g-pl-8c)"/>
+	<text x="390" y="229" fill="#fff" font-size="13.5" font-weight="700" text-anchor="middle">build-pptx.ps1 → pptx / PDF</text>
+</svg>
+<figcaption>図 2 — HTML が唯一の原本。図も pptx もそこから生成される</figcaption>
+</figure>
+
+<div class="callout">
+<strong>必ず <code>capture-figures.ps1</code> → <code>build-pptx.ps1</code> の順で実行してください。</strong><br>
+pptx は <code>tmp/outline/*.json</code> を材料にするため、<strong>先に抽出し直さないと HTML の変更が反映されません</strong>。スライド枚数が変わらないときは、この順序を飛ばしている可能性があります。
+</div>
+
+<h2>実行方法</h2>
+
+<pre><code># 0) 章を増減・改題したときに実行する2本
+.\src\scripts\nav\build-nav.ps1      # 各章フッターの前後リンク
+.\src\scripts\index\build-index.ps1  # A1.2 のコマンド索引
+
+# 1) SVG 図を PNG に書き出す（構造 JSON も同時に出力される）
+.\src\scripts\figures\capture-figures.ps1
+
+# 2) pptx を生成する（-Prefix で1章だけも可）
+.\src\scripts\pptx\build-pptx.ps1 -Prefix 05 -Pdf -Images
+
+# 3) GitHub 用の Markdown を生成する
+.\src\scripts\markdown\build-markdown.ps1</code></pre>
+
+<p>いずれも<strong>同名の <code>.cmd</code> をダブルクリック</strong>しても実行できます。</p>
+
+<h2>Markdown 版について</h2>
+
+<p>GitHub は <code>.html</code> をレンダリングしないため、<strong>同じ内容の <code>.md</code> を HTML から生成</strong>しています。リポジトリ上で読むときはこちらを使ってください。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>変換されるもの</th><th>Markdown での表現</th></tr>
+<tr><td class="nowrap">SVG 図</td><td><code>docs/images/*.png</code> への画像参照（HTML から撮影した PNG）</td></tr>
+<tr><td class="nowrap"><code>.callout</code></td><td>GitHub のアラート記法（<code>&gt; [!NOTE]</code>）</td></tr>
+<tr><td class="nowrap">バッジ</td><td><code>**［pwsh 7］**</code> のような強調表示</td></tr>
+<tr><td class="nowrap">章へのリンク</td><td><code>.html</code> → <code>.md</code> に書き換え。<code>#chNN</code> は見出しのスラッグに差し替え</td></tr>
+<tr><td class="nowrap">コードブロック</td><td>中身から言語を推測（<code>powershell</code> / <code>bat</code> / <code>javascript</code> ほか）</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>原本は HTML です。</strong><br>
+<code>.md</code> を直接編集しても、次回の生成で<strong>上書きされます</strong>。修正は必ず <code>.html</code> 側に入れてください。
+</div>
+
+<div class="table-wrap">
+<table>
+<tr><th>スイッチ</th><th>効果</th></tr>
+<tr><td class="nowrap"><code>-Prefix 05</code></td><td>その章だけを生成する</td></tr>
+<tr><td class="nowrap"><code>-Pdf</code></td><td>PDF も出力する</td></tr>
+<tr><td class="nowrap"><code>-Images</code></td><td>スライドを PNG で書き出す（見た目の確認用）</td></tr>
+<tr><td class="nowrap"><code>-IncludeSupplements</code></td><td>「PowerShell が初めての人へ」もスライドに含める</td></tr>
+</table>
+</div>
+
+<h2>章を追加したときの手順</h2>
+
+<ol>
+	<li><code>docs/NN-タイトル.html</code> を作る</li>
+	<li><code>build-nav.ps1</code> を実行してフッターの前後リンクを作り直す（<strong>手で書かない</strong>）</li>
+	<li><a href="../plan/構成案.html">構成案</a> の状態を<strong>作成済</strong>に更新する（一覧表と詳細見出しの<strong>2箇所</strong>）</li>
+	<li>共有環境の <code>targets.ts</code> に追記する</li>
+	<li>このページの章カードと逆引き索引に追加する</li>
+	<li><code>build-index.ps1</code> を実行して <a href="../A1-逆引き.html#ch02">A1.2 のコマンド索引</a>を作り直す。<strong>未登録の Cmdlet があると警告が出る</strong>ので、スクリプト内の <code>$Purpose</code> に追記する</li>
+	<li>新しい Cmdlet が出たなら <a href="../A1-逆引き.html#ch01">A1.1</a> と <a href="../A1-逆引き.html#ch04">A1.4</a> も見直す</li>
+</ol>
+
+<div class="callout">
+<strong>Playwright の spec は共有環境側にあります。</strong><br>
+<code>N:\2026\PlayWright\projects\20260822-powershell-pwsh-learn\</code> に置いています。<strong>対象ファイルの一覧は <code>targets.ts</code> に集約</strong>してあるので、追記はそこ1箇所で済みます。
+</div>
+
+<h2>出力物の置き場所</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>場所</th><th>内容</th><th>git</th></tr>
+<tr><td class="nowrap"><code>docs/*.html</code></td><td>資料（<strong>原本</strong>）</td><td><span class="badge b-good">対象</span></td></tr>
+<tr><td class="nowrap"><code>docs/*.md</code></td><td>GitHub 表示用（HTML から生成）</td><td><span class="badge b-good">対象</span></td></tr>
+<tr><td class="nowrap"><code>docs/images/</code></td><td>Markdown が参照する図の PNG</td><td><span class="badge b-good">対象</span></td></tr>
+<tr><td class="nowrap"><code>src/scripts/</code></td><td>ビルド用スクリプト</td><td><span class="badge b-good">対象</span></td></tr>
+<tr><td class="nowrap"><code>tmp/figures/</code></td><td>図の PNG（63 枚）</td><td><span class="badge b-none">除外</span></td></tr>
+<tr><td class="nowrap"><code>tmp/outline/</code></td><td>構造 JSON</td><td><span class="badge b-none">除外</span></td></tr>
+<tr><td class="nowrap"><code>tmp/pptx/</code></td><td>pptx と PDF</td><td><span class="badge b-none">除外</span></td></tr>
+<tr><td class="nowrap"><code>etc/</code></td><td>セッションログ・<code>c.bat</code></td><td><span class="badge b-none">除外</span></td></tr>
+</table>
+</div>
+
+<p>生成物はすべて <code>tmp/</code> にあります。<strong>消しても HTML から作り直せます。</strong></p>
+
 </section>
 
 </div>

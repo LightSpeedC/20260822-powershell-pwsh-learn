@@ -21,8 +21,9 @@
 
 	/* 章ごとの虹色アクセント (H: 280 → 0, 280°を3章に均等分割 = 140°刻み) */
 	.ch01 { --accent: hsl(280,78%,25%); --accent2: hsl(280,58%,65%); --soft: hsl(280,28%,95%); }
-	.ch02 { --accent: hsl(140,78%,25%); --accent2: hsl(140,58%,65%); --soft: hsl(140,28%,95%); }
-	.ch03 { --accent: hsl(0,78%,25%);   --accent2: hsl(0,58%,65%);   --soft: hsl(0,28%,95%); }
+	.ch02 { --accent: hsl(186.7,78%,25%); --accent2: hsl(186.7,58%,65%); --soft: hsl(186.7,28%,95%); }
+	.ch03 { --accent: hsl(93.3,78%,25%); --accent2: hsl(93.3,58%,65%); --soft: hsl(93.3,28%,95%); }
+	.ch04 { --accent: hsl(0,78%,25%); --accent2: hsl(0,58%,65%); --soft: hsl(0,28%,95%); }
 
 	* { box-sizing: border-box; }
 
@@ -373,8 +374,9 @@
 	<strong>このページの内容</strong>
 	<ol>
 		<li class="ch01"><a href="#ch01">4部構成と読む順序</a></li>
-		<li class="ch02"><a href="#ch02">目的から引く — 逆引き索引</a></li>
-		<li class="ch03"><a href="#ch03">資料のメンテナンス</a></li>
+		<li class="ch02"><a href="#ch02">この資料の約束事</a></li>
+		<li class="ch03"><a href="#ch03">目的から引く — 逆引き索引</a></li>
+		<li class="ch04"><a href="#ch04">勉強会で使う場合</a></li>
 	</ol>
 </nav>
 
@@ -484,7 +486,12 @@
 <strong>「画面の表示とデータは別物」「迷ったら <code>Get-Member</code>」</strong>の2つが分かれば、あとは実行環境が教えてくれます。この資料に載っていないコマンドも自力で扱えるようになります。
 </div>
 
-<h2>本資料の約束事</h2>
+</section>
+
+<!-- ============ 2 ============ -->
+<section class="ch02" id="ch02">
+<h1>2. この資料の約束事</h1>
+
 
 <div class="table-wrap">
 <table>
@@ -498,9 +505,9 @@
 </div>
 </section>
 
-<!-- ============ 2 ============ -->
-<section class="ch02" id="ch02">
-<h1>2. 目的から引く — 逆引き索引</h1>
+<!-- ============ 3 ============ -->
+<section class="ch03" id="ch03">
+<h1>3. 目的から引く — 逆引き索引</h1>
 
 <h2>困っていることから探す</h2>
 
@@ -550,159 +557,59 @@
 <div class="table-wrap">
 <table>
 <tr><th>ファイル</th><th>内容</th></tr>
-<tr><td class="nowrap"><a href="docs/plan/構成案.html">docs/plan/構成案</a></td><td>全体のカリキュラム設計。勉強会の進行案（全5回×90分）もここ</td></tr>
-<tr><td class="nowrap"><code>docs/rules/local.md</code></td><td>このプロジェクトの制作方針（ファイル形式・見出し番号・バッジ）</td></tr>
-<tr><td class="nowrap"><code>docs/rules/html-design.md</code></td><td>HTML デザインルールへの改善提案（作業記録）</td></tr>
+<tr><td class="nowrap"><a href="docs/plan/構成案.html">docs/plan/構成案</a></td><td><strong>資料を作る側の文書。</strong>各章に何を書いたかの設計記録と、主催者向けの準備、資料のビルド手順</td></tr>
 <tr><td class="nowrap"><a href="docs/A1-逆引き.html">docs/A1-逆引き</a></td><td>付録。4つの入口から本編へ引く索引。コマンド一覧は自動生成</td></tr>
 <tr><td class="nowrap"><a href="docs/A2-テンプレ集.html">docs/A2-テンプレ集</a></td><td>付録。コピーして使う雛形6種</td></tr>
 <tr><td class="nowrap"><a href="docs/A3-モジュール.html">docs/A3-モジュール</a></td><td>付録。業務で使えるモジュール厳選8本と、導入・オフライン配布</td></tr>
-<tr><td class="nowrap"><code>src/scripts/</code></td><td>資料をビルドするスクリプト（下記）</td></tr>
 </table>
 </div>
 </section>
+<!-- ============ 4 ============ -->
+<section class="ch04" id="ch04">
+<h1>4. 勉強会で使う場合</h1>
 
-<!-- ============ 3 ============ -->
-<section class="ch03" id="ch03">
-<h1>3. 資料のメンテナンス</h1>
+<p>この資料は<strong>全5回・1回90分</strong>の勉強会を想定して作ってあります。1人で読む場合はこの章を飛ばして構いません。</p>
 
-<h2>HTML を編集したら再生成が必要</h2>
-
-<figure>
-<svg viewBox="0 0 780 250" role="img" aria-label="資料から pptx を生成するパイプライン">
-	<defs>
-		<linearGradient id="g-rm-2a" x1="0" y1="1" x2="0" y2="0">
-			<stop offset="0" stop-color="hsl(255,78%,25%)"/>
-			<stop offset="1" stop-color="hsl(255,58%,65%)"/>
-		</linearGradient>
-		<linearGradient id="g-rm-2b" x1="0" y1="1" x2="0" y2="0">
-			<stop offset="0" stop-color="hsl(200,78%,25%)"/>
-			<stop offset="1" stop-color="hsl(200,58%,65%)"/>
-		</linearGradient>
-		<linearGradient id="g-rm-2c" x1="0" y1="1" x2="0" y2="0">
-			<stop offset="0" stop-color="var(--accent)"/>
-			<stop offset="1" stop-color="var(--accent2)"/>
-		</linearGradient>
-	</defs>
-
-	<rect x="270" y="16" width="240" height="46" rx="9" fill="url(#g-rm-2a)"/>
-	<text x="390" y="45" fill="#fff" font-size="14" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">docs/NN-*.html</text>
-
-	<path d="M330 64 V 84 H 180 V 100" fill="none" stroke="var(--ink-soft)" stroke-width="2"/>
-	<polygon points="173,100 180,116 187,100" fill="var(--ink-soft)"/>
-	<path d="M450 64 V 84 H 600 V 100" fill="none" stroke="var(--ink-soft)" stroke-width="2"/>
-	<polygon points="593,100 600,116 607,100" fill="var(--ink-soft)"/>
-
-	<text x="390" y="82" fill="var(--ink-soft)" font-size="11.5" font-weight="700" text-anchor="middle">capture-figures.ps1（Playwright）</text>
-
-	<rect x="40" y="122" width="280" height="52" rx="9" fill="url(#g-rm-2b)"/>
-	<text x="180" y="145" fill="#fff" font-size="13" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">tmp/figures/*.png</text>
-	<text x="180" y="164" fill="#fff" font-size="11" text-anchor="middle" opacity="0.9">SVG 図を 3 倍 DPI で撮影</text>
-
-	<rect x="460" y="122" width="280" height="52" rx="9" fill="url(#g-rm-2b)"/>
-	<text x="600" y="145" fill="#fff" font-size="13" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">tmp/outline/*.json</text>
-	<text x="600" y="164" fill="#fff" font-size="11" text-anchor="middle" opacity="0.9">見出し・本文・章の色を抽出</text>
-
-	<path d="M180 176 V 194 H 330 V 206" fill="none" stroke="var(--ink-soft)" stroke-width="2"/>
-	<path d="M600 176 V 194 H 450 V 206" fill="none" stroke="var(--ink-soft)" stroke-width="2"/>
-
-	<rect x="270" y="204" width="240" height="40" rx="9" fill="url(#g-rm-2c)"/>
-	<text x="390" y="229" fill="#fff" font-size="13.5" font-weight="700" text-anchor="middle">build-pptx.ps1 → pptx / PDF</text>
-</svg>
-<figcaption>図 2 — HTML が唯一の原本。図も pptx もそこから生成される</figcaption>
-</figure>
-
-<div class="callout">
-<strong>必ず <code>capture-figures.ps1</code> → <code>build-pptx.ps1</code> の順で実行してください。</strong><br>
-pptx は <code>tmp/outline/*.json</code> を材料にするため、<strong>先に抽出し直さないと HTML の変更が反映されません</strong>。スライド枚数が変わらないときは、この順序を飛ばしている可能性があります。
-</div>
-
-<h2>実行方法</h2>
-
-<pre><code># 0) 章を増減・改題したときに実行する2本
-.\src\scripts\nav\build-nav.ps1      # 各章フッターの前後リンク
-.\src\scripts\index\build-index.ps1  # A1.2 のコマンド索引
-
-# 1) SVG 図を PNG に書き出す（構造 JSON も同時に出力される）
-.\src\scripts\figures\capture-figures.ps1
-
-# 2) pptx を生成する（-Prefix で1章だけも可）
-.\src\scripts\pptx\build-pptx.ps1 -Prefix 05 -Pdf -Images
-
-# 3) GitHub 用の Markdown を生成する
-.\src\scripts\markdown\build-markdown.ps1</code></pre>
-
-<p>いずれも<strong>同名の <code>.cmd</code> をダブルクリック</strong>しても実行できます。</p>
-
-<h2>Markdown 版について</h2>
-
-<p>GitHub は <code>.html</code> をレンダリングしないため、<strong>同じ内容の <code>.md</code> を HTML から生成</strong>しています。リポジトリ上で読むときはこちらを使ってください。</p>
+<h2>全5回の進行</h2>
 
 <div class="table-wrap">
 <table>
-<tr><th>変換されるもの</th><th>Markdown での表現</th></tr>
-<tr><td class="nowrap">SVG 図</td><td><code>docs/images/*.png</code> への画像参照（HTML から撮影した PNG）</td></tr>
-<tr><td class="nowrap"><code>.callout</code></td><td>GitHub のアラート記法（<code>&gt; [!NOTE]</code>）</td></tr>
-<tr><td class="nowrap">バッジ</td><td><code>**［pwsh 7］**</code> のような強調表示</td></tr>
-<tr><td class="nowrap">章へのリンク</td><td><code>.html</code> → <code>.md</code> に書き換え。<code>#chNN</code> は見出しのスラッグに差し替え</td></tr>
-<tr><td class="nowrap">コードブロック</td><td>中身から言語を推測（<code>powershell</code> / <code>bat</code> / <code>javascript</code> ほか）</td></tr>
+<tr><th>回</th><th>扱うファイル</th><th>ゴール</th><th>ハンズオン</th></tr>
+<tr><td class="nowrap">第1回</td><td class="nowrap">01・02</td><td>PowerShell が何を解決する道具かを言える</td><td>BOM なしで文字化けを再現する</td></tr>
+<tr><td class="nowrap">第2回</td><td class="nowrap">03・04</td><td>自分の PC でスクリプトを実行できる</td><td>環境構築 ＋ Hello World の ps1 と cmd ランチャー</td></tr>
+<tr><td class="nowrap">第3回</td><td class="nowrap">05</td><td><code>Get-Member</code> で自力で調べられる</td><td>プロセス一覧をメモリ順に並べて上位5件を出す</td></tr>
+<tr><td class="nowrap">第4回</td><td class="nowrap">06・07</td><td>関数に切り出したスクリプトが書ける</td><td>指定フォルダのファイル一覧を CSV 出力</td></tr>
+<tr><td class="nowrap">第5回</td><td class="nowrap">08・09・10</td><td>実務スクリプトを1本完成させる</td><td>ログ集計スクリプトを課題形式で作る</td></tr>
 </table>
 </div>
 
 <div class="callout">
-<strong>原本は HTML です。</strong><br>
-<code>.md</code> を直接編集しても、次回の生成で<strong>上書きされます</strong>。修正は必ず <code>.html</code> 側に入れてください。
+<strong>第3回（05 パイプラインとオブジェクト）が山場です。</strong><br>
+ここを理解できるかどうかで、PowerShell を「コマンドの寄せ集め」として使うか「オブジェクト指向シェル」として使えるかが分かれます。<strong>最も時間を割く回</strong>として組んでください。
 </div>
 
-<div class="table-wrap">
-<table>
-<tr><th>スイッチ</th><th>効果</th></tr>
-<tr><td class="nowrap"><code>-Prefix 05</code></td><td>その章だけを生成する</td></tr>
-<tr><td class="nowrap"><code>-Pdf</code></td><td>PDF も出力する</td></tr>
-<tr><td class="nowrap"><code>-Images</code></td><td>スライドを PNG で書き出す（見た目の確認用）</td></tr>
-<tr><td class="nowrap"><code>-IncludeSupplements</code></td><td>「PowerShell が初めての人へ」もスライドに含める</td></tr>
-</table>
-</div>
+<h2>参加する前に</h2>
 
-<h2>章を追加したときの手順</h2>
+<ul>
+	<li><strong>PowerShell 7 を入れておいてください。</strong>5.1 は Windows に標準で入っていますが、この資料は両対応で進めます。導入手順は <a href="docs/03-実行環境.html">03. 実行環境と実行ポリシー</a> にあります</li>
+	<li><strong>スクリプトが実行できる状態にしておいてください。</strong>実行ポリシーが <code>Restricted</code> のままだと第2回以降が進みません（<a href="docs/03-実行環境.html#ch03">03.3</a>）</li>
+	<li>各回の該当ファイルを<strong>先に読んでおくと、解説の時間を演習に回せます</strong></li>
+</ul>
 
-<ol>
-	<li><code>docs/NN-タイトル.html</code> を作る</li>
-	<li><code>build-nav.ps1</code> を実行してフッターの前後リンクを作り直す（<strong>手で書かない</strong>）</li>
-	<li><a href="docs/plan/構成案.html">構成案</a> の状態を<strong>作成済</strong>に更新する（一覧表と詳細見出しの<strong>2箇所</strong>）</li>
-	<li>共有環境の <code>targets.ts</code> に追記する</li>
-	<li>このページの章カードと逆引き索引に追加する</li>
-	<li><code>build-index.ps1</code> を実行して <a href="docs/A1-逆引き.html#ch02">A1.2 のコマンド索引</a>を作り直す。<strong>未登録の Cmdlet があると警告が出る</strong>ので、スクリプト内の <code>$Purpose</code> に追記する</li>
-	<li>新しい Cmdlet が出たなら <a href="docs/A1-逆引き.html#ch01">A1.1</a> と <a href="docs/A1-逆引き.html#ch04">A1.4</a> も見直す</li>
-</ol>
+<h2>課題と解答例</h2>
+
+<p>ハンズオンの課題・解答例・つまずきどころは <a href="docs/10-ハンズオン.html">10. ハンズオン課題</a> にまとまっています。5回分の課題がそのまま入っているので、進行役はこれを見ながら進められます。</p>
 
 <div class="callout">
-<strong>Playwright の spec は共有環境側にあります。</strong><br>
-<code>N:\2026\PlayWright\projects\20260822-powershell-pwsh-learn\</code> に置いています。<strong>対象ファイルの一覧は <code>targets.ts</code> に集約</strong>してあるので、追記はそこ1箇所で済みます。
+<strong>主催する側の準備（サンプルデータの用意、社内の実行ポリシー確認、時間配分）は <a href="docs/plan/構成案.html#ch06">構成案の6章</a> にあります。</strong><br>
+参加するだけなら読む必要はありません。
 </div>
-
-<h2>出力物の置き場所</h2>
-
-<div class="table-wrap">
-<table>
-<tr><th>場所</th><th>内容</th><th>git</th></tr>
-<tr><td class="nowrap"><code>docs/*.html</code></td><td>資料（<strong>原本</strong>）</td><td><span class="badge b-good">対象</span></td></tr>
-<tr><td class="nowrap"><code>docs/*.md</code></td><td>GitHub 表示用（HTML から生成）</td><td><span class="badge b-good">対象</span></td></tr>
-<tr><td class="nowrap"><code>docs/images/</code></td><td>Markdown が参照する図の PNG</td><td><span class="badge b-good">対象</span></td></tr>
-<tr><td class="nowrap"><code>src/scripts/</code></td><td>ビルド用スクリプト</td><td><span class="badge b-good">対象</span></td></tr>
-<tr><td class="nowrap"><code>tmp/figures/</code></td><td>図の PNG（63 枚）</td><td><span class="badge b-none">除外</span></td></tr>
-<tr><td class="nowrap"><code>tmp/outline/</code></td><td>構造 JSON</td><td><span class="badge b-none">除外</span></td></tr>
-<tr><td class="nowrap"><code>tmp/pptx/</code></td><td>pptx と PDF</td><td><span class="badge b-none">除外</span></td></tr>
-<tr><td class="nowrap"><code>etc/</code></td><td>セッションログ・<code>c.bat</code></td><td><span class="badge b-none">除外</span></td></tr>
-</table>
-</div>
-
-<p>生成物はすべて <code>tmp/</code> にあります。<strong>消しても HTML から作り直せます。</strong></p>
 </section>
 
 </div>
 
 <footer>
-	<p>PowerShell 学習資料 ／ 本編 12 章 ＋ 付録 3 ／ SVG 図 63 枚 ／ 資料の設計は <a href="docs/plan/構成案.html">構成案</a> を参照してください。</p>
+	<p>PowerShell 学習資料 ／ 本編 12 章 ＋ 付録 3 ／ 作り方は <a href="docs/plan/構成案.html">構成案</a> にまとめています。</p>
 </footer>
 
 </body>
