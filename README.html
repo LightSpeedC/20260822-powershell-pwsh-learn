@@ -37,7 +37,7 @@
 		font-size: 15.5px;
 	}
 
-	.wrap { max-width: 1400px; margin: 0 auto; padding: 0 30px; }
+	.wrap { max-width: 1600px; margin: 0 auto; padding: 0 30px; }
 
 	/* タイトルバー */
 	.titlebar {
@@ -46,7 +46,7 @@
 		padding: 34px 30px 30px;
 		box-shadow: 0 6px 18px rgba(18,34,77,0.28);
 	}
-	.titlebar .inner { max-width: 1400px; margin: 0 auto; }
+	.titlebar .inner { max-width: 1600px; margin: 0 auto; }
 	.titlebar h1 {
 		margin: 0 0 10px;
 		font-size: 2.1em;
@@ -214,19 +214,21 @@
 	.chapters .ttl { display: block; font-size: 1.02em; font-weight: 700; margin: 2px 0 4px; }
 	.chapters .desc { display: block; font-size: 0.82em; opacity: 0.92; line-height: 1.5; }
 
-	.cA1 a, .cA2 a, .cA3 a { background: linear-gradient(100deg, var(--navy1), var(--navy2)); }
 	.c01 a { background: linear-gradient(100deg, hsl(280,78%,25%), hsl(280,58%,55%)); }
-	.c02 a { background: linear-gradient(100deg, hsl(255,78%,25%), hsl(255,58%,55%)); }
-	.c03 a { background: linear-gradient(100deg, hsl(229,78%,25%), hsl(229,58%,55%)); }
-	.c04 a { background: linear-gradient(100deg, hsl(204,78%,25%), hsl(204,58%,55%)); }
-	.c05 a { background: linear-gradient(100deg, hsl(178,78%,25%), hsl(178,58%,55%)); }
-	.c06 a { background: linear-gradient(100deg, hsl(153,78%,25%), hsl(153,58%,55%)); }
-	.c07 a { background: linear-gradient(100deg, hsl(127,78%,25%), hsl(127,58%,55%)); }
-	.c08 a { background: linear-gradient(100deg, hsl(102,78%,25%), hsl(102,58%,55%)); }
-	.c09 a { background: linear-gradient(100deg, hsl(76,78%,25%), hsl(76,58%,55%)); }
-	.c10 a { background: linear-gradient(100deg, hsl(51,78%,25%), hsl(51,58%,55%)); }
-	.c11 a { background: linear-gradient(100deg, hsl(25,78%,25%), hsl(25,58%,55%)); }
-	.c12 a { background: linear-gradient(100deg, hsl(0,78%,25%), hsl(0,58%,55%)); }
+	.c02 a { background: linear-gradient(100deg, hsl(260,78%,25%), hsl(260,58%,55%)); }
+	.c03 a { background: linear-gradient(100deg, hsl(240,78%,25%), hsl(240,58%,55%)); }
+	.c04 a { background: linear-gradient(100deg, hsl(220,78%,25%), hsl(220,58%,55%)); }
+	.c05 a { background: linear-gradient(100deg, hsl(200,78%,25%), hsl(200,58%,55%)); }
+	.c06 a { background: linear-gradient(100deg, hsl(180,78%,25%), hsl(180,58%,55%)); }
+	.c07 a { background: linear-gradient(100deg, hsl(160,78%,25%), hsl(160,58%,55%)); }
+	.c08 a { background: linear-gradient(100deg, hsl(140,78%,25%), hsl(140,58%,55%)); }
+	.c09 a { background: linear-gradient(100deg, hsl(120,78%,25%), hsl(120,58%,55%)); }
+	.c10 a { background: linear-gradient(100deg, hsl(100,78%,25%), hsl(100,58%,55%)); }
+	.c11 a { background: linear-gradient(100deg, hsl(80,78%,25%), hsl(80,58%,55%)); }
+	.c12 a { background: linear-gradient(100deg, hsl(60,78%,25%), hsl(60,58%,55%)); }
+	.cA1 a { background: linear-gradient(100deg, hsl(40,78%,25%), hsl(40,58%,55%)); }
+	.cA2 a { background: linear-gradient(100deg, hsl(20,78%,25%), hsl(20,58%,55%)); }
+	.cA3 a { background: linear-gradient(100deg, hsl(0,78%,25%), hsl(0,58%,55%)); }
 
 	/* バッジ */
 	.badge {
@@ -267,7 +269,7 @@
 	figcaption { font-size: 0.84em; color: var(--ink-soft); margin-top: 6px; }
 
 	footer {
-		max-width: 1400px;
+		max-width: 1600px;
 		margin: 40px auto 0;
 		padding: 18px 30px 0;
 		border-top: 2px solid var(--line);
@@ -298,75 +300,70 @@
 「たぶんこう動く」ではなく、<strong>実機で確かめた結果</strong>だけを載せています。バイト列・終了コード・エラーメッセージも実物です。
 </div>
 
-<h2>本編 全 12 章</h2>
+<h2>全 12 章 ＋ 付録 3 本</h2>
+
+<p>本編は 01 から順に読む資料です。付録（A1〜A3）は<strong>必要になったときに引く</strong>もので、読む順番に関係なく使えます。</p>
 
 <ul class="chapters">
 	<li class="c01"><a href="docs/01-背景.html">
-		<span class="no">第1部 基礎編 ／ 01</span>
-		<span class="ttl">PowerShell の生まれた経緯</span>
+		<span class="no">第1部 基礎編</span>
+		<span class="ttl">01. PowerShell の生まれた経緯</span>
 		<span class="desc">DOS・Bash・Node.js と比較しながら、何を解決する道具なのかを掴む</span></a></li>
 	<li class="c02"><a href="docs/02-ファイル形式.html">
-		<span class="no">第1部 基礎編 ／ 02</span>
-		<span class="ttl">ファイル形式と文字コード</span>
+		<span class="no">第1部 基礎編</span>
+		<span class="ttl">02. ファイル形式と文字コード</span>
 		<span class="desc">なぜ BOM 付き UTF-8 ＋ CRLF なのか。5.1 と 7 で解釈が逆になる</span></a></li>
 	<li class="c03"><a href="docs/03-実行環境.html">
-		<span class="no">第1部 基礎編 ／ 03</span>
-		<span class="ttl">実行環境と実行ポリシー</span>
+		<span class="no">第1部 基礎編</span>
+		<span class="ttl">03. 実行環境と実行ポリシー</span>
 		<span class="desc">5.1 と 7 の共存、スクリプトが動かない理由、VS Code の設定</span></a></li>
 	<li class="c04"><a href="docs/04-変数と型.html">
-		<span class="no">第1部 基礎編 ／ 04</span>
-		<span class="ttl">変数・型・演算子</span>
+		<span class="no">第1部 基礎編</span>
+		<span class="ttl">04. 変数・型・演算子</span>
 		<span class="desc">JavaScript と並べて読む。大文字小文字を区別しない比較の罠</span></a></li>
 	<li class="c05"><a href="docs/05-パイプライン.html">
-		<span class="no">第1部 基礎編 ／ 05</span>
-		<span class="ttl">パイプラインとオブジェクト</span>
+		<span class="no">第1部 基礎編</span>
+		<span class="ttl">05. パイプラインとオブジェクト</span>
 		<span class="desc">本資料の山場。Get-Member ひとつで自習できるようになる</span></a></li>
 	<li class="c06"><a href="docs/06-制御構文と関数.html">
-		<span class="no">第2部 実践編 ／ 06</span>
-		<span class="ttl">制御構文と関数</span>
+		<span class="no">第2部 実践編</span>
+		<span class="ttl">06. 制御構文と関数</span>
 		<span class="desc">戻り値に「返したつもりのない値」が混ざる、最大の落とし穴</span></a></li>
 	<li class="c07"><a href="docs/07-ファイル操作.html">
-		<span class="no">第2部 実践編 ／ 07</span>
-		<span class="ttl">ファイル・テキスト操作</span>
+		<span class="no">第2部 実践編</span>
+		<span class="ttl">07. ファイル・テキスト操作</span>
 		<span class="desc">0 件が返る3つの理由。読み書きの文字コード指定</span></a></li>
 	<li class="c08"><a href="docs/08-エラー処理.html">
-		<span class="no">第2部 実践編 ／ 08</span>
-		<span class="ttl">エラー処理とデバッグ</span>
+		<span class="no">第2部 実践編</span>
+		<span class="ttl">08. エラー処理とデバッグ</span>
 		<span class="desc">try/catch を書いたのに捕まらない理由。外部コマンドの失敗検知</span></a></li>
 	<li class="c09"><a href="docs/09-実務パターン.html">
-		<span class="no">第2部 実践編 ／ 09</span>
-		<span class="ttl">実務パターン集</span>
+		<span class="no">第2部 実践編</span>
+		<span class="ttl">09. 実務パターン集</span>
 		<span class="desc">そのまま使える5本。ログ集計・リネーム・バックアップ・外部連携</span></a></li>
 	<li class="c10"><a href="docs/10-ハンズオン.html">
-		<span class="no">第3部 演習 ／ 10</span>
-		<span class="ttl">ハンズオン課題</span>
+		<span class="no">第3部 演習</span>
+		<span class="ttl">10. ハンズオン課題</span>
 		<span class="desc">5回分の課題と解答例。つまずきポイントの解説つき</span></a></li>
 	<li class="c11"><a href="docs/11-Add-Type.html">
-		<span class="no">第4部 発展編 ／ 11</span>
-		<span class="ttl">C# を埋め込む — Add-Type</span>
+		<span class="no">第4部 発展編</span>
+		<span class="ttl">11. C# を埋め込む — Add-Type</span>
 		<span class="desc">PowerShell では書けない・遅い場面を C# で補う。csc.exe で exe にして配る</span></a></li>
 	<li class="c12"><a href="docs/12-COMとOffice.html">
-		<span class="no">第4部 発展編 ／ 12</span>
-		<span class="ttl">Office と COM を操作する</span>
+		<span class="no">第4部 発展編</span>
+		<span class="ttl">12. Office と COM を操作する</span>
 		<span class="desc">Word・Excel・PowerPoint の PDF 化。プロセスが残らない後始末</span></a></li>
-</ul>
-
-<h2>付録</h2>
-
-<p>本編は順に読む資料ですが、付録は<strong>必要になったときに引く</strong>ものです。</p>
-
-<ul class="chapters">
 	<li class="cA1"><a href="docs/A1-逆引き.html">
-		<span class="no">付録 ／ A1</span>
-		<span class="ttl">逆引き</span>
+		<span class="no">付録</span>
+		<span class="ttl">A1. 逆引き</span>
 		<span class="desc">症状・コマンド名・JavaScript・用語の4つの入口から本編へ</span></a></li>
 	<li class="cA2"><a href="docs/A2-テンプレ集.html">
-		<span class="no">付録 ／ A2</span>
-		<span class="ttl">テンプレ集</span>
+		<span class="no">付録</span>
+		<span class="ttl">A2. テンプレ集</span>
 		<span class="desc">コピーして使う雛形。骨格・ログ・引数検証・ファイル処理・配布</span></a></li>
 	<li class="cA3"><a href="docs/A3-モジュール.html">
-		<span class="no">付録 ／ A3</span>
-		<span class="ttl">業務で使えるモジュール</span>
+		<span class="no">付録</span>
+		<span class="ttl">A3. 業務で使えるモジュール</span>
 		<span class="desc">厳選8本。選ぶ基準と、導入・オフライン配布の実務</span></a></li>
 </ul>
 
