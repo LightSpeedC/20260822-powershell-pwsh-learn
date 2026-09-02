@@ -54,7 +54,7 @@
 		color: #fff;
 	}
 	.titlebar p { margin: 4px 0; font-size: 0.92em; color: #d8e4ff; }
-	.titlebar .meta { font-size: 0.84em; color: #b9cdf5; }
+	.titlebar .date { font-size: 0.84em; color: #b9cdf5; }
 	.titlebar code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
 
 	/* 目次 */
@@ -166,7 +166,7 @@
 	}
 	pre code { background: none; border: none; padding: 0; color: #1b2b46; }
 
-	.table-wrap { overflow-x: auto; margin: 16px 0; }
+	.tablewrap { overflow-x: auto; margin: 16px 0; }
 	table {
 		width: 100%;
 		border-collapse: collapse;
@@ -201,7 +201,7 @@
 		letter-spacing: 0.04em;
 		white-space: nowrap;
 	}
-	.b-good { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
+	.b-ok { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
 	.b-bad  { background: linear-gradient(100deg, #a51f22, #e05a5c); }
 	.b-none { background: linear-gradient(100deg, #5a6472, #97a1ae); }
 	.b-warn { background: linear-gradient(100deg, #b8620a, #f0a548); }
@@ -243,8 +243,8 @@
 <div class="titlebar">
 	<div class="inner">
 		<h1>A3. 業務で使えるモジュール</h1>
-		<p>何を入れるか、何を入れないか — 選定基準・8本の一覧・4本の詳細・導入と運用</p>
-		<p class="meta">📅 作成: 2026-08-26 / 更新: 2026-08-26 ／ 付録（順に読む必要はありません）</p>
+		<p class="lead">何を入れるか、何を入れないか — 選定基準・8本の一覧・4本の詳細・導入と運用</p>
+		<p class="date">📅 作成: 2026-08-26 / 更新: 2026-08-26 ／ 付録（順に読む必要はありません）</p>
 	</div>
 </div>
 
@@ -256,7 +256,7 @@
 
 <p>この付録はその続きで、<strong>どれを入れるか</strong>を扱います。仕組みが分かっても、ギャラリーに並ぶ大量のモジュールから選ぶ作業は別に残ります。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th></th><th>03.3 プロファイルとモジュール</th><th>A3 業務で使えるモジュール（この付録）</th></tr>
 <tr><td class="nowrap">扱うもの</td><td>モジュールという仕組み</td><td>個々のモジュール</td></tr>
@@ -343,7 +343,7 @@
 
 <pre><code>Find-Module -Name PSScriptAnalyzer | Format-List Name, Author, CompanyName, ProjectUri</code></pre>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>種類</th><th>見分け方</th><th>この付録での例</th></tr>
 <tr><td class="nowrap">Microsoft 公式</td><td><code>Author</code> が <code>Microsoft Corporation</code>、<code>ProjectUri</code> が <code>github.com/PowerShell/…</code></td><td>PSScriptAnalyzer / SecretManagement / PSResourceGet / Microsoft.Graph</td></tr>
@@ -393,7 +393,7 @@ lastUpdated : 2026/08/26 00:00:01 +09:00</code></pre>
 
 <pre><code>(Find-Module -Name Pester).Tags | Where-Object { $_ -like 'PSEdition_*' }</code></pre>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>モジュール</th><th>PSEdition タグ</th><th>読み方</th></tr>
 <tr><td class="mono">Pester</td><td class="nowrap">Core + Desktop</td><td>両方で動く</td></tr>
@@ -424,7 +424,7 @@ lastUpdated : 2026/08/26 00:00:01 +09:00</code></pre>
 
 <pre><code>Count : 40</code></pre>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>モジュール</th><th>依存を含む合計</th><th>内訳</th></tr>
 <tr><td class="mono">PSScriptAnalyzer</td><td class="num">1</td><td>単体</td></tr>
@@ -452,7 +452,7 @@ lastUpdated : 2026/08/26 00:00:01 +09:00</code></pre>
 
 <p>21 億 4747 万。世界人口の 4 分の 1 が 1 回ずつ入れた計算になります。この値は <code>Int32</code> の上限 <code>2147483647</code> の<strong>わずか 9,609 下</strong>で、上限に張り付いた飽和値と読むのが自然です。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>モジュール</th><th>downloadCount</th></tr>
 <tr><td class="mono">PSWindowsUpdate</td><td class="num">2,147,474,038</td></tr>
@@ -583,7 +583,7 @@ SizeMB : 215</code></pre>
 
 <p>版数・公開日・依存数は <code>Find-Module</code> の実測値です（2026-08-26 時点）。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>モジュール</th><th>用途</th><th>提供元</th><th>最新版</th><th>最終公開</th><th>依存</th><th>対応</th></tr>
 <tr>
@@ -663,7 +663,7 @@ SizeMB : 215</code></pre>
 
 <h2>どれから入れるか</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>あなたの状況</th><th>入れるもの</th></tr>
 <tr><td>PowerShell で何かを書いている</td><td class="mono">PSScriptAnalyzer</td></tr>
@@ -684,7 +684,7 @@ SizeMB : 215</code></pre>
 
 <h2>この一覧に入れなかったもの</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>入れなかったもの</th><th>理由</th></tr>
 <tr><td class="mono">posh-git / Terminal-Icons</td><td>プロンプトやファイル一覧の<strong>見た目を変えるだけ</strong>で、書いたスクリプトの動作は 1 行も変わらない。しかも効くのは入れた本人の画面だけで、渡した相手の環境には何も起きない</td></tr>
@@ -725,7 +725,7 @@ Invoke-ScriptAnalyzer -Path .\deploy.ps1 -Fix</code></pre>
 
 <h3>よく出る指摘</h3>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>規則名</th><th>何を言っているか</th></tr>
 <tr><td class="mono">PSAvoidUsingCmdletAliases</td><td><code>ls</code> <code>%</code> <code>?</code> などの別名を使っている。<strong>渡した相手のプロファイルで別名が上書きされていると壊れる</strong></td></tr>
@@ -762,7 +762,7 @@ Invoke-ScriptAnalyzer -Path .\deploy.ps1 -Fix</code></pre>
 
 <p>Excel ファイルを PowerShell から扱う方法には、<strong>Excel 本体を COM で起動する</strong>やり方があります。ImportExcel はそれとは別の道で、<strong>EPPlus という .NET のライブラリを同梱していて Excel を必要としません</strong>。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th></th><th>Excel を COM で操作</th><th>ImportExcel</th></tr>
 <tr><td class="nowrap">Excel の導入</td><td>必要</td><td>不要</td></tr>
@@ -800,7 +800,7 @@ $rows | Export-Excel -Path .\集計.xlsx -AutoSize `
 
 <h3><code>Import-Csv</code> との違い</h3>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th></th><th><code>Import-Csv</code></th><th><code>Import-Excel</code></th></tr>
 <tr><td class="nowrap">文字コード</td><td>BOM と <code>-Encoding</code> の指定次第で化ける</td><td>関係ない（xlsx の中は常に UTF-8）</td></tr>
@@ -820,7 +820,7 @@ $rows | Export-Excel -Path .\集計.xlsx -AutoSize `
 
 <p>2 本セットになっているのは、<strong>役割が分かれているから</strong>です。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>モジュール</th><th>役割</th><th>言い換えると</th></tr>
 <tr><td class="mono">Microsoft.PowerShell.SecretManagement</td><td><code>Get-Secret</code> / <code>Set-Secret</code> という統一された窓口を提供する。自分では何も保管しない</td><td>金庫の<strong>受付</strong></td></tr>
@@ -887,7 +887,7 @@ ModuleBase : C:\Program Files\WindowsPowerShell\Modules\Pester\3.4.0</code></pre
 
 <p>問題は数字の差ではなく、<strong>3 系と 5 系以降で書き方が別物になっている</strong>ことです。同梱の 3.4.0 のまま最近の記事のコードを打つと、Pester の使い方が間違っているのではなく<strong>構文エラー</strong>になります。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th></th><th>3.x（同梱版）</th><th>5.x 以降</th></tr>
 <tr><td class="nowrap">アサーション</td><td class="mono">Should Be 5</td><td class="mono">Should -Be 5</td></tr>
@@ -958,7 +958,7 @@ Import-Module Pester -MinimumVersion 5.0</code></pre>
 
 <pre><code>Install-Module -Name PSScriptAnalyzer -Scope CurrentUser</code></pre>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th></th><th><code>-Scope CurrentUser</code></th><th><code>-Scope AllUsers</code>（既定）</th></tr>
 <tr><td class="nowrap">管理者権限</td><td>不要</td><td>必要</td></tr>
@@ -1070,7 +1070,7 @@ Uninstall-Module -Name PSWindowsUpdate -AllVersions
 # 何が消えるか先に見る
 Uninstall-Module -Name PSWindowsUpdate -AllVersions -WhatIf</code></pre>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>状況</th><th>判断</th></tr>
 <tr><td>提供終了が公式に告知されている（<code>AzureRM</code>→<code>Az</code>、<code>AzureAD</code>/<code>MSOnline</code>→<code>Microsoft.Graph</code>）</td><td>消す。<strong>補完の候補に残り続けるのが実害</strong></td></tr>
@@ -1107,7 +1107,7 @@ MachinePolicy       Undefined
 
 <p><span class="badge b-ps7">pwsh 7</span> 同じ PC の 7 では <code>LocalMachine</code> が <code>RemoteSigned</code> でした。<strong>実行ポリシーは 5.1 と 7 で別々に保存されています。</strong>「7 では動くのに 5.1 では動かない」の原因がこれということがあります。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>スコープ</th><th>誰が決めるか</th><th>個人で変えられるか</th></tr>
 <tr><td class="nowrap">MachinePolicy</td><td>グループポリシー（情報システム部門）</td><td>変えられない。<strong>他のどのスコープより優先される</strong></td></tr>
@@ -1171,7 +1171,7 @@ ModuleBase : C:\program files\powershell\7\Modules\Microsoft.PowerShell.PSResour
 
 <p>PowerShell 7.4 以降に同梱されています（この PC は 7.6.3）。一方、<strong>5.1 側では 0 件</strong>でした。<code>Install-PSResource</code> を 5.1 で使いたければ、そちらには別途入れる必要があります。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>やること</th><th>PowerShellGet（旧）</th><th>PSResourceGet（新）</th></tr>
 <tr><td class="nowrap">探す</td><td class="mono">Find-Module</td><td class="mono">Find-PSResource</td></tr>
@@ -1186,7 +1186,7 @@ ModuleBase : C:\program files\powershell\7\Modules\Microsoft.PowerShell.PSResour
 
 <h2>入れる前の確認</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>確認すること</th><th>使うもの</th></tr>
 <tr><td><code>ProjectUri</code> を実際に開いて、issue に返事が付いているか見たか</td><td class="mono">Find-Module | Format-List ProjectUri</td></tr>

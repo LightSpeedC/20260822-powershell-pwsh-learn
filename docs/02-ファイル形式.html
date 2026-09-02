@@ -54,7 +54,7 @@
 		color: #fff;
 	}
 	.titlebar p { margin: 4px 0; font-size: 0.92em; color: #d8e4ff; }
-	.titlebar .meta { font-size: 0.84em; color: #b9cdf5; }
+	.titlebar .date { font-size: 0.84em; color: #b9cdf5; }
 	.titlebar code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
 
 	/* 目次 */
@@ -165,7 +165,7 @@
 	}
 	pre code { background: none; border: none; padding: 0; color: #1b2b46; }
 
-	.table-wrap { overflow-x: auto; margin: 16px 0; }
+	.tablewrap { overflow-x: auto; margin: 16px 0; }
 	table {
 		width: 100%;
 		border-collapse: collapse;
@@ -199,7 +199,7 @@
 		letter-spacing: 0.04em;
 		white-space: nowrap;
 	}
-	.b-good { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
+	.b-ok { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
 	.b-bad  { background: linear-gradient(100deg, #a51f22, #e05a5c); }
 	.b-none { background: linear-gradient(100deg, #5a6472, #97a1ae); }
 	.b-warn { background: linear-gradient(100deg, #b8620a, #f0a548); }
@@ -241,8 +241,8 @@
 <div class="titlebar">
 	<div class="inner">
 		<h1>02. ファイル形式と文字コード</h1>
-		<p>なぜ ps1 は「BOM 付き UTF-8 ＋ CRLF」でなければならないのか</p>
-		<p class="meta">📅 作成: 2026-08-22 / 更新: 2026-08-24 ／ 対象: Windows PowerShell 5.1 ＋ PowerShell 7</p>
+		<p class="lead">なぜ ps1 は「BOM 付き UTF-8 ＋ CRLF」でなければならないのか</p>
+		<p class="date">📅 作成: 2026-08-22 / 更新: 2026-08-24 ／ 対象: Windows PowerShell 5.1 ＋ PowerShell 7</p>
 	</div>
 </div>
 
@@ -265,7 +265,7 @@
 
 <p>本題に入る前に、拡張子を整理しておきます。<strong>「どのプログラムがそのファイルを読むか」が、そのまま「どの文字コードで保存すべきか」を決めます</strong>。この章の内容はすべてここから導かれます。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>拡張子</th><th>中身</th><th>読んで実行するプログラム</th><th>この資料での位置づけ</th></tr>
 <tr><td class="nowrap"><code>.ps1</code></td><td>PowerShell スクリプト</td><td class="nowrap"><code>powershell.exe</code> <span class="badge b-ps51">5.1</span><br><code>pwsh.exe</code> <span class="badge b-ps7">pwsh 7</span></td><td><strong>主役</strong>。これから書いていくファイル</td></tr>
@@ -335,7 +335,7 @@
 
 <pre><code>$PSVersionTable.PSEdition</code></pre>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>結果</th><th>正体</th><th>起動した実行ファイル</th></tr>
 <tr><td class="nowrap"><code>Desktop</code></td><td><span class="badge b-ps51">5.1</span> Windows PowerShell</td><td class="mono">powershell.exe</td></tr>
@@ -416,7 +416,7 @@
 
 <h2>Windows で登場する主な文字コード</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>名前</th><th>特徴</th><th>ASCII 互換</th><th>Windows での立場</th></tr>
 <tr><td class="nowrap"><strong>Shift-JIS<br>(CP932)</strong></td><td>日本語向けの従来規格。1〜2バイト可変</td><td class="nowrap">✓ あり</td><td>日本語版 Windows の「ANSI」＝既定のコードページ。bat/cmd はいまもこれ</td></tr>
@@ -449,7 +449,7 @@ Write-Host "こんにちは"</code></pre>
 
 <p><strong>BOM（Byte Order Mark）</strong>は、ファイルの先頭に置く数バイトの目印です。文字としては表示されず、「このファイルはこの文字コードです」という宣言としてだけ働きます。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>文字コード</th><th>BOM のバイト列</th><th>備考</th></tr>
 <tr><td class="nowrap">UTF-8</td><td class="mono">EF BB BF</td><td>本来 UTF-8 にバイト順の概念はないが、識別子として使われる</td></tr>
@@ -475,7 +475,7 @@ Write-Host "こんにちは"</code></pre>
 
 <p>PowerShell がスクリプトファイルを読むとき、BOM があればそれに従います。問題は<strong>BOM がなかったとき</strong>です。ここで 5.1 と 7 は正反対の推測をします。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>バージョン</th><th>BOM がないときの推測</th></tr>
 <tr><td class="nowrap"><span class="badge b-ps51">5.1</span> Windows PowerShell</td><td><strong>ANSI（日本語環境では CP932）</strong>だと見なす</td></tr>
@@ -642,7 +642,7 @@ Get-Content .\a.ps1 -Encoding Byte -TotalCount 3         # 5.1</code></pre>
 
 <p>ではなぜ CRLF に揃えるのか。理由は3つあります。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>理由</th><th>内容</th><th>重要度</th></tr>
 <tr><td class="nowrap">① 混在の防止</td><td>1つのファイル内で CRLF と LF が混ざると、diff が全行変更として表示され、変更箇所が追えなくなる</td><td class="nowrap"><span class="badge b-bad">高</span></td></tr>
@@ -660,12 +660,12 @@ cmd.exe のバッチ解釈は行末に CR があることを前提にした挙�
 
 <p>Git には、コミット時とチェックアウト時に改行コードを自動変換する設定があります。これが意図せず有効だと、<strong>手元では CRLF なのにリポジトリ上は LF</strong>という状態になります。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>設定値</th><th>コミット時</th><th>チェックアウト時</th><th>この資料での推奨</th></tr>
 <tr><td class="nowrap"><code>true</code></td><td>CRLF → LF に変換</td><td>LF → CRLF に変換</td><td>Windows のみのチームなら可</td></tr>
 <tr><td class="nowrap"><code>input</code></td><td>CRLF → LF に変換</td><td>変換しない</td><td>—</td></tr>
-<tr><td class="nowrap"><code>false</code></td><td>変換しない</td><td>変換しない</td><td><span class="badge b-good">推奨</span>ファイルの実体をそのまま扱える</td></tr>
+<tr><td class="nowrap"><code>false</code></td><td>変換しない</td><td>変換しない</td><td><span class="badge b-ok">推奨</span>ファイルの実体をそのまま扱える</td></tr>
 </table>
 </div>
 
@@ -694,12 +694,12 @@ cmd.exe のバッチ解釈は行末に CR があることを前提にした挙�
 
 <p>冒頭の「この資料に出てくるファイルの種類」で触れた3種類を、<strong>ここまでに分かった文字コード・改行の観点で整理し直します</strong>。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>拡張子</th><th>実行するもの</th><th>ダブルクリック</th><th>文字コード</th><th>改行</th></tr>
 <tr><td class="nowrap"><code>.ps1</code></td><td>PowerShell</td><td class="nowrap"><span class="badge b-bad">実行されない</span>編集用に開く</td><td class="nowrap"><strong>BOM 付き UTF-8</strong></td><td class="nowrap">CRLF</td></tr>
-<tr><td class="nowrap"><code>.bat</code></td><td>cmd.exe</td><td class="nowrap"><span class="badge b-good">実行される</span></td><td class="nowrap"><strong>Shift-JIS</strong></td><td class="nowrap">CRLF</td></tr>
-<tr><td class="nowrap"><code>.cmd</code></td><td>cmd.exe</td><td class="nowrap"><span class="badge b-good">実行される</span></td><td class="nowrap"><strong>Shift-JIS</strong></td><td class="nowrap">CRLF</td></tr>
+<tr><td class="nowrap"><code>.bat</code></td><td>cmd.exe</td><td class="nowrap"><span class="badge b-ok">実行される</span></td><td class="nowrap"><strong>Shift-JIS</strong></td><td class="nowrap">CRLF</td></tr>
+<tr><td class="nowrap"><code>.cmd</code></td><td>cmd.exe</td><td class="nowrap"><span class="badge b-ok">実行される</span></td><td class="nowrap"><strong>Shift-JIS</strong></td><td class="nowrap">CRLF</td></tr>
 </table>
 </div>
 
@@ -770,7 +770,7 @@ cmd.exe はファイルを<strong>現在のコードページ</strong>で解釈�
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0foo.ps1"
 pause</code></pre>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>要素</th><th>意味</th><th>省くとどうなるか</th></tr>
 <tr><td class="nowrap"><code>@echo off</code></td><td>コマンド自体の表示を抑制する</td><td>実行するコマンドが画面に出て見づらい</td></tr>
@@ -795,7 +795,7 @@ pause</code></pre>
 pwsh.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0foo.ps1"
 pause</code></pre>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>実行ファイル</th><th>起動するもの</th><th>導入</th></tr>
 <tr><td class="nowrap"><code>powershell.exe</code></td><td><span class="badge b-ps51">5.1</span> Windows PowerShell</td><td>Windows に標準搭載</td></tr>
@@ -813,7 +813,7 @@ pause</code></pre>
 
 <h2>この章のまとめ</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>対象</th><th>文字コード</th><th>改行</th><th>理由</th></tr>
 <tr><td class="nowrap"><code>.ps1</code></td><td class="nowrap"><strong>BOM 付き UTF-8</strong></td><td class="nowrap">CRLF</td><td>BOM がないと <span class="badge b-ps51">5.1</span> は ANSI と誤認する。BOM 付き UTF-8 は 5.1 と 7 の両方で正しく読める唯一の形式</td></tr>

@@ -58,7 +58,7 @@
 		color: #fff;
 	}
 	.titlebar p { margin: 4px 0; font-size: 0.92em; color: #d8e4ff; }
-	.titlebar .meta { font-size: 0.84em; color: #b9cdf5; }
+	.titlebar .date { font-size: 0.84em; color: #b9cdf5; }
 	.titlebar code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
 
 	/* 目次 */
@@ -169,7 +169,7 @@
 	}
 	pre code { background: none; border: none; padding: 0; color: #1b2b46; }
 
-	.table-wrap { overflow-x: auto; margin: 16px 0; }
+	.tablewrap { overflow-x: auto; margin: 16px 0; }
 	table {
 		width: 100%;
 		border-collapse: collapse;
@@ -203,7 +203,7 @@
 		letter-spacing: 0.04em;
 		white-space: nowrap;
 	}
-	.b-good { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
+	.b-ok { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
 	.b-bad  { background: linear-gradient(100deg, #a51f22, #e05a5c); }
 	.b-none { background: linear-gradient(100deg, #5a6472, #97a1ae); }
 	.b-warn { background: linear-gradient(100deg, #b8620a, #f0a548); }
@@ -244,8 +244,8 @@
 <div class="titlebar">
 	<div class="inner">
 		<h1>PowerShell 学習資料 全体構成案</h1>
-		<p>プログラミング経験のある読者を対象にした、本編12章＋付録3つのカリキュラム設計</p>
-		<p class="meta">📅 作成: 2026-08-22 / 更新: 2026-08-26 ／ ステータス: 本編12章 ＋ 付録 A1・A2・A3 完成</p>
+		<p class="lead">プログラミング経験のある読者を対象にした、本編12章＋付録3つのカリキュラム設計</p>
+		<p class="date">📅 作成: 2026-08-22 / 更新: 2026-08-26 ／ ステータス: 本編12章 ＋ 付録 A1・A2・A3 完成</p>
 	</div>
 </div>
 
@@ -322,24 +322,24 @@
 <h2>本文を書くときの4原則</h2>
 
 <ul>
-	<li><span class="badge b-good">原則1</span><strong>DOS の例を必ず添える</strong> — 「cmd ではこう書いていた」が分かると、PowerShell の書き方が「何を解決したのか」として理解できる</li>
-	<li><span class="badge b-good">原則2</span><strong>JavaScript (Node.js) の例を随時添える</strong> — 読者Aの既知の知識に接続する。特に配列・オブジェクト・非同期の扱いで効く</li>
-	<li><span class="badge b-good">原則3</span><strong>「なぜそうなっているか」を先に書く</strong> — BOM や CRLF のような「決まりごと」は、理由を知らないと必ず忘れる</li>
-	<li><span class="badge b-good">原則4</span><strong>動かせる短いコードで終わる</strong> — 各節の最後に、コピペして即実行できる5行以内の例を置く</li>
-	<li><span class="badge b-good">原則5</span><strong>バージョン差はバッジで示す</strong> — 5.1 と 7 で違う箇所に <span class="badge b-ps7">pwsh 7</span> <span class="badge b-ps51">5.1</span> を付ける</li>
+	<li><span class="badge b-ok">原則1</span><strong>DOS の例を必ず添える</strong> — 「cmd ではこう書いていた」が分かると、PowerShell の書き方が「何を解決したのか」として理解できる</li>
+	<li><span class="badge b-ok">原則2</span><strong>JavaScript (Node.js) の例を随時添える</strong> — 読者Aの既知の知識に接続する。特に配列・オブジェクト・非同期の扱いで効く</li>
+	<li><span class="badge b-ok">原則3</span><strong>「なぜそうなっているか」を先に書く</strong> — BOM や CRLF のような「決まりごと」は、理由を知らないと必ず忘れる</li>
+	<li><span class="badge b-ok">原則4</span><strong>動かせる短いコードで終わる</strong> — 各節の最後に、コピペして即実行できる5行以内の例を置く</li>
+	<li><span class="badge b-ok">原則5</span><strong>バージョン差はバッジで示す</strong> — 5.1 と 7 で違う箇所に <span class="badge b-ps7">pwsh 7</span> <span class="badge b-ps51">5.1</span> を付ける</li>
 </ul>
 
 <h2>補足枠に書くこと・書かないこと</h2>
 
 <p>読者が<strong>プログラミングの基礎を持っている</strong>前提になったことで、補足枠の中身も絞り込めます。書くのは <strong>PowerShell と Windows に固有の事情</strong>だけです。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>判定</th><th>内容</th><th>例</th></tr>
-<tr><td class="nowrap"><span class="badge b-good">書く</span></td><td>Windows 固有の用語</td><td>ANSI、コードページ、WMI、レジストリ、実行ポリシー</td></tr>
-<tr><td class="nowrap"><span class="badge b-good">書く</span></td><td>シェル特有の概念</td><td>シェルとターミナルの違い、パイプ、リダイレクト、標準出力</td></tr>
-<tr><td class="nowrap"><span class="badge b-good">書く</span></td><td>PowerShell 固有の慣習</td><td>動詞-名詞の命名規則、Cmdlet、<code>$_</code>、終了/非終了エラー</td></tr>
-<tr><td class="nowrap"><span class="badge b-good">書く</span></td><td>JS の例が読めない読者への言い換え</td><td>「JS の <code>filter</code> に相当」→「配列から条件に合う要素だけ取り出す処理」</td></tr>
+<tr><td class="nowrap"><span class="badge b-ok">書く</span></td><td>Windows 固有の用語</td><td>ANSI、コードページ、WMI、レジストリ、実行ポリシー</td></tr>
+<tr><td class="nowrap"><span class="badge b-ok">書く</span></td><td>シェル特有の概念</td><td>シェルとターミナルの違い、パイプ、リダイレクト、標準出力</td></tr>
+<tr><td class="nowrap"><span class="badge b-ok">書く</span></td><td>PowerShell 固有の慣習</td><td>動詞-名詞の命名規則、Cmdlet、<code>$_</code>、終了/非終了エラー</td></tr>
+<tr><td class="nowrap"><span class="badge b-ok">書く</span></td><td>JS の例が読めない読者への言い換え</td><td>「JS の <code>filter</code> に相当」→「配列から条件に合う要素だけ取り出す処理」</td></tr>
 <tr><td class="nowrap"><span class="badge b-bad">書かない</span></td><td>プログラミングの基礎概念</td><td>変数とは、関数とは、配列とは、条件分岐とは</td></tr>
 <tr><td class="nowrap"><span class="badge b-bad">書かない</span></td><td>本文の単なる繰り返し</td><td>本文で説明済みの内容を言い換えただけの枠</td></tr>
 </table>
@@ -354,7 +354,7 @@
 
 <p>本資料は <strong>Windows PowerShell 5.1 と PowerShell 7 (pwsh) の両方</strong>を対象にします。読者の環境がどちらか分からないため、<strong>差がある箇所だけ</strong>をその場でバッジで示します。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>バッジ</th><th>意味</th><th>使用例</th></tr>
 <tr><td class="nowrap"><span class="badge b-ps7">pwsh 7</span></td><td>PowerShell 7 以降でのみ使える／挙動が異なる</td><td>三項演算子 <code>$a ? $b : $c</code>、<code>ForEach-Object -Parallel</code>、既定が BOM なし UTF-8</td></tr>
@@ -372,7 +372,7 @@
 
 <p>全ファイルで同じ骨格にすることで、読者が「どこに何が書いてあるか」を予測できるようにします。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>位置</th><th>内容</th><th>目的</th></tr>
 <tr><td class="nowrap">冒頭</td><td>この章で何ができるようになるか（3行）</td><td>読む前に到達点を示す</td></tr>
@@ -461,7 +461,7 @@
 
 <h2>ファイル一覧</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>No.</th><th>タイトル</th><th>扱う内容</th><th>章数</th></tr>
 <tr><td class="nowrap">01</td><td class="nowrap">背景</td><td>DOS/cmd の限界、Bash との比較、PowerShell の設計思想、Node.js との立場の違い</td><td class="num">4</td></tr>
@@ -515,7 +515,7 @@
 
 <p>この資料で最初に「決まりごと」が出てくる章です。<strong>理由を説明せずに規則だけ書くと必ず忘れられる</strong>ので、文字コードの仕組みから入ります。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>節</th><th>内容</th><th>添える対比</th></tr>
 <tr><td class="nowrap">02.1</td><td>文字コードの基礎 — Shift-JIS、UTF-8、BOM とは何か</td><td>JS のソースは BOM なし UTF-8 が普通</td></tr>
@@ -588,7 +588,7 @@ BOM なしの ps1 に日本語を書いて 5.1 で実行し、文字化けを目
 
 <h2>03. 実行環境と実行ポリシー</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>節</th><th>内容</th><th>添える対比</th></tr>
 <tr><td class="nowrap">03.1</td><td><strong>5.1 と 7 の違い</strong>、共存の考え方、<code>powershell.exe</code> と <code>pwsh.exe</code> の使い分け。<strong>以降の章で使うバージョンバッジの説明もここで行う</strong></td><td>Node.js のバージョン共存</td></tr>
@@ -648,7 +648,7 @@ JS の <code>return</code> の感覚で書くと、途中の <code>Write-Output<
 
 <h2>07. ファイル・テキスト操作</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>節</th><th>内容</th><th>注意点</th></tr>
 <tr><td class="nowrap">07.1</td><td>パス操作 — <code>Join-Path</code>、<code>Resolve-Path</code>、相対パス</td><td>カレントは <code>.\</code> を明示</td></tr>
@@ -744,7 +744,7 @@ A1〜A3 は必要な行だけ拾えば用が足りますが、11・12 は前提�
 
 <h2>全5回・1回90分</h2>
 
-<p>各回の進行表は<strong>受講者が見るもの</strong>なので <a href="../../README.html#ch04">README の4章「勉強会で使う場合」</a> に置いています。ここでは<strong>主催する側の準備</strong>だけを扱います。</p>
+<p>各回の進行表は<strong>受講者が見るもの</strong>なので <a href="../README.html#ch04">README の4章「勉強会で使う場合」</a> に置いています。ここでは<strong>主催する側の準備</strong>だけを扱います。</p>
 
 <h2>1回あたりの時間配分</h2>
 
@@ -815,7 +815,7 @@ A1〜A3 は必要な行だけ拾えば用が足りますが、11・12 は前提�
 
 <h2>本編との役割の違い</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th></th><th>本編 01〜10</th><th>付録 A1・A2</th></tr>
 <tr><td class="nowrap">読み方</td><td><strong>順に読む</strong></td><td><strong>必要なときに引く</strong></td></tr>
@@ -828,7 +828,7 @@ A1〜A3 は必要な行だけ拾えば用が足りますが、11・12 は前提�
 
 <p>資料には <strong>Cmdlet 76種</strong>が12章に散らばっています。「あのコマンドはどの章だったか」を引けるようにします。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>節</th><th>引き方</th><th>内容</th><th>項目数の目安</th></tr>
 <tr><td class="nowrap">A1.1</td><td><strong>症状から</strong></td><td>「0 件しか返らない」「文字化けする」「try/catch が効かない」</td><td class="num">38</td></tr>
@@ -849,7 +849,7 @@ A1.1・A1.3・A1.4 は内容の判断が要るため手書きです。
 
 <p>全 69 種のうち <strong>21 種が3章以上</strong>に登場します。4章以上のものを挙げます。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>Cmdlet</th><th>章数</th><th>登場する章</th></tr>
 <tr><td class="mono">Get-Content</td><td class="num">8</td><td class="nowrap">01, 02, 05, 06, 07, 08, 09, 10</td></tr>
@@ -872,7 +872,7 @@ A1.1・A1.3・A1.4 は内容の判断が要るため手書きです。
 
 <p>ここが設計上もっとも重要な判断です。<strong>09 と重複させません。</strong></p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th></th><th>09 実務パターン集</th><th>A2 テンプレ集</th></tr>
 <tr><td class="nowrap">単位</td><td><strong>完成したスクリプト5本</strong></td><td><strong>部品・骨格</strong></td></tr>
@@ -881,7 +881,7 @@ A1.1・A1.3・A1.4 は内容の判断が要るため手書きです。
 </table>
 </div>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>節</th><th>テンプレート</th><th>解決すること</th></tr>
 <tr><td class="nowrap">A2.1</td><td><strong>スクリプトの骨格</strong></td><td>引数・厳格モード・エラー処理・終了コードの定型</td></tr>
@@ -927,7 +927,7 @@ A3.3 の冒頭にも同じ断りを置き、読者に対して未検証である
 
 <p>README の逆引き索引（17項目）は<strong>残します</strong>。役割を分けます。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>場所</th><th>役割</th><th>項目数</th></tr>
 <tr><td class="nowrap">README</td><td>よくある入口だけ</td><td class="num">17</td></tr>
@@ -1014,7 +1014,7 @@ pptx は <code>tmp/outline/*.json</code> を材料にするため、<strong>先�
 
 <p>GitHub は <code>.html</code> をレンダリングしないため、<strong>同じ内容の <code>.md</code> を HTML から生成</strong>しています。リポジトリ上で読むときはこちらを使ってください。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>変換されるもの</th><th>Markdown での表現</th></tr>
 <tr><td class="nowrap">SVG 図</td><td><code>docs/images/*.png</code> への画像参照（HTML から撮影した PNG）</td></tr>
@@ -1030,7 +1030,7 @@ pptx は <code>tmp/outline/*.json</code> を材料にするため、<strong>先�
 <code>.md</code> を直接編集しても、次回の生成で<strong>上書きされます</strong>。修正は必ず <code>.html</code> 側に入れてください。
 </div>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>スイッチ</th><th>効果</th></tr>
 <tr><td class="nowrap"><code>-Prefix 05</code></td><td>その章だけを生成する</td></tr>
@@ -1045,11 +1045,11 @@ pptx は <code>tmp/outline/*.json</code> を材料にするため、<strong>先�
 <ol>
 	<li><code>docs/NN-タイトル.html</code> を作る</li>
 	<li><code>build-nav.ps1</code> を実行してフッターの前後リンクを作り直す（<strong>手で書かない</strong>）</li>
-	<li><a href="../plan/構成案.html">構成案</a> の状態を<strong>作成済</strong>に更新する（一覧表と詳細見出しの<strong>2箇所</strong>）</li>
+	<li><a href="ZZ-構成.html">構成案</a> の状態を<strong>作成済</strong>に更新する（一覧表と詳細見出しの<strong>2箇所</strong>）</li>
 	<li>共有環境の <code>targets.ts</code> に追記する</li>
 	<li>このページの章カードと逆引き索引に追加する</li>
-	<li><code>build-index.ps1</code> を実行して <a href="../A1-逆引き.html#ch02">A1.2 のコマンド索引</a>を作り直す。<strong>未登録の Cmdlet があると警告が出る</strong>ので、スクリプト内の <code>$Purpose</code> に追記する</li>
-	<li>新しい Cmdlet が出たなら <a href="../A1-逆引き.html#ch01">A1.1</a> と <a href="../A1-逆引き.html#ch04">A1.4</a> も見直す</li>
+	<li><code>build-index.ps1</code> を実行して <a href="A1-逆引き.html#ch02">A1.2 のコマンド索引</a>を作り直す。<strong>未登録の Cmdlet があると警告が出る</strong>ので、スクリプト内の <code>$Purpose</code> に追記する</li>
+	<li>新しい Cmdlet が出たなら <a href="A1-逆引き.html#ch01">A1.1</a> と <a href="A1-逆引き.html#ch04">A1.4</a> も見直す</li>
 </ol>
 
 <div class="callout">
@@ -1059,13 +1059,13 @@ pptx は <code>tmp/outline/*.json</code> を材料にするため、<strong>先�
 
 <h2>出力物の置き場所</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>場所</th><th>内容</th><th>git</th></tr>
-<tr><td class="nowrap"><code>docs/*.html</code></td><td>資料（<strong>原本</strong>）</td><td><span class="badge b-good">対象</span></td></tr>
-<tr><td class="nowrap"><code>docs/*.md</code></td><td>GitHub 表示用（HTML から生成）</td><td><span class="badge b-good">対象</span></td></tr>
-<tr><td class="nowrap"><code>docs/images/</code></td><td>Markdown が参照する図の PNG</td><td><span class="badge b-good">対象</span></td></tr>
-<tr><td class="nowrap"><code>src/scripts/</code></td><td>ビルド用スクリプト</td><td><span class="badge b-good">対象</span></td></tr>
+<tr><td class="nowrap"><code>docs/*.html</code></td><td>資料（<strong>原本</strong>）</td><td><span class="badge b-ok">対象</span></td></tr>
+<tr><td class="nowrap"><code>docs/*.md</code></td><td>GitHub 表示用（HTML から生成）</td><td><span class="badge b-ok">対象</span></td></tr>
+<tr><td class="nowrap"><code>docs/images/</code></td><td>Markdown が参照する図の PNG</td><td><span class="badge b-ok">対象</span></td></tr>
+<tr><td class="nowrap"><code>src/scripts/</code></td><td>ビルド用スクリプト</td><td><span class="badge b-ok">対象</span></td></tr>
 <tr><td class="nowrap"><code>tmp/figures/</code></td><td>図の PNG（63 枚）</td><td><span class="badge b-none">除外</span></td></tr>
 <tr><td class="nowrap"><code>tmp/outline/</code></td><td>構造 JSON</td><td><span class="badge b-none">除外</span></td></tr>
 <tr><td class="nowrap"><code>tmp/pptx/</code></td><td>pptx と PDF</td><td><span class="badge b-none">除外</span></td></tr>
@@ -1080,7 +1080,7 @@ pptx は <code>tmp/outline/*.json</code> を材料にするため、<strong>先�
 </div>
 
 <footer>
-	<p>PowerShell 学習資料 — 全体構成案 ／ <a href="../../README.html">目次に戻る</a></p>
+	<p>PowerShell 学習資料 — 全体構成案 ／ <a href="../README.html">目次に戻る</a></p>
 </footer>
 
 </body>

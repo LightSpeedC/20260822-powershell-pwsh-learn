@@ -55,7 +55,7 @@
 		color: #fff;
 	}
 	.titlebar p { margin: 4px 0; font-size: 0.92em; color: #d8e4ff; }
-	.titlebar .meta { font-size: 0.84em; color: #b9cdf5; }
+	.titlebar .date { font-size: 0.84em; color: #b9cdf5; }
 	.titlebar code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
 
 	/* 目次 */
@@ -166,7 +166,7 @@
 	}
 	pre code { background: none; border: none; padding: 0; color: #1b2b46; }
 
-	.table-wrap { overflow-x: auto; margin: 16px 0; }
+	.tablewrap { overflow-x: auto; margin: 16px 0; }
 	table {
 		width: 100%;
 		border-collapse: collapse;
@@ -200,7 +200,7 @@
 		letter-spacing: 0.04em;
 		white-space: nowrap;
 	}
-	.b-good { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
+	.b-ok { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
 	.b-bad  { background: linear-gradient(100deg, #a51f22, #e05a5c); }
 	.b-none { background: linear-gradient(100deg, #5a6472, #97a1ae); }
 	.b-warn { background: linear-gradient(100deg, #b8620a, #f0a548); }
@@ -242,8 +242,8 @@
 <div class="titlebar">
 	<div class="inner">
 		<h1>04. 変数・型・演算子</h1>
-		<p>JavaScript と並べて読む — 似ているようで挙動が違う箇所を潰す</p>
-		<p class="meta">📅 作成: 2026-08-22 / 更新: 2026-08-22 ／ 対象: Windows PowerShell 5.1 ＋ PowerShell 7</p>
+		<p class="lead">JavaScript と並べて読む — 似ているようで挙動が違う箇所を潰す</p>
+		<p class="date">📅 作成: 2026-08-22 / 更新: 2026-08-22 ／ 対象: Windows PowerShell 5.1 ＋ PowerShell 7</p>
 	</div>
 </div>
 
@@ -288,7 +288,7 @@ console.log(name);                Write-Host $name</code></pre>
 
 <p>見た目の違いは <strong><code>$</code> が付くこと</strong>と <strong>宣言キーワードが無いこと</strong>の2点です。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>観点</th><th>JavaScript</th><th>PowerShell</th></tr>
 <tr><td class="nowrap">宣言</td><td><code>const</code> / <code>let</code> が必要</td><td><strong>不要</strong>。代入した時点で存在する</td></tr>
@@ -365,7 +365,7 @@ TypeScript の型は<strong>コンパイル時に消えます</strong>が、Powe
 
 <h3>よく使う型</h3>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>型</th><th>用途</th><th>例</th></tr>
 <tr><td class="nowrap"><code>[int]</code> / <code>[long]</code></td><td>整数</td><td class="mono">[int]$count = 0</td></tr>
@@ -445,7 +445,7 @@ TypeScript の型は<strong>コンパイル時に消えます</strong>が、Powe
 "名前は $file.Name です"        # → 名前は a.txt.Name です   ✗ 意図しない
 "名前は $($file.Name) です"     # → 名前は a.txt です        ✓</code></pre>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>やりたいこと</th><th>JavaScript</th><th>PowerShell</th></tr>
 <tr><td class="nowrap">変数の埋め込み</td><td class="mono">`Hello ${name}`</td><td class="mono">"Hello $name"</td></tr>
@@ -466,7 +466,7 @@ TypeScript の型は<strong>コンパイル時に消えます</strong>が、Powe
 JavaScript や Java では <code>"C:\\temp\\new"</code> と二重に書く必要がありました。PowerShell では<strong>パスをそのまま貼り付けられます</strong>。「エスケープが面倒だからパスを書き間違える」という事故が起きません。
 </div>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>エスケープ</th><th>意味</th><th>JavaScript での対応</th></tr>
 <tr><td class="mono">`n</td><td>改行</td><td class="mono">\n</td></tr>
@@ -515,7 +515,7 @@ SELECT *
 
 <p>PowerShell はシェルなので、<code>&gt;</code> は<strong>リダイレクト</strong>として予約されています。そのため比較演算子は<strong>ハイフン付きの英字</strong>になっています。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>PowerShell</th><th>意味</th><th>JavaScript</th></tr>
 <tr><td class="mono">-eq</td><td>等しい</td><td class="mono">===</td></tr>
@@ -578,7 +578,7 @@ SELECT *
 ファイル名の <code>readme.html</code> → <code>README.html</code> のような変更で、<code>-ne</code> による「変わったか」判定を使うと<strong>「変更なし」と誤判定してスキップ</strong>されます。<code>-cne</code> / <code>-creplace</code> に置き換えれば正しく動きます。
 </div>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>既定（区別しない）</th><th>区別する</th><th>明示的に区別しない</th></tr>
 <tr><td class="mono">-eq / -ne</td><td class="mono">-ceq / -cne</td><td class="mono">-ieq / -ine</td></tr>
@@ -792,7 +792,7 @@ $null -eq $arr       # → False（比較結果）</code></pre>
 <figcaption>図 04.5 — 実際に <code>[bool]</code> で変換した結果。空配列と空ハッシュテーブルの非対称に注意</figcaption>
 </figure>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>式</th><th>PowerShell</th><th>JavaScript の <code>Boolean()</code></th><th>備考</th></tr>
 <tr><td class="mono">""</td><td class="nowrap">False</td><td class="nowrap">false</td><td>同じ</td></tr>
@@ -830,7 +830,7 @@ CSV やテキストファイルから読んだ数値は<strong>すべて文字�
 $n = $input -as [int]
 if ($null -eq $n) { Write-Host "数値ではありません" }</code></pre>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>やりたいこと</th><th>書き方</th><th>失敗したとき</th></tr>
 <tr><td class="nowrap">確実に変換したい</td><td class="mono">[int]$x</td><td>例外で停止する</td></tr>
@@ -848,7 +848,7 @@ if ($null -eq $n) { Write-Host "数値ではありません" }</code></pre>
 
 <h2>この章のまとめ</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>やりたいこと</th><th>PowerShell</th><th>注意点</th></tr>
 <tr><td class="nowrap">変数に型を付ける</td><td class="mono">[int]$x = 5</td><td>実行時に効き続ける。代入のたびに変換される</td></tr>

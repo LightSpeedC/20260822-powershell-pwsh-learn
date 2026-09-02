@@ -54,7 +54,7 @@
 		color: #fff;
 	}
 	.titlebar p { margin: 4px 0; font-size: 0.92em; color: #d8e4ff; }
-	.titlebar .meta { font-size: 0.84em; color: #b9cdf5; }
+	.titlebar .date { font-size: 0.84em; color: #b9cdf5; }
 	.titlebar code {
 		background: rgba(255,255,255,0.16);
 		color: #fff;
@@ -172,7 +172,7 @@
 	}
 	pre code { background: none; border: none; padding: 0; color: #1b2b46; }
 
-	.table-wrap { overflow-x: auto; margin: 16px 0; }
+	.tablewrap { overflow-x: auto; margin: 16px 0; }
 	table {
 		width: 100%;
 		border-collapse: collapse;
@@ -205,7 +205,7 @@
 		letter-spacing: 0.04em;
 		white-space: nowrap;
 	}
-	.b-good { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
+	.b-ok { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
 	.b-bad  { background: linear-gradient(100deg, #a51f22, #e05a5c); }
 	.b-none { background: linear-gradient(100deg, #5a6472, #97a1ae); }
 	.b-warn { background: linear-gradient(100deg, #b8620a, #f0a548); }
@@ -254,8 +254,8 @@
 <div class="titlebar">
 	<div class="inner">
 		<h1>01. PowerShell の生まれた経緯</h1>
-		<p>DOS・Bash・Node.js と比べながら、PowerShell が何を解決するために作られたのかを追う</p>
-		<p class="meta">📅 作成: 2026-08-22 / 更新: 2026-08-22 ／ 対象: JavaScript の基本文法を知っている経験者</p>
+		<p class="lead">DOS・Bash・Node.js と比べながら、PowerShell が何を解決するために作られたのかを追う</p>
+		<p class="date">📅 作成: 2026-08-22 / 更新: 2026-08-22 ／ 対象: JavaScript の基本文法を知っている経験者</p>
 	</div>
 </div>
 
@@ -354,9 +354,9 @@ dir | find "test"</code></pre>
 <p>同じ時期、Unix/Linux の <strong>Bash</strong>（Bourne Again Shell）は以下の点で勝っていました。</p>
 
 <ul>
-	<li><span class="badge b-good">強み</span>パイプとリダイレクトが強力 — テキストベースだが、組み合わせで複雑な処理が可能</li>
-	<li><span class="badge b-good">強み</span>スクリプト言語としての機能が豊富 — 制御構文、関数、配列など</li>
-	<li><span class="badge b-good">強み</span>Unix の哲学 — 小さなツールを組み合わせる設計</li>
+	<li><span class="badge b-ok">強み</span>パイプとリダイレクトが強力 — テキストベースだが、組み合わせで複雑な処理が可能</li>
+	<li><span class="badge b-ok">強み</span>スクリプト言語としての機能が豊富 — 制御構文、関数、配列など</li>
+	<li><span class="badge b-ok">強み</span>Unix の哲学 — 小さなツールを組み合わせる設計</li>
 </ul>
 
 <div class="callout">
@@ -448,9 +448,9 @@ foreach ($file in Get-ChildItem) {
 <p>重要な点は3つです。</p>
 
 <ul>
-	<li><span class="badge b-good">要点</span><strong>オブジェクト指向の設計</strong> — パイプで渡すのは「テキスト行」ではなく「オブジェクト」</li>
-	<li><span class="badge b-good">要点</span><strong>Windows との一体化</strong> — .NET Framework を背景に、深い Windows 機能アクセス</li>
-	<li><span class="badge b-good">要点</span><strong>管理者向けに最適化</strong> — システム管理者が欲しい機能を最優先</li>
+	<li><span class="badge b-ok">要点</span><strong>オブジェクト指向の設計</strong> — パイプで渡すのは「テキスト行」ではなく「オブジェクト」</li>
+	<li><span class="badge b-ok">要点</span><strong>Windows との一体化</strong> — .NET Framework を背景に、深い Windows 機能アクセス</li>
+	<li><span class="badge b-ok">要点</span><strong>管理者向けに最適化</strong> — システム管理者が欲しい機能を最優先</li>
 </ul>
 
 <div class="callout">
@@ -468,7 +468,7 @@ foreach ($file in Get-ChildItem) {
 
 <p>PowerShell は以下のいくつかの言語から影響を受けています。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>言語</th><th>影響</th></tr>
 <tr><td class="nowrap"><strong>Bash</strong> から</td><td>パイプとリダイレクト、スクリプト言語としての制御構文、コマンドの並列・条件実行</td></tr>
@@ -606,21 +606,21 @@ foreach ($file in Get-ChildItem) {
 
 <h3>Bash（Unix/Linux）</h3>
 <ul>
-	<li><span class="badge b-good">得意</span>テキスト処理、ファイル操作、システム管理（Unix的）、小ツール組み合わせ</li>
+	<li><span class="badge b-ok">得意</span>テキスト処理、ファイル操作、システム管理（Unix的）、小ツール組み合わせ</li>
 	<li><span class="badge b-bad">不得意</span>オブジェクト指向、大規模スクリプト、Windows 機能アクセス</li>
 	<li><span class="badge b-none">特徴</span>テキストベースのパイプ、シンプルな構文、ポータビリティ</li>
 </ul>
 
 <h3>JavaScript / Node.js</h3>
 <ul>
-	<li><span class="badge b-good">得意</span>非同期処理、Web API、JSON 処理、大規模アプリケーション開発</li>
+	<li><span class="badge b-ok">得意</span>非同期処理、Web API、JSON 処理、大規模アプリケーション開発</li>
 	<li><span class="badge b-bad">不得意</span>システムコマンドの実行（やや手作業）、OS 機能の直接アクセス</li>
 	<li><span class="badge b-none">特徴</span>イベント駆動、非同期性、フロントエンド／バックエンド兼用</li>
 </ul>
 
 <h3>PowerShell（Windows）</h3>
 <ul>
-	<li><span class="badge b-good">得意</span>Windows システム管理、.NET 統合、オブジェクト指向スクリプティング、自動化</li>
+	<li><span class="badge b-ok">得意</span>Windows システム管理、.NET 統合、オブジェクト指向スクリプティング、自動化</li>
 	<li><span class="badge b-bad">不得意</span>非同期処理（後発）、大規模アプリケーション開発、Web リアルタイムアプリ</li>
 	<li><span class="badge b-none">特徴</span>オブジェクトベースパイプ、Windows 統合、Cmdlet による標準化</li>
 </ul>
@@ -664,7 +664,7 @@ Promise.all([
 
 <h2>重要な思想の違い</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>観点</th><th>PowerShell</th><th>Bash</th><th>Node.js</th></tr>
 <tr><td class="nowrap"><strong>データ流</strong></td><td>オブジェクト</td><td>テキスト行</td><td>JavaScript オブジェクト</td></tr>
@@ -683,7 +683,7 @@ Promise.all([
 
 <h2>この章のまとめ</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>問い</th><th>答え</th></tr>
 <tr><td class="nowrap">なぜ PowerShell が作られたのか</td><td>Windows に「標準で入っている強力なシェル」が存在せず、システム管理を自動化できなかったため</td></tr>

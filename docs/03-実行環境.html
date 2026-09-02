@@ -54,7 +54,7 @@
 		color: #fff;
 	}
 	.titlebar p { margin: 4px 0; font-size: 0.92em; color: #d8e4ff; }
-	.titlebar .meta { font-size: 0.84em; color: #b9cdf5; }
+	.titlebar .date { font-size: 0.84em; color: #b9cdf5; }
 	.titlebar code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
 
 	/* 目次 */
@@ -165,7 +165,7 @@
 	}
 	pre code { background: none; border: none; padding: 0; color: #1b2b46; }
 
-	.table-wrap { overflow-x: auto; margin: 16px 0; }
+	.tablewrap { overflow-x: auto; margin: 16px 0; }
 	table {
 		width: 100%;
 		border-collapse: collapse;
@@ -199,7 +199,7 @@
 		letter-spacing: 0.04em;
 		white-space: nowrap;
 	}
-	.b-good { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
+	.b-ok { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
 	.b-bad  { background: linear-gradient(100deg, #a51f22, #e05a5c); }
 	.b-none { background: linear-gradient(100deg, #5a6472, #97a1ae); }
 	.b-warn { background: linear-gradient(100deg, #b8620a, #f0a548); }
@@ -241,8 +241,8 @@
 <div class="titlebar">
 	<div class="inner">
 		<h1>03. 実行環境と実行ポリシー</h1>
-		<p>5.1 と 7 はなぜ共存するのか、なぜ既定でスクリプトが動かないのか</p>
-		<p class="meta">📅 作成: 2026-08-22 / 更新: 2026-08-24 ／ 対象: Windows PowerShell 5.1 ＋ PowerShell 7</p>
+		<p class="lead">5.1 と 7 はなぜ共存するのか、なぜ既定でスクリプトが動かないのか</p>
+		<p class="date">📅 作成: 2026-08-22 / 更新: 2026-08-24 ／ 対象: Windows PowerShell 5.1 ＋ PowerShell 7</p>
 	</div>
 </div>
 
@@ -279,7 +279,7 @@
 
 <p>紛らわしいのですが、<strong>名前で世代が分かれています</strong>。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>呼び名</th><th>バージョン</th><th>実行ファイル</th><th>本資料での表記</th></tr>
 <tr><td class="nowrap"><strong>Windows PowerShell</strong></td><td class="nowrap">1.0 〜 5.1</td><td class="mono">powershell.exe</td><td class="nowrap"><span class="badge b-ps51">5.1</span></td></tr>
@@ -353,7 +353,7 @@ PSEdition                      Core
 OS                             Microsoft Windows 10.0.26200
 Platform                       Win32NT</code></pre>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>項目</th><th>5.1 の場合</th><th>7 の場合</th></tr>
 <tr><td class="nowrap"><code>PSVersion</code></td><td class="nowrap">5.1.x</td><td class="nowrap">7.x.x</td></tr>
@@ -388,7 +388,7 @@ pwsh.exe       -NoProfile -Command '$PSVersionTable.PSVersion'   # 7 側</code><
 
 <p>実測結果です。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>実行ファイル</th><th>PSVersion</th><th>PSEdition</th></tr>
 <tr><td class="mono">powershell.exe</td><td class="mono">5.1.26100.9168</td><td class="nowrap">Desktop</td></tr>
@@ -400,7 +400,7 @@ pwsh.exe       -NoProfile -Command '$PSVersionTable.PSVersion'   # 7 側</code><
 
 <h2>実務で効いてくる違い</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>観点</th><th><span class="badge b-ps51">5.1</span></th><th><span class="badge b-ps7">pwsh 7</span></th></tr>
 <tr><td class="nowrap">土台</td><td>.NET Framework 4.x</td><td>.NET 8 以降</td></tr>
@@ -429,7 +429,7 @@ Get-CimInstance Win32_OperatingSystem</code></pre>
 <h2>どちらを使うか</h2>
 
 <ul>
-	<li><span class="badge b-good">推奨</span><strong>新しく書くなら 7</strong>。文字コードの扱いが素直で、書ける構文も多い</li>
+	<li><span class="badge b-ok">推奨</span><strong>新しく書くなら 7</strong>。文字コードの扱いが素直で、書ける構文も多い</li>
 	<li><span class="badge b-warn">条件付き</span><strong>配布先が決まっていないスクリプトは 5.1 向けに書く</strong>。7 が入っていない PC でも動かせる</li>
 	<li><span class="badge b-none">補足</span>本資料は<strong>両方を対象</strong>にし、差がある箇所に <span class="badge b-ps7">pwsh 7</span> <span class="badge b-ps51">5.1</span> のバッジを付けます</li>
 </ul>
@@ -438,7 +438,7 @@ Get-CimInstance Win32_OperatingSystem</code></pre>
 
 <p><span class="badge b-ps51">5.1</span> は<strong>OS に同梱</strong>されています。<span class="badge b-ps7">pwsh 7</span> は<strong>どの Windows にも入っていません</strong>。Windows 11 でも Server 2025 でも、必ず自分で入れます。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>OS</th><th>同梱される PowerShell</th><th>7 の扱い</th></tr>
 <tr><td class="nowrap">Windows 11</td><td class="nowrap">5.1</td><td>別途導入</td></tr>
@@ -455,7 +455,7 @@ Get-CimInstance Win32_OperatingSystem</code></pre>
 
 <h3>PowerShell 7 の導入 — 3つの経路</h3>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>経路</th><th>向いている場面</th><th>注意</th></tr>
 <tr><td class="nowrap">winget</td><td>自分の PC。1行で済む</td><td><strong>winget が無い環境がある</strong>（下記）</td></tr>
@@ -482,7 +482,7 @@ Get-CimInstance Win32_OperatingSystem</code></pre>
 
 <p>MSI は GitHub の公式リリースページから入手します。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>入手先</th><th>URL</th></tr>
 <tr><td class="nowrap">最新版のリリース</td><td class="mono"><a href="https://github.com/PowerShell/PowerShell/releases/latest">https://github.com/PowerShell/PowerShell/releases/latest</a></td></tr>
@@ -511,7 +511,7 @@ msiexec.exe /i PowerShell-7.6.3-win-x64.msi /quiet /norestart `
   ENABLE_PSREMOTING=0 `
   REGISTER_MANIFEST=1</code></pre>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>MSI のオプション</th><th>意味</th></tr>
 <tr><td class="mono">ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL</td><td>フォルダの右クリックに「PowerShell 7 で開く」を追加</td></tr>
@@ -555,12 +555,12 @@ Microsoft 自身がそう明言しています。回避方法はいくらでも�
 
 <h2>ポリシーの種類</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>値</th><th>意味</th><th>使いどころ</th></tr>
 <tr><td class="nowrap"><code>Restricted</code></td><td>スクリプトを一切実行しない</td><td>Windows クライアントの既定値であることが多い</td></tr>
 <tr><td class="nowrap"><code>AllSigned</code></td><td>署名されたスクリプトのみ実行</td><td>厳格な運用。自作スクリプトにも署名が要る</td></tr>
-<tr><td class="nowrap"><code>RemoteSigned</code></td><td><strong>ローカル作成は実行可、ダウンロード品は署名が必要</strong></td><td><span class="badge b-good">推奨</span>開発時の現実的な落としどころ</td></tr>
+<tr><td class="nowrap"><code>RemoteSigned</code></td><td><strong>ローカル作成は実行可、ダウンロード品は署名が必要</strong></td><td><span class="badge b-ok">推奨</span>開発時の現実的な落としどころ</td></tr>
 <tr><td class="nowrap"><code>Unrestricted</code></td><td>すべて実行（ダウンロード品は警告）</td><td>非推奨</td></tr>
 <tr><td class="nowrap"><code>Bypass</code></td><td>何もブロックせず警告も出さない</td><td>自動実行するとき。<strong>Process スコープに限定して使う</strong></td></tr>
 <tr><td class="nowrap"><code>Undefined</code></td><td>未設定。上位スコープの値が使われる</td><td>—</td></tr>
@@ -639,8 +639,8 @@ MachinePolicy       Undefined
 <pre><code>Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned</code></pre>
 
 <ul>
-	<li><span class="badge b-good">利点</span><strong>管理者権限が不要</strong>（<code>CurrentUser</code> スコープのため）</li>
-	<li><span class="badge b-good">利点</span>自分で書いたスクリプトは動き、<strong>ダウンロードしたものは止まる</strong></li>
+	<li><span class="badge b-ok">利点</span><strong>管理者権限が不要</strong>（<code>CurrentUser</code> スコープのため）</li>
+	<li><span class="badge b-ok">利点</span>自分で書いたスクリプトは動き、<strong>ダウンロードしたものは止まる</strong></li>
 	<li><span class="badge b-warn">注意</span>5.1 と 7 で<strong>別々に設定が必要</strong>な場合がある。両方で確認する</li>
 </ul>
 
@@ -695,7 +695,7 @@ notepad $PROFILE</code></pre>
 <span class="badge b-ps51">5.1</span> は <code>Documents\WindowsPowerShell\</code>、<span class="badge b-ps7">pwsh 7</span> は <code>Documents\PowerShell\</code> の下です。<strong>片方に書いた設定はもう片方では読まれません</strong>。「7 では動くのに 5.1 では関数が無い」の典型的な原因がこれです。
 </div>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>バージョン</th><th>プロファイルのパス</th></tr>
 <tr><td class="nowrap"><span class="badge b-ps51">5.1</span></td><td class="mono">C:\Users\&lt;username&gt;\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1</td></tr>
@@ -708,8 +708,8 @@ notepad $PROFILE</code></pre>
 <p>02 章のランチャーに <code>-NoProfile</code> を書きました。その意味がここで分かります。</p>
 
 <ul>
-	<li><span class="badge b-good">速い</span>プロファイルの読み込みを飛ばすので起動が早い</li>
-	<li><span class="badge b-good">安定</span><strong>個人の設定に左右されない</strong>。配布先のプロファイルが何を書いていても影響を受けない</li>
+	<li><span class="badge b-ok">速い</span>プロファイルの読み込みを飛ばすので起動が早い</li>
+	<li><span class="badge b-ok">安定</span><strong>個人の設定に左右されない</strong>。配布先のプロファイルが何を書いていても影響を受けない</li>
 </ul>
 
 <div class="callout">
@@ -733,7 +733,7 @@ Get-Module -ListAvailable
 # 読み込む（多くは自動で読まれるので通常は不要）
 Import-Module ImportExcel</code></pre>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>PowerShell</th><th>Node.js での対応物</th><th>備考</th></tr>
 <tr><td class="nowrap"><code>Install-Module</code></td><td class="nowrap"><code>npm install -g</code></td><td>既定はユーザー単位ではなく全体。<code>-Scope CurrentUser</code> を付ける</td></tr>
@@ -772,7 +772,7 @@ Node.js と違い、<strong>プロジェクトごとの <code>node_modules</code
 
 <p>上下2ペインで「上で編集、下のコンソールで実行」ができる便利な作りですが、<strong>これから学ぶなら選ばないでください。</strong>理由は3つあります。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>理由</th><th>内容</th></tr>
 <tr><td class="nowrap">① <strong>5.1 専用</strong></td><td><span class="badge b-ps7">pwsh 7</span> では使えない。ISE のコンソールは常に <span class="badge b-ps51">5.1</span> で、7 に切り替えられない</td></tr>
@@ -783,7 +783,7 @@ Node.js と違い、<strong>プロジェクトごとの <code>node_modules</code
 
 <h3>ISE で動いたのに本番で動かない</h3>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>項目</th><th>ISE</th><th>コンソール</th></tr>
 <tr><td class="mono">$host.Name</td><td class="nowrap">Windows PowerShell ISE Host</td><td class="nowrap">ConsoleHost</td></tr>
@@ -799,10 +799,10 @@ ISE の中では快適に動きますが、<strong>タスクスケジューラ�
 既存の ISE 資産を触る場合でも、<strong>動作確認は必ずコンソールで</strong>行ってください。
 </div>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>用途</th><th>使うもの</th></tr>
-<tr><td class="nowrap">これから学ぶ・新しく書く</td><td><span class="badge b-good">推奨</span>VS Code ＋ PowerShell 拡張機能</td></tr>
+<tr><td class="nowrap">これから学ぶ・新しく書く</td><td><span class="badge b-ok">推奨</span>VS Code ＋ PowerShell 拡張機能</td></tr>
 <tr><td class="nowrap">既存の ISE 資産を保守する</td><td>ISE でも可。ただし動作確認はコンソールで</td></tr>
 <tr><td class="nowrap">PowerShell 7 を使う</td><td><span class="badge b-bad">不可</span>ISE は選択肢にならない</td></tr>
 </table>
@@ -868,7 +868,7 @@ ISE の中では快適に動きますが、<strong>タスクスケジューラ�
     "files.autoGuessEncoding": true
 }</code></pre>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>設定</th><th>効果</th><th>02 章との対応</th></tr>
 <tr><td class="nowrap"><code>files.encoding: utf8bom</code></td><td>ps1 を BOM 付き UTF-8 で保存する</td><td>5.1 が ANSI と誤認するのを防ぐ</td></tr>
@@ -910,7 +910,7 @@ PowerShell のデバッグは、<strong>停止した時点のシェルにその�
 
 <h2>この章のまとめ</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>困りごと</th><th>確認・対処</th></tr>
 <tr><td class="nowrap">どっちで動いているか分からない</td><td><code>$PSVersionTable</code> の <code>PSEdition</code>。Desktop なら 5.1、Core なら 7</td></tr>

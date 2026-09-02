@@ -56,7 +56,7 @@
 		color: #fff;
 	}
 	.titlebar p { margin: 4px 0; font-size: 0.92em; color: #d8e4ff; }
-	.titlebar .meta { font-size: 0.84em; color: #b9cdf5; }
+	.titlebar .date { font-size: 0.84em; color: #b9cdf5; }
 	.titlebar code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
 
 	/* 目次 */
@@ -168,7 +168,7 @@
 	}
 	pre code { background: none; border: none; padding: 0; color: #1b2b46; }
 
-	.table-wrap { overflow-x: auto; margin: 16px 0; }
+	.tablewrap { overflow-x: auto; margin: 16px 0; }
 	table {
 		width: 100%;
 		border-collapse: collapse;
@@ -202,7 +202,7 @@
 		letter-spacing: 0.04em;
 		white-space: nowrap;
 	}
-	.b-good { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
+	.b-ok { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
 	.b-bad  { background: linear-gradient(100deg, #a51f22, #e05a5c); }
 	.b-none { background: linear-gradient(100deg, #5a6472, #97a1ae); }
 	.b-warn { background: linear-gradient(100deg, #b8620a, #f0a548); }
@@ -244,8 +244,8 @@
 <div class="titlebar">
 	<div class="inner">
 		<h1>A2. テンプレ集</h1>
-		<p>コピーして使う雛形 — スクリプトの骨格・ログ・引数検証・ファイル処理・外部コマンド・配布</p>
-		<p class="meta">📅 作成: 2026-08-25 / 更新: 2026-08-25 ／ 付録（順に読む必要はありません）</p>
+		<p class="lead">コピーして使う雛形 — スクリプトの骨格・ログ・引数検証・ファイル処理・外部コマンド・配布</p>
+		<p class="date">📅 作成: 2026-08-25 / 更新: 2026-08-25 ／ 付録（順に読む必要はありません）</p>
 	</div>
 </div>
 
@@ -257,7 +257,7 @@
 
 <p>この付録は<strong>部品</strong>です。用途に関係なく、どんなスクリプトでも最初に書く型を集めています。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th></th><th>09 実務パターン集</th><th>A2 テンプレ集（この付録）</th></tr>
 <tr><td class="nowrap">単位</td><td>完成したスクリプト</td><td>部品・骨格</td></tr>
@@ -374,7 +374,7 @@ exit=1</code></pre>
 
 <h2>各行が何をしているか</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>行</th><th>効果</th><th>省くとどうなるか</th></tr>
 <tr><td class="mono">#Requires -Version 5.1</td><td>古い環境では実行前に止まる</td><td>途中まで動いて謎のエラーになる</td></tr>
@@ -448,7 +448,7 @@ Write-Log '対象が見つかりません' -Level WARN
 
 <h2>この形にしている理由</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>書き方</th><th>理由</th></tr>
 <tr><td class="mono">ValueFromPipeline</td><td>パイプでも引数でも渡せる。呼び出し側の書き方を縛らない</td></tr>
@@ -530,7 +530,7 @@ not match the "^\d{4}-\d{2}-\d{2}$" pattern.</code></pre>
 
 <h2>使い分け</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>属性</th><th>使うとき</th><th>JavaScript なら</th></tr>
 <tr><td class="mono">Mandatory</td><td>省略できない引数</td><td>先頭で <code>if (!x) throw</code></td></tr>
@@ -677,7 +677,7 @@ Get-ChildItem -LiteralPath $Dir -Filter '*.tmp' | Remove-Item
 # 1件ずつ確認しながら
 Get-ChildItem -LiteralPath $Dir -Filter '*.tmp' | Remove-Item -Confirm</code></pre>
 
-<p><span class="badge b-good">推奨</span>削除とリネームは<strong>必ず <code>-WhatIf</code> を付けた状態で書き始めます</strong>。出力を見てから外す手順にすると、対象の取り違えに気づけます。</p>
+<p><span class="badge b-ok">推奨</span>削除とリネームは<strong>必ず <code>-WhatIf</code> を付けた状態で書き始めます</strong>。出力を見てから外す手順にすると、対象の取り違えに気づけます。</p>
 </section>
 
 <!-- ============ A2.5 ============ -->
@@ -720,7 +720,7 @@ PS&gt; Invoke-External 'nosuchcmd.exe'
 
 <h2>3つの要点</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>やっていること</th><th>省くとどうなるか</th></tr>
 <tr><td class="mono">Get-Command で存在確認</td><td>PATH に無いとき「用語として認識されません」という分かりにくいエラーになる</td></tr>
@@ -772,7 +772,7 @@ $repo.full_name</code></pre>
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0mytool.ps1" %*
 pause</code></pre>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>指定</th><th>意味</th></tr>
 <tr><td class="mono">-NoProfile</td><td>個人のプロファイルを読まない。渡した相手の環境に左右されない</td></tr>
@@ -823,7 +823,7 @@ Register-ScheduledTask -TaskName 'MyTool 日次実行' `
 
 <h2>渡す前の確認</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>確認すること</th><th>理由</th></tr>
 <tr><td>絶対パスが埋め込まれていないか</td><td>相手の環境では存在しない</td></tr>

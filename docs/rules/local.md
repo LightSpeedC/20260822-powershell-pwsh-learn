@@ -54,7 +54,7 @@ src/scripts/
 
 ## 資料を追加したら計画の状態を更新する
 
-**`docs/NN-*.html` を新規作成・完成させたら、同じ作業の中で `docs/plan/構成案.html` の状態を更新する。**
+**`docs/NN-*.html` を新規作成・完成させたら、同じ作業の中で `docs/ZZ-構成.html` の状態を更新する。**
 
 更新する箇所は2つ:
 
@@ -98,7 +98,7 @@ src/scripts/
 
 - 資料を追加したら `targets.ts` に1行足すだけでよい
 - `export-outline` は README を除外する（目次ページはスライド化しない）
-- `export-markdown` は `targets.ts` にあるファイルへのリンクだけを `.md` へ書き換える。`docs/plan/構成案.html` のように Markdown 版が無いものは `.html` のまま残す
+- `export-markdown` は `targets.ts` にあるファイルへのリンクだけを `.md` へ書き換える。`docs/ZZ-構成.html` のように Markdown 版が無いものは `.html` のまま残す
 
 **Why:** spec ごとに一覧を持つと追記漏れが起きる。実際に `export-outline` だけ追記を忘れ、付録の構造 JSON が生成されず pptx を作れなかった。
 

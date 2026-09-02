@@ -54,7 +54,7 @@
 		color: #fff;
 	}
 	.titlebar p { margin: 4px 0; font-size: 0.92em; color: #d8e4ff; }
-	.titlebar .meta { font-size: 0.84em; color: #b9cdf5; }
+	.titlebar .date { font-size: 0.84em; color: #b9cdf5; }
 	.titlebar code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
 
 	/* 目次 */
@@ -166,7 +166,7 @@
 	}
 	pre code { background: none; border: none; padding: 0; color: #1b2b46; }
 
-	.table-wrap { overflow-x: auto; margin: 16px 0; }
+	.tablewrap { overflow-x: auto; margin: 16px 0; }
 	table {
 		width: 100%;
 		border-collapse: collapse;
@@ -242,7 +242,7 @@
 		letter-spacing: 0.04em;
 		white-space: nowrap;
 	}
-	.b-good { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
+	.b-ok { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
 	.b-bad  { background: linear-gradient(100deg, #a51f22, #e05a5c); }
 	.b-none { background: linear-gradient(100deg, #5a6472, #97a1ae); }
 	.b-warn { background: linear-gradient(100deg, #b8620a, #f0a548); }
@@ -284,8 +284,8 @@
 <div class="titlebar">
 	<div class="inner">
 		<h1>PowerShell 学習資料</h1>
-		<p>Windows PowerShell 5.1 と PowerShell 7 の両対応 ／ 全 12 章 ＋ 付録3本</p>
-		<p class="meta">📅 作成: 2026-08-22 / 更新: 2026-08-26 ／ 対象: 何らかのプログラミング言語の基礎を知っている方</p>
+		<p class="lead">Windows PowerShell 5.1 と PowerShell 7 の両対応 ／ 全 12 章 ＋ 付録3本</p>
+		<p class="date">📅 作成: 2026-08-22 / 更新: 2026-08-26 ／ 対象: 何らかのプログラミング言語の基礎を知っている方</p>
 	</div>
 </div>
 
@@ -467,7 +467,7 @@
 
 <h2>目的別の読み方</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>目的</th><th>読む順序</th><th>目安</th></tr>
 <tr><td class="nowrap">とにかく動かしたい</td><td><strong>02 → 03</strong> → 10 の課題2</td><td>1時間</td></tr>
@@ -490,7 +490,7 @@
 <h1>2. この資料の約束事</h1>
 
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>表記</th><th>意味</th></tr>
 <tr><td class="nowrap"><span class="badge b-ps7">pwsh 7</span></td><td>PowerShell 7 以降でのみ使える／挙動が異なる</td></tr>
@@ -510,7 +510,7 @@
 
 <p>ここには<strong>よくある入口だけ</strong>を並べています。網羅した索引は <a href="docs/A1-逆引き.html">A1. 逆引き</a> にあり、症状・コマンド名・JavaScript・用語の4つの入口から引けます。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>症状・やりたいこと</th><th>参照先</th></tr>
 <tr><td>日本語が文字化けする</td><td><a href="docs/02-ファイル形式.html#ch02">02.2 BOM とバージョンの関係</a> ／ <a href="docs/07-ファイル操作.html#ch03">07.3 読み書きの文字コード</a></td></tr>
@@ -554,10 +554,10 @@
 
 <h2>関連ファイル</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>ファイル</th><th>内容</th></tr>
-<tr><td class="nowrap"><a href="docs/plan/構成案.html">docs/plan/構成案</a></td><td><strong>資料を作る側の文書。</strong>各章に何を書いたかの設計記録と、主催者向けの準備、資料のビルド手順</td></tr>
+<tr><td class="nowrap"><a href="docs/ZZ-構成.html">docs/ZZ-構成</a></td><td><strong>資料を作る側の文書。</strong>各章に何を書いたかの設計記録と、主催者向けの準備、資料のビルド手順</td></tr>
 <tr><td class="nowrap"><a href="docs/A1-逆引き.html">docs/A1-逆引き</a></td><td>付録。4つの入口から本編へ引く索引。コマンド一覧は自動生成</td></tr>
 <tr><td class="nowrap"><a href="docs/A2-テンプレ集.html">docs/A2-テンプレ集</a></td><td>付録。コピーして使う雛形6種</td></tr>
 <tr><td class="nowrap"><a href="docs/A3-モジュール.html">docs/A3-モジュール</a></td><td>付録。業務で使えるモジュール厳選8本と、導入・オフライン配布</td></tr>
@@ -572,7 +572,7 @@
 
 <h2>全5回の進行</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>回</th><th>扱うファイル</th><th>ゴール</th><th>ハンズオン</th></tr>
 <tr><td class="nowrap">第1回</td><td class="nowrap">01・02</td><td>PowerShell が何を解決する道具かを言える</td><td>BOM なしで文字化けを再現する</td></tr>
@@ -606,7 +606,7 @@
 <p>ハンズオンの課題・解答例・つまずきどころは <a href="docs/10-ハンズオン.html">10. ハンズオン課題</a> にまとまっています。5回分の課題がそのまま入っているので、進行役はこれを見ながら進められます。</p>
 
 <div class="callout">
-<strong>主催する側の準備（サンプルデータの用意、社内の実行ポリシー確認、時間配分）は <a href="docs/plan/構成案.html#ch06">構成案の6章</a> にあります。</strong><br>
+<strong>主催する側の準備（サンプルデータの用意、社内の実行ポリシー確認、時間配分）は <a href="docs/ZZ-構成.html#ch06">構成案の6章</a> にあります。</strong><br>
 参加するだけなら読む必要はありません。
 </div>
 </section>
@@ -614,7 +614,7 @@
 </div>
 
 <footer>
-	<p>PowerShell 学習資料 ／ 本編 12 章 ＋ 付録 3 ／ 作り方は <a href="docs/plan/構成案.html">構成案</a> にまとめています。</p>
+	<p>PowerShell 学習資料 ／ 本編 12 章 ＋ 付録 3 ／ 作り方は <a href="docs/ZZ-構成.html">構成案</a> にまとめています。</p>
 </footer>
 
 </body>

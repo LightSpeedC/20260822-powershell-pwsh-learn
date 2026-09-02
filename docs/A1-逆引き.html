@@ -54,7 +54,7 @@
 		color: #fff;
 	}
 	.titlebar p { margin: 4px 0; font-size: 0.92em; color: #d8e4ff; }
-	.titlebar .meta { font-size: 0.84em; color: #b9cdf5; }
+	.titlebar .date { font-size: 0.84em; color: #b9cdf5; }
 	.titlebar code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
 
 	/* 目次 */
@@ -166,7 +166,7 @@
 	}
 	pre code { background: none; border: none; padding: 0; color: #1b2b46; }
 
-	.table-wrap { overflow-x: auto; margin: 16px 0; }
+	.tablewrap { overflow-x: auto; margin: 16px 0; }
 	table {
 		width: 100%;
 		border-collapse: collapse;
@@ -200,7 +200,7 @@
 		letter-spacing: 0.04em;
 		white-space: nowrap;
 	}
-	.b-good { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
+	.b-ok { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
 	.b-bad  { background: linear-gradient(100deg, #a51f22, #e05a5c); }
 	.b-none { background: linear-gradient(100deg, #5a6472, #97a1ae); }
 	.b-warn { background: linear-gradient(100deg, #b8620a, #f0a548); }
@@ -242,8 +242,8 @@
 <div class="titlebar">
 	<div class="inner">
 		<h1>A1. 逆引き</h1>
-		<p>症状・コマンド名・JavaScript・用語 — 4つの入口から本編へ</p>
-		<p class="meta">📅 作成: 2026-08-25 / 更新: 2026-08-25 ／ 付録（順に読む必要はありません）</p>
+		<p class="lead">症状・コマンド名・JavaScript・用語 — 4つの入口から本編へ</p>
+		<p class="date">📅 作成: 2026-08-25 / 更新: 2026-08-25 ／ 付録（順に読む必要はありません）</p>
 	</div>
 </div>
 
@@ -318,7 +318,7 @@
 
 <h2>動かない・止まらない</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>症状</th><th>疑うところ</th><th>参照</th></tr>
 <tr><td>スクリプトを実行できない</td><td>実行ポリシー</td><td><a href="03-実行環境.html#ch02">03.2</a></td></tr>
@@ -336,7 +336,7 @@
 
 <h2>結果がおかしい</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>症状</th><th>疑うところ</th><th>参照</th></tr>
 <tr><td><code>Get-ChildItem</code> が 0 件しか返さない</td><td>ワイルドカードパス × <code>-Filter</code> ／ <code>-Include</code> に <code>-Recurse</code> が無い ／ 名前に <code>[ ]</code></td><td><a href="07-ファイル操作.html#ch02">07.2</a></td></tr>
@@ -365,7 +365,7 @@
 
 <h2>調べ方が分からない</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>やりたいこと</th><th>手段</th><th>参照</th></tr>
 <tr><td>何が返るか知りたい</td><td class="mono">| Get-Member</td><td><a href="05-パイプライン.html#ch02">05.2</a></td></tr>
@@ -380,7 +380,7 @@
 
 <h2>PowerShell だけでは届かない</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>やりたいこと・症状</th><th>手がかり</th><th>参照</th></tr>
 <tr><td>ループが遅い。C# で書き直したい</td><td class="mono">Add-Type -TypeDefinition</td><td><a href="11-Add-Type.html#ch02">11.2</a></td></tr>
@@ -411,7 +411,7 @@
 </div>
 
 <!-- AUTO:cmdlets -->
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>Cmdlet</th><th>用途</th><th>登場する章</th></tr>
 <tr><td class="mono">Add-Content</td><td>ファイルの末尾に追記する</td><td class="nowrap">09</td></tr>
@@ -502,7 +502,7 @@
 
 <h2>配列の操作</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>JavaScript</th><th>PowerShell</th><th>参照</th></tr>
 <tr><td class="mono">arr.filter(x =&gt; x.size &gt; 10)</td><td class="mono">$arr | Where-Object { $_.Size -gt 10 }</td><td><a href="05-パイプライン.html#ch03">05.3</a></td></tr>
@@ -518,7 +518,7 @@
 
 <h2>文字列と変数</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>JavaScript</th><th>PowerShell</th><th>参照</th></tr>
 <tr><td class="mono">const x = 5;</td><td class="mono">$x = 5</td><td><a href="04-変数と型.html#ch01">04.1</a></td></tr>
@@ -536,7 +536,7 @@
 
 <h2>オブジェクトと関数</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>JavaScript</th><th>PowerShell</th><th>参照</th></tr>
 <tr><td class="mono">const o = { a: 1 };</td><td class="mono">$o = @{ a = 1 }</td><td><a href="04-変数と型.html#ch04">04.4</a></td></tr>
@@ -563,7 +563,7 @@
 <section class="ch04" id="ch04">
 <h1>A1.4 用語から引く</h1>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>用語</th><th>意味</th><th>参照</th></tr>
 <tr><td class="nowrap"><strong>ANSI</strong></td><td>特定の文字コードではなく、<strong>その環境の既定のコードページ</strong>。日本語環境では CP932</td><td><a href="02-ファイル形式.html#ch01">02.1</a></td></tr>

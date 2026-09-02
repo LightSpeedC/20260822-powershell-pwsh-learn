@@ -57,7 +57,7 @@
 		color: #fff;
 	}
 	.titlebar p { margin: 4px 0; font-size: 0.92em; color: #d8e4ff; }
-	.titlebar .meta { font-size: 0.84em; color: #b9cdf5; }
+	.titlebar .date { font-size: 0.84em; color: #b9cdf5; }
 	.titlebar code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
 
 	/* 目次 */
@@ -168,7 +168,7 @@
 	}
 	pre code { background: none; border: none; padding: 0; color: #1b2b46; }
 
-	.table-wrap { overflow-x: auto; margin: 16px 0; }
+	.tablewrap { overflow-x: auto; margin: 16px 0; }
 	table {
 		width: 100%;
 		border-collapse: collapse;
@@ -203,7 +203,7 @@
 		letter-spacing: 0.04em;
 		white-space: nowrap;
 	}
-	.b-good { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
+	.b-ok { background: linear-gradient(100deg, #1d7a3c, #45b56c); }
 	.b-bad  { background: linear-gradient(100deg, #a51f22, #e05a5c); }
 	.b-none { background: linear-gradient(100deg, #5a6472, #97a1ae); }
 	.b-warn { background: linear-gradient(100deg, #b8620a, #f0a548); }
@@ -245,8 +245,8 @@
 <div class="titlebar">
 	<div class="inner">
 		<h1>11. C# を埋め込む — Add-Type</h1>
-		<p>PowerShell の中で C# をコンパイルして呼ぶ。速度と Win32 API のための最後の手段</p>
-		<p class="meta">📅 作成: 2026-08-26 / 更新: 2026-08-26 ／ 対象: Windows PowerShell 5.1 ＋ PowerShell 7</p>
+		<p class="lead">PowerShell の中で C# をコンパイルして呼ぶ。速度と Win32 API のための最後の手段</p>
+		<p class="date">📅 作成: 2026-08-26 / 更新: 2026-08-26 ／ 対象: Windows PowerShell 5.1 ＋ PowerShell 7</p>
 	</div>
 </div>
 
@@ -307,12 +307,12 @@ $t1 = Measure-Command { $sum = 0L; for ($i = 1; $i -le $n; $i++) { $sum += $i } 
 $t2 = Measure-Command { $null = (1..$n | Measure-Object -Sum).Sum }
 $t3 = Measure-Command { $null = [Bench]::SumTo($n) }</code></pre>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>書き方</th><th>5.1</th><th>pwsh 7</th><th>備考</th></tr>
 <tr><td class="nowrap">PowerShell の <code>for</code></td><td class="num">9,524 ms</td><td class="num">3,204 ms</td><td>素直に書いた場合</td></tr>
 <tr><td class="nowrap">パイプライン <code>Measure-Object</code></td><td class="num">9,258 ms</td><td class="num">3,902 ms</td><td>速くはならない</td></tr>
-<tr><td class="nowrap"><code>Add-Type</code> の C#</td><td class="num">6 ms</td><td class="num">13 ms</td><td><span class="badge b-good">1000 倍超</span></td></tr>
+<tr><td class="nowrap"><code>Add-Type</code> の C#</td><td class="num">6 ms</td><td class="num">13 ms</td><td><span class="badge b-ok">1000 倍超</span></td></tr>
 </table>
 </div>
 
@@ -428,7 +428,7 @@ $t2 = Measure-Command {
 }
 $t3 = Measure-Command { $null = [StrBench]::Build($n) }   # C# 側で StringBuilder を回す</code></pre>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>書き方</th><th>5.1</th><th>pwsh 7</th></tr>
 <tr><td class="nowrap">PowerShell で <code>$s += "..."</code></td><td class="num">1,525 ms</td><td class="num">1,514 ms</td></tr>
@@ -606,18 +606,18 @@ C:\Users\&lt;username&gt;\AppData\Local\Temp\wp4uszhu.0.cs(1) : 'int' は無効�
 
 <p>5.1 が呼ぶ <code>csc.exe</code> は <strong>C# 5 までしか受け付けません</strong>。同じソースを両方でコンパイルした結果です。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>C# の機能</th><th>例</th><th>5.1</th><th>pwsh 7</th></tr>
-<tr><td class="nowrap"><code>var</code>（C# 3）</td><td class="mono">var x = 1;</td><td><span class="badge b-good">OK</span></td><td><span class="badge b-good">OK</span></td></tr>
-<tr><td class="nowrap"><code>async</code>/<code>await</code>（C# 5）</td><td class="mono">await Task.Delay(1);</td><td><span class="badge b-good">OK</span></td><td><span class="badge b-good">OK</span></td></tr>
-<tr><td class="nowrap">式形式メンバ（C# 6）</td><td class="mono">public static string N =&gt; "a";</td><td><span class="badge b-bad">NG</span></td><td><span class="badge b-good">OK</span></td></tr>
-<tr><td class="nowrap"><code>nameof</code>（C# 6）</td><td class="mono">nameof(L2)</td><td><span class="badge b-bad">NG</span></td><td><span class="badge b-good">OK</span></td></tr>
-<tr><td class="nowrap">文字列補間（C# 6）</td><td class="mono">$"value={n}"</td><td><span class="badge b-bad">NG</span></td><td><span class="badge b-good">OK</span></td></tr>
-<tr><td class="nowrap"><code>out var</code>（C# 7）</td><td class="mono">int.TryParse(s, out int v)</td><td><span class="badge b-bad">NG</span></td><td><span class="badge b-good">OK</span></td></tr>
-<tr><td class="nowrap"><code>record</code>・<code>init</code>（C# 9）</td><td class="mono">public record M2(int X);</td><td><span class="badge b-bad">NG</span></td><td><span class="badge b-good">OK</span></td></tr>
-<tr><td class="nowrap">ファイルスコープ名前空間（C# 10）</td><td class="mono">namespace Demo;</td><td><span class="badge b-bad">NG</span></td><td><span class="badge b-good">OK</span></td></tr>
-<tr><td class="nowrap">生文字列リテラル（C# 11）</td><td class="mono">"""abc"""</td><td><span class="badge b-bad">NG</span></td><td><span class="badge b-good">OK</span></td></tr>
+<tr><td class="nowrap"><code>var</code>（C# 3）</td><td class="mono">var x = 1;</td><td><span class="badge b-ok">OK</span></td><td><span class="badge b-ok">OK</span></td></tr>
+<tr><td class="nowrap"><code>async</code>/<code>await</code>（C# 5）</td><td class="mono">await Task.Delay(1);</td><td><span class="badge b-ok">OK</span></td><td><span class="badge b-ok">OK</span></td></tr>
+<tr><td class="nowrap">式形式メンバ（C# 6）</td><td class="mono">public static string N =&gt; "a";</td><td><span class="badge b-bad">NG</span></td><td><span class="badge b-ok">OK</span></td></tr>
+<tr><td class="nowrap"><code>nameof</code>（C# 6）</td><td class="mono">nameof(L2)</td><td><span class="badge b-bad">NG</span></td><td><span class="badge b-ok">OK</span></td></tr>
+<tr><td class="nowrap">文字列補間（C# 6）</td><td class="mono">$"value={n}"</td><td><span class="badge b-bad">NG</span></td><td><span class="badge b-ok">OK</span></td></tr>
+<tr><td class="nowrap"><code>out var</code>（C# 7）</td><td class="mono">int.TryParse(s, out int v)</td><td><span class="badge b-bad">NG</span></td><td><span class="badge b-ok">OK</span></td></tr>
+<tr><td class="nowrap"><code>record</code>・<code>init</code>（C# 9）</td><td class="mono">public record M2(int X);</td><td><span class="badge b-bad">NG</span></td><td><span class="badge b-ok">OK</span></td></tr>
+<tr><td class="nowrap">ファイルスコープ名前空間（C# 10）</td><td class="mono">namespace Demo;</td><td><span class="badge b-bad">NG</span></td><td><span class="badge b-ok">OK</span></td></tr>
+<tr><td class="nowrap">生文字列リテラル（C# 11）</td><td class="mono">"""abc"""</td><td><span class="badge b-bad">NG</span></td><td><span class="badge b-ok">OK</span></td></tr>
 </table>
 </div>
 
@@ -650,7 +650,7 @@ VisualBasic to a valid enumerator name. ...</code></pre>
 
 <p>コンパイラに追加のオプションを渡すパラメータも、名前ごと入れ替わっています。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>目的</th><th>5.1</th><th>pwsh 7</th></tr>
 <tr><td class="nowrap">コンパイラへの追加指定</td><td class="mono">-CompilerParameters</td><td class="mono">-CompilerOptions</td></tr>
@@ -665,14 +665,14 @@ VisualBasic to a valid enumerator name. ...</code></pre>
 <pre><code>$src = 'using System.Xml.Linq;
 public class R { public static string V() { return XDocument.Parse("&lt;a/&gt;").Root.Name.LocalName; } }'</code></pre>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>指定</th><th>5.1</th><th>pwsh 7</th></tr>
-<tr><td class="nowrap">指定なし</td><td><span class="badge b-bad">NG</span><code>System</code> に <code>Xml</code> が無い</td><td><span class="badge b-good">OK</span></td></tr>
+<tr><td class="nowrap">指定なし</td><td><span class="badge b-bad">NG</span><code>System</code> に <code>Xml</code> が無い</td><td><span class="badge b-ok">OK</span></td></tr>
 <tr><td class="nowrap"><code>-ReferencedAssemblies System.Xml.Linq</code></td><td><span class="badge b-bad">NG</span><code>System.Xml</code> も要る</td><td><span class="badge b-bad">NG</span>CS0103</td></tr>
-<tr><td class="nowrap"><code>-ReferencedAssemblies System.Xml.Linq, System.Xml</code></td><td><span class="badge b-good">OK</span></td><td>—</td></tr>
-<tr><td class="nowrap"><code>-ReferencedAssemblies &lt;dll のフルパス&gt;</code></td><td>—</td><td><span class="badge b-good">OK</span></td></tr>
-<tr><td class="nowrap"><code>-ReferencedAssemblies System.Windows.Forms</code>（WinForms を使う場合）</td><td><span class="badge b-good">OK</span></td><td><span class="badge b-good">OK</span></td></tr>
+<tr><td class="nowrap"><code>-ReferencedAssemblies System.Xml.Linq, System.Xml</code></td><td><span class="badge b-ok">OK</span></td><td>—</td></tr>
+<tr><td class="nowrap"><code>-ReferencedAssemblies &lt;dll のフルパス&gt;</code></td><td>—</td><td><span class="badge b-ok">OK</span></td></tr>
+<tr><td class="nowrap"><code>-ReferencedAssemblies System.Windows.Forms</code>（WinForms を使う場合）</td><td><span class="badge b-ok">OK</span></td><td><span class="badge b-ok">OK</span></td></tr>
 </table>
 </div>
 
@@ -692,7 +692,7 @@ Add-Type -TypeDefinition $src -ReferencedAssemblies 'System.Windows.Forms'
 
 <p>同じセッションで、内容の違うクラスを3回続けて定義したときの所要時間です。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>回数</th><th>5.1</th><th>pwsh 7</th></tr>
 <tr><td class="nowrap">1 回目</td><td class="num">182 ms</td><td class="num">686 ms</td></tr>
@@ -802,7 +802,7 @@ Line |
 
 <p><code>try / catch</code> で捕まえたときの中身も違います。<strong>エラー ID で分岐を書いている場合は要注意</strong>です。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th></th><th>5.1</th><th>pwsh 7</th></tr>
 <tr><td class="nowrap">捕まる例外の型</td><td class="mono">System.Exception</td><td class="mono">System.InvalidOperationException</td></tr>
@@ -1000,13 +1000,13 @@ $t2 = Measure-Command { $s = 0L; for ($i = 1; $i -le $n; $i++) { $s = [B4]::Add(
 $t3 = Measure-Command { $s = 0L; for ($i = 1; $i -le $n; $i++) { $s = [PsCalc]::Add($s, $i) } }
 $t4 = Measure-Command { $null = [B4]::SumTo($n) }</code></pre>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>呼び方</th><th>5.1</th><th>pwsh 7</th><th>評価</th></tr>
 <tr><td class="nowrap">A PowerShell だけ</td><td class="num">774 ms</td><td class="num">818 ms</td><td>基準</td></tr>
 <tr><td class="nowrap">B 1回ずつ C# を呼ぶ</td><td class="num">702 ms</td><td class="num">1,809 ms</td><td><span class="badge b-bad">効果なし</span>7 では遅くなった</td></tr>
 <tr><td class="nowrap">C 1回ずつ PowerShell の <code>class</code> を呼ぶ</td><td class="num">2,143 ms</td><td class="num">2,670 ms</td><td><span class="badge b-bad">最も遅い</span></td></tr>
-<tr><td class="nowrap">D ループごと C# に渡す</td><td class="num">14 ms</td><td class="num">4 ms</td><td><span class="badge b-good">50〜200 倍</span></td></tr>
+<tr><td class="nowrap">D ループごと C# に渡す</td><td class="num">14 ms</td><td class="num">4 ms</td><td><span class="badge b-ok">50〜200 倍</span></td></tr>
 </table>
 </div>
 
@@ -1021,7 +1021,7 @@ C の行が示すとおり、静的メソッドを 30 万回呼ぶだけで、�
 
 <p>11.1 で見たとおり、文字列連結は <code>StringBuilder</code> に変えるだけで 7〜27 倍になりました。同じことが集合演算やリスト操作にも当てはまります。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>やりたいこと</th><th>PowerShell だけで書くと</th><th>先に試す .NET の型</th></tr>
 <tr><td class="nowrap">文字列を大量に連結</td><td class="mono">$s += "..."</td><td class="mono">[System.Text.StringBuilder]</td></tr>
@@ -1035,7 +1035,7 @@ C の行が示すとおり、静的メソッドを 30 万回呼ぶだけで、�
 
 <h2>保守コストで見た比較</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>観点</th><th>PowerShell だけ</th><th>.NET の型を使う</th><th><code>Add-Type</code> で C#</th></tr>
 <tr><td class="nowrap">速度</td><td>基準</td><td>数倍〜数十倍</td><td>数十倍〜1000 倍</td></tr>
@@ -1155,7 +1155,7 @@ PowerShell と C# が交互に出てくるスクリプトは、<strong>読む人
 
 <p>Visual Studio も dotnet SDK も要りません。<strong>.NET Framework 4.x が入っている Windows には、必ず <code>csc.exe</code> があります</strong>。この PC で実際に見つかったものです。</p>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>コンパイラ</th><th>場所</th><th>バージョン</th></tr>
 <tr><td class="nowrap"><strong>.NET Framework 同梱</strong></td><td class="mono">C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe</td><td class="nowrap"><strong>4.8.9221.0</strong></td></tr>
@@ -1357,7 +1357,7 @@ PS&gt; $LASTEXITCODE
 
 <h2>どちらを選ぶか</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>観点</th><th><code>Add-Type</code></th><th><code>csc.exe</code> を直接叩く</th></tr>
 <tr><td class="nowrap">コンパイル時期</td><td>実行のたび（メモリ上）</td><td>事前に1回</td></tr>
@@ -1380,7 +1380,7 @@ exe や dll を配布物として扱うなら、<strong>誰がどのソースか
 
 <h2>この章のまとめ</h2>
 
-<div class="table-wrap">
+<div class="tablewrap">
 <table>
 <tr><th>節</th><th>要点</th></tr>
 <tr><td class="nowrap">11.1</td><td>差が出るのは<strong>回数の多いループ</strong>。まず PowerShell で書き、<code>Measure-Command</code> で実測してから判断する</td></tr>
