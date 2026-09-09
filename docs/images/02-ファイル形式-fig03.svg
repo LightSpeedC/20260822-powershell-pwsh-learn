@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 274" width="780" height="274" role="img" aria-label="BOMの有無とPowerShellバージョンによる解釈の違い">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<text x="118" y="24" fill="#1c2330" font-size="13.5" font-weight="700" text-anchor="middle">ps1 ファイルの保存形式</text>
+	<text x="392" y="24" fill="#5b2d82" font-size="13.5" font-weight="700" text-anchor="middle">Windows PowerShell 5.1 の解釈</text>
+	<text x="656" y="24" fill="#1a5fa8" font-size="13.5" font-weight="700" text-anchor="middle">PowerShell 7 の解釈</text>
+
+	<text x="10" y="70" fill="#1c2330" font-size="13.5" font-weight="700">UTF-8（BOM 付き）</text>
+	<rect x="248" y="40" width="288" height="52" rx="8" fill="url(#i1)"/>
+	<text x="392" y="63" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">✓ UTF-8 として読む</text>
+	<text x="392" y="81" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">BOM を見て判定できる</text>
+	<rect x="548" y="40" width="222" height="52" rx="8" fill="url(#i1)"/>
+	<text x="659" y="63" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">✓ UTF-8 として読む</text>
+	<text x="659" y="81" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">BOM は読み飛ばす</text>
+
+	<text x="10" y="136" fill="#1c2330" font-size="13.5" font-weight="700">UTF-8（BOM なし）</text>
+	<rect x="248" y="106" width="288" height="52" rx="8" fill="url(#i2)"/>
+	<text x="392" y="129" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">✗ ANSI（CP932）と誤認</text>
+	<text x="392" y="147" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">日本語が文字化けする</text>
+	<rect x="548" y="106" width="222" height="52" rx="8" fill="url(#i1)"/>
+	<text x="659" y="129" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">✓ UTF-8 として読む</text>
+	<text x="659" y="147" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">BOM なし＝UTF-8 が既定</text>
+
+	<text x="10" y="202" fill="#1c2330" font-size="13.5" font-weight="700">Shift-JIS（BOM なし）</text>
+	<rect x="248" y="172" width="288" height="52" rx="8" fill="url(#i1)"/>
+	<text x="392" y="195" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">✓ CP932 として読める</text>
+	<text x="392" y="213" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">既定が ANSI なので一致する</text>
+	<rect x="548" y="172" width="222" height="52" rx="8" fill="url(#i2)"/>
+	<text x="659" y="195" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">✗ UTF-8 と誤認</text>
+	<text x="659" y="213" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">不正バイトとして壊れる</text>
+
+	<rect x="10" y="236" width="760" height="30" rx="8" fill="#fff" stroke="hsl(140,58%,55%)" stroke-width="2"/>
+	<text x="390" y="256" fill="hsl(140,78%,22%)" font-size="13.5" font-weight="700" text-anchor="middle">両方で正しく読めるのは「UTF-8（BOM 付き）」だけ</text>
+</svg>

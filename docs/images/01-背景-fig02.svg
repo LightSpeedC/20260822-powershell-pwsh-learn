@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 246" width="780" height="246" role="img" aria-label="PowerShell は Bash の強みと Windows/.NET の機能を合流させた">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(45,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(45,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(258,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(258,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i3" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(186.7,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(186.7,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="34" y="14" width="288" height="82" rx="10" fill="url(#i1)"/>
+	<text x="178" y="44" fill="#fff" font-size="16" font-weight="700" text-anchor="middle">Bash から受け継いだもの</text>
+	<text x="178" y="66" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">パイプ ／ 制御構文 ／ 小さなツールの組み合わせ</text>
+	<text x="178" y="84" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">リダイレクト ／ スクリプトとしての表現力</text>
+
+	<rect x="458" y="14" width="288" height="82" rx="10" fill="url(#i2)"/>
+	<text x="602" y="44" fill="#fff" font-size="16" font-weight="700" text-anchor="middle">Windows / .NET から得たもの</text>
+	<text x="602" y="66" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">WMI ／ レジストリ ／ COM ／ サービス管理</text>
+	<text x="602" y="84" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">型システム ／ 例外処理 ／ クラスライブラリ</text>
+
+	<path d="M178 100 V 132 H 330" fill="none" stroke="hsl(45,58%,45%)" stroke-width="2.5"/>
+	<polygon points="330,125 346,132 330,139" fill="hsl(45,58%,45%)"/>
+	<path d="M602 100 V 132 H 450" fill="none" stroke="hsl(258,58%,50%)" stroke-width="2.5"/>
+	<polygon points="450,125 434,132 450,139" fill="hsl(258,58%,50%)"/>
+
+	<rect x="252" y="150" width="276" height="72" rx="10" fill="url(#i3)"/>
+	<text x="390" y="182" fill="#fff" font-size="21" font-weight="700" text-anchor="middle">PowerShell</text>
+	<text x="390" y="204" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">オブジェクトを流すシェル（2006年）</text>
+</svg>

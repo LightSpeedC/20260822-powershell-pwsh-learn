@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 210" width="780" height="210" role="img" aria-label="cmdランチャーがps1を起動する流れ">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(262,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(262,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i3" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(210,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(210,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="10" y="46" width="176" height="72" rx="9" fill="url(#i1)"/>
+	<text x="98" y="76" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">foo.cmd</text>
+	<text x="98" y="98" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">ダブルクリックで起動</text>
+
+	<line x1="192" y1="82" x2="222" y2="82" stroke="#4a5568" stroke-width="2.5"/>
+	<polygon points="222,75 238,82 222,89" fill="#4a5568"/>
+
+	<rect x="244" y="46" width="242" height="72" rx="9" fill="url(#i2)"/>
+	<text x="365" y="72" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">powershell.exe</text>
+	<text x="365" y="92" fill="#fff" font-size="11" text-anchor="middle" opacity="0.9">-NoProfile</text>
+	<text x="365" y="108" fill="#fff" font-size="11" text-anchor="middle" opacity="0.9">-ExecutionPolicy Bypass</text>
+
+	<line x1="492" y1="82" x2="522" y2="82" stroke="#4a5568" stroke-width="2.5"/>
+	<polygon points="522,75 538,82 522,89" fill="#4a5568"/>
+
+	<rect x="544" y="46" width="226" height="72" rx="9" fill="url(#i3)"/>
+	<text x="657" y="76" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">foo.ps1</text>
+	<text x="657" y="98" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">本体の処理</text>
+
+	<text x="98" y="26" fill="hsl(35,78%,30%)" font-size="12" font-weight="700" text-anchor="middle">Shift-JIS / CRLF</text>
+	<text x="657" y="26" fill="hsl(210,78%,28%)" font-size="12" font-weight="700" text-anchor="middle">BOM付きUTF-8 / CRLF</text>
+
+	<rect x="10" y="140" width="760" height="56" rx="9" fill="#fff" stroke="#d9dfe8" stroke-width="2"/>
+	<text x="390" y="162" fill="#1c2330" font-size="13" font-weight="700" text-anchor="middle">同じフォルダに置いた2ファイルで、文字コードが異なる点に注意</text>
+	<text x="390" y="182" fill="#4a5568" font-size="12" text-anchor="middle">ランチャー側は cmd.exe が読むので Shift-JIS、本体は PowerShell が読むので BOM 付き UTF-8</text>
+</svg>

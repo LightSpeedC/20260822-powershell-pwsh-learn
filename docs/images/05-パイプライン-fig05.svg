@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 250" width="780" height="250" role="img" aria-label="Cmdlet の命名規則と探索の手順">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(255,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(255,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(180,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(180,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="150" y="16" width="230" height="52" rx="9" fill="url(#i1)"/>
+	<text x="265" y="49" fill="#fff" font-size="20" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Get</text>
+	<text x="392" y="49" fill="#1c2330" font-size="24" font-weight="700" text-anchor="middle">-</text>
+	<rect x="404" y="16" width="230" height="52" rx="9" fill="url(#i2)"/>
+	<text x="519" y="49" fill="#fff" font-size="20" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Process</text>
+
+	<text x="265" y="88" fill="hsl(255,78%,32%)" font-size="13" font-weight="700" text-anchor="middle">動詞 — 何をするか</text>
+	<text x="519" y="88" fill="hsl(180,78%,25%)" font-size="13" font-weight="700" text-anchor="middle">名詞 — 何に対して</text>
+
+	<text x="265" y="110" fill="#4a5568" font-size="12" text-anchor="middle">Get / Set / New / Remove / Start …</text>
+	<text x="519" y="110" fill="#4a5568" font-size="12" text-anchor="middle">Process / Service / Item / Content …</text>
+
+	<rect x="14" y="126" width="368" height="106" rx="10" fill="#fff" stroke="hsl(255,58%,60%)" stroke-width="2"/>
+	<text x="198" y="150" fill="hsl(255,78%,32%)" font-size="13.5" font-weight="700" text-anchor="middle">動詞は 100 個に決められている</text>
+	<text x="198" y="174" fill="#1c2330" font-size="12" text-anchor="middle">Get 取得 ／ Set 設定 ／ New 作成</text>
+	<text x="198" y="194" fill="#1c2330" font-size="12" text-anchor="middle">Remove 削除 ／ Start 開始 ／ Stop 停止</text>
+	<text x="198" y="218" fill="#4a5568" font-size="11.5" text-anchor="middle">Get-Verb で全部見られる</text>
+
+	<rect x="398" y="126" width="368" height="106" rx="10" fill="#fff" stroke="hsl(180,58%,55%)" stroke-width="2"/>
+	<text x="582" y="150" fill="hsl(180,78%,25%)" font-size="13.5" font-weight="700" text-anchor="middle">だから名前から機能が推測できる</text>
+	<text x="582" y="174" fill="#1c2330" font-size="12" text-anchor="middle">サービスを止めたい → Stop-Service</text>
+	<text x="582" y="194" fill="#1c2330" font-size="12" text-anchor="middle">ファイルを作りたい → New-Item</text>
+	<text x="582" y="218" fill="#4a5568" font-size="11.5" text-anchor="middle">暗記ではなく「組み立てて」探せる</text>
+</svg>

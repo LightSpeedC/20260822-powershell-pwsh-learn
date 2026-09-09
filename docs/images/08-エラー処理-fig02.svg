@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 250" width="780" height="250" role="img" aria-label="-ErrorAction に指定できる値と効果">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i3" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(215,20%,35%)"/>
+			<stop offset="1" stop-color="hsl(215,18%,62%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<text x="130" y="20" fill="#1c2330" font-size="13" font-weight="700" text-anchor="middle">値</text>
+	<text x="400" y="20" fill="#1c2330" font-size="13" font-weight="700" text-anchor="middle">画面表示</text>
+	<text x="590" y="20" fill="#1c2330" font-size="13" font-weight="700" text-anchor="middle">処理</text>
+	<text x="710" y="20" fill="#1c2330" font-size="13" font-weight="700" text-anchor="middle">$Error</text>
+
+	<rect x="20" y="30" width="220" height="36" rx="7" fill="url(#i1)"/>
+	<text x="130" y="53" fill="#fff" font-size="13" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Stop</text>
+	<text x="400" y="53" fill="#1c2330" font-size="12.5" text-anchor="middle">出る</text>
+	<text x="590" y="53" fill="#a51f22" font-size="12.5" font-weight="700" text-anchor="middle">止まる（catch 可）</text>
+	<text x="710" y="53" fill="#1c2330" font-size="12.5" text-anchor="middle">残る</text>
+
+	<rect x="20" y="72" width="220" height="36" rx="7" fill="url(#i2)"/>
+	<text x="130" y="95" fill="#fff" font-size="13" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Continue（既定）</text>
+	<text x="400" y="95" fill="#1c2330" font-size="12.5" text-anchor="middle">出る</text>
+	<text x="590" y="95" fill="#1c2330" font-size="12.5" text-anchor="middle">続く</text>
+	<text x="710" y="95" fill="#1c2330" font-size="12.5" text-anchor="middle">残る</text>
+
+	<rect x="20" y="114" width="220" height="36" rx="7" fill="url(#i3)"/>
+	<text x="130" y="137" fill="#fff" font-size="13" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">SilentlyContinue</text>
+	<text x="400" y="137" fill="#1c2330" font-size="12.5" text-anchor="middle">出ない</text>
+	<text x="590" y="137" fill="#1c2330" font-size="12.5" text-anchor="middle">続く</text>
+	<text x="710" y="137" fill="hsl(140,78%,25%)" font-size="12.5" font-weight="700" text-anchor="middle">残る</text>
+
+	<rect x="20" y="156" width="220" height="36" rx="7" fill="url(#i3)"/>
+	<text x="130" y="179" fill="#fff" font-size="13" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Ignore</text>
+	<text x="400" y="179" fill="#1c2330" font-size="12.5" text-anchor="middle">出ない</text>
+	<text x="590" y="179" fill="#1c2330" font-size="12.5" text-anchor="middle">続く</text>
+	<text x="710" y="179" fill="#a51f22" font-size="12.5" font-weight="700" text-anchor="middle">残らない</text>
+
+	<rect x="20" y="204" width="740" height="38" rx="8" fill="#fff" stroke="hsl(280,58%,65%)" stroke-width="2"/>
+	<text x="390" y="228" fill="hsl(280,78%,25%)" font-size="13" font-weight="700" text-anchor="middle">SilentlyContinue は「隠すが記録は残す」。Ignore は「なかったことにする」</text>
+</svg>

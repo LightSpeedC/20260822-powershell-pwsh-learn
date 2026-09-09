@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 330" width="760" height="330" role="img" aria-label="モジュールを採用するかどうかの6つの判断基準">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(280,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(280,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<text x="14" y="18" fill="hsl(280,78%,25%)" font-size="12" font-weight="700">判断基準</text>
+	<text x="222" y="18" fill="hsl(280,78%,25%)" font-size="12" font-weight="700">何を見るか</text>
+	<text x="486" y="18" fill="hsl(280,78%,25%)" font-size="12" font-weight="700">これで落ちる例</text>
+
+	<rect x="14" y="26" width="192" height="38" rx="7" fill="url(#i1)"/>
+	<text x="30" y="50" fill="#fff" font-size="12.5" font-weight="700">① 提供元が公式か</text>
+	<text x="222" y="50" fill="#1c2330" font-size="12">Author / CompanyName / ProjectUri</text>
+	<text x="486" y="50" fill="#4a5568" font-size="12">GitHub へのリンクが無い</text>
+
+	<rect x="14" y="70" width="192" height="38" rx="7" fill="url(#i1)"/>
+	<text x="30" y="94" fill="#fff" font-size="12.5" font-weight="700">② 最終更新日</text>
+	<text x="222" y="94" fill="#1c2330" font-size="12">PublishedDate（lastUpdated は不可）</text>
+	<text x="486" y="94" fill="#4a5568" font-size="12">issue が何年も放置されている</text>
+
+	<rect x="14" y="114" width="192" height="38" rx="7" fill="url(#i1)"/>
+	<text x="30" y="138" fill="#fff" font-size="12.5" font-weight="700">③ 5.1 と 7 の両対応</text>
+	<text x="222" y="138" fill="#1c2330" font-size="12">Tags の PSEdition_Core / _Desktop</text>
+	<text x="486" y="138" fill="#4a5568" font-size="12">配布先が 5.1 なのに 7 専用</text>
+
+	<rect x="14" y="158" width="192" height="38" rx="7" fill="url(#i1)"/>
+	<text x="30" y="182" fill="#fff" font-size="12.5" font-weight="700">④ 依存の重さ</text>
+	<text x="222" y="182" fill="#1c2330" font-size="12">-IncludeDependencies の件数</text>
+	<text x="486" y="182" fill="#4a5568" font-size="12">1本のつもりが 40 フォルダ増える</text>
+
+	<rect x="14" y="202" width="192" height="38" rx="7" fill="url(#i1)"/>
+	<text x="30" y="226" fill="#fff" font-size="12.5" font-weight="700">⑤ DL 数は見ない</text>
+	<text x="222" y="226" fill="#1c2330" font-size="12">downloadCount は判断に使わない</text>
+	<text x="486" y="226" fill="#4a5568" font-size="12">21 億という値が返ることがある</text>
+
+	<rect x="14" y="246" width="192" height="38" rx="7" fill="url(#i1)"/>
+	<text x="30" y="270" fill="#fff" font-size="12.5" font-weight="700">⑥ 出口があるか</text>
+	<text x="222" y="270" fill="#1c2330" font-size="12">後継の有無・消し方が分かるか</text>
+	<text x="486" y="270" fill="#4a5568" font-size="12">提供終了後も PC に残り続ける</text>
+
+	<rect x="14" y="294" width="732" height="28" rx="6" fill="#fff" stroke="hsl(280,58%,65%)" stroke-width="1.6"/>
+	<text x="380" y="313" fill="hsl(280,78%,25%)" font-size="12.5" font-weight="600" text-anchor="middle">6つとも Find-Module だけで確認できる。入れてから判断しない</text>
+</svg>

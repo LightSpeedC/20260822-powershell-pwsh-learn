@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 274" width="780" height="274" role="img" aria-label="PowerShell から COM 経由で Office を操作する構造">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(280,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(280,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(210,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(210,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i3" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="10" y="26" width="212" height="86" rx="9" fill="url(#i1)"/>
+	<text x="116" y="52" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">powershell.exe</text>
+	<text x="116" y="74" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">New-Object -ComObject</text>
+	<text x="116" y="94" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">自分のプロセス</text>
+
+	<rect x="262" y="26" width="212" height="86" rx="9" fill="#fff" stroke="hsl(280,58%,55%)" stroke-width="2"/>
+	<text x="368" y="52" fill="hsl(280,78%,25%)" font-size="14" font-weight="700" text-anchor="middle">COM の境界</text>
+	<text x="368" y="74" fill="#1c2330" font-size="11.5" text-anchor="middle">呼び出しを別プロセスへ運ぶ</text>
+	<text x="368" y="94" fill="#4a5568" font-size="11" text-anchor="middle">値はここで .NET ⇄ Windows 型に変換</text>
+
+	<rect x="514" y="26" width="256" height="86" rx="9" fill="url(#i2)"/>
+	<text x="642" y="50" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">WINWORD.EXE / EXCEL.EXE</text>
+	<text x="642" y="70" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">POWERPNT.EXE</text>
+	<text x="642" y="94" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">Office 本体が起動して待機する</text>
+
+	<line x1="228" y1="60" x2="244" y2="60" stroke="#4a5568" stroke-width="2.5"/>
+	<polygon points="244,53 260,60 244,67" fill="#4a5568"/>
+	<line x1="480" y1="60" x2="496" y2="60" stroke="#4a5568" stroke-width="2.5"/>
+	<polygon points="496,53 512,60 496,67" fill="#4a5568"/>
+	<line x1="508" y1="86" x2="492" y2="86" stroke="#4a5568" stroke-width="2.5"/>
+	<polygon points="492,79 476,86 492,93" fill="#4a5568"/>
+	<line x1="256" y1="86" x2="240" y2="86" stroke="#4a5568" stroke-width="2.5"/>
+	<polygon points="240,79 224,86 240,93" fill="#4a5568"/>
+
+	<rect x="10" y="132" width="760" height="130" rx="9" fill="url(#i3)"/>
+	<text x="390" y="158" fill="#fff" font-size="13.5" font-weight="700" text-anchor="middle">VBA で書いていたコードは、そのままの構造で移せる</text>
+	<text x="200" y="186" fill="#fff" font-size="12" text-anchor="middle" opacity="0.9">VBA</text>
+	<text x="580" y="186" fill="#fff" font-size="12" text-anchor="middle" opacity="0.9">PowerShell</text>
+	<text x="200" y="210" fill="#fff" font-size="12" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Set xl = CreateObject("Excel.Application")</text>
+	<text x="580" y="210" fill="#fff" font-size="12" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">$xl = New-Object -ComObject Excel.Application</text>
+	<text x="200" y="232" fill="#fff" font-size="12" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">xl.Workbooks.Add</text>
+	<text x="580" y="232" fill="#fff" font-size="12" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">$xl.Workbooks.Add()</text>
+	<text x="200" y="252" fill="#fff" font-size="12" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">ws.Cells(1, 1).Value2 = "商品"</text>
+	<text x="580" y="252" fill="#fff" font-size="12" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">$ws.Cells.Item(1,1).Value2 = '商品'</text>
+</svg>

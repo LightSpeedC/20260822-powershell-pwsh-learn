@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 288" width="780" height="288" role="img" aria-label="関数内の出力がすべて戻り値として集められる">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(215,20%,35%)"/>
+			<stop offset="1" stop-color="hsl(215,18%,62%)"/>
+		</linearGradient>
+		<linearGradient id="i3" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(93.3,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(93.3,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<text x="240" y="20" fill="#1c2330" font-size="13.5" font-weight="700" text-anchor="middle">関数の中身</text>
+	<text x="640" y="20" fill="#1c2330" font-size="13.5" font-weight="700" text-anchor="middle">戻り値に入るか</text>
+
+	<rect x="20" y="32" width="440" height="36" rx="7" fill="url(#i1)"/>
+	<text x="240" y="55" fill="#fff" font-size="13" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">"途中の出力"</text>
+	<text x="640" y="55" fill="#a51f22" font-size="13" font-weight="700" text-anchor="middle">入る（意図せず）</text>
+
+	<rect x="20" y="76" width="440" height="36" rx="7" fill="url(#i2)"/>
+	<text x="240" y="99" fill="#fff" font-size="13" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">$x = 1 + 1</text>
+	<text x="640" y="99" fill="#4a5568" font-size="13" font-weight="700" text-anchor="middle">入らない（代入済み）</text>
+
+	<rect x="20" y="120" width="440" height="36" rx="7" fill="url(#i1)"/>
+	<text x="240" y="143" fill="#fff" font-size="13" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">$list.Add('x')</text>
+	<text x="640" y="143" fill="#a51f22" font-size="13" font-weight="700" text-anchor="middle">入ることがある</text>
+
+	<rect x="20" y="164" width="440" height="36" rx="7" fill="url(#i2)"/>
+	<text x="240" y="187" fill="#fff" font-size="13" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Write-Host "ログ"</text>
+	<text x="640" y="187" fill="#4a5568" font-size="13" font-weight="700" text-anchor="middle">入らない（別ストリーム）</text>
+
+	<rect x="20" y="208" width="440" height="36" rx="7" fill="url(#i3)"/>
+	<text x="240" y="231" fill="#fff" font-size="13" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">return "本命の値"</text>
+	<text x="640" y="231" fill="hsl(93.3,78%,25%)" font-size="13" font-weight="700" text-anchor="middle">入る</text>
+
+	<rect x="20" y="254" width="740" height="30" rx="7" fill="#fff" stroke="hsl(0,58%,60%)" stroke-width="2"/>
+	<text x="390" y="274" fill="#a51f22" font-size="13.5" font-weight="700" text-anchor="middle">この関数の戻り値は 3 件。return を書いても他の出力は消えない</text>
+</svg>

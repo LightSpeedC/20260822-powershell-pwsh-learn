@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 168" width="780" height="168" role="img" aria-label="DOS のパイプはテキスト行しか流れない">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(280,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(280,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="14" y="38" width="172" height="66" rx="9" fill="url(#i1)"/>
+	<text x="100" y="70" fill="#fff" font-size="18" font-weight="700" text-anchor="middle">dir</text>
+	<text x="100" y="90" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.88">ファイル一覧を出力</text>
+
+	<text x="228" y="60" fill="hsl(280,78%,25%)" font-size="18" font-weight="700" text-anchor="middle">|</text>
+	<line x1="192" y1="71" x2="252" y2="71" stroke="hsl(280,78%,25%)" stroke-width="2.5"/>
+	<polygon points="252,64 268,71 252,78" fill="hsl(280,78%,25%)"/>
+
+	<rect x="276" y="38" width="230" height="66" rx="9" fill="#fff" stroke="hsl(280,58%,65%)" stroke-width="2" stroke-dasharray="6 4"/>
+	<text x="391" y="64" fill="#1c2330" font-size="12" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace" text-anchor="middle">2026/08/22  09:41  1,024 test.txt</text>
+	<text x="391" y="88" fill="#a51f22" font-size="12" font-weight="700" text-anchor="middle">ただの文字列（型なし）</text>
+
+	<line x1="512" y1="71" x2="572" y2="71" stroke="hsl(280,78%,25%)" stroke-width="2.5"/>
+	<polygon points="572,64 588,71 572,78" fill="hsl(280,78%,25%)"/>
+
+	<rect x="596" y="38" width="172" height="66" rx="9" fill="url(#i1)"/>
+	<text x="682" y="70" fill="#fff" font-size="18" font-weight="700" text-anchor="middle">find "test"</text>
+	<text x="682" y="90" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.88">文字位置を数えて切出し</text>
+
+	<text x="391" y="140" fill="#4a5568" font-size="13" text-anchor="middle">受け手は「何列目が何を意味するか」を自分で知っていなければならない</text>
+</svg>

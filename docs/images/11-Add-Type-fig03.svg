@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 292" width="800" height="292" role="img" aria-label="型の再定義がエラーになる仕組み">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(200,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(200,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i3" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="20" y="24" width="760" height="112" rx="10" fill="#fff" stroke="hsl(140,58%,65%)" stroke-width="2"/>
+	<text x="400" y="48" fill="hsl(140,78%,25%)" font-size="13.5" font-weight="700" text-anchor="middle">ひとつの PowerShell プロセス</text>
+
+	<rect x="46" y="62" width="200" height="56" rx="8" fill="url(#i1)"/>
+	<text x="146" y="86" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">1回目の Add-Type</text>
+	<text x="146" y="106" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">Point2 が載る</text>
+
+	<line x1="252" y1="90" x2="268" y2="90" stroke="#4a5568" stroke-width="2.5"/>
+	<polygon points="268,83 284,90 268,97" fill="#4a5568"/>
+
+	<rect x="290" y="62" width="200" height="56" rx="8" fill="url(#i1)"/>
+	<text x="390" y="86" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">Point2 は使える</text>
+	<text x="390" y="106" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">アンロードはできない</text>
+
+	<line x1="496" y1="90" x2="512" y2="90" stroke="#4a5568" stroke-width="2.5"/>
+	<polygon points="512,83 528,90 512,97" fill="#4a5568"/>
+
+	<rect x="534" y="62" width="220" height="56" rx="8" fill="url(#i2)"/>
+	<text x="644" y="86" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">2回目の Add-Type</text>
+	<text x="644" y="106" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">already exists でエラー</text>
+
+	<text x="400" y="164" fill="#1c2330" font-size="13" font-weight="700" text-anchor="middle">開発中の回避策</text>
+
+	<rect x="20" y="180" width="245" height="96" rx="9" fill="url(#i3)"/>
+	<text x="142" y="204" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">① 新しいプロセスで試す</text>
+	<text x="142" y="226" fill="#fff" font-size="11" text-anchor="middle" opacity="0.92" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">pwsh -NoProfile -File x.ps1</text>
+	<text x="142" y="248" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.85">最も確実。毎回まっさら</text>
+	<text x="142" y="266" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.85">起動のぶんだけ遅い</text>
+
+	<rect x="277" y="180" width="245" height="96" rx="9" fill="url(#i3)"/>
+	<text x="399" y="204" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">② 型名を毎回変える</text>
+	<text x="399" y="226" fill="#fff" font-size="11" text-anchor="middle" opacity="0.92" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Calc_&lt;GUID&gt; + -PassThru</text>
+	<text x="399" y="248" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.85">同一セッションで差し替え可</text>
+	<text x="399" y="266" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.85">型は増える一方</text>
+
+	<rect x="534" y="180" width="246" height="96" rx="9" fill="url(#i3)"/>
+	<text x="657" y="204" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">③ dll にして配る</text>
+	<text x="657" y="226" fill="#fff" font-size="11" text-anchor="middle" opacity="0.92" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">csc.exe → Add-Type -Path</text>
+	<text x="657" y="248" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.85">2回読んでもエラーにならない</text>
+	<text x="657" y="266" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.85">11.7 で扱う</text>
+</svg>

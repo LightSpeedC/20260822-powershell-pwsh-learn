@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 274" width="780" height="274" role="img" aria-label="5.1 と 7 の既定エンコーディングの比較">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(275,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(275,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(211,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(211,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<text x="150" y="20" fill="#1c2330" font-size="13" font-weight="700" text-anchor="middle">書き出し方</text>
+	<text x="410" y="20" fill="#5b2d82" font-size="13" font-weight="700" text-anchor="middle">Windows PowerShell 5.1</text>
+	<text x="650" y="20" fill="#1a5fa8" font-size="13" font-weight="700" text-anchor="middle">PowerShell 7</text>
+
+	<text x="20" y="58" fill="#1c2330" font-size="12.5" font-weight="700" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Set-Content（既定）</text>
+	<rect x="290" y="32" width="240" height="38" rx="7" fill="url(#i1)"/>
+	<text x="410" y="50" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">ANSI（CP932）</text>
+	<text x="410" y="65" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">82 A0</text>
+	<rect x="540" y="32" width="220" height="38" rx="7" fill="url(#i2)"/>
+	<text x="650" y="50" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">UTF-8（BOM なし）</text>
+	<text x="650" y="65" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">E3 81 82</text>
+
+	<text x="20" y="104" fill="#1c2330" font-size="12.5" font-weight="700" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Out-File（既定）</text>
+	<rect x="290" y="78" width="240" height="38" rx="7" fill="url(#i1)"/>
+	<text x="410" y="96" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">UTF-16LE（BOM 付き）</text>
+	<text x="410" y="111" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">FF FE 42 30</text>
+	<rect x="540" y="78" width="220" height="38" rx="7" fill="url(#i2)"/>
+	<text x="650" y="96" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">UTF-8（BOM なし）</text>
+	<text x="650" y="111" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">E3 81 82</text>
+
+	<text x="20" y="150" fill="#1c2330" font-size="12.5" font-weight="700" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">-Encoding UTF8</text>
+	<rect x="290" y="124" width="240" height="38" rx="7" fill="url(#i1)"/>
+	<text x="410" y="142" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">UTF-8（BOM 付き）</text>
+	<text x="410" y="157" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">EF BB BF E3 81 82</text>
+	<rect x="540" y="124" width="220" height="38" rx="7" fill="url(#i2)"/>
+	<text x="650" y="142" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">UTF-8（BOM なし）</text>
+	<text x="650" y="157" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">E3 81 82</text>
+
+	<rect x="20" y="176" width="740" height="42" rx="8" fill="#fff" stroke="hsl(0,58%,60%)" stroke-width="2"/>
+	<text x="390" y="196" fill="#a51f22" font-size="13.5" font-weight="700" text-anchor="middle">同じ -Encoding UTF8 が、5.1 では BOM 付き、7 では BOM なし</text>
+	<text x="390" y="212" fill="#1c2330" font-size="12" text-anchor="middle">7 で BOM を付けるには utf8BOM を明示する</text>
+
+	<rect x="20" y="228" width="740" height="38" rx="8" fill="#fff" stroke="hsl(140,58%,55%)" stroke-width="2"/>
+	<text x="390" y="252" fill="hsl(140,78%,22%)" font-size="13.5" font-weight="700" text-anchor="middle">結論 — 読み書きの両方で -Encoding を必ず明示する</text>
+</svg>

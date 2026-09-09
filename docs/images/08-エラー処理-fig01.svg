@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 268" width="780" height="268" role="img" aria-label="終了エラーと非終了エラーの違い">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="20" y="20" width="352" height="46" rx="8" fill="url(#i1)"/>
+	<text x="196" y="42" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">非終了エラー</text>
+	<text x="196" y="59" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">Non-terminating</text>
+
+	<rect x="408" y="20" width="352" height="46" rx="8" fill="url(#i2)"/>
+	<text x="584" y="42" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">終了エラー</text>
+	<text x="584" y="59" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">Terminating</text>
+
+	<rect x="20" y="76" width="352" height="112" rx="8" fill="#fff" stroke="hsl(35,58%,60%)" stroke-width="2"/>
+	<text x="196" y="100" fill="#1c2330" font-size="12.5" text-anchor="middle">赤いメッセージは出る</text>
+	<text x="196" y="122" fill="#1c2330" font-size="12.5" text-anchor="middle">処理は<strong>そのまま続く</strong></text>
+	<text x="196" y="146" fill="#a51f22" font-size="13.5" font-weight="700" text-anchor="middle">catch に入らない</text>
+	<text x="196" y="170" fill="#4a5568" font-size="11.5" text-anchor="middle">例: 存在しないパス、アクセス拒否</text>
+
+	<rect x="408" y="76" width="352" height="112" rx="8" fill="#fff" stroke="hsl(0,58%,60%)" stroke-width="2"/>
+	<text x="584" y="100" fill="#1c2330" font-size="12.5" text-anchor="middle">赤いメッセージが出る</text>
+	<text x="584" y="122" fill="#1c2330" font-size="12.5" text-anchor="middle">処理が<strong>そこで止まる</strong></text>
+	<text x="584" y="146" fill="hsl(140,78%,25%)" font-size="13.5" font-weight="700" text-anchor="middle">catch に入る</text>
+	<text x="584" y="170" fill="#4a5568" font-size="11.5" text-anchor="middle">例: throw、構文エラー、型変換の失敗</text>
+
+	<rect x="20" y="200" width="740" height="58" rx="8" fill="#fff" stroke="hsl(280,58%,65%)" stroke-width="2"/>
+	<text x="390" y="222" fill="hsl(280,78%,25%)" font-size="13.5" font-weight="700" text-anchor="middle">なぜ2種類あるのか — シェルだから</text>
+	<text x="390" y="244" fill="#1c2330" font-size="12.5" text-anchor="middle">1000 個のファイルを処理して1つ失敗したとき、全部止めるより残りを続けたい場面が多い</text>
+</svg>

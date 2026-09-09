@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 330" width="800" height="330" role="img" aria-label="C# を書くかどうかの判断フロー">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(255,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(255,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(200,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(200,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i3" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i4" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i5" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="14" y="20" width="176" height="66" rx="9" fill="url(#i1)"/>
+	<text x="102" y="46" fill="#fff" font-size="13.5" font-weight="700" text-anchor="middle">① PowerShell で書く</text>
+	<text x="102" y="68" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">まず動くものを作る</text>
+
+	<line x1="196" y1="53" x2="212" y2="53" stroke="#4a5568" stroke-width="2.5"/>
+	<polygon points="212,46 228,53 212,60" fill="#4a5568"/>
+
+	<rect x="234" y="20" width="176" height="66" rx="9" fill="url(#i2)"/>
+	<text x="322" y="46" fill="#fff" font-size="13.5" font-weight="700" text-anchor="middle">② 実測する</text>
+	<text x="322" y="68" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Measure-Command</text>
+
+	<line x1="416" y1="53" x2="432" y2="53" stroke="#4a5568" stroke-width="2.5"/>
+	<polygon points="432,46 448,53 432,60" fill="#4a5568"/>
+
+	<rect x="454" y="20" width="176" height="66" rx="9" fill="url(#i3)"/>
+	<text x="542" y="46" fill="#fff" font-size="13.5" font-weight="700" text-anchor="middle">③ 許容できる？</text>
+	<text x="542" y="68" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">できるなら、ここで終わり</text>
+
+	<line x1="636" y1="53" x2="652" y2="53" stroke="#4a5568" stroke-width="2.5"/>
+	<polygon points="652,46 668,53 652,60" fill="#4a5568"/>
+
+	<rect x="674" y="20" width="112" height="66" rx="9" fill="url(#i3)"/>
+	<text x="730" y="52" fill="#fff" font-size="13.5" font-weight="700" text-anchor="middle">完成</text>
+	<text x="730" y="72" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">C# は不要</text>
+
+	<line x1="542" y1="92" x2="542" y2="118" stroke="#4a5568" stroke-width="2.5"/>
+	<polygon points="535,118 542,134 549,118" fill="#4a5568"/>
+	<text x="576" y="110" fill="#4a5568" font-size="11.5" font-weight="700" text-anchor="middle">遅い</text>
+
+	<rect x="410" y="140" width="264" height="66" rx="9" fill="url(#i4)"/>
+	<text x="542" y="166" fill="#fff" font-size="13.5" font-weight="700" text-anchor="middle">④ .NET の型に置き換える</text>
+	<text x="542" y="188" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">StringBuilder / HashSet / List</text>
+
+	<line x1="542" y1="212" x2="542" y2="238" stroke="#4a5568" stroke-width="2.5"/>
+	<polygon points="535,238 542,254 549,238" fill="#4a5568"/>
+	<text x="602" y="230" fill="#4a5568" font-size="11.5" font-weight="700" text-anchor="middle">それでも遅い</text>
+
+	<rect x="410" y="260" width="264" height="60" rx="9" fill="url(#i5)"/>
+	<text x="542" y="285" fill="#fff" font-size="13.5" font-weight="700" text-anchor="middle">⑤ Add-Type で C# を書く</text>
+	<text x="542" y="306" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">ここまで来て初めて</text>
+
+	<rect x="14" y="140" width="376" height="180" rx="9" fill="#fff" stroke="hsl(280,58%,65%)" stroke-width="2"/>
+	<text x="202" y="166" fill="hsl(280,78%,25%)" font-size="13.5" font-weight="700" text-anchor="middle">④ で終わることが多い</text>
+	<text x="202" y="192" fill="#1c2330" font-size="12.5" text-anchor="middle">文字列連結 20,000 回の実測（pwsh 7）</text>
+	<text x="202" y="216" fill="#1c2330" font-size="12.5" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">$s += "..."      1,514 ms</text>
+	<text x="202" y="238" fill="#1c2330" font-size="12.5" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">StringBuilder      200 ms</text>
+	<text x="202" y="260" fill="#1c2330" font-size="12.5" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Add-Type (C#)        4 ms</text>
+	<text x="202" y="288" fill="#4a5568" font-size="12" text-anchor="middle">.NET の型に変えるだけで 7 倍。</text>
+	<text x="202" y="308" fill="#4a5568" font-size="12" text-anchor="middle">C# を足す価値があるかは、そのあとの話</text>
+</svg>

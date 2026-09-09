@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 254" width="780" height="254" role="img" aria-label="Get-Member が教えてくれる3つのこと">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(255,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(255,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i3" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="270" y="14" width="240" height="46" rx="9" fill="url(#i1)"/>
+	<text x="390" y="43" fill="#fff" font-size="15" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">| Get-Member</text>
+
+	<path d="M330 62 V 82 H 140 V 102" fill="none" stroke="#4a5568" stroke-width="2"/>
+	<polygon points="133,102 140,118 147,102" fill="#4a5568"/>
+	<path d="M390 62 V 118" fill="none" stroke="#4a5568" stroke-width="2"/>
+	<polygon points="383,102 390,118 397,102" fill="#4a5568"/>
+	<path d="M450 62 V 82 H 640 V 102" fill="none" stroke="#4a5568" stroke-width="2"/>
+	<polygon points="633,102 640,118 647,102" fill="#4a5568"/>
+
+	<rect x="14" y="124" width="252" height="76" rx="9" fill="url(#i1)"/>
+	<text x="140" y="150" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">① 型名</text>
+	<text x="140" y="172" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">System.Diagnostics.Process</text>
+	<text x="140" y="190" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.85">→ この名前で検索できる</text>
+
+	<rect x="278" y="124" width="224" height="76" rx="9" fill="url(#i2)"/>
+	<text x="390" y="150" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">② プロパティ</text>
+	<text x="390" y="172" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">Id / Path / StartTime …</text>
+	<text x="390" y="190" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.85">→ 取り出せる値の一覧</text>
+
+	<rect x="514" y="124" width="252" height="76" rx="9" fill="url(#i3)"/>
+	<text x="640" y="150" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">③ メソッド</text>
+	<text x="640" y="172" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">Kill() / Refresh() …</text>
+	<text x="640" y="190" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.85">→ 実行できる操作の一覧</text>
+
+	<rect x="14" y="212" width="752" height="34" rx="8" fill="#fff" stroke="#d9dfe8" stroke-width="2"/>
+	<text x="390" y="234" fill="#1c2330" font-size="13" font-weight="700" text-anchor="middle">「このコマンドの結果から何が取れるのか」に、その場で答えが出る</text>
+</svg>

@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 244" width="780" height="244" role="img" aria-label="Sort-Object・Group-Object・Measure-Object の流れ">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(255,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(255,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(160,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(160,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i3" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="14" y="24" width="230" height="86" rx="10" fill="url(#i1)"/>
+	<text x="129" y="52" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">Sort-Object</text>
+	<text x="129" y="76" fill="#fff" font-size="17" font-weight="700" text-anchor="middle">並べる</text>
+	<text x="129" y="98" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">件数は変わらない</text>
+
+	<line x1="250" y1="67" x2="278" y2="67" stroke="#4a5568" stroke-width="2.5"/>
+	<polygon points="278,60 294,67 278,74" fill="#4a5568"/>
+
+	<rect x="300" y="24" width="230" height="86" rx="10" fill="url(#i2)"/>
+	<text x="415" y="52" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">Group-Object</text>
+	<text x="415" y="76" fill="#fff" font-size="17" font-weight="700" text-anchor="middle">まとめる</text>
+	<text x="415" y="98" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">Name / Count / Group を返す</text>
+
+	<line x1="536" y1="67" x2="564" y2="67" stroke="#4a5568" stroke-width="2.5"/>
+	<polygon points="564,60 580,67 564,74" fill="#4a5568"/>
+
+	<rect x="586" y="24" width="180" height="86" rx="10" fill="url(#i3)"/>
+	<text x="676" y="52" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">Measure-Object</text>
+	<text x="676" y="76" fill="#fff" font-size="17" font-weight="700" text-anchor="middle">数える</text>
+	<text x="676" y="98" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.9">合計・平均・最大</text>
+
+	<rect x="14" y="128" width="752" height="102" rx="10" fill="#fff" stroke="#d9dfe8" stroke-width="2"/>
+	<text x="390" y="152" fill="#1c2330" font-size="13.5" font-weight="700" text-anchor="middle">実例 — プロジェクト内のファイルを拡張子別に数える</text>
+	<text x="390" y="178" fill="#1c2330" font-size="12.5" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Get-ChildItem -Recurse -File | Group-Object Extension | Sort-Object Count -Descending</text>
+	<text x="200" y="204" fill="hsl(160,78%,25%)" font-size="12.5" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">.png   82 件</text>
+	<text x="390" y="204" fill="hsl(160,78%,25%)" font-size="12.5" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">.html   5 件</text>
+	<text x="580" y="204" fill="hsl(160,78%,25%)" font-size="12.5" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">.json   5 件</text>
+	<text x="390" y="222" fill="#4a5568" font-size="12" text-anchor="middle">Bash なら awk と sort と uniq -c を組み合わせる場面が、コマンド2つで済む</text>
+</svg>

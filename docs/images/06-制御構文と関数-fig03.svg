@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 244" width="780" height="244" role="img" aria-label="begin・process・end ブロックの実行タイミング">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(255,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(255,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(186.7,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(186.7,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i3" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="20" y="24" width="200" height="70" rx="9" fill="url(#i1)"/>
+	<text x="120" y="52" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">begin</text>
+	<text x="120" y="74" fill="#fff" font-size="12" text-anchor="middle" opacity="0.92">最初に1回だけ</text>
+	<text x="120" y="90" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">初期化・カウンタの準備</text>
+
+	<rect x="240" y="24" width="300" height="70" rx="9" fill="url(#i2)"/>
+	<text x="390" y="52" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">process</text>
+	<text x="390" y="74" fill="#fff" font-size="12" text-anchor="middle" opacity="0.92">流れてきた件数ぶん繰り返す</text>
+	<text x="390" y="90" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">$_ で1件ずつ受け取る</text>
+
+	<rect x="560" y="24" width="200" height="70" rx="9" fill="url(#i3)"/>
+	<text x="660" y="52" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">end</text>
+	<text x="660" y="74" fill="#fff" font-size="12" text-anchor="middle" opacity="0.92">最後に1回だけ</text>
+	<text x="660" y="90" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">集計結果の出力</text>
+
+	<line x1="222" y1="59" x2="230" y2="59" stroke="#4a5568" stroke-width="2.5"/>
+	<polygon points="230,53 240,59 230,65" fill="#4a5568"/>
+	<line x1="542" y1="59" x2="550" y2="59" stroke="#4a5568" stroke-width="2.5"/>
+	<polygon points="550,53 560,59 550,65" fill="#4a5568"/>
+
+	<path d="M470 98 V 120 H 320 V 106" fill="none" stroke="hsl(186.7,78%,25%)" stroke-width="2.5" stroke-linejoin="round"/>
+	<polygon points="313,108 320,94 327,108" fill="hsl(186.7,78%,25%)"/>
+	<text x="390" y="144" fill="hsl(186.7,78%,25%)" font-size="12.5" font-weight="700" text-anchor="middle">1件ごとに繰り返し</text>
+
+	<rect x="20" y="158" width="740" height="76" rx="9" fill="#fff" stroke="#d9dfe8" stroke-width="2"/>
+	<text x="390" y="180" fill="#1c2330" font-size="13.5" font-weight="700" text-anchor="middle">ブロックを書かない場合、関数の中身は end 相当として扱われる</text>
+	<text x="390" y="202" fill="#a51f22" font-size="12.5" font-weight="700" text-anchor="middle">= パイプラインから受け取っても、最後の1件しか処理されない</text>
+	<text x="390" y="222" fill="#4a5568" font-size="12" text-anchor="middle">パイプライン対応の関数を書くときは、process ブロックを必ず書く</text>
+</svg>

@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 320" width="760" height="320" role="img" aria-label="8本のモジュールを「どの職種でも効く」と「対象が決まっている」に分けた図">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="hsl(280,78%,25%)"/><stop offset="1" stop-color="hsl(280,58%,65%)"/></linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="hsl(240,78%,25%)"/><stop offset="1" stop-color="hsl(240,58%,65%)"/></linearGradient>
+		<linearGradient id="i3" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="hsl(200,78%,25%)"/><stop offset="1" stop-color="hsl(200,58%,65%)"/></linearGradient>
+		<linearGradient id="i4" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="hsl(160,78%,25%)"/><stop offset="1" stop-color="hsl(160,58%,65%)"/></linearGradient>
+		<linearGradient id="i5" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="hsl(120,78%,25%)"/><stop offset="1" stop-color="hsl(120,58%,65%)"/></linearGradient>
+		<linearGradient id="i6" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="hsl(80,78%,25%)"/><stop offset="1" stop-color="hsl(80,58%,65%)"/></linearGradient>
+		<linearGradient id="i7" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="hsl(40,78%,25%)"/><stop offset="1" stop-color="hsl(40,58%,65%)"/></linearGradient>
+		<linearGradient id="i8" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="hsl(0,78%,25%)"/><stop offset="1" stop-color="hsl(0,58%,65%)"/></linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<text x="14" y="18" fill="hsl(186.7,78%,25%)" font-size="13" font-weight="700">どの職種でも効く — まずこの4本</text>
+
+	<rect x="14" y="28" width="175" height="96" rx="9" fill="url(#i1)"/>
+	<text x="101" y="52" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">PSScriptAnalyzer</text>
+	<text x="101" y="76" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">書いたコードを</text>
+	<text x="101" y="94" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">その場で点検する</text>
+	<text x="101" y="114" fill="#fff" font-size="11" text-anchor="middle" opacity="0.8">依存 1 本</text>
+
+	<rect x="201" y="28" width="175" height="96" rx="9" fill="url(#i2)"/>
+	<text x="288" y="52" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">Pester</text>
+	<text x="288" y="76" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">スクリプトを</text>
+	<text x="288" y="94" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">テストで守る</text>
+	<text x="288" y="114" fill="#fff" font-size="11" text-anchor="middle" opacity="0.8">依存 1 本</text>
+
+	<rect x="388" y="28" width="175" height="96" rx="9" fill="url(#i3)"/>
+	<text x="475" y="52" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">ImportExcel</text>
+	<text x="475" y="76" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">Excel を入れずに</text>
+	<text x="475" y="94" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">xlsx を読み書き</text>
+	<text x="475" y="114" fill="#fff" font-size="11" text-anchor="middle" opacity="0.8">依存 1 本</text>
+
+	<rect x="575" y="28" width="175" height="96" rx="9" fill="url(#i4)"/>
+	<text x="662" y="52" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">SecretManagement</text>
+	<text x="662" y="76" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">平文パスワードを</text>
+	<text x="662" y="94" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">コードから消す</text>
+	<text x="662" y="114" fill="#fff" font-size="11" text-anchor="middle" opacity="0.8">＋ SecretStore で 2 本</text>
+
+	<text x="14" y="158" fill="hsl(186.7,78%,25%)" font-size="13" font-weight="700">対象が決まっている — 当てはまる人だけ</text>
+
+	<rect x="14" y="168" width="175" height="96" rx="9" fill="url(#i5)"/>
+	<text x="101" y="192" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">PSResourceGet</text>
+	<text x="101" y="216" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">モジュール管理の</text>
+	<text x="101" y="234" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">次世代コマンド</text>
+	<text x="101" y="254" fill="#fff" font-size="11" text-anchor="middle" opacity="0.8">7.4 以降は同梱</text>
+
+	<rect x="201" y="168" width="175" height="96" rx="9" fill="url(#i6)"/>
+	<text x="288" y="192" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">dbatools</text>
+	<text x="288" y="216" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">SQL Server の</text>
+	<text x="288" y="234" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">運用・移行</text>
+	<text x="288" y="254" fill="#fff" font-size="11" text-anchor="middle" opacity="0.8">依存 2 本</text>
+
+	<rect x="388" y="168" width="175" height="96" rx="9" fill="url(#i7)"/>
+	<text x="475" y="192" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">Microsoft.Graph</text>
+	<text x="475" y="216" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">Microsoft 365 と</text>
+	<text x="475" y="234" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">Entra ID の操作</text>
+	<text x="475" y="254" fill="#fff" font-size="11" text-anchor="middle" opacity="0.8">依存 40 本</text>
+
+	<rect x="575" y="168" width="175" height="96" rx="9" fill="url(#i8)"/>
+	<text x="662" y="192" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">PSWindowsUpdate</text>
+	<text x="662" y="216" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">Windows Update を</text>
+	<text x="662" y="234" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.93">遠隔から流す</text>
+	<text x="662" y="254" fill="#fff" font-size="11" text-anchor="middle" opacity="0.8">5.1 前提</text>
+
+	<rect x="14" y="278" width="736" height="30" rx="6" fill="#fff" stroke="hsl(186.7,58%,65%)" stroke-width="1.6"/>
+	<text x="382" y="298" fill="hsl(186.7,78%,25%)" font-size="12.5" font-weight="600" text-anchor="middle">上の段は「入れて損がない」。下の段は「使う対象があるときだけ」</text>
+</svg>

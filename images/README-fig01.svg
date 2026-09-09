@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 330" width="900" height="330" role="img" aria-label="4部構成のロードマップと付録">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(265,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(265,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(195,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(195,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i3" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(125,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(125,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i4" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(30,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(30,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i5" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="#12224d"/>
+			<stop offset="1" stop-color="#2f5fbf"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="14" y="24" width="230" height="146" rx="10" fill="url(#i1)"/>
+	<text x="129" y="50" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">第1部 基礎編</text>
+	<text x="129" y="74" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">01 生まれた経緯</text>
+	<text x="129" y="94" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">02 ファイル形式と文字コード</text>
+	<text x="129" y="114" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">03 実行環境と実行ポリシー</text>
+	<text x="129" y="134" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">04 変数・型・演算子</text>
+	<text x="129" y="154" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">05 パイプラインとオブジェクト</text>
+
+	<line x1="250" y1="97" x2="270" y2="97" stroke="#4a5568" stroke-width="2.5"/>
+	<polygon points="270,90 286,97 270,104" fill="#4a5568"/>
+
+	<rect x="290" y="24" width="200" height="146" rx="10" fill="url(#i2)"/>
+	<text x="390" y="50" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">第2部 実践編</text>
+	<text x="390" y="80" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">06 制御構文と関数</text>
+	<text x="390" y="102" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">07 ファイル・テキスト操作</text>
+	<text x="390" y="124" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">08 エラー処理とデバッグ</text>
+	<text x="390" y="146" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">09 実務パターン集</text>
+
+	<line x1="496" y1="97" x2="516" y2="97" stroke="#4a5568" stroke-width="2.5"/>
+	<polygon points="516,90 532,97 516,104" fill="#4a5568"/>
+
+	<rect x="536" y="24" width="134" height="146" rx="10" fill="url(#i3)"/>
+	<text x="603" y="50" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">第3部 演習</text>
+	<text x="603" y="92" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">10 ハンズオン課題</text>
+	<text x="603" y="114" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">全5回分</text>
+
+	<line x1="676" y1="97" x2="696" y2="97" stroke="#4a5568" stroke-width="2.5"/>
+	<polygon points="696,90 712,97 696,104" fill="#4a5568"/>
+
+	<rect x="716" y="24" width="170" height="146" rx="10" fill="url(#i4)"/>
+	<text x="801" y="50" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">第4部 発展編</text>
+	<text x="801" y="82" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">11 C# を埋め込む</text>
+	<text x="801" y="104" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">12 Office と COM</text>
+	<text x="801" y="132" fill="#fff" font-size="11" text-anchor="middle" opacity="0.82">必要になってからでよい</text>
+
+	<rect x="14" y="186" width="872" height="48" rx="9" fill="#fff" stroke="#d9dfe8" stroke-width="2"/>
+	<text x="129" y="208" fill="hsl(265,78%,32%)" font-size="12.5" font-weight="700" text-anchor="middle">読んで分かる</text>
+	<text x="390" y="208" fill="hsl(195,78%,26%)" font-size="12.5" font-weight="700" text-anchor="middle">書けるようになる</text>
+	<text x="603" y="208" fill="hsl(125,78%,22%)" font-size="12.5" font-weight="700" text-anchor="middle">一人で作れる</text>
+	<text x="801" y="208" fill="hsl(30,78%,30%)" font-size="12.5" font-weight="700" text-anchor="middle">限界を超える</text>
+	<text x="450" y="227" fill="#4a5568" font-size="12" text-anchor="middle">各部の到達目標</text>
+
+	<line x1="14" y1="252" x2="886" y2="252" stroke="#d9dfe8" stroke-width="2" stroke-dasharray="6 5"/>
+	<text x="14" y="274" fill="#4a5568" font-size="12">付録 — 順に読まず、必要になったときに引く</text>
+
+	<rect x="14" y="282" width="285" height="44" rx="9" fill="url(#i5)"/>
+	<text x="156" y="300" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">A1 逆引き</text>
+	<text x="156" y="316" fill="#fff" font-size="11" text-anchor="middle" opacity="0.9">症状・コマンド・JavaScript・用語から引く</text>
+
+	<rect x="307" y="282" width="285" height="44" rx="9" fill="url(#i5)"/>
+	<text x="449" y="300" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">A2 テンプレ集</text>
+	<text x="449" y="316" fill="#fff" font-size="11" text-anchor="middle" opacity="0.9">コピーして使う雛形6種</text>
+
+	<rect x="600" y="282" width="286" height="44" rx="9" fill="url(#i5)"/>
+	<text x="743" y="300" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">A3 モジュール</text>
+	<text x="743" y="316" fill="#fff" font-size="11" text-anchor="middle" opacity="0.9">業務で使える厳選8本と導入の実務</text>
+</svg>

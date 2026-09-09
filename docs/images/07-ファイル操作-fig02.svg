@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 262" width="780" height="262" role="img" aria-label="ワイルドカードパスと -Filter の併用で0件になる">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<text x="390" y="20" fill="#1c2330" font-size="13.5" font-weight="700" text-anchor="middle">docs-a\a.txt ・ docs-a\a.log ・ docs-b\b.txt ・ other\c.txt がある状態で</text>
+
+	<rect x="20" y="32" width="580" height="40" rx="8" fill="url(#i1)"/>
+	<text x="310" y="57" fill="#fff" font-size="12.5" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Get-ChildItem "docs-*" -Filter "*.txt"</text>
+	<text x="690" y="52" fill="#a51f22" font-size="15" font-weight="700" text-anchor="middle">0 件</text>
+	<text x="690" y="67" fill="#a51f22" font-size="11" font-weight="700" text-anchor="middle">（取れない）</text>
+
+	<rect x="20" y="80" width="580" height="40" rx="8" fill="url(#i2)"/>
+	<text x="310" y="105" fill="#fff" font-size="12.5" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Get-ChildItem "docs-*\*.txt"</text>
+	<text x="690" y="100" fill="hsl(140,78%,25%)" font-size="15" font-weight="700" text-anchor="middle">2 件</text>
+	<text x="690" y="115" fill="hsl(140,78%,25%)" font-size="11" font-weight="700" text-anchor="middle">a.txt / b.txt</text>
+
+	<rect x="20" y="128" width="580" height="40" rx="8" fill="url(#i2)"/>
+	<text x="310" y="153" fill="#fff" font-size="12" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Get-ChildItem $base -Recurse -Filter "*.txt"</text>
+	<text x="690" y="148" fill="hsl(35,78%,30%)" font-size="15" font-weight="700" text-anchor="middle">3 件</text>
+	<text x="690" y="163" fill="hsl(35,78%,30%)" font-size="11" font-weight="700" text-anchor="middle">c.txt も混ざる</text>
+
+	<rect x="20" y="176" width="580" height="40" rx="8" fill="url(#i2)"/>
+	<text x="310" y="195" fill="#fff" font-size="11.5" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">↑ | Where-Object { $_.Directory.Name -like 'docs-*' }</text>
+	<text x="310" y="211" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">絞り込みは Where-Object に任せる</text>
+	<text x="690" y="195" fill="hsl(140,78%,25%)" font-size="15" font-weight="700" text-anchor="middle">2 件</text>
+	<text x="690" y="210" fill="hsl(140,78%,25%)" font-size="11" font-weight="700" text-anchor="middle">これが正解</text>
+
+	<rect x="20" y="226" width="740" height="30" rx="8" fill="#fff" stroke="hsl(0,58%,60%)" stroke-width="2"/>
+	<text x="390" y="246" fill="#a51f22" font-size="13" font-weight="700" text-anchor="middle">-Filter はプロバイダに渡されるため、ワイルドカードで展開されたパスとは噛み合わない</text>
+</svg>

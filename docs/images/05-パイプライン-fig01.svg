@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 288" width="780" height="288" role="img" aria-label="画面の表示は整形されたビューで、実際のオブジェクトはもっと多くの情報を持つ">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(280,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(280,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="20" y="20" width="300" height="150" rx="10" fill="url(#i1)"/>
+	<text x="170" y="48" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">実際のオブジェクト</text>
+	<text x="170" y="70" fill="#fff" font-size="12" text-anchor="middle" opacity="0.9">System.Diagnostics.Process</text>
+	<text x="170" y="96" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">Id  ProcessName  CPU  WorkingSet</text>
+	<text x="170" y="114" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">Path  StartTime  Threads  Handle</text>
+	<text x="170" y="132" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">MainWindowTitle  Company  …</text>
+	<text x="170" y="156" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">プロパティは 100 個近い</text>
+
+	<line x1="326" y1="95" x2="366" y2="95" stroke="#4a5568" stroke-width="2.5"/>
+	<polygon points="366,88 382,95 366,102" fill="#4a5568"/>
+	<text x="354" y="82" fill="#4a5568" font-size="11.5" font-weight="700" text-anchor="middle">整形</text>
+
+	<rect x="390" y="20" width="370" height="150" rx="10" fill="url(#i2)"/>
+	<text x="575" y="48" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">画面に出る表示（ビュー）</text>
+	<text x="575" y="72" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">NPM(K) PM(M) WS(M) CPU(s) Id SI ProcessName</text>
+	<text x="575" y="92" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">    28 18.42 35.66   1.42 9876  1 pwsh</text>
+	<text x="575" y="122" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">7 項目だけが選ばれている</text>
+	<text x="575" y="146" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.85">見やすさのために PowerShell が決めた既定の見せ方</text>
+
+	<rect x="20" y="188" width="740" height="80" rx="10" fill="#fff" stroke="hsl(280,58%,65%)" stroke-width="2"/>
+	<text x="390" y="212" fill="hsl(280,78%,25%)" font-size="14" font-weight="700" text-anchor="middle">パイプの次に渡るのは「左の箱」であって「右の表」ではない</text>
+	<text x="390" y="236" fill="#1c2330" font-size="12.5" text-anchor="middle">表に出ていない Path や StartTime も、次のコマンドからは普通に使える</text>
+	<text x="390" y="256" fill="#4a5568" font-size="12" text-anchor="middle">「表示されていない ＝ 存在しない」ではない。ここを取り違えると調べ方を間違える</text>
+</svg>

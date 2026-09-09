@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 214" width="780" height="214" role="img" aria-label="2種類の読者と資料の対応">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(224,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(224,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i3" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(280,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(280,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="24" y="14" width="300" height="76" rx="10" fill="url(#i1)"/>
+	<text x="174" y="42" fill="#fff" font-size="16" font-weight="700" text-anchor="middle">読者A — JavaScript 経験者</text>
+	<text x="174" y="64" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">JS の基本文法を知っている</text>
+	<text x="174" y="82" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">「JS ではこう書く」の対比が効く</text>
+
+	<rect x="456" y="14" width="300" height="76" rx="10" fill="url(#i2)"/>
+	<text x="606" y="42" fill="#fff" font-size="16" font-weight="700" text-anchor="middle">読者B — 他言語の経験者</text>
+	<text x="606" y="64" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">Java・C#・VBA など</text>
+	<text x="606" y="82" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">JS の例と Windows 用語で詰まる</text>
+
+	<path d="M174 94 V 122 H 320" fill="none" stroke="hsl(210,58%,45%)" stroke-width="2.5"/>
+	<polygon points="320,115 336,122 320,129" fill="hsl(210,58%,45%)"/>
+	<path d="M606 94 V 122 H 460" fill="none" stroke="hsl(35,58%,45%)" stroke-width="2.5"/>
+	<polygon points="460,115 444,122 460,129" fill="hsl(35,58%,45%)"/>
+
+	<rect x="130" y="140" width="520" height="60" rx="10" fill="url(#i3)"/>
+	<text x="390" y="166" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">本文は読者A向け ＋ 「PowerShell が初めての人へ」枠で読者Bを補う</text>
+	<text x="390" y="188" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.9">1つの資料を保守すればよい／勉強会では枠を飛ばして進行できる</text>
+</svg>

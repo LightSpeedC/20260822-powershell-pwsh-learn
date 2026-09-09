@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 262" width="780" height="262" role="img" aria-label="4種類の文字列リテラルの違い">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(210,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(210,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<text x="196" y="20" fill="hsl(35,78%,30%)" font-size="14" font-weight="700" text-anchor="middle">展開しない（そのまま）</text>
+	<text x="584" y="20" fill="hsl(210,78%,25%)" font-size="14" font-weight="700" text-anchor="middle">展開する（変数が置き換わる）</text>
+
+	<rect x="20" y="34" width="352" height="64" rx="8" fill="url(#i1)"/>
+	<text x="196" y="60" fill="#fff" font-size="17" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">'...'</text>
+	<text x="196" y="84" fill="#fff" font-size="12" text-anchor="middle" opacity="0.92">シングルクォート</text>
+
+	<rect x="408" y="34" width="352" height="64" rx="8" fill="url(#i2)"/>
+	<text x="584" y="60" fill="#fff" font-size="17" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">"..."</text>
+	<text x="584" y="84" fill="#fff" font-size="12" text-anchor="middle" opacity="0.92">ダブルクォート</text>
+
+	<rect x="20" y="112" width="352" height="64" rx="8" fill="url(#i1)"/>
+	<text x="196" y="138" fill="#fff" font-size="17" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">@'...'@</text>
+	<text x="196" y="162" fill="#fff" font-size="12" text-anchor="middle" opacity="0.92">ヒアストリング（複数行・そのまま）</text>
+
+	<rect x="408" y="112" width="352" height="64" rx="8" fill="url(#i2)"/>
+	<text x="584" y="138" fill="#fff" font-size="17" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">@"..."@</text>
+	<text x="584" y="162" fill="#fff" font-size="12" text-anchor="middle" opacity="0.92">ヒアストリング（複数行・展開）</text>
+
+	<rect x="20" y="192" width="740" height="58" rx="8" fill="#fff" stroke="#d9dfe8" stroke-width="2"/>
+	<text x="390" y="213" fill="#1c2330" font-size="13" font-weight="700" text-anchor="middle">迷ったらシングルクォート。展開が必要になったときだけダブルに変える</text>
+	<text x="390" y="233" fill="#4a5568" font-size="12" text-anchor="middle">パス・正規表現・JSON など「$ や ` を含む文字列」は、そのまま書けるシングルのほうが安全</text>
+</svg>

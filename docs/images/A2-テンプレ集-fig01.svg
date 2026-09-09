@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 268" width="700" height="268" role="img" aria-label="スクリプトの骨格4層">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(280,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(280,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="20" y="14" width="660" height="46" rx="8" fill="url(#i1)"/>
+	<text x="42" y="34" fill="#fff" font-size="13.5" font-weight="700">① 宣言</text>
+	<text x="150" y="34" fill="#fff" font-size="12.5" opacity="0.94">#Requires / [CmdletBinding()] / param</text>
+	<text x="150" y="52" fill="#fff" font-size="11.5" opacity="0.86">動く前提と、外から渡すものを決める</text>
+
+	<rect x="20" y="68" width="660" height="46" rx="8" fill="url(#i1)"/>
+	<text x="42" y="88" fill="#fff" font-size="13.5" font-weight="700">② 安全装置</text>
+	<text x="150" y="88" fill="#fff" font-size="12.5" opacity="0.94">Set-StrictMode / $ErrorActionPreference</text>
+	<text x="150" y="106" fill="#fff" font-size="11.5" opacity="0.86">黙って間違った結果を出さないようにする</text>
+
+	<rect x="20" y="122" width="660" height="46" rx="8" fill="url(#i1)"/>
+	<text x="42" y="142" fill="#fff" font-size="13.5" font-weight="700">③ 本体</text>
+	<text x="150" y="142" fill="#fff" font-size="12.5" opacity="0.94">try { ... }</text>
+	<text x="150" y="160" fill="#fff" font-size="11.5" opacity="0.86">ここだけがスクリプトごとに変わる</text>
+
+	<rect x="20" y="176" width="660" height="46" rx="8" fill="url(#i1)"/>
+	<text x="42" y="196" fill="#fff" font-size="13.5" font-weight="700">④ 後始末</text>
+	<text x="150" y="196" fill="#fff" font-size="12.5" opacity="0.94">catch { ... } / exit</text>
+	<text x="150" y="214" fill="#fff" font-size="11.5" opacity="0.86">呼び出し元に成否を数値で伝える</text>
+
+	<rect x="20" y="232" width="660" height="26" rx="6" fill="#fff" stroke="hsl(280,58%,65%)" stroke-width="1.6"/>
+	<text x="350" y="250" fill="hsl(280,78%,25%)" font-size="12.5" font-weight="600" text-anchor="middle">③ 以外は毎回同じ。だから貼るだけでよい</text>
+</svg>

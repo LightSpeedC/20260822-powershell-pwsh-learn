@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 176" width="780" height="176" role="img" aria-label="未知のコマンドを自力で扱う4つのステップ">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(255,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(255,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(200,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(200,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i3" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i4" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="10" y="26" width="172" height="76" rx="9" fill="url(#i1)"/>
+	<text x="96" y="52" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">① 探す</text>
+	<text x="96" y="76" fill="#fff" font-size="12" text-anchor="middle" opacity="0.92" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Get-Command</text>
+	<text x="96" y="94" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">名前を組み立てる</text>
+
+	<line x1="188" y1="64" x2="204" y2="64" stroke="#4a5568" stroke-width="2.5"/>
+	<polygon points="204,57 220,64 204,71" fill="#4a5568"/>
+
+	<rect x="226" y="26" width="172" height="76" rx="9" fill="url(#i2)"/>
+	<text x="312" y="52" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">② 使い方を見る</text>
+	<text x="312" y="76" fill="#fff" font-size="12" text-anchor="middle" opacity="0.92" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Get-Help -Examples</text>
+	<text x="312" y="94" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">動く例を1つ得る</text>
+
+	<line x1="404" y1="64" x2="420" y2="64" stroke="#4a5568" stroke-width="2.5"/>
+	<polygon points="420,57 436,64 420,71" fill="#4a5568"/>
+
+	<rect x="442" y="26" width="150" height="76" rx="9" fill="url(#i3)"/>
+	<text x="517" y="52" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">③ 動かす</text>
+	<text x="517" y="76" fill="#fff" font-size="12" text-anchor="middle" opacity="0.92">まず1件だけ</text>
+	<text x="517" y="94" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">-First 1 で試す</text>
+
+	<line x1="598" y1="64" x2="614" y2="64" stroke="#4a5568" stroke-width="2.5"/>
+	<polygon points="614,57 630,64 614,71" fill="#4a5568"/>
+
+	<rect x="636" y="26" width="134" height="76" rx="9" fill="url(#i4)"/>
+	<text x="703" y="52" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">④ 中身を見る</text>
+	<text x="703" y="76" fill="#fff" font-size="12" text-anchor="middle" opacity="0.92" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Get-Member</text>
+	<text x="703" y="94" fill="#fff" font-size="11" text-anchor="middle" opacity="0.85">取り出せる値を知る</text>
+
+	<rect x="10" y="118" width="760" height="46" rx="8" fill="#fff" stroke="#d9dfe8" stroke-width="2"/>
+	<text x="390" y="138" fill="#1c2330" font-size="13" font-weight="700" text-anchor="middle">この4ステップが回せれば、資料に載っていないコマンドも自力で使える</text>
+	<text x="390" y="156" fill="#4a5568" font-size="12" text-anchor="middle">検索してコピペするより速く、しかも確実に自分の環境で動く答えが得られる</text>
+</svg>

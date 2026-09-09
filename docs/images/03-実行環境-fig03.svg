@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 226" width="780" height="226" role="img" aria-label="VS Code の設定で 02 章の規約を自動化する">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(211,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(211,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i3" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="270" y="14" width="240" height="52" rx="9" fill="url(#i3)"/>
+	<text x="390" y="38" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">settings.json</text>
+	<text x="390" y="57" fill="#fff" font-size="12" text-anchor="middle" opacity="0.9">拡張子ごとに1回だけ設定</text>
+
+	<path d="M340 70 V 92 H 150 V 112" fill="none" stroke="#4a5568" stroke-width="2"/>
+	<polygon points="143,112 150,128 157,112" fill="#4a5568"/>
+	<path d="M440 70 V 92 H 630 V 112" fill="none" stroke="#4a5568" stroke-width="2"/>
+	<polygon points="623,112 630,128 637,112" fill="#4a5568"/>
+
+	<rect x="20" y="134" width="260" height="70" rx="9" fill="url(#i1)"/>
+	<text x="150" y="158" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">.ps1 を保存</text>
+	<text x="150" y="178" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">BOM 付き UTF-8</text>
+	<text x="150" y="196" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">CRLF</text>
+
+	<rect x="500" y="134" width="260" height="70" rx="9" fill="url(#i2)"/>
+	<text x="630" y="158" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">.bat / .cmd を保存</text>
+	<text x="630" y="178" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">Shift-JIS</text>
+	<text x="630" y="196" fill="#fff" font-size="12.5" text-anchor="middle" opacity="0.92">CRLF</text>
+
+	<text x="390" y="176" fill="#4a5568" font-size="12.5" font-weight="700" text-anchor="middle">毎回意識せずに</text>
+	<text x="390" y="194" fill="#4a5568" font-size="12.5" font-weight="700" text-anchor="middle">規約どおりになる</text>
+</svg>

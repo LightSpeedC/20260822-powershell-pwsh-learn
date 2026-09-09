@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 268" width="900" height="268" role="img" aria-label="4部構成のロードマップ">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(265,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(265,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(195,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(195,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i3" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(125,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(125,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i4" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(30,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(30,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="14" y="34" width="230" height="150" rx="10" fill="url(#i1)"/>
+	<text x="129" y="60" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">第1部 基礎編</text>
+	<text x="129" y="84" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">01 生まれた経緯</text>
+	<text x="129" y="104" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">02 ファイル形式と文字コード</text>
+	<text x="129" y="124" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">03 実行環境と実行ポリシー</text>
+	<text x="129" y="144" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">04 変数・型・演算子</text>
+	<text x="129" y="164" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">05 パイプラインとオブジェクト</text>
+
+	<line x1="250" y1="109" x2="270" y2="109" stroke="#4a5568" stroke-width="2.5"/>
+	<polygon points="270,102 286,109 270,116" fill="#4a5568"/>
+
+	<rect x="290" y="34" width="200" height="150" rx="10" fill="url(#i2)"/>
+	<text x="390" y="60" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">第2部 実践編</text>
+	<text x="390" y="88" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">06 制御構文と関数</text>
+	<text x="390" y="110" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">07 ファイルとテキスト操作</text>
+	<text x="390" y="132" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">08 エラー処理とデバッグ</text>
+	<text x="390" y="154" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">09 実務パターン集</text>
+
+	<line x1="496" y1="109" x2="516" y2="109" stroke="#4a5568" stroke-width="2.5"/>
+	<polygon points="516,102 532,109 516,116" fill="#4a5568"/>
+
+	<rect x="536" y="34" width="134" height="150" rx="10" fill="url(#i3)"/>
+	<text x="603" y="60" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">第3部 演習</text>
+	<text x="603" y="100" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">10 ハンズオン課題</text>
+	<text x="603" y="122" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">と解答例</text>
+
+	<line x1="676" y1="109" x2="696" y2="109" stroke="#4a5568" stroke-width="2.5" stroke-dasharray="5 4"/>
+	<polygon points="696,102 712,109 696,116" fill="#4a5568"/>
+
+	<rect x="716" y="34" width="170" height="150" rx="10" fill="url(#i4)"/>
+	<text x="801" y="60" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">第4部 発展編</text>
+	<text x="801" y="94" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">11 C# を埋め込む</text>
+	<text x="801" y="116" fill="#fff" font-size="12" text-anchor="middle" opacity="0.93">12 Office と COM</text>
+	<text x="801" y="146" fill="#fff" font-size="11" text-anchor="middle" opacity="0.82">後から追加した</text>
+
+	<rect x="14" y="200" width="872" height="52" rx="10" fill="#fff" stroke="#d9dfe8" stroke-width="2"/>
+	<text x="129" y="222" fill="hsl(265,78%,32%)" font-size="12" font-weight="700" text-anchor="middle">「読んで分かる」</text>
+	<text x="390" y="222" fill="hsl(195,78%,26%)" font-size="12" font-weight="700" text-anchor="middle">「書けるようになる」</text>
+	<text x="603" y="222" fill="hsl(125,78%,22%)" font-size="12" font-weight="700" text-anchor="middle">「一人で作れる」</text>
+	<text x="801" y="222" fill="hsl(30,78%,30%)" font-size="12" font-weight="700" text-anchor="middle">「限界を超える」</text>
+	<text x="450" y="242" fill="#4a5568" font-size="12" text-anchor="middle">各部の到達目標</text>
+</svg>

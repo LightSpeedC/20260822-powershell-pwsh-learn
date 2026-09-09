@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 288" width="780" height="288" role="img" aria-label="実行ポリシーのスコープの優先順位">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i3" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(186.7,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(186.7,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<text x="120" y="20" fill="#4a5568" font-size="12.5" font-weight="700" text-anchor="middle">優先度</text>
+	<text x="470" y="20" fill="#4a5568" font-size="12.5" font-weight="700" text-anchor="middle">スコープ</text>
+
+	<text x="120" y="52" fill="hsl(0,78%,32%)" font-size="13" font-weight="700" text-anchor="middle">高い</text>
+	<rect x="200" y="30" width="540" height="34" rx="7" fill="url(#i1)"/>
+	<text x="220" y="52" fill="#fff" font-size="13.5" font-weight="700">MachinePolicy — グループポリシー（会社が配る設定）</text>
+
+	<rect x="200" y="70" width="540" height="34" rx="7" fill="url(#i1)"/>
+	<text x="220" y="92" fill="#fff" font-size="13.5" font-weight="700">UserPolicy — グループポリシー（ユーザー単位）</text>
+
+	<rect x="200" y="110" width="540" height="34" rx="7" fill="url(#i2)"/>
+	<text x="220" y="132" fill="#fff" font-size="13.5" font-weight="700">Process — この起動中だけ有効（-ExecutionPolicy はここ）</text>
+
+	<rect x="200" y="150" width="540" height="34" rx="7" fill="url(#i3)"/>
+	<text x="220" y="172" fill="#fff" font-size="13.5" font-weight="700">CurrentUser — 自分のユーザーの設定（管理者権限が不要）</text>
+
+	<rect x="200" y="190" width="540" height="34" rx="7" fill="url(#i3)"/>
+	<text x="220" y="212" fill="#fff" font-size="13.5" font-weight="700">LocalMachine — PC 全体の設定（管理者権限が必要）</text>
+	<text x="120" y="212" fill="hsl(186.7,78%,25%)" font-size="13" font-weight="700" text-anchor="middle">低い</text>
+
+	<line x1="120" y1="66" x2="120" y2="192" stroke="#4a5568" stroke-width="2"/>
+	<polygon points="113,192 120,208 127,192" fill="#4a5568"/>
+
+	<rect x="14" y="238" width="752" height="42" rx="8" fill="#fff" stroke="#d9dfe8" stroke-width="2"/>
+	<text x="390" y="258" fill="#1c2330" font-size="13" font-weight="700" text-anchor="middle">上から順に見ていき、最初に Undefined 以外だったものが採用される</text>
+	<text x="390" y="274" fill="#4a5568" font-size="12" text-anchor="middle">会社のポリシーが設定されていると、自分では変えられないのはこのため</text>
+</svg>

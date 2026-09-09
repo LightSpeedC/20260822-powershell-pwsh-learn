@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 244" width="780" height="244" role="img" aria-label="文字列結合と Join-Path の違い">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<text x="196" y="20" fill="#a51f22" font-size="14" font-weight="700" text-anchor="middle">文字列結合</text>
+	<text x="584" y="20" fill="hsl(140,78%,25%)" font-size="14" font-weight="700" text-anchor="middle">Join-Path</text>
+
+	<rect x="20" y="32" width="352" height="44" rx="8" fill="url(#i1)"/>
+	<text x="196" y="60" fill="#fff" font-size="13" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">"$dir" + "\" + "$name"</text>
+
+	<rect x="408" y="32" width="352" height="44" rx="8" fill="url(#i2)"/>
+	<text x="584" y="60" fill="#fff" font-size="13" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Join-Path $dir $name</text>
+
+	<rect x="20" y="90" width="352" height="88" rx="8" fill="#fff" stroke="hsl(0,58%,60%)" stroke-width="2"/>
+	<text x="196" y="112" fill="#1c2330" font-size="12.5" text-anchor="middle">$dir が末尾に \ を持っていると</text>
+	<text x="196" y="134" fill="#a51f22" font-size="13" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">C:\work\\a.txt</text>
+	<text x="196" y="158" fill="#4a5568" font-size="12" text-anchor="middle">区切りが二重になる。動く場合もあり発見が遅れる</text>
+
+	<rect x="408" y="90" width="352" height="88" rx="8" fill="#fff" stroke="hsl(140,58%,55%)" stroke-width="2"/>
+	<text x="584" y="112" fill="#1c2330" font-size="12.5" text-anchor="middle">末尾の \ の有無を吸収してくれる</text>
+	<text x="584" y="134" fill="hsl(140,78%,25%)" font-size="13" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">C:\work\a.txt</text>
+	<text x="584" y="158" fill="#4a5568" font-size="12" text-anchor="middle">Linux 上では / を使うので移植性も上がる</text>
+
+	<rect x="20" y="192" width="740" height="44" rx="8" fill="#fff" stroke="#d9dfe8" stroke-width="2"/>
+	<text x="390" y="212" fill="#1c2330" font-size="13" font-weight="700" text-anchor="middle">3階層以上もまとめて渡せる（PowerShell 7）</text>
+	<text x="390" y="230" fill="#4a5568" font-size="12" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">Join-Path 'C:\a' 'b' 'c'   →   C:\a\b\c</text>
+</svg>

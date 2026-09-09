@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 236" width="780" height="236" role="img" aria-label="JavaScript の動的型と PowerShell の型制約の違い">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(280,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(280,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<text x="196" y="20" fill="hsl(140,78%,25%)" font-size="14" font-weight="700" text-anchor="middle">JavaScript — 変数に型はない</text>
+	<text x="584" y="20" fill="hsl(280,78%,25%)" font-size="14" font-weight="700" text-anchor="middle">PowerShell — 変数に型を付けられる</text>
+
+	<rect x="20" y="34" width="352" height="42" rx="8" fill="url(#i1)"/>
+	<text x="196" y="61" fill="#fff" font-size="14" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">let x = 5;</text>
+
+	<rect x="408" y="34" width="352" height="42" rx="8" fill="url(#i2)"/>
+	<text x="584" y="61" fill="#fff" font-size="14" font-weight="600" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">[int]$x = 5</text>
+
+	<line x1="196" y1="76" x2="196" y2="98" stroke="#4a5568" stroke-width="2"/>
+	<polygon points="189,98 196,114 203,98" fill="#4a5568"/>
+	<line x1="584" y1="76" x2="584" y2="98" stroke="#4a5568" stroke-width="2"/>
+	<polygon points="577,98 584,114 591,98" fill="#4a5568"/>
+
+	<rect x="20" y="120" width="352" height="44" rx="8" fill="#fff" stroke="hsl(140,58%,60%)" stroke-width="2"/>
+	<text x="196" y="140" fill="#1c2330" font-size="13" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">x = "abc";</text>
+	<text x="196" y="157" fill="hsl(140,78%,25%)" font-size="12" font-weight="700" text-anchor="middle">通る。中身が文字列に変わるだけ</text>
+
+	<rect x="408" y="120" width="352" height="44" rx="8" fill="#fff" stroke="hsl(0,58%,60%)" stroke-width="2"/>
+	<text x="584" y="140" fill="#1c2330" font-size="13" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">$x = "abc"</text>
+	<text x="584" y="157" fill="#a51f22" font-size="12" font-weight="700" text-anchor="middle">エラー。int に変換できない</text>
+
+	<rect x="20" y="180" width="740" height="46" rx="8" fill="#fff" stroke="#d9dfe8" stroke-width="2"/>
+	<text x="390" y="200" fill="#1c2330" font-size="13" font-weight="700" text-anchor="middle">PowerShell の型制約は「代入のたびに変換を試み、できなければ失敗する」仕組み</text>
+	<text x="390" y="218" fill="#4a5568" font-size="12" text-anchor="middle">$x = "42" なら通る（42 に変換される）。TypeScript の型注釈より強い</text>
+</svg>

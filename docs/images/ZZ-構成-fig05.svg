@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 250" width="780" height="250" role="img" aria-label="資料から pptx を生成するパイプライン">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(255,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(255,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(200,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(200,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i3" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="270" y="16" width="240" height="46" rx="9" fill="url(#i1)"/>
+	<text x="390" y="45" fill="#fff" font-size="14" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">docs/NN-*.html</text>
+
+	<path d="M330 64 V 84 H 180 V 100" fill="none" stroke="#4a5568" stroke-width="2"/>
+	<polygon points="173,100 180,116 187,100" fill="#4a5568"/>
+	<path d="M450 64 V 84 H 600 V 100" fill="none" stroke="#4a5568" stroke-width="2"/>
+	<polygon points="593,100 600,116 607,100" fill="#4a5568"/>
+
+	<text x="390" y="82" fill="#4a5568" font-size="11.5" font-weight="700" text-anchor="middle">capture-figures.ps1（Playwright）</text>
+
+	<rect x="40" y="122" width="280" height="52" rx="9" fill="url(#i2)"/>
+	<text x="180" y="145" fill="#fff" font-size="13" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">tmp/figures/*.png</text>
+	<text x="180" y="164" fill="#fff" font-size="11" text-anchor="middle" opacity="0.9">SVG 図を 3 倍 DPI で撮影</text>
+
+	<rect x="460" y="122" width="280" height="52" rx="9" fill="url(#i2)"/>
+	<text x="600" y="145" fill="#fff" font-size="13" font-weight="700" text-anchor="middle" font-family="BIZ UDゴシック, ＭＳ ゴシック, Consolas, monospace">tmp/outline/*.json</text>
+	<text x="600" y="164" fill="#fff" font-size="11" text-anchor="middle" opacity="0.9">見出し・本文・章の色を抽出</text>
+
+	<path d="M180 176 V 194 H 330 V 206" fill="none" stroke="#4a5568" stroke-width="2"/>
+	<path d="M600 176 V 194 H 450 V 206" fill="none" stroke="#4a5568" stroke-width="2"/>
+
+	<rect x="270" y="204" width="240" height="40" rx="9" fill="url(#i3)"/>
+	<text x="390" y="229" fill="#fff" font-size="13.5" font-weight="700" text-anchor="middle">build-pptx.ps1 → pptx / PDF</text>
+</svg>

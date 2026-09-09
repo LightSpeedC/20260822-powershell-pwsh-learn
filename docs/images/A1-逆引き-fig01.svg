@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 214" width="780" height="214" role="img" aria-label="逆引きの4つの入口">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(280,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(280,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(186.7,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(186.7,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i3" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(93.3,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(93.3,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i4" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="10" y="24" width="180" height="84" rx="9" fill="url(#i1)"/>
+	<text x="100" y="50" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">A1.1 症状から</text>
+	<text x="100" y="74" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">「0 件しか返らない」</text>
+	<text x="100" y="92" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">「文字化けする」</text>
+
+	<rect x="206" y="24" width="180" height="84" rx="9" fill="url(#i2)"/>
+	<text x="296" y="50" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">A1.2 コマンドから</text>
+	<text x="296" y="74" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">Cmdlet 名 → 用途</text>
+	<text x="296" y="92" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">と解説箇所</text>
+
+	<rect x="402" y="24" width="180" height="84" rx="9" fill="url(#i3)"/>
+	<text x="492" y="50" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">A1.3 JavaScript から</text>
+	<text x="492" y="74" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">filter → Where-Object</text>
+	<text x="492" y="92" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">の対応表</text>
+
+	<rect x="598" y="24" width="172" height="84" rx="9" fill="url(#i4)"/>
+	<text x="684" y="50" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">A1.4 用語から</text>
+	<text x="684" y="74" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">Cmdlet・BOM</text>
+	<text x="684" y="92" fill="#fff" font-size="11.5" text-anchor="middle" opacity="0.92">非終了エラー ほか</text>
+
+	<rect x="10" y="126" width="760" height="76" rx="9" fill="#fff" stroke="#2f5fbf" stroke-width="2"/>
+	<text x="390" y="150" fill="#12224d" font-size="13.5" font-weight="700" text-anchor="middle">困っている内容によって入口を選ぶ</text>
+	<text x="390" y="174" fill="#1c2330" font-size="12.5" text-anchor="middle">エラーや異常が起きている → A1.1 ／ コマンド名は分かる → A1.2</text>
+	<text x="390" y="192" fill="#1c2330" font-size="12.5" text-anchor="middle">JS ならこう書ける → A1.3 ／ 言葉の意味が分からない → A1.4</text>
+</svg>

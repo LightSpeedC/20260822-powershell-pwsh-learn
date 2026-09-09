@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 158" width="780" height="158" role="img" aria-label="90分の時間配分">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(255,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(255,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(160,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(160,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i3" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(35,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(35,58%,65%)"/>
+		</linearGradient>
+		<linearGradient id="i4" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(0,58%,65%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="14" y="34" width="167" height="62" rx="9" fill="url(#i1)"/>
+	<text x="97" y="62" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">前回の復習</text>
+	<text x="97" y="84" fill="#fff" font-size="13" text-anchor="middle" opacity="0.9">10分</text>
+
+	<rect x="189" y="34" width="251" height="62" rx="9" fill="url(#i2)"/>
+	<text x="314" y="62" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">資料の読み合わせ・解説</text>
+	<text x="314" y="84" fill="#fff" font-size="13" text-anchor="middle" opacity="0.9">35分</text>
+
+	<rect x="448" y="34" width="234" height="62" rx="9" fill="url(#i3)"/>
+	<text x="565" y="62" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">ハンズオン</text>
+	<text x="565" y="84" fill="#fff" font-size="13" text-anchor="middle" opacity="0.9">35分</text>
+
+	<rect x="690" y="34" width="76" height="62" rx="9" fill="url(#i4)"/>
+	<text x="728" y="62" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">質疑</text>
+	<text x="728" y="84" fill="#fff" font-size="13" text-anchor="middle" opacity="0.9">10分</text>
+
+	<text x="390" y="128" fill="#4a5568" font-size="13" text-anchor="middle">解説とハンズオンを同量にする。聞くだけの回にしない</text>
+</svg>
