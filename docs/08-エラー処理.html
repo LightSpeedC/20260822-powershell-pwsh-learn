@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -256,7 +256,7 @@
 	<li>エラーメッセージから<strong>原因と発生箇所を読み取れる</strong></li>
 </ul>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>「<code>try/catch</code> で囲んだのに止まらない」は PowerShell では正常な動作です。</strong><br>
 バグではありません。<strong>PowerShell には他言語にない「非終了エラー」という区分</strong>があり、既定ではこれが <code>catch</code> に入らないからです。この仕組みを知らないまま書くと、<strong>エラー処理をしたつもりで何も守れていない</strong>コードになります。
 </div>
@@ -414,7 +414,7 @@
 
 <pre><code>$ErrorActionPreference = 'Stop'      # スクリプトの先頭に書く</code></pre>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>業務スクリプトでは先頭に書くことを推奨します。</strong><br>
 毎回 <code>-ErrorAction Stop</code> を書くのは現実的ではありません。<strong>先頭で一括指定し、続行したい箇所だけ個別に <code>-ErrorAction SilentlyContinue</code> を付ける</strong>のが実務的です。<br>
 「失敗したのに最後まで走り切って、壊れたデータを出力する」という最悪の結果を防げます。
@@ -512,7 +512,7 @@ finally {
     Write-Host "場所  : $($_.InvocationInfo.ScriptName) の $($_.InvocationInfo.ScriptLineNumber) 行目"
 }</code></pre>
 
-<div class="callout">
+<div class="callout callout-tip">
 <strong>ログには行番号を必ず含めてください。</strong><br>
 メッセージだけでは、同じ処理が複数箇所にあるとき<strong>どこで失敗したか分かりません</strong>。<code>$_.InvocationInfo.ScriptLineNumber</code> を1つ足すだけで、調査時間が大きく変わります。
 </div>
@@ -551,7 +551,7 @@ $myErr.Count        # → 2
 # PowerShell 7 の詳細表示
 Get-Error</code></pre>
 
-<div class="callout">
+<div class="callout callout-tip">
 <strong><code>Get-Error</code> は <span class="badge b-ps7">pwsh 7</span> で追加された強力なコマンドです。</strong><br>
 直前のエラーを<strong>すべてのプロパティを展開して</strong>表示します。<code>$Error[0] | Format-List *</code> より読みやすく、原因の特定が速くなります。<br>
 エイリアスは <code>gerr</code> です（05 章で触れた「7 で追加された唯一のエイリアス」がこれです）。
@@ -636,7 +636,7 @@ if ($LASTEXITCODE -ge 8) {
     throw "robocopy が失敗しました (終了コード: $LASTEXITCODE)"
 }</code></pre>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong><code>robocopy</code> の終了コードは 0 が成功とは限りません。</strong><br>
 <code>1</code> は「ファイルをコピーした」、<code>3</code> は「コピーと追加削除をした」で、いずれも成功です。<strong>失敗は 8 以上</strong>とされています。<br>
 <strong>外部コマンドごとに終了コードの意味は違います。</strong><code>0 -ne $LASTEXITCODE</code> で一律に失敗と判定すると、正常なのにエラー扱いになります。使う前にドキュメントを確認してください。
@@ -658,7 +658,7 @@ catch { $_.Exception.Message }
 <pre><code>exit 0     # 正常終了
 exit 1     # 異常終了</code></pre>
 
-<div class="callout">
+<div class="callout callout-warning">
 <strong>明示しないと、最後に実行した外部コマンドの終了コードを引き継ぎます。</strong><br>
 スクリプトの末尾でたまたま <code>exit 3</code> を返すコマンドを呼んでいると、<strong>スクリプト自体が「失敗」として扱われます</strong>。タスクスケジューラや CI から呼ぶ場合、これが誤判定の原因になります。<br>
 <strong>バッチや CI から呼ばれるスクリプトは、末尾に <code>exit 0</code> を明示</strong>してください。
@@ -700,7 +700,7 @@ cmd の <code>%ERRORLEVEL%</code> と同じものを、PowerShell では <code>$
 Get-Report -Path .\a.txt              # 何も出ない
 Get-Report -Path .\a.txt -Verbose     # Write-Verbose の内容が出る</code></pre>
 
-<div class="callout">
+<div class="callout callout-tip">
 <strong><code>Write-Verbose</code> は消さずに残せるデバッグ出力です。</strong><br>
 <code>Write-Host</code> でデバッグすると、本番前に消す必要があります。<code>Write-Verbose</code> なら<strong>普段は出ず、必要なときだけ <code>-Verbose</code> で有効化</strong>できるので、そのまま残しておけます。<br>
 06 章で <code>[CmdletBinding()]</code> を付けた理由がこれです。付けないと <code>-Verbose</code> が使えません。
@@ -767,7 +767,7 @@ Set-PSBreakpoint -Script .\main.ps1 -Command Remove-Item
 Get-PSBreakpoint
 Get-PSBreakpoint | Remove-PSBreakpoint</code></pre>
 
-<div class="callout">
+<div class="callout callout-tip">
 <strong>「変数がいつ書き換わったか分からない」ときは <code>-Variable ... -Mode Write</code> が効きます。</strong><br>
 どこで値が変わったのかを追うために <code>Write-Host</code> を撒く必要がありません。<strong>書き換わった瞬間に止まり、その時点の呼び出し履歴が見られます</strong>。
 </div>

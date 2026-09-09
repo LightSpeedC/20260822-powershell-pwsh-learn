@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -353,7 +353,7 @@ Get-Process | Format-Table Name, Id | Where-Object { $_.Id -gt 1000 }
 # ✓ 絞ってから最後に整形する
 Get-Process | Where-Object { $_.Id -gt 1000 } | Format-Table Name, Id</code></pre>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>覚え方は「Format は行き止まり」です。</strong><br>
 <code>Format-*</code> を書いたら、そのパイプラインはそこで終わりです。ファイルに出す（<code>Export-Csv</code>）、変数に入れる、別のコマンドに渡す — どれもできなくなります。<strong>画面で見るための最後の一手</strong>と考えてください。
 </div>
@@ -468,7 +468,7 @@ Get-Process | gm -MemberType Property</code></pre>
 </table>
 </div>
 
-<div class="callout">
+<div class="callout callout-tip">
 <strong>型名が分かると、検索の質が一気に上がります。</strong><br>
 「PowerShell ファイル サイズ 取得」で検索するより、<strong>「System.IO.FileInfo プロパティ」で検索する</strong>ほうが確実です。前者は玉石混交の記事が並びますが、後者は Microsoft の公式ドキュメントに直行できます。<br>
 PowerShell のオブジェクトは <strong>.NET のクラスそのもの</strong>なので、C# 向けのドキュメントがそのまま使えます。
@@ -578,7 +578,7 @@ Get-ChildItem | ForEach-Object { $_.Name.ToUpper() }</code></pre>
 
 <pre><code>1..10 | ForEach-Object -Parallel { Start-Sleep 1; $_ } -ThrottleLimit 5</code></pre>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong><code>-Parallel</code> の中は別のセッションです。</strong><br>
 外側の変数はそのままでは見えません。使いたい場合は <code>$using:</code> を付けます（<code>$using:baseDir</code>）。また、<strong>1件あたりの処理が軽いと並列化のオーバーヘッドのほうが大きくなります</strong>。ネットワーク待ちなど、待ち時間が長い処理にだけ使ってください。
 </div>
@@ -599,7 +599,7 @@ Get-Process | Select-Object -First 1 -Property Name
 Get-Process | Select-Object -First 1 -ExpandProperty Name
 # → pwsh</code></pre>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>「なぜか文字列にならない」の原因はたいていこれです。</strong><br>
 <code>Select-Object Name</code> は<strong>Name というプロパティを1つだけ持つ新しいオブジェクト</strong>を作ります。文字列そのものが欲しいときは <code>-ExpandProperty</code> を使うか、<code>ForEach-Object { $_.Name }</code> と書きます。
 </div>
@@ -610,7 +610,7 @@ Get-Process | Select-Object -First 1 -ExpandProperty Name
 
 <p><code>Name</code>（列名）と <code>Expression</code>（値の計算式）のハッシュテーブルを渡すと、<strong>その場で新しい列を作れます</strong>。<code>N</code> / <code>E</code> と略記もできます。</p>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong><code>Select-Object</code> を通すと型が変わります。</strong><br>
 元が <code>FileInfo</code> でも、<code>Select-Object Name, Length</code> を通した後は <code>PSCustomObject</code> になります。<strong><code>.Delete()</code> のようなメソッドは呼べなくなります</strong>。<br>
 ファイル操作を続けたいなら、絞るだけにして <code>Select-Object</code> は最後に置いてください。
@@ -726,7 +726,7 @@ Sum      : 173614
 Maximum  : 48259
 Property : Length</code></pre>
 
-<div class="callout">
+<div class="callout callout-tip">
 <strong>件数を数えるだけなら <code>.Count</code> で十分です。</strong><br>
 <code>(Get-ChildItem).Count</code> のほうが短く、速く書けます。<code>Measure-Object</code> が要るのは<strong>合計・平均・最大最小を同時に取りたいとき</strong>です。<br>
 ただし <code>.Count</code> は<strong>全件をメモリに載せてから</strong>数えます。数十万件を扱うなら <code>Measure-Object</code> のほうが安全です。
@@ -743,7 +743,7 @@ Get-ChildItem -Recurse -Filter *.ps1 |
 
 <p><strong>絞る → 並べる → 選ぶ → 整形する</strong>の順です。<code>Format-Table</code> が最後に来ていることに注目してください（05.1 の罠）。</p>
 
-<div class="callout">
+<div class="callout callout-tip">
 <strong>PowerShell が初めての人へ</strong><br>
 パイプラインは<strong>行末で改行できます</strong>。<code>|</code> で終わっている行は「まだ続く」と解釈されるので、上の例のように<strong>1行1コマンドで縦に並べる</strong>と読みやすくなります。<br>
 長いパイプラインを1行に詰め込む必要はありません。<strong>スクリプトに書くときは必ず改行して並べてください。</strong>
@@ -812,7 +812,7 @@ Get-Help Get-ChildItem -Examples           # 使用例だけ（最も実用的�
 Get-Help Get-ChildItem -Full               # 全部
 Get-Help Get-ChildItem -Online             # ブラウザで公式ドキュメント</code></pre>
 
-<div class="callout">
+<div class="callout callout-tip">
 <strong>まず <code>-Examples</code> を見る癖をつけてください。</strong><br>
 パラメータの一覧を読むより、<strong>動く例を1つ見るほうが速い</strong>ことがほとんどです。ヘルプが入っていない場合は <code>Update-Help</code> で取得できます（管理者権限が必要）。
 </div>
@@ -924,7 +924,7 @@ Get-Help about_Aliases                   # 公式の解説</code></pre>
 </table>
 </div>
 
-<div class="callout">
+<div class="callout callout-warning">
 <strong><code>curl</code> と書いたスクリプトは、5.1 と 7 で全く違う動作をします。</strong><br>
 5.1 では PowerShell の <code>Invoke-WebRequest</code> が、7 では Windows 同梱の <code>curl.exe</code> が動きます。引数の書き方が全く違うため、<strong>移植したとたんに動かなくなります</strong>。これがエイリアスを避けるべき最も具体的な理由です。
 </div>
@@ -969,7 +969,7 @@ Get-ChildItem -F         # → エラー
 </table>
 </div>
 
-<div class="callout">
+<div class="callout callout-warning">
 <strong>エイリアスは各人が上書きできます。</strong><br>
 プロファイル（03 章）で <code>Set-Alias</code> を書けば <code>ls</code> の意味を変えられます。つまり<strong>配布したスクリプトが相手の環境で別の動きをする</strong>可能性があります。<br>
 バージョン差・上書き・前方一致の3つが重なるため、<strong>ファイルに保存するものは必ず正式名で書く</strong> — これを習慣にしてください。対話操作では自由に使って構いません。

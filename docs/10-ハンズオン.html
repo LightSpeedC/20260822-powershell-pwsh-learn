@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -380,7 +380,7 @@ Write-Host "$($lines.Count) 行のログを作成しました"</code></pre>
 	<li><span class="badge b-none">任意</span>できた人は<strong>発展課題</strong>へ。時間が余った人向けです</li>
 </ul>
 
-<div class="callout">
+<div class="callout callout-tip">
 <strong>「1行ずつ実行して確かめる」が最も効率的です。</strong><br>
 <code>Get-Process | Sort-Object ... | Select-Object ...</code> を一気に書いて動かないと、<strong>どこが悪いのか分かりません</strong>。<br>
 <code>Get-Process</code> だけ実行 → 結果を見る → <code>| Sort-Object ...</code> を足す → また結果を見る、と<strong>1段ずつ伸ばす</strong>と、間違えた瞬間に気づけます。PowerShell の対話環境はこの進め方に向いています。
@@ -631,7 +631,7 @@ $report | Export-Csv -LiteralPath '.\report.csv' -Encoding UTF8 -NoTypeInformati
 <code>Select-Object</code> の計算プロパティ（<code>@{ N=...; E={...} }</code>）は、<strong>既存の列に1〜2列足すとき</strong>に向いています。
 </div>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>つまずき: Excel で開くと文字化けする</strong><br>
 <span class="badge b-ps7">pwsh 7</span> の <code>-Encoding UTF8</code> は<strong>BOM なし</strong>で出力されます（07.3）。Excel は BOM なし UTF-8 の CSV を ANSI と誤認することがあります。<br>
 Excel で直接開くなら <code>-Encoding utf8BOM</code> を指定するか、Excel 側で［データ］→［テキストから］でエンコーディングを指定して読み込んでください。
@@ -698,7 +698,7 @@ catch {
 Cmdlet のエラーを捕まえたい場合は <code>-ErrorAction Stop</code> か、上の解答のように<strong>先頭で <code>$ErrorActionPreference = 'Stop'</code></strong> を書きます（08.2）。
 </div>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>つまずき: <code>$records.Count</code> がエラーになる</strong><br>
 該当行が<strong>0件のとき <code>$records</code> は <code>$null</code> になり</strong>、<code>.Count</code> が使えません（06.3）。<code>@($records).Count</code> と<strong><code>@()</code> で包む</strong>と、0件でも1件でも安全に数えられます。<br>
 <code>Set-StrictMode -Version Latest</code> を入れていると、この種のミスがその場でエラーになるので早く気づけます。

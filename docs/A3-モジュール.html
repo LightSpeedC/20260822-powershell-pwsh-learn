@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -376,7 +376,7 @@ lastUpdated : 2026/08/26 00:00:01 +09:00</code></pre>
 
 <p>同じモジュールで<strong>2 年近い開きがあります</strong>。<code>lastUpdated</code> はギャラリー側のフィードを作り直した時刻で、どのモジュールを調べても<strong>実行した当日</strong>が返ります。4 本試して 4 本とも当日でした。</p>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>ギャラリーの Web ページに出る「Last Updated」も同じ値です。</strong><br>
 ブラウザで見て「先週更新されている」と読めても、実際の最終公開は何年も前ということが起こります。<strong>ページの表示ではなく <code>PublishedDate</code> を見てください。</strong>
 </div>
@@ -495,7 +495,7 @@ SizeMB : 215</code></pre>
 
 <p><strong>57 フォルダ・1,124 ファイル・215 MB</strong>。ファイルの最終更新は <strong>2018-04-06</strong> で、8 年前のまま <code>AllUsers</code> スコープに置かれています。しかも <code>AzureRM.*</code> は 53 個に分かれているので、<code>Uninstall-Module AzureRM</code> だけでは本体の 1 フォルダしか消えません。</p>
 
-<div class="callout">
+<div class="callout callout-tip">
 <strong>残っているだけでなく、補完の邪魔をします。</strong><br>
 これらは <code>Get-Module -ListAvailable</code> に出続け、<kbd>Tab</kbd> 補完の候補にも <code>Get-AzureRmVM</code> のような<strong>もう使えない Cmdlet 名が並びます</strong>。後継の <code>Az</code> を入れると <code>Get-AzVM</code> と紛らわしい名前が同時に候補に出ます。<br>
 入れる前に<strong>「これはどうやって消すのか」を確認しておく</strong>のが ⑥ の意味です。掃除の手順は <a href="#ch04">A3.4</a> にあります。
@@ -753,7 +753,7 @@ Invoke-ScriptAnalyzer -Path .\deploy.ps1 -Fix</code></pre>
 
 <pre><code>Invoke-ScriptAnalyzer -Path .\src -Recurse -Settings .\PSScriptAnalyzerSettings.psd1</code></pre>
 
-<div class="callout">
+<div class="callout callout-warning">
 <strong><code>-Fix</code> はファイルを書き換えます。</strong><br>
 差分を確認せずに走らせると、何が変わったか分からなくなります。<strong>バージョン管理下で、変更が未コミットでない状態から実行してください。</strong>直せるのは別名の展開や空白の整形など機械的なものだけで、<code>Write-Host</code> の置き換えのような判断が要る指摘は直りません。
 </div>
@@ -867,7 +867,7 @@ Get-SecretVault</code></pre>
 
 <p>更新日は<strong>単独では判断材料にならない</strong>という ② の話が、そのまま当てはまる例です。</p>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>無人実行には追加の設定が要り、そこで安全性が下がります。</strong><br>
 SecretStore は既定で<strong>マスターパスワードを対話で聞きます</strong>。タスクスケジューラから使うには <code>Set-SecretStoreConfiguration -Authentication None -Interaction None</code> にする必要がありますが、この状態は<strong>同じユーザーで動く任意のプロセスが中身を読める</strong>ことを意味します。<br>
 無人実行が要件にあるなら、ローカルファイルの金庫ではなく Azure Key Vault のような外部の金庫を選ぶ、という判断になります。
@@ -941,7 +941,7 @@ Invoke-Pester -Path .\tests -CI</code></pre>
 # または読み込み時に指定する
 Import-Module Pester -MinimumVersion 5.0</code></pre>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>同梱の 3.4.0 は <code>Uninstall-Module</code> では消せません。</strong><br>
 これは <code>Install-Module</code> が入れたものではなく <strong>Windows の一部として配置されたファイル</strong>で、<code>Uninstall-Module</code> は「PowerShellGet の管理下にない」として拒否します。フォルダを手で消すには所有権の取得と管理者権限が要り、Windows の更新で戻ることもあります。<br>
 消そうとせず、<strong>新しい版を入れて版を名指しする</strong>のが現実的な対処です。
@@ -983,7 +983,7 @@ C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules</code></pre>
 
 <p>7 の一覧には <strong>5.1 側の <code>AllUsers</code> フォルダも入っています</strong>。<a href="#ch01">A3.1</a> ⑥ の AzureRM が 7 からも見えていたのはこのためです。他社製ツール（この PC では Google Cloud SDK）が自分の場所を差し込んでいることもあります。</p>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>逆向きには通っていません。</strong><br>
 5.1 の <code>$env:PSModulePath</code> には <code>Documents\PowerShell\Modules</code>（7 の <code>CurrentUser</code>）が<strong>含まれません</strong>。<code>Install-Module -Scope CurrentUser</code> を 7 で実行したモジュールは、5.1 からは見えないままです。<strong>両方で使うなら、両方のシェルで <code>Install-Module</code> を実行します。</strong>
 </div>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -437,7 +437,7 @@ $t3 = Measure-Command { $null = [StrBench]::Build($n) }   # C# 側で StringBuil
 </table>
 </div>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>この表の <code>StringBuilder</code> の行だけ、5.1 のほうが 7 より速くなっています。</strong><br>
 何度測っても 5.1 が 48〜58 ms、7 が 191〜200 ms でした。<strong>「7 のほうが必ず速い」は成り立ちません</strong>。.NET のメソッド1回ごとの呼び出しコストは 7 のほうが高く、<code>for</code> ループ自体の速さ（7 が約3倍速い）と打ち消し合った結果です。<br>
 自分の処理がどちらの性質を持つかは、コードを見ても分かりません。<strong>両方の環境で測る</strong>以外に方法はありません。
@@ -517,7 +517,7 @@ xi04rcin</code></pre>
 
 <p><code>Location</code> は<strong>空文字列</strong>、アセンブリ名は<strong>実行のたびに変わるランダムな文字列</strong>です。この「ファイルとして残らない」性質が、次章以降の制約（型を作り直せない・毎回コンパイル時間がかかる）の原因になります。</p>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>5.1 では、<code>public</code> なメソッドもプロパティも無いクラスを定義すると警告が出ます。</strong><br>
 <code>WARNING: The generated type defines no public methods or properties.</code><br>
 上の <code>Loc</code> のような空クラスがこれにあたります。<span class="badge b-ps7">pwsh 7</span>では同じコードでも警告は出ません。
@@ -625,7 +625,7 @@ C:\Users\&lt;username&gt;\AppData\Local\Temp\wp4uszhu.0.cs(1) : 'int' は無効�
 
 <pre><code>C:\Users\&lt;username&gt;\AppData\Local\Temp\tjem3wc3.0.cs(4) : 文字 '$' は予期されていません。</code></pre>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>両対応させるなら、C# 5 の範囲で書くのが唯一の方法です。</strong><br>
 具体的には <code>var</code> と <code>async</code> までを使い、<strong>文字列補間・式形式メンバ・<code>out var</code>・<code>nameof</code> は使わない</strong>。文字列の組み立ては <code>"a" + b</code> か <code>string.Format()</code> にします。<br>
 7 専用だと割り切れるなら、この制約はまったく気にしなくて構いません。
@@ -827,7 +827,7 @@ Add-Type -TypeDefinition $src            # 2回目 → OK（何も起きない�
 Add-Type -TypeDefinition 'public class WS { public static int V() { return 1; } } '
 # → Cannot add type. The type name 'WS' already exists.   （5.1・7 とも同じ）</code></pre>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>スクリプトの先頭に置いた <code>Add-Type</code> が、2回目の実行で急にエラーを出すことがあります。</strong><br>
 判定は<strong>型名ではなくソース文字列の一致</strong>なので、C# 側を1文字でも直せば「別のソース・同じ型名」になります。<strong>コードを直した直後の再実行だけが落ちる</strong>ため、原因が編集内容そのものだと誤解しがちです。<br>
 なお、型を取り除く <code>Remove-Type</code> のようなコマンドは<strong>存在しません</strong>。
@@ -965,13 +965,13 @@ PS&gt; Get-IniValue .\sample.ini 'App' 'NoSuchKey' '(既定値)'
 
 <p>キーが無ければ第3引数の既定値が返ります。<code>CharSet = CharSet.Unicode</code> を付けているので、<strong><code>GetPrivateProfileStringW</code> のほうが呼ばれ、日本語の値もそのまま読めます</strong>。</p>
 
-<div class="callout">
+<div class="callout callout-warning">
 <strong>この INI が BOM 付き UTF-8 で保存されていると、<code>[Database]</code> だけが読めなくなります。</strong><br>
 実測した結果です。同じ内容のファイルを BOM の有無だけ変えて読ませると、<strong>BOM 付きでは <code>Database/Server</code> が既定値に落ち、<code>App/Timeout</code> は 90 が返りました</strong>。BOM の3バイトが最初のセクション名の直前に居座り、<code>[Database]</code> が別の名前として扱われるためです。<br>
 Win32 の INI API が理解するのは <strong>ANSI か UTF-16LE</strong> だけで、UTF-8 の BOM は想定されていません。02 章で扱った BOM の話が、ここでは「先頭のセクションだけ消える」という形で出てきます。
 </div>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong><code>-UsingNamespace 'System.Runtime.InteropServices'</code> を付けると、逆にコンパイルが失敗します。</strong><br>
 <code>-MemberDefinition</code> は <code>DllImport</code> を使う前提なので、この <code>using</code> を<strong>最初から自動で入れています</strong>。重ねて指定すると <code>CS0105</code>（重複した using）になり、しかも警告がエラー扱いのため止まります。5.1・7 の両方で同じです。
 <pre><code>(3,7): error CS0105: 'System.Runtime.InteropServices' の using ディレクティブは、
@@ -1334,7 +1334,7 @@ Bad3.cs(8,17): error CS0117: 'System.Console' に 'WirteLine' の定義があり
 
 <p>5.1・7 のどちらで実行しても同じ結果になります。<code>csc.exe</code> は外部プログラムなので、<strong>呼び出し側の PowerShell のバージョンには影響されません</strong>。11.3 で見たようなコンパイラの差が消えるのも、事前コンパイルの利点です。</p>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>ただし <code>Framework64\v4.0.30319\csc.exe</code> が受け付ける C# も、5.1 の <code>Add-Type</code> と同じ C# 5 までです。</strong><br>
 <code>/langversion</code> に 6 を渡すと、有効な値そのものが返ってきます。
 <pre><code>error CS1617: /langversion に対する無効なオプション '6' です。

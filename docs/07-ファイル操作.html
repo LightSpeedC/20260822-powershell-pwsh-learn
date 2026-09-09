@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -333,7 +333,7 @@
 <pre><code># スクリプトと同じ場所にある設定ファイルを読む（定番）
 $config = Join-Path $PSScriptRoot 'config.json'</code></pre>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>ダブルクリックで実行したときのカレントは、スクリプトの場所とは限りません。</strong><br>
 ショートカット経由やタスクスケジューラ経由では、まったく別のフォルダがカレントになります。<strong>同梱ファイルを読むときは必ず <code>$PSScriptRoot</code></strong> を使ってください。02 章の cmd ランチャーで <code>%~dp0</code> を使ったのと同じ理由です。
 </div>
@@ -455,7 +455,7 @@ Get-ChildItem $base -Recurse -Filter '*.txt' -File |
 Get-ChildItem $base -Recurse -Include '*.txt'     # → 3 件（a.txt / b.txt / c.txt）
 Get-ChildItem "$base\*" -Include '*.txt'          # → これでも動く</code></pre>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong><code>-Include</code> はパスの<strong>末尾</strong>に対して働きます。</strong><br>
 <code>-Recurse</code> か、末尾に <code>\*</code> が付いたパスが必要です。単にフォルダを指定しただけでは何にも一致しません。<br>
 <strong>迷ったら <code>-Filter</code> を使ってください。</strong><code>-Filter</code> のほうが高速で（ファイルシステム側で絞るため）、この落とし穴もありません。ただし<strong>パターンは1つしか書けません</strong>。複数拡張子を扱うときだけ <code>-Include</code> の出番です。
@@ -506,7 +506,7 @@ Get-ChildItem "$base\*" -Include '*.txt'          # → これでも動く</code
 <figcaption>図 07.3 — 角括弧を含む名前は <code>-LiteralPath</code> でしか扱えない</figcaption>
 </figure>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>変数から受け取ったパスには <code>-LiteralPath</code> を使ってください。</strong><br>
 自分で書いたリテラルなら文字を把握できますが、<strong>ユーザー入力やファイル一覧から来たパスに何が含まれているかは分かりません</strong>。角括弧のほか <code>*</code> <code>?</code> も同じ問題を起こします。<br>
 日付やバージョンを角括弧で囲む命名は実際によくあるため、遭遇率は低くありません。
@@ -590,7 +590,7 @@ Get-ChildItem $dir -Recurse -ErrorAction SilentlyContinue   # アクセス不可
 <figcaption>図 07.4 — 5.1 は3種類バラバラ、7 はすべて UTF-8。既定に頼ると移植時に壊れる</figcaption>
 </figure>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>5.1 の既定は<strong>コマンドごとに違います</strong>。</strong><br>
 <code>Set-Content</code> は ANSI、<code>Out-File</code> と <code>&gt;</code> は UTF-16LE です。同じスクリプトの中で書き方を変えると、<strong>出力ファイルの文字コードが混在します</strong>。7 ではすべて UTF-8 に統一されました。<br>
 <strong>だからこそ、既定に頼らず毎回 <code>-Encoding</code> を書くのが唯一の安全策</strong>です。
@@ -626,7 +626,7 @@ $text | Set-Content .\out.txt -Encoding UTF8      # 5.1: BOM 付き / 7: BOM な
 </table>
 </div>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>JSON を読むときは <code>-Raw</code> が必須です。</strong><br>
 <code>-Raw</code> なしだと行ごとの配列になり、<code>ConvertFrom-Json</code> が正しく解釈できません。<strong>「JSON の解析に失敗する」の原因はほぼこれです。</strong>
 </div>
@@ -656,7 +656,7 @@ $rows = Import-Csv .\data.csv -Encoding UTF8
 # 書く
 $rows | Export-Csv .\out.csv -Encoding UTF8 -NoTypeInformation</code></pre>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong><span class="badge b-ps51">5.1</span> では <code>-NoTypeInformation</code> を必ず付けてください。</strong><br>
 付けないと 1 行目に <code>#TYPE System.Management.Automation.PSCustomObject</code> という行が入り、<strong>Excel や他のツールで開いたときに列がずれます</strong>。<span class="badge b-ps7">pwsh 7</span> では既定で付かなくなったため不要ですが、<strong>書いておけば両方で正しく動きます</strong>。
 </div>
@@ -712,7 +712,7 @@ $data | ConvertTo-Json -Depth 10 | Set-Content .\out.json -Encoding UTF8</code><
 <figcaption>図 07.5 — 実測結果。既定のままだと3階層目から先が失われる</figcaption>
 </figure>
 
-<div class="callout">
+<div class="callout callout-warning">
 <strong><code>-Depth</code> は最初から大きめに書いてください。</strong><br>
 <code>-Depth 10</code> や <code>-Depth 100</code> を付けておけば、後から構造が深くなっても壊れません。<strong>警告は出ますが処理は止まらない</strong>ため、出力ファイルを開くまで気づけない種類の事故です。<br>
 <span class="badge b-ps7">pwsh 7</span> でも既定は 2 のままです。バージョンを上げても解決しません。

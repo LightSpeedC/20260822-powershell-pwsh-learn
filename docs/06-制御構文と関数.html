@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -304,7 +304,7 @@ foreach ($f in Get-ChildItem -Recurse) { $f.Name }
 # 1件ずつ処理する（メモリを使わない）
 Get-ChildItem -Recurse | ForEach-Object { $_.Name }</code></pre>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>大量データを扱うときは <code>ForEach-Object</code> を選んでください。</strong><br>
 <code>foreach ($f in Get-ChildItem -Recurse)</code> は、<strong>括弧の中が全部終わってからループが始まります</strong>。数十万件のファイルを列挙すると、その全部がメモリに載ります。パイプライン版なら1件ずつ流れるので、メモリ使用量は一定です。<br>
 逆に数百件程度なら <code>foreach</code> 文のほうが速く、<code>break</code> で抜けられる利点もあります。
@@ -378,7 +378,7 @@ switch (5) {
 }
 # → gt1 だけ</code></pre>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>フォールスルー防止の <code>break</code> とは意味が逆です。</strong><br>
 C 系の <code>break</code> は<strong>「次に流れ落ちるのを防ぐ」</strong>ものでした。PowerShell の <code>break</code> は<strong>「残りの条件を評価するのをやめる」</strong>ものです。結果は似ていますが、<strong>書き忘れたときの挙動が違います</strong>。C 系では次のケースが芋づる式に実行され、PowerShell では<strong>一致した条件だけが全部実行されます</strong>。
 </div>
@@ -558,7 +558,7 @@ function Get-User {
 'a', 'b', 'c' | Add-Tag
 # → [1] a / [2] b / [3] c / 合計 3 件</code></pre>
 
-<div class="callout">
+<div class="callout callout-warning">
 <strong><code>process</code> を書き忘れると静かに壊れます。</strong><br>
 ブロックを何も書かない関数は、中身が <code>end</code> として扱われます。<code>end</code> は<strong>最後に1回だけ</strong>実行されるので、パイプラインで10件流しても<strong>最後の1件だけが処理されます</strong>。しかもエラーにはなりません。<br>
 パイプラインで使う関数を書くときは、<strong><code>process</code> があるかを最初に確認</strong>してください。
@@ -649,7 +649,7 @@ $r = Test-Return
 @($r).Count               # → 2
 $r -join ' / '            # → 途中の出力 / returnの値</code></pre>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong><code>return</code> は「値を返す」命令ではありません。</strong><br>
 PowerShell の <code>return</code> は<strong>「その値を出力して、関数を抜ける」</strong>という意味です。他言語のように「これだけが戻り値になる」わけではありません。<strong>それ以前に出力されたものは全部混ざります</strong>。
 </div>
@@ -665,7 +665,7 @@ PowerShell の <code>return</code> は<strong>「その値を出力して、関�
 </table>
 </div>
 
-<div class="callout">
+<div class="callout callout-tip">
 <strong>ループの中では <code>| Out-Null</code> を避けてください。</strong><br>
 パイプラインを1本立ち上げるコストがかかるため、数万回のループでは目に見えて遅くなります。<code>$null = </code> か <code>[void]</code> を使ってください。
 </div>
@@ -730,7 +730,7 @@ $o = Get-OneFixed
 $o.GetType().Name        # → Object[]
 $o.Count                 # → 1</code></pre>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>先頭のカンマは「この配列を1個の要素として包む」という意味です。</strong><br>
 PowerShell は配列を返すとき<strong>自動的に要素へばらします（アンロール）</strong>。<code>,$a</code> と書くと「<code>$a</code> を唯一の要素とする配列」が作られ、ばらされた結果ちょうど <code>$a</code> が残ります。<br>
 <strong>配列を返す関数には、常に <code>,</code> を付ける</strong>と覚えてしまうのが安全です。空配列 <code>@()</code> も <code>,</code> があれば <code>Count = 0</code> の配列として返せます。
@@ -852,7 +852,7 @@ Get-MyFunction            # lib.ps1 で定義した関数が使える</code></pr
 </table>
 </div>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>スクリプトの先頭に書いておくことを推奨します。</strong><br>
 既定の PowerShell は<strong>未定義の変数を <code>$null</code> として黙って扱います</strong>。変数名を打ち間違えてもエラーにならず、後の処理で初めておかしくなります。<code>Set-StrictMode -Version Latest</code> は VBA の <code>Option Explicit</code> や JavaScript の <code>"use strict"</code> にあたるもので、<strong>この種のミスをその場で止めてくれます</strong>。
 </div>

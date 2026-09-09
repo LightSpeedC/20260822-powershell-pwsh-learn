@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -425,7 +425,7 @@
 </table>
 </div>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>「ANSI」という呼び名に注意。</strong><br>
 Windows が言う「ANSI」は特定の文字コードの名前ではなく、<strong>その環境の既定のコードページ</strong>を指します。日本語環境なら CP932（Shift-JIS）、英語環境なら CP1252 です。つまり<strong>同じファイルが環境によって別の文字コードとして読まれます</strong>。この曖昧さが後のトラブルの温床になります。
 </div>
@@ -532,7 +532,7 @@ Write-Host "こんにちは"</code></pre>
 <figcaption>図 02.2 — 5.1 と 7 は「BOM がない場合」の既定解釈が逆。BOM 付き UTF-8 が唯一の共通解</figcaption>
 </figure>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>結論：ps1 は BOM 付き UTF-8 で保存する。</strong><br>
 これが 5.1 と 7 の両方で正しく読める唯一の形式だからです。どちらか一方しか使わないと決めているなら他の選択肢もありますが、<strong>環境が混在した瞬間に事故ります</strong>。
 </div>
@@ -565,7 +565,7 @@ Set-Content -Path .\a.ps1 -Value $text -Encoding UTF8      # → BOM 付き UTF-
 Set-Content -Path .\a.ps1 -Value $text -Encoding utf8      # → BOM なし UTF-8（！）
 Set-Content -Path .\a.ps1 -Value $text -Encoding utf8BOM   # → BOM 付き UTF-8</code></pre>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong><code>-Encoding UTF8</code> の意味がバージョンで変わります。</strong><br>
 <span class="badge b-ps51">5.1</span> では <code>UTF8</code> が <strong>BOM 付き</strong>を意味しますが、<span class="badge b-ps7">pwsh 7</span> では <code>utf8</code> は <strong>BOM なし</strong>です。7 で BOM を付けたいときは <code>utf8BOM</code> を明示してください。同じスクリプトを両方で動かすなら、この違いは必ず踏みます。
 </div>
@@ -580,7 +580,7 @@ Get-Content .\a.ps1 -Encoding Byte -TotalCount 3         # 5.1</code></pre>
 
 <p><code>-AsByteStream</code> は 7 で追加された指定で、5.1 の <code>-Encoding Byte</code> に相当します。<span class="badge b-ps7">pwsh 7</span></p>
 
-<div class="callout">
+<div class="callout callout-warning">
 <strong>PowerShell が初めての人へ</strong><br>
 「文字化け」は<strong>データが壊れた状態ではありません</strong>。バイト列は無事なまま、読み方だけを間違えている状態です。だから正しい文字コードで開き直せば元通りに読めます。ただし<strong>間違った読み方のまま上書き保存すると、その時点で本当に壊れます</strong>。化けた画面を見たら、まず保存せずに開き直してください。
 </div>
@@ -651,7 +651,7 @@ Get-Content .\a.ps1 -Encoding Byte -TotalCount 3         # 5.1</code></pre>
 </table>
 </div>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>bat / cmd は CRLF が必須と考えてください。</strong><br>
 cmd.exe のバッチ解釈は行末に CR があることを前提にした挙動が残っており、LF のみだと <code>goto</code> のラベル解決や行の連結で予期しない失敗をすることがあります。ps1 と違い、<strong>ここは「動くこともある」ではなく「揃えるべき」</strong>です。
 </div>
@@ -782,7 +782,7 @@ pause</code></pre>
 </table>
 </div>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong><code>%~dp0</code> は必ず付けてください。</strong><br>
 ダブルクリックで実行したときのカレントディレクトリは、必ずしも bat のある場所とは限りません（ショートカット経由やタスクスケジューラ経由では特に）。<code>"%~dp0foo.ps1"</code> と書けば、<strong>bat 自身の隣にある ps1</strong> を確実に指せます。パスにスペースが含まれる場合に備えて、<strong>ダブルクォートで囲む</strong>ことも忘れないでください。
 </div>

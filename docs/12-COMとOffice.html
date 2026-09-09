@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -417,7 +417,7 @@ $excel.DisplayAlerts = $false    # 「保存しますか」等のダイアログ
 </table>
 </div>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>5.1 は <code>$false</code> を <code>MsoTriState</code> に変換できず、7 は変換できます。</strong><br>
 つまり 7 のほうが 1 歩先に進んで、PowerPoint 自身の「非表示にはできません」という拒否に到達します。<strong>同じコードでもエラーの出所が違う</strong>ので、5.1 で「型の問題だ」と判断して <code>0</code> に書き換えても解決しません。<br>
 Office の定数は本来 <code>MsoTriState</code> のような列挙型で、<code>msoFalse = 0</code> / <code>msoTrue = -1</code> です。VBA では <code>msoTrue</code> と名前で書けますが、<strong>PowerShell には定数名が来ないので数値を自分で書きます</strong>。
@@ -938,7 +938,7 @@ $ppSaveAsPdf    = 32</code></pre>
 
 <p>5 番だけは<strong>本章の検証では再現できませんでした</strong>。同じパスへ 2 回 <code>SaveAs</code> しても <code>deck.pptx</code> のままで、<code>deck 2.pptx</code> は作られません。<strong>特定の手順でだけ起きる現象</strong>と考えられますが、<strong>保存前に消しておく対処自体は無害</strong>なので、そのまま残す判断が妥当です。</p>
 
-<div class="callout">
+<div class="callout callout-warning">
 <strong>このスクリプトは <code>ReleaseComObject</code> を呼んでいません。</strong><br>
 12.3 の計測どおり、<code>Quit()</code> だけでは <code>POWERPNT.EXE</code> は残ります。ただし <strong>スクリプトが終了すればプロセスごと参照が消えるため、実害が出ていない</strong>だけです。<br>
 同じコードを<strong>コンソールに貼って対話的に実行すると、セッションを閉じるまで PowerPoint が残ります</strong>。長時間動き続けるスクリプトに組み込むなら、12.3 のひな形に書き換えてください。
@@ -1041,7 +1041,7 @@ $sheet.Range($sheet.Cells.Item(1,1), $sheet.Cells.Item(200,3)).Value2 = $arr</co
 
 <p>200 行の書き込みで、<strong>セルを 1 つずつ代入すると 1,094 ms、配列で一括代入すると 175 ms</strong>でした。<strong>速度・安全性のどちらでも一括代入が有利</strong>です。</p>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>VBA 経験者へ — ここが VBA と最も違う点です。</strong><br>
 VBA では <code>Cells(1,1).Value2</code> に数値でも文字列でも代入できます。<code>Variant</code> がすべてを吸収するからです。PowerShell は <code>Variant</code> を持たず、<strong>呼び出しごとに型を決めて .NET から COM へ変換する</strong>ため、この差が出ます。<br>
 VBA のコードを移植して「なぜか 2 行目で落ちる」場合は、まずこれを疑ってください。

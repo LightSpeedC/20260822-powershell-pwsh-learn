@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -602,7 +602,7 @@ What if: Performing the operation "→ photo-3.jpg" on target "IMG_0003.JPG".</c
 <figcaption>図 09.3 — 実測値。「差分なし → 0」「コピーあり → 1」「元が存在しない → 16」</figcaption>
 </figure>
 
-<div class="callout">
+<div class="callout callout-warning">
 <strong><code>if ($LASTEXITCODE -ne 0) { throw }</code> と書くと誤検知します。</strong><br>
 コピーが発生しただけで <code>1</code> が返るためです。<strong><code>-ge 8</code> で判定</strong>してください。08 章で「終了コードの意味はコマンドごとに違う」と書いたのは、この <code>robocopy</code> が代表例です。
 </div>
@@ -650,12 +650,12 @@ Write-Host "ログ: $logFile"
 
 exit 0</code></pre>
 
-<div class="callout">
+<div class="callout callout-warning">
 <strong><span class="badge b-ps51">5.1</span> <code>$LogDir</code> の既定値を <code>param()</code> の中に書いてはいけません。</strong><br>
 <code>[CmdletBinding()]</code> が付いていると、5.1 では <code>param()</code> の既定値を評価する時点で <code>$PSScriptRoot</code> がまだ空です。<code>-LogDir</code> を省略した瞬間に <code>Cannot bind argument to parameter 'Path' because it is an empty string.</code> で落ちます。<span class="badge b-ps7">pwsh 7</span> では起きないため<strong>気づかないまま配布してしまいます</strong>。詳細は <a href="A2-テンプレ集.html#ch01">A2.1</a> を見てください。
 </div>
 
-<div class="callout">
+<div class="callout callout-caution">
 <strong><code>/MIR</code> はコピー先の余分なファイルを<strong>削除します</strong>。</strong><br>
 コピー先を間違えると<strong>そのフォルダの中身が消えます</strong>。最初は <code>/L</code>（一覧のみ、実行しない）を付けて確認してください。<code>-WhatIf</code> の robocopy 版にあたります。<br>
 削除させたくない場合は <code>/MIR</code> ではなく <code>/E</code>（空フォルダを含めてコピー、削除はしない）を使います。
@@ -788,7 +788,7 @@ Register-ScheduledTask -TaskName 'DailyBackup' `
     -Action $action -Trigger $trigger `
     -Description '毎日 2:00 にバックアップを実行'</code></pre>
 
-<div class="callout">
+<div class="callout callout-caution">
 <strong>実行ユーザーとパスワードは GUI で設定してください。</strong><br>
 スクリプトにパスワードを書くと、<strong>ファイルを読める人全員に漏れます</strong>。タスクスケジューラの GUI で［ユーザーまたはグループの変更］から設定するか、パスワード不要な<strong>サービスアカウント（gMSA）</strong>を使ってください。<br>
 「ユーザーがログオンしているかどうかにかかわらず実行する」を選ぶ場合はパスワードが必要になります。この設定は<strong>環境の管理者が対話的に行う</strong>のが原則です。

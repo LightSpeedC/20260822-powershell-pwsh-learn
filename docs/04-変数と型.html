@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -485,7 +485,7 @@ SELECT *
  WHERE name = '田中'
 '@</code></pre>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>ヒアストリングの終端は必ず行頭に置いてください。</strong><br>
 <code>'@</code> の前に<strong>スペースやタブが1つでもあると構文エラー</strong>になります。インデントを揃えたくなる場所ですが、ここだけは字下げできません。開始側の <code>@'</code> は行末で改行する必要があります。
 </div>
@@ -573,7 +573,7 @@ SELECT *
 <figcaption>図 04.3 — 先頭に c を付けると大文字小文字を区別する。付け忘れが事故になる</figcaption>
 </figure>
 
-<div class="callout">
+<div class="callout callout-warning">
 <strong>大文字小文字だけが違う変更を扱うときは、必ず <code>c</code> 付きを使ってください。</strong><br>
 ファイル名の <code>readme.html</code> → <code>README.html</code> のような変更で、<code>-ne</code> による「変わったか」判定を使うと<strong>「変更なし」と誤判定してスキップ</strong>されます。<code>-cne</code> / <code>-creplace</code> に置き換えれば正しく動きます。
 </div>
@@ -689,7 +689,7 @@ foreach ($x in 1..10000) { $list.Add($x) }
 # ✓ パイプラインに流す（PowerShell らしい書き方）
 $result = foreach ($x in 1..10000) { $x }</code></pre>
 
-<div class="callout">
+<div class="callout callout-tip">
 <strong>3つ目の書き方が PowerShell らしい形です。</strong><br>
 <code>foreach</code> の中で出力された値は<strong>まとめて左辺の変数に入ります</strong>。明示的に配列を組み立てる必要がありません。この「出力が自動で集まる」性質は 05 章のパイプラインと同じ仕組みで、慣れると最も短く書けます。
 </div>
@@ -712,7 +712,7 @@ delete o.a;                       $o.Remove("a")
 <pre><code>$h = @{ b = 2; a = 1 }             # 順序は保証されない
 $h = [ordered]@{ b = 2; a = 1 }    # 書いた順に並ぶ</code></pre>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>CSV や JSON に出力するときは <code>[ordered]</code> を付けてください。</strong><br>
 通常のハッシュテーブルは<strong>キーの順序を保証しません</strong>。出力するたびに列の順番が変わると、差分が取れなくなります。JavaScript のオブジェクトは挿入順が保たれるので、そのつもりで書くと足をすくわれます。
 </div>
@@ -742,7 +742,7 @@ if ($value -eq $null) { }     # ✗ 避ける</code></pre>
 $arr -eq $null       # → $null が1個返る（フィルタ結果）
 $null -eq $arr       # → False（比較結果）</code></pre>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong><code>-eq</code> は左辺がコレクションだと「絞り込み」になります。</strong><br>
 <code>@(1,2,3) -eq 2</code> は <code>True</code> ではなく <code>2</code> を返します。これは 05 章のパイプラインと同じ「コレクションを流す」思想の現れですが、<code>$null</code> チェックでは意図しない動作になります。<strong>左辺に <code>$null</code> を置けば必ず比較になる</strong>ので、そう書く習慣をつけてください。
 </div>
@@ -805,7 +805,7 @@ $null -eq $arr       # → False（比較結果）</code></pre>
 </table>
 </div>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>空配列の扱いが JavaScript と逆です。</strong><br>
 JavaScript では <code>if ([])</code> が真になるため <code>arr.length</code> で判定する習慣がありますが、PowerShell では <code>if ($arr)</code> がそのまま「要素があるか」の判定になります。<strong>ただし要素が1個で、その値が <code>0</code> や <code>""</code> だと False になります</strong>。確実に件数で判定したいなら <code>if ($arr.Count -gt 0)</code> と書いてください。
 </div>
@@ -817,7 +817,7 @@ JavaScript では <code>if ([])</code> が真になるため <code>arr.length</c
 
 <p>JavaScript では<strong>どちらも文字列結合</strong>（<code>"421"</code> と <code>"142"</code>）になります。PowerShell は<strong>左辺の型に合わせて右辺を変換</strong>するので、結果が変わります。</p>
 
-<div class="callout">
+<div class="callout callout-important">
 <strong>外部から読んだ値は必ず明示的に変換してください。</strong><br>
 CSV やテキストファイルから読んだ数値は<strong>すべて文字列</strong>です。そのまま計算すると <code>"42" + 1</code> の形になり、意図しない文字列結合が起きます。<code>[int]$row.Amount + 1</code> のように明示的に変換するのが安全です。
 </div>
