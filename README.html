@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -210,7 +210,7 @@
 		box-shadow: 0 2px 7px rgba(20,30,60,0.2);
 	}
 	.chapters a:hover { filter: brightness(1.08); text-decoration: none; }
-	.chapters .no { display: block; font-size: 0.78em; opacity: 0.85; letter-spacing: 0.06em; }
+	.chapters .part { display: block; font-size: 0.78em; opacity: 0.85; letter-spacing: 0.06em; }
 	.chapters .ttl { display: block; font-size: 1.02em; font-weight: 700; margin: 2px 0 4px; }
 	.chapters .desc { display: block; font-size: 0.82em; opacity: 0.92; line-height: 1.5; }
 
@@ -304,65 +304,65 @@
 
 <p>本編は 01 から順に読む資料です。付録（A1〜A3）は<strong>必要になったときに引く</strong>もので、読む順番に関係なく使えます。</p>
 
-<ul class="chapters">
+<ul class="chapters" data-columns="部,タイトル,内容">
 	<li class="c01"><a href="docs/01-背景.html">
-		<span class="no">第1部 基礎編</span>
+		<span class="part">第1部 基礎編</span>
 		<span class="ttl">01. PowerShell の生まれた経緯</span>
 		<span class="desc">DOS・Bash・Node.js と比較しながら、何を解決する道具なのかを掴む</span></a></li>
 	<li class="c02"><a href="docs/02-ファイル形式.html">
-		<span class="no">第1部 基礎編</span>
+		<span class="part">第1部 基礎編</span>
 		<span class="ttl">02. ファイル形式と文字コード</span>
 		<span class="desc">なぜ BOM 付き UTF-8 ＋ CRLF なのか。5.1 と 7 で解釈が逆になる</span></a></li>
 	<li class="c03"><a href="docs/03-実行環境.html">
-		<span class="no">第1部 基礎編</span>
+		<span class="part">第1部 基礎編</span>
 		<span class="ttl">03. 実行環境と実行ポリシー</span>
 		<span class="desc">5.1 と 7 の共存、スクリプトが動かない理由、VS Code の設定</span></a></li>
 	<li class="c04"><a href="docs/04-変数と型.html">
-		<span class="no">第1部 基礎編</span>
+		<span class="part">第1部 基礎編</span>
 		<span class="ttl">04. 変数・型・演算子</span>
 		<span class="desc">JavaScript と並べて読む。大文字小文字を区別しない比較の罠</span></a></li>
 	<li class="c05"><a href="docs/05-パイプライン.html">
-		<span class="no">第1部 基礎編</span>
+		<span class="part">第1部 基礎編</span>
 		<span class="ttl">05. パイプラインとオブジェクト</span>
 		<span class="desc">本資料の山場。Get-Member ひとつで自習できるようになる</span></a></li>
 	<li class="c06"><a href="docs/06-制御構文と関数.html">
-		<span class="no">第2部 実践編</span>
+		<span class="part">第2部 実践編</span>
 		<span class="ttl">06. 制御構文と関数</span>
 		<span class="desc">戻り値に「返したつもりのない値」が混ざる、最大の落とし穴</span></a></li>
 	<li class="c07"><a href="docs/07-ファイル操作.html">
-		<span class="no">第2部 実践編</span>
+		<span class="part">第2部 実践編</span>
 		<span class="ttl">07. ファイル・テキスト操作</span>
 		<span class="desc">0 件が返る3つの理由。読み書きの文字コード指定</span></a></li>
 	<li class="c08"><a href="docs/08-エラー処理.html">
-		<span class="no">第2部 実践編</span>
+		<span class="part">第2部 実践編</span>
 		<span class="ttl">08. エラー処理とデバッグ</span>
 		<span class="desc">try/catch を書いたのに捕まらない理由。外部コマンドの失敗検知</span></a></li>
 	<li class="c09"><a href="docs/09-実務パターン.html">
-		<span class="no">第2部 実践編</span>
+		<span class="part">第2部 実践編</span>
 		<span class="ttl">09. 実務パターン集</span>
 		<span class="desc">そのまま使える5本。ログ集計・リネーム・バックアップ・外部連携</span></a></li>
 	<li class="c10"><a href="docs/10-ハンズオン.html">
-		<span class="no">第3部 演習</span>
+		<span class="part">第3部 演習</span>
 		<span class="ttl">10. ハンズオン課題</span>
 		<span class="desc">5回分の課題と解答例。つまずきポイントの解説つき</span></a></li>
 	<li class="c11"><a href="docs/11-Add-Type.html">
-		<span class="no">第4部 発展編</span>
+		<span class="part">第4部 発展編</span>
 		<span class="ttl">11. C# を埋め込む — Add-Type</span>
 		<span class="desc">PowerShell では書けない・遅い場面を C# で補う。csc.exe で exe にして配る</span></a></li>
 	<li class="c12"><a href="docs/12-COMとOffice.html">
-		<span class="no">第4部 発展編</span>
+		<span class="part">第4部 発展編</span>
 		<span class="ttl">12. Office と COM を操作する</span>
 		<span class="desc">Word・Excel・PowerPoint の PDF 化。プロセスが残らない後始末</span></a></li>
 	<li class="cA1"><a href="docs/A1-逆引き.html">
-		<span class="no">付録</span>
+		<span class="part">付録</span>
 		<span class="ttl">A1. 逆引き</span>
 		<span class="desc">症状・コマンド名・JavaScript・用語の4つの入口から本編へ</span></a></li>
 	<li class="cA2"><a href="docs/A2-テンプレ集.html">
-		<span class="no">付録</span>
+		<span class="part">付録</span>
 		<span class="ttl">A2. テンプレ集</span>
 		<span class="desc">コピーして使う雛形。骨格・ログ・引数検証・ファイル処理・配布</span></a></li>
 	<li class="cA3"><a href="docs/A3-モジュール.html">
-		<span class="no">付録</span>
+		<span class="part">付録</span>
 		<span class="ttl">A3. 業務で使えるモジュール</span>
 		<span class="desc">厳選8本。選ぶ基準と、導入・オフライン配布の実務</span></a></li>
 </ul>
