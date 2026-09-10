@@ -290,7 +290,7 @@ Add-Type -TypeDefinition $src -ReferencedAssemblies 'System.Windows.Forms'
 ```
 
 > [!NOTE]
-> ****pwsh 7** まず `-ReferencedAssemblies` を付けずに試してください。**<br> 7 の既定の参照集合には、そのプロセスに読み込み済みのアセンブリが含まれます。PowerShell が起動時に読み込んでいるものは**何も指定しなくても使えます**。<br> それでも足りないときだけ、**`[型].Assembly.Location` で取ったフルパス**を渡します。`System.Xml.Linq` のようなアセンブリ名を渡すと、実体のない転送専用の dll を掴んで `CS0103` になります。
+> **pwsh 7 まず `-ReferencedAssemblies` を付けずに試してください。**<br> 7 の既定の参照集合には、そのプロセスに読み込み済みのアセンブリが含まれます。PowerShell が起動時に読み込んでいるものは**何も指定しなくても使えます**。<br> それでも足りないときだけ、**`[型].Assembly.Location` で取ったフルパス**を渡します。`System.Xml.Linq` のようなアセンブリ名を渡すと、実体のない転送専用の dll を掴んで `CS0103` になります。
 
 ### コンパイルにかかる時間も違う
 
@@ -622,7 +622,7 @@ Visual Studio も dotnet SDK も要りません。**.NET Framework 4.x が入っ
 下の2つは**インストールした人にしかありません**。上の `Framework64\v4.0.30319\csc.exe` だけが、追加インストールなしでどの Windows にもあります。**開発ツールを入れられない業務 PC でも、小さなツールを1本ビルドできる**——これが実務上の価値です。
 
 > [!NOTE]
-> ****5.1** `csc.exe` の場所は、5.1 なら実行中のランタイムから引けます。**
+> **5.1 `csc.exe` の場所は、5.1 なら実行中のランタイムから引けます。**
 > ```
 > $dir = [System.Runtime.InteropServices.RuntimeEnvironment]::GetRuntimeDirectory()
 > Join-Path $dir 'csc.exe'
