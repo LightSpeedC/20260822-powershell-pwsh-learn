@@ -93,12 +93,12 @@ src/scripts/
 
 ## Playwright の対象ファイルは targets.ts だけに書く
 
-共有環境 `N:\2026\PlayWright\projects\20260822-powershell-pwsh-learn\` の `targets.ts` が唯一の一覧。
-`capture-figures` / `export-outline` / `export-markdown` の3つの spec はすべてここから読む。
+共有環境 `N:/PlayWright/projects/20260822-powershell-pwsh-learn/` の `targets.ts` が唯一の一覧。
+`capture-figures` / `export-outline` の2つの spec はどちらもここから読む。
 
 - 資料を追加したら `targets.ts` に1行足すだけでよい
 - `export-outline` は README を除外する（目次ページはスライド化しない）
-- `export-markdown` は `targets.ts` にあるファイルへのリンクだけを `.md` へ書き換える。`docs/ZZ-構成.html` のように Markdown 版が無いものは `.html` のまま残す
+- **`projects/` 配下の自分のフォルダは自分の領域**。spec の追加・削除も自分で行い、共有環境側へ commit する（PlayWright の USAGE「フォルダ規約」）
 
 **Why:** spec ごとに一覧を持つと追記漏れが起きる。実際に `export-outline` だけ追記を忘れ、付録の構造 JSON が生成されず pptx を作れなかった。
 

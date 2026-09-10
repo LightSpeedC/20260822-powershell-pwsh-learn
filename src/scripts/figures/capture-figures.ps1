@@ -3,21 +3,21 @@
 	docs/*.html に埋め込まれた SVG 図を PNG として書き出す。
 
 .DESCRIPTION
-	N:\2026\PlayWright の共有 Playwright 環境を呼び出し、各 HTML の <figure> 内の
+	N:/PlayWright の共有 Playwright 環境を呼び出し、各 HTML の <figure> 内の
 	SVG を高 DPI (3x) の PNG として tmp/figures/ に出力する。
 
 	ブラウザで描画してから撮るため、CSS 変数 (--accent 等) が解決済みの状態になり、
 	フォントも本文と完全に一致する。出力した PNG は pptx 生成が利用する。
 
 	書き出す対象ファイルの一覧は、共有環境側の targets.ts に集約されている:
-	  N:\2026\PlayWright\projects\20260822-powershell-pwsh-learn\targets.ts
-	capture-figures / export-outline / export-markdown の3つが同じ一覧を読むため、
+	  N:/PlayWright/projects/20260822-powershell-pwsh-learn/targets.ts
+	capture-figures / export-outline の2つが同じ一覧を読むため、
 	資料を追加したときの追記先はこの1ファイルだけでよい。
 #>
 
 $ErrorActionPreference = 'Stop'
 
-$PlaywrightRoot = 'N:\2026\PlayWright'
+$PlaywrightRoot = 'N:/PlayWright'
 $ProjectName    = '20260822-powershell-pwsh-learn'
 $OutDir         = Join-Path $PSScriptRoot '..\..\..\tmp\figures'
 
@@ -30,7 +30,7 @@ if (-not (Test-Path -LiteralPath $PlaywrightRoot)) {
 	exit 1
 }
 
-$SpecDir = Join-Path $PlaywrightRoot "projects\$ProjectName"
+$SpecDir = Join-Path $PlaywrightRoot "projects/$ProjectName"
 if (-not (Test-Path -LiteralPath $SpecDir)) {
 	Write-Host "spec フォルダが見つかりません: $SpecDir" -ForegroundColor Red
 	exit 1
@@ -55,7 +55,8 @@ Write-Host ''
 Push-Location -LiteralPath $PlaywrightRoot
 try {
 	$env:PW_PROJECT = $ProjectName
-	npm run test:projects -- $ProjectName
+	# 走らせる spec を名指しする。フォルダ名だけを渡すと配下の spec が全部動く。
+	npm run test:projects -- "$ProjectName/capture-figures" "$ProjectName/export-outline"
 	$exitCode = $LASTEXITCODE
 }
 finally {

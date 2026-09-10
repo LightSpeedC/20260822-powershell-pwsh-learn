@@ -447,7 +447,7 @@ GitHub は `.html` をレンダリングしないため、**同じ内容の `.md
 7. 新しい Cmdlet が出たなら [A1.1](A1-逆引き.md#1-a11-症状から引く) と [A1.4](A1-逆引き.md#4-a14-用語から引く) も見直す
 
 > [!NOTE]
-> **Playwright の spec は共有環境側にあります。**<br> `N:\2026\PlayWright\projects\20260822-powershell-pwsh-learn\` に置いています。**対象ファイルの一覧は `targets.ts` に集約**してあるので、追記はそこ1箇所で済みます。
+> **Playwright の spec は共有環境側にあります。**<br> `N:/PlayWright/projects/20260822-powershell-pwsh-learn/` に置いています。**対象ファイルの一覧は `targets.ts` に集約**してあるので、追記はそこ1箇所で済みます。
 
 ### 出力物の置き場所
 
