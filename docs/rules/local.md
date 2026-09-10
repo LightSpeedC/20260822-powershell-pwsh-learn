@@ -20,11 +20,11 @@ type: local-rule
 GitHub は `.html` をレンダリングしないため、**同じ内容の `.md` を HTML から生成**する。
 
 ```powershell
-.\src\scripts\markdown\build-markdown.ps1
+html2md --dir docs
 ```
 
 - **`.md` を直接編集しない**。次回の生成で上書きされる。修正は `.html` 側に入れる
-- 図は `docs/images/*.png`（HTML から撮影した PNG）への参照になる。**コミット対象**
+- 図は `docs/images/*.svg`（HTML から切り出した SVG）への参照になる。**コミット対象**
 - `.html` へのリンクは `.md` に、`#chNN` は見出しのスラッグに自動で書き換わる
 
 **Why:** 資料を2箇所で保守すると必ず食い違う。HTML を原本と決め、

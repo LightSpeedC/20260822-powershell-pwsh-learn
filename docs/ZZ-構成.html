@@ -245,7 +245,7 @@
 	<div class="inner">
 		<h1>PowerShell 学習資料 全体構成案</h1>
 		<p class="lead">プログラミング経験のある読者を対象にした、本編12章＋付録3つのカリキュラム設計</p>
-		<p class="date">📅 作成: 2026-08-22 / 更新: 2026-08-26 ／ ステータス: 本編12章 ＋ 付録 A1・A2・A3 完成</p>
+		<p class="date">📅 作成: 2026-08-22 / 更新: 2026-09-10 ／ ステータス: 本編12章 ＋ 付録 A1・A2・A3 完成</p>
 	</div>
 </div>
 
@@ -1005,10 +1005,10 @@ pptx は <code>tmp/outline/*.json</code> を材料にするため、<strong>先�
 # 2) pptx を生成する（-Prefix で1章だけも可）
 .\src\scripts\pptx\build-pptx.ps1 -Prefix 05 -Pdf -Images
 
-# 3) GitHub 用の Markdown を生成する
-.\src\scripts\markdown\build-markdown.ps1</code></pre>
+# 3) GitHub 用の Markdown を生成する（共通ツール。PATH に入っている）
+html2md --dir docs</code></pre>
 
-<p>いずれも<strong>同名の <code>.cmd</code> をダブルクリック</strong>しても実行できます。</p>
+<p>0)〜2) は<strong>同名の <code>.cmd</code> をダブルクリック</strong>しても実行できます。</p>
 
 <h2>Markdown 版について</h2>
 
@@ -1017,7 +1017,7 @@ pptx は <code>tmp/outline/*.json</code> を材料にするため、<strong>先�
 <div class="tablewrap">
 <table>
 <tr><th>変換されるもの</th><th>Markdown での表現</th></tr>
-<tr><td class="nowrap">SVG 図</td><td><code>docs/images/*.png</code> への画像参照（HTML から撮影した PNG）</td></tr>
+<tr><td class="nowrap">SVG 図</td><td><code>docs/images/*.svg</code> への画像参照（HTML から切り出した SVG）</td></tr>
 <tr><td class="nowrap"><code>.callout</code></td><td>GitHub のアラート記法（<code>&gt; [!NOTE]</code>）</td></tr>
 <tr><td class="nowrap">バッジ</td><td><code>**［pwsh 7］**</code> のような強調表示</td></tr>
 <tr><td class="nowrap">章へのリンク</td><td><code>.html</code> → <code>.md</code> に書き換え。<code>#chNN</code> は見出しのスラッグに差し替え</td></tr>
@@ -1064,7 +1064,7 @@ pptx は <code>tmp/outline/*.json</code> を材料にするため、<strong>先�
 <tr><th>場所</th><th>内容</th><th>git</th></tr>
 <tr><td class="nowrap"><code>docs/*.html</code></td><td>資料（<strong>原本</strong>）</td><td><span class="badge b-ok">対象</span></td></tr>
 <tr><td class="nowrap"><code>docs/*.md</code></td><td>GitHub 表示用（HTML から生成）</td><td><span class="badge b-ok">対象</span></td></tr>
-<tr><td class="nowrap"><code>docs/images/</code></td><td>Markdown が参照する図の PNG</td><td><span class="badge b-ok">対象</span></td></tr>
+<tr><td class="nowrap"><code>docs/images/</code></td><td>Markdown が参照する図の SVG</td><td><span class="badge b-ok">対象</span></td></tr>
 <tr><td class="nowrap"><code>src/scripts/</code></td><td>ビルド用スクリプト</td><td><span class="badge b-ok">対象</span></td></tr>
 <tr><td class="nowrap"><code>tmp/figures/</code></td><td>図の PNG（63 枚）</td><td><span class="badge b-none">除外</span></td></tr>
 <tr><td class="nowrap"><code>tmp/outline/</code></td><td>構造 JSON</td><td><span class="badge b-none">除外</span></td></tr>

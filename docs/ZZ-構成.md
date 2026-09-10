@@ -2,7 +2,7 @@
 
 プログラミング経験のある読者を対象にした、本編12章＋付録3つのカリキュラム設計
 
-> 📅 作成: 2026-08-22 / 更新: 2026-08-26 ／ ステータス: 本編12章 ＋ 付録 A1・A2・A3 完成
+> 📅 作成: 2026-08-22 / 更新: 2026-09-10 ／ ステータス: 本編12章 ＋ 付録 A1・A2・A3 完成
 
 **目次**
 
@@ -408,11 +408,11 @@ README の逆引き索引（17項目）は**残します**。役割を分けま�
 # 2) pptx を生成する（-Prefix で1章だけも可）
 .\src\scripts\pptx\build-pptx.ps1 -Prefix 05 -Pdf -Images
 
-# 3) GitHub 用の Markdown を生成する
-.\src\scripts\markdown\build-markdown.ps1
+# 3) GitHub 用の Markdown を生成する（共通ツール。PATH に入っている）
+html2md --dir docs
 ```
 
-いずれも**同名の `.cmd` をダブルクリック**しても実行できます。
+0)〜2) は**同名の `.cmd` をダブルクリック**しても実行できます。
 
 ### Markdown 版について
 
@@ -420,7 +420,7 @@ GitHub は `.html` をレンダリングしないため、**同じ内容の `.md
 
 | 変換されるもの | Markdown での表現 |
 |---|---|
-| SVG 図 | `docs/images/*.png` への画像参照（HTML から撮影した PNG） |
+| SVG 図 | `docs/images/*.svg` への画像参照（HTML から切り出した SVG） |
 | `.callout` | GitHub のアラート記法（`> [!NOTE]`） |
 | バッジ | `**［pwsh 7］**` のような強調表示 |
 | 章へのリンク | `.html` → `.md` に書き換え。`#chNN` は見出しのスラッグに差し替え |
@@ -455,7 +455,7 @@ GitHub は `.html` をレンダリングしないため、**同じ内容の `.md
 |---|---|---|
 | `docs/*.html` | 資料（**原本**） | ✅ **対象** |
 | `docs/*.md` | GitHub 表示用（HTML から生成） | ✅ **対象** |
-| `docs/images/` | Markdown が参照する図の PNG | ✅ **対象** |
+| `docs/images/` | Markdown が参照する図の SVG | ✅ **対象** |
 | `src/scripts/` | ビルド用スクリプト | ✅ **対象** |
 | `tmp/figures/` | 図の PNG（63 枚） | **除外** |
 | `tmp/outline/` | 構造 JSON | **除外** |
