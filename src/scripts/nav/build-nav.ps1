@@ -82,4 +82,4 @@ for ($i = 0; $i -lt $files.Count; $i++) {
 
 Write-Host ''
 Write-Host ("{0} ファイルを更新しました。" -f $updated) -ForegroundColor Green
-Write-Host 'Markdown への反映は src\scripts\markdown\build-markdown.ps1 を実行してください。'
+Write-Host 'Markdown への反映は html2md --dir docs を実行してください。'

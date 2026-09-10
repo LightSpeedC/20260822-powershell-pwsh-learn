@@ -38,7 +38,7 @@ if (-not (Test-Path -LiteralPath $SpecDir)) {
 
 # 撮り直す前に出力先を空にする。
 # 上書きしかしないと、図を削除・改名したときに古い PNG が残り続け、
-# build-markdown.ps1 のコピーで docs\images に復活してしまう。
+# build-pptx.ps1 が消したはずの図をスライドに載せてしまう。
 if (Test-Path -LiteralPath $OutDir) {
 	$stale = @(Get-ChildItem -LiteralPath $OutDir -Filter '*.png' -File)
 	if ($stale.Count -gt 0) {
