@@ -4,8 +4,16 @@ tmp/
 # セッションログ・補助ファイル
 etc/
 
-# ローカル設定
-.claude/
+# 非公開フォルダ（全階層）
+_*/
+**/_*/
+
+# ローカル設定（共有するものだけ名指しで許可する）
+.claude/*
+!.claude/settings.json
+!.claude/commands/
+!.claude/agents/
+!.claude/skills/
 
 # Windows
 Thumbs.db
