@@ -1,0 +1,312 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PowerShell 学習資料 ローカルルール</title>
+<style>
+	:root {
+		--navy1: #12224d; --navy2: #2f5fbf;
+		--ink: #1c2330; --ink-soft: #4a5568; --line: #d9dfe8; --code-bg: #f4f6fa; --link: #1a4fa0;
+		--accent: var(--navy1); --accent2: var(--navy2); --soft: #f2f5fb;
+	}
+	body { margin: 0; background: #ffffff; color: var(--ink); font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", "Meiryo", sans-serif; font-size: 15.5px; line-height: 1.85; }
+	a { color: var(--link); background: transparent; }
+	.titlebar { background: linear-gradient(135deg, var(--navy1, #12224d), var(--navy2, #2f5fbf)); color: #fff; padding: 34px 30px 30px; }
+	.titlebar .inner { max-width: 1600px; margin: 0 auto; }
+	.titlebar h1 { font-size: 1.9em; margin: 0 0 6px; color: #fff; }
+	.titlebar p { margin: 2px 0; color: #dfe7f7; background: transparent; font-size: 0.92em; }
+	.wrap { max-width: 1600px; margin: 0 auto; padding: 0 30px; }
+	.wrap > .backlink { margin: 18px 0 0; }
+	a.back-home { display: inline-block; padding: 2px 10px; border-radius: 6px; background: linear-gradient(100deg, var(--navy1, #12224d), var(--navy2, #2f5fbf)); color: #fff; text-decoration: none; line-height: 1.6; }
+	a.back-home svg { vertical-align: -2px; }
+	section { margin: 34px 0; padding: 4px 26px 26px; border-radius: 10px; background: linear-gradient(180deg, var(--soft, #f2f5fb), #ffffff); color: var(--ink); border: 1px solid var(--line); }
+	section h1 { font-size: 1.35em; margin: 26px 0 20px; padding: 14px 20px; border-radius: 8px; background: linear-gradient(100deg, var(--accent, #12224d), var(--accent2, #2f5fbf)); color: #fff; box-shadow: 0 3px 10px rgba(0,0,0,0.18); }
+	section h1 code { background: rgba(255,255,255,0.16); color: #fff; border: none; }
+	h2 { font-size: 1.12em; margin: 30px 0 12px; padding: 6px 12px; border-left: 6px solid var(--accent, #12224d); background: linear-gradient(90deg, var(--soft, #f2f5fb), #ffffff); color: var(--ink); }
+	code { font-family: "BIZ UDゴシック", "ＭＳ ゴシック", Consolas, "Cascadia Mono", monospace; font-size: 0.92em; background: var(--code-bg, #f4f6fa); color: #17335f; border: 1px solid var(--line, #d9dfe8); border-radius: 4px; padding: 0 4px; }
+	pre { background: linear-gradient(180deg, var(--code-bg, #f4f6fa), #ffffff); color: var(--ink); border-left: 5px solid var(--accent2, #2f5fbf); padding: 13px 16px; overflow-x: auto; border-radius: 0 6px 6px 0; }
+	pre code { background: transparent; color: var(--ink); border: none; padding: 0; }
+	.tablewrap { overflow-x: auto; }
+	table { border-collapse: collapse; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.08); margin: 10px 0; background: #ffffff; color: var(--ink); }
+	th { background: linear-gradient(100deg, var(--accent, #12224d), var(--accent2, #2f5fbf)); color: #fff; padding: 9px 12px; text-align: left; }
+	td { padding: 9px 12px; border-top: 1px solid var(--line); vertical-align: top; background: #ffffff; color: var(--ink); }
+	tr:nth-child(even) td { background: #fafbfe; color: var(--ink); }
+	.nowrap { white-space: nowrap; }
+	.callout { border-left: 6px solid var(--accent, #12224d); background: linear-gradient(180deg, var(--soft, #f2f5fb), #ffffff); color: var(--ink); border-radius: 0 8px 8px 0; padding: 10px 16px; margin: 14px 0; }
+	.callout strong { color: var(--accent, #12224d); background: transparent; }
+	footer { max-width: 1600px; margin: 40px auto 0; padding: 18px 30px 30px; border-top: 2px solid var(--line); color: var(--ink-soft); background: #ffffff; font-size: 0.86em; }
+	.ch01 { --accent: hsl(280,78%,25%); --accent2: hsl(280,58%,55%); --soft: hsl(280,28%,95%); }
+	.ch02 { --accent: hsl(256.7,78%,25%); --accent2: hsl(256.7,58%,55%); --soft: hsl(256.7,28%,95%); }
+	.ch03 { --accent: hsl(233.3,78%,25%); --accent2: hsl(233.3,58%,55%); --soft: hsl(233.3,28%,95%); }
+	.ch04 { --accent: hsl(210,78%,25%); --accent2: hsl(210,58%,55%); --soft: hsl(210,28%,95%); }
+	.ch05 { --accent: hsl(186.7,78%,25%); --accent2: hsl(186.7,58%,55%); --soft: hsl(186.7,28%,95%); }
+	.ch06 { --accent: hsl(163.3,78%,25%); --accent2: hsl(163.3,58%,55%); --soft: hsl(163.3,28%,95%); }
+	.ch07 { --accent: hsl(140,78%,25%); --accent2: hsl(140,58%,55%); --soft: hsl(140,28%,95%); }
+	.ch08 { --accent: hsl(116.7,78%,25%); --accent2: hsl(116.7,58%,55%); --soft: hsl(116.7,28%,95%); }
+	.ch09 { --accent: hsl(93.3,78%,25%); --accent2: hsl(93.3,58%,55%); --soft: hsl(93.3,28%,95%); }
+	.ch10 { --accent: hsl(70,78%,25%); --accent2: hsl(70,58%,55%); --soft: hsl(70,28%,95%); }
+	.ch11 { --accent: hsl(46.7,78%,25%); --accent2: hsl(46.7,58%,55%); --soft: hsl(46.7,28%,95%); }
+	.ch12 { --accent: hsl(23.3,78%,25%); --accent2: hsl(23.3,58%,55%); --soft: hsl(23.3,28%,95%); }
+	.ch13 { --accent: hsl(0,78%,25%); --accent2: hsl(0,58%,55%); --soft: hsl(0,28%,95%); }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>PowerShell 学習資料 ローカルルール</h1>
+		<p class="lead">このプロジェクトでだけ通る決めごと。全プロジェクトに通ることは共通ルールに置く</p>
+		<p class="date">📅 作成: 2026-08-22 / 更新: 2026-10-09</p>
+	</div>
+</div>
+
+<div class="wrap">
+
+<p class="backlink"><a class="back-home" href="../../README.html" title="README"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M2 7.5 8 2l6 5.5V14H2z"/><path d="M6.5 14V10h3v4"/></svg></a></p>
+
+<section class="ch01" id="ch01">
+<h1>共通ルールと違うところ: commit と push</h1>
+
+<div class="tablewrap">
+<table>
+<tr><th>項目</th><th>内容</th></tr>
+<tr><td class="nowrap">見出し</td><td>共通ルールの「修正は1点ずつ、確認を重視」「重大な操作の確認方法」</td></tr>
+<tr><td class="nowrap">違い</td><td>意味のまとまりが1つ終わるたびに、指示を待たずに commit し、続けて push する</td></tr>
+<tr><td class="nowrap">なぜ</td><td>公開資料を少しずつ直していくプロジェクトで、1点ごとに指示を挟むと進みが止まるため。push しても GitHub Pages が更新されるだけで、取り返しはつく</td></tr>
+<tr><td class="nowrap">どこまで</td><td>このリポジトリだけ。共有環境（PlayWright 等）への commit は対象外で、従来どおり指示を待つ</td></tr>
+<tr><td class="nowrap">変えないもの</td><td>載せるファイルを名指しする・<code>git add -A</code> を使わない・最初のコミットの点検・メッセージの書き方</td></tr>
+</table>
+</div>
+</section>
+
+<section class="ch02" id="ch02">
+<h1>ファイル形式</h1>
+
+<p><strong>資料は HTML で直接作成する</strong>（<code>docs/NN-タイトル.html</code>）。<strong>HTML が唯一の原本。</strong></p>
+
+<ul>
+	<li>構成案は <code>docs/ZZ-構成.html</code></li>
+	<li>このローカルルールは <code>notes/90_rules/local-rules.html</code></li>
+</ul>
+
+<h2>Markdown は生成物</h2>
+
+<p>GitHub は <code>.html</code> をレンダリングしないため、<strong>同じ内容の <code>.md</code> を HTML から生成</strong>する。</p>
+
+<pre><code class="language-powershell">html2md --dir notes --dir docs</code></pre>
+
+<ul>
+	<li><strong><code>--dir</code> は既定の <code>notes</code> を置き換える</strong>。<code>--dir docs</code> だけを渡すと <code>notes/</code> の md が作られない（実際に踏んだ）</li>
+</ul>
+
+<ul>
+	<li><strong><code>.md</code> を直接編集しない</strong>。次回の生成で上書きされる。修正は <code>.html</code> 側に入れる</li>
+	<li>図は <code>docs/images/*.svg</code>（HTML から切り出した SVG）への参照になる。<strong>コミット対象</strong></li>
+	<li><code>.html</code> へのリンクは <code>.md</code> に、<code>#chNN</code> は見出しのスラッグに自動で書き換わる</li>
+</ul>
+
+<p><strong>Why:</strong> 資料を2箇所で保守すると必ず食い違う。HTML を原本と決め、Markdown は毎回作り直す派生物として扱う。</p>
+</section>
+
+<section class="ch03" id="ch03">
+<h1>スクリプトの置き場所</h1>
+
+<p><strong>ps1 / cmd スクリプトは <code>src/scripts/&lt;用途&gt;/</code> に置く。</strong>ここはコミット対象。</p>
+
+<pre><code class="language-text">src/scripts/
+├── figures/    # docs の SVG 図を PNG に書き出す
+└── pptx/       # PNG と HTML から pptx を生成する</code></pre>
+
+<ul>
+	<li><strong>用途ごとにフォルダを分ける</strong>。ルート直下にスクリプトを並べない</li>
+	<li>ps1 には<strong>必ず同名の cmd ランチャーを添える</strong>（共通ルールの規則）</li>
+	<li>出力（PNG・pptx 等のビルド成果物）は <code>tmp/</code> に置く。コミットしない</li>
+	<li><code>etc/</code> はセッションログと <code>c.bat</code> 用。<strong>スクリプトを置かない</strong>（gitignore 対象のため）</li>
+</ul>
+
+<p><strong>Why:</strong> スクリプトは資料と同じく再現に必要な資産なので、履歴に残す必要がある。<code>etc/</code> は gitignore 対象なので置くと失われる。</p>
+</section>
+
+<section class="ch04" id="ch04">
+<h1>資料を追加したら計画の状態を更新する</h1>
+
+<p><strong><code>docs/NN-*.html</code> を新規作成・完成させたら、同じ作業の中で <code>docs/ZZ-構成.html</code> の状態を更新する。</strong></p>
+
+<p>更新する箇所は2つ:</p>
+<ol>
+	<li>「ファイル一覧」表の該当行のバッジ（<code>&lt;span class="badge b-none"&gt;未着手&lt;/span&gt;</code> → <code>&lt;span class="badge b-good"&gt;作成済&lt;/span&gt;</code>）</li>
+	<li>「基礎編／実践編の詳細」の該当 h2 見出しの末尾バッジ</li>
+</ol>
+
+<p><strong>Why:</strong> 計画と実体がずれると、次にどこから再開すればよいか分からなくなる。状態の更新を別作業にすると必ず忘れる。</p>
+</section>
+
+<section class="ch05" id="ch05">
+<h1>付録は <code>A1-</code> <code>A2-</code> の連番にする</h1>
+
+<p>本編は <code>docs/NN-タイトル.html</code>（<code>01</code>〜<code>10</code>）、付録は <code>docs/AN-タイトル.html</code>（<code>A1</code>・<code>A2</code>）とする。</p>
+
+<ul>
+	<li>見出し番号も <code>A1.1</code> <code>A2.3</code> のように接頭辞を引き継ぐ（目次の CSS カウンタは <code>content: "A1." counter(toc) " "</code>）</li>
+	<li>章クラス <code>.chNN</code> の付け方・色相の分割は本編と同じ。ファイル内の節数で 280°を分割する</li>
+	<li>本編の最終章（10）のフッターから付録へリンクする</li>
+</ul>
+
+<p><strong>Why:</strong> 本編は順に読むもの、付録は必要なときに引くもので、役割が違う。番号を連番で続けると「11章がある」と誤解される。</p>
+</section>
+
+<section class="ch06" id="ch06">
+<h1>A1.2 のコマンド索引は自動生成する</h1>
+
+<p><code>docs/A1-逆引き.html</code> の A1.2（コマンドから引く）は手書きしない。</p>
+
+<ul>
+	<li><code>src/scripts/index/build-index.ps1</code> が <code>docs/NN-*.html</code> を走査し、<code>&lt;!-- AUTO:cmdlets --&gt;</code> 〜 <code>&lt;!-- /AUTO:cmdlets --&gt;</code> の間を書き換える</li>
+	<li>用途の説明はスクリプト内の <code>$Purpose</code> に持つ。未登録の Cmdlet が見つかると実行時に警告が出る</li>
+	<li>資料内で定義した例示用の関数（<code>Write-Log</code> など）は <code>$Examples</code> で除外する</li>
+	<li>章を追加・編集したら実行し直す</li>
+</ul>
+
+<p><strong>Why:</strong> 69 種 × 10 章の対応表を手で維持すると、章を追加するたびに陳腐化する。A1.1・A1.3・A1.4 は内容の判断が要るため手書きのまま。</p>
+</section>
+
+<section class="ch07" id="ch07">
+<h1>Playwright の対象ファイルは targets.ts だけに書く</h1>
+
+<p><code>tests/targets.ts</code> が唯一の一覧。<code>capture-figures</code> / <code>export-outline</code> の2つの spec はどちらもここから読む。</p>
+
+<ul>
+	<li>資料を追加したら <code>targets.ts</code> に1行足すだけでよい</li>
+	<li><code>export-outline</code> は README を除外する（目次ページはスライド化しない）</li>
+	<li><strong>spec はこのリポジトリの <code>tests/</code> に置く</strong>。借りるのはブラウザだけで、共有環境側にファイルを置かない（PlayWright の USAGE「フォルダ規約」）</li>
+</ul>
+
+<p><strong>Why:</strong> spec ごとに一覧を持つと追記漏れが起きる。実際に <code>export-outline</code> だけ追記を忘れ、付録の構造 JSON が生成されず pptx を作れなかった。</p>
+</section>
+
+<section class="ch08" id="ch08">
+<h1>再生成した図は、内容が変わったものだけ commit する</h1>
+
+<p><code>capture-figures.ps1</code> は撮影のたびに差分を出す。アンチエイリアスの揺れによるもので、見た目は同一。</p>
+
+<ul>
+	<li>再生成したら <code>git diff --stat -- docs/images</code> を見る</li>
+	<li>元の SVG を触っていない図の差分は <code>git checkout -- &lt;path&gt;</code> で戻す</li>
+	<li><strong>判定は寸法ではなく SVG ソースで行う</strong>。<code>git show HEAD:&lt;html&gt;</code> と現在の <code>&lt;figure&gt;</code> を比べ、<strong>ソースが同一なら PNG は更新しない</strong></li>
+	<li>寸法の一致・不一致は当てにならない。<strong>同じ寸法でも実質変更のことがあり、数 px 違っても中身が同じことがある</strong></li>
+</ul>
+
+<p><strong>Why:</strong> PNG は Git が差分圧縮できないため、ノイズ commit のたびにファイル全体（200〜400KB）が履歴に積まれる。それ以上に、本物の変更が埋もれて判別できなくなる。実際に付録追加時、12 枚の変更のうち中身が変わったのは 1 枚だけだった。また、README から構成案へ図を移した際、色が変わったと判断して差し替えたが、実測すると差は 1/255 で視覚的に区別できなかった。移設の前後で節の色相がどちらも 0（最終節）だったためで、寸法も同じだった。SVG ソースを比べていれば一目で分かった。</p>
+</section>
+
+<section class="ch09" id="ch09">
+<h1>見出しへの番号付け</h1>
+
+<p>見出しテキストの先頭に階層番号を付ける:</p>
+<ul>
+	<li>ファイルレベル（header）: <code>01. PowerShell の生まれた経緯</code></li>
+	<li>セクション h1: <code>01.1 Windows Command Shell の限界</code>、<code>01.2 ...</code> など</li>
+</ul>
+
+<p><strong>Why:</strong> 複数ファイルがある場合、参照が明確になる。「01.2 を参照」で誰もが同じセクションを指せる。</p>
+</section>
+
+<section class="ch10" id="ch10">
+<h1>SVG 図の追加</h1>
+
+<p><strong>できるだけ SVG 図をいっぱい付ける。</strong></p>
+
+<p>各ファイルにフロー図・比較図・概念図を複数枚埋め込む。描き方は <code>docs/rules/html-design.md</code> および共通ルールの「SVG図」節に従う。</p>
+</section>
+
+<section class="ch11" id="ch11">
+<h1>callout には本文に無いことだけを書く</h1>
+
+<p><strong>本文で述べた結論を callout で言い直さない。</strong>言い回しを変えても、読者は同じ話を2回読んだと感じる。</p>
+
+<h2>入れてよいもの</h2>
+<div class="tablewrap">
+<table>
+<tr><th>種類</th><th>例</th></tr>
+<tr><td class="nowrap"><strong>警告・注意</strong></td><td>「<code>/MIR</code> はコピー先の余分なファイルを削除します」</td></tr>
+<tr><td class="nowrap"><strong>落とし穴</strong></td><td>「<code>Select-Object</code> を通すと型が変わります」</td></tr>
+<tr><td class="nowrap"><strong>意外な事実</strong></td><td>「実行ポリシーはセキュリティ機能ではありません」</td></tr>
+<tr><td class="nowrap"><strong>補足</strong></td><td>「PowerShell が初めての人へ」（読者B向け）</td></tr>
+<tr><td class="nowrap"><strong>判断</strong></td><td>事実から導いた「だからこうする」。<strong>本文に書いていない場合のみ</strong></td></tr>
+</table>
+</div>
+
+<h2>入れてはいけないもの</h2>
+<ul>
+	<li><strong>本文で既に述べた結論の言い直し</strong></li>
+	<li>見出しの繰り返し</li>
+</ul>
+
+<h2>判定方法</h2>
+<p><strong>callout を消しても本文だけで意味が通るなら、その callout は不要。</strong></p>
+<p>逆に、本文側が結論まで書いてしまっている場合は、<strong>本文を「何が起きるか」の提示に留め、判断は callout に集約</strong>する。</p>
+
+<pre><code class="language-text">✗ 本文  : PowerShell の関数はコマンドとして呼びます。
+   callout: 関数は「コマンド」であって「メソッド」ではありません。…
+
+✓ 本文  : ここが経験者ほど間違える箇所です。しかもエラーが出ないまま、意図と違う値が渡ります。
+   callout: 関数は「コマンド」であって「メソッド」ではありません。…</code></pre>
+
+<p><strong>Why:</strong> 本文と callout はどちらも「地の文」として読まれる。同じ主張が並ぶと、読者は情報量の割に長い資料だと感じる。</p>
+</section>
+
+<section class="ch12" id="ch12">
+<h1>等幅フォントは BIZ UDゴシックを使う</h1>
+
+<p><strong><code>code</code> / <code>pre</code> / SVG 内のコード表記は、バックスラッシュを <code>¥</code> で描くフォントを使う。</strong></p>
+
+<pre><code class="language-css">font-family: "BIZ UDゴシック", "ＭＳ ゴシック", Consolas, "Cascadia Mono", monospace;</code></pre>
+
+<ul>
+	<li><strong>文字そのものは U+005C（バックスラッシュ）のまま</strong>。表示だけが <code>¥</code> になるので、コピペすれば正しく <code>\</code> として貼り付けられる</li>
+	<li><code>¥</code>（U+00A5）を直接書いてはいけない。コピペしたパスが動かなくなる</li>
+	<li>pptx 生成側（<code>build-pptx.ps1</code> の <code>$FontCode</code>）も同じフォントに揃える</li>
+</ul>
+
+<p>実測での比較:</p>
+<div class="tablewrap">
+<table>
+<tr><th>フォント</th><th><code>\</code> の表示</th><th>等幅</th></tr>
+<tr><td>Consolas / Cascadia Mono</td><td><code>\</code></td><td>✅</td></tr>
+<tr><td><strong>BIZ UDゴシック</strong></td><td><strong><code>¥</code></strong></td><td>✅ 採用</td></tr>
+<tr><td>ＭＳ ゴシック</td><td><code>¥</code></td><td>✅ 見た目が古い</td></tr>
+<tr><td>MS UI Gothic</td><td><code>¥</code></td><td>❌ プロポーショナル</td></tr>
+</table>
+</div>
+
+<p><strong>Why:</strong> 日本語 Windows のコンソールは <code>\</code> を <code>¥</code> で表示する。資料の表示を実機に合わせたほうが、読者が画面と資料を照合しやすい。</p>
+</section>
+
+<section class="ch13" id="ch13">
+<h1>バージョン差はバッジで明示する</h1>
+
+<p><strong>資料は Windows PowerShell 5.1 と PowerShell 7 (pwsh) の両方を対象にする。</strong>どちらか一方でしか動かない、または挙動が異なる内容には、その場でバッジを付ける。</p>
+
+<pre><code class="language-css">.b-ps7  { background: linear-gradient(100deg, #1a5fa8, #4d9ae0); }  /* pwsh 7 以降 */
+.b-ps51 { background: linear-gradient(100deg, #5b2d82, #9a6bc4); }  /* 5.1 固有 */</code></pre>
+
+<pre><code class="language-html">&lt;span class="badge b-ps7"&gt;pwsh 7&lt;/span&gt;三項演算子 &lt;code&gt;$a ? $b : $c&lt;/code&gt; が使える
+&lt;span class="badge b-ps51"&gt;5.1&lt;/span&gt;BOM がないと日本語が壊れる</code></pre>
+
+<ul>
+	<li><strong>両方で動く内容にはバッジを付けない</strong>。付けるのは差がある箇所だけ</li>
+	<li>良い/悪い/未実施/警告のバッジ（緑・赤・灰・橙）とは<strong>別の色系統（青・紫）</strong>にする。意味の軸が違うことを色で示すため</li>
+</ul>
+
+<p><strong>Why:</strong> 読者の実行環境が 5.1 か 7 か分からない。コピペして動かなかったとき、原因がバージョン差だと即座に判別できる必要がある。</p>
+</section>
+
+</div>
+
+<footer>
+	<p><a class="back-home" href="../../README.html" title="README"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M2 7.5 8 2l6 5.5V14H2z"/><path d="M6.5 14V10h3v4"/></svg></a></p>
+</footer>
+
+</body>
+</html>
