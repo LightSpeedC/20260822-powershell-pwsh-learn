@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -1006,7 +1006,7 @@ pptx は <code>tmp/outline/*.json</code> を材料にするため、<strong>先�
 .\src\scripts\pptx\build-pptx.ps1 -Prefix 05 -Pdf -Images
 
 # 3) GitHub 用の Markdown を生成する（共通ツール。PATH に入っている）
-html2md --dir docs</code></pre>
+html2md --dir notes --dir docs</code></pre>
 
 <p>0)〜2) は<strong>同名の <code>.cmd</code> をダブルクリック</strong>しても実行できます。</p>
 
@@ -1053,8 +1053,8 @@ html2md --dir docs</code></pre>
 </ol>
 
 <div class="callout">
-<strong>Playwright の spec は共有環境側にあります。</strong><br>
-<code>N:/PlayWright/projects/20260822-powershell-pwsh-learn/</code> に置いています。<strong>対象ファイルの一覧は <code>targets.ts</code> に集約</strong>してあるので、追記はそこ1箇所で済みます。
+<strong>Playwright の spec は <code>tests/</code> にあります。</strong><br>
+ブラウザは共有環境のものを借りますが、spec 自体はこのリポジトリが持ちます。<strong>対象ファイルの一覧は <code>tests/targets.ts</code> に集約</strong>してあるので、追記はそこ1箇所で済みます。
 </div>
 
 <h2>出力物の置き場所</h2>

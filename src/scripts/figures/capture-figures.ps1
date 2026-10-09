@@ -3,36 +3,35 @@
 	docs/*.html に埋め込まれた SVG 図を PNG として書き出す。
 
 .DESCRIPTION
-	N:/PlayWright の共有 Playwright 環境を呼び出し、各 HTML の <figure> 内の
+	PlayWright 共有環境のランナー (playwright-test) を呼び出し、各 HTML の <figure> 内の
 	SVG を高 DPI (3x) の PNG として tmp/figures/ に出力する。
 
 	ブラウザで描画してから撮るため、CSS 変数 (--accent 等) が解決済みの状態になり、
 	フォントも本文と完全に一致する。出力した PNG は pptx 生成が利用する。
 
-	書き出す対象ファイルの一覧は、共有環境側の targets.ts に集約されている:
-	  N:/PlayWright/projects/20260822-powershell-pwsh-learn/targets.ts
+	書き出す対象ファイルの一覧は tests/targets.ts に集約されている。
 	capture-figures / export-outline の2つが同じ一覧を読むため、
 	資料を追加したときの追記先はこの1ファイルだけでよい。
 #>
 
 $ErrorActionPreference = 'Stop'
 
-$PlaywrightRoot = 'N:/PlayWright'
-$ProjectName    = '20260822-powershell-pwsh-learn'
-$OutDir         = Join-Path $PSScriptRoot '..\..\..\tmp\figures'
+$Root    = (Resolve-Path (Join-Path $PSScriptRoot '../../..')).Path
+$TestDir = Join-Path $Root 'tests'
+$TmpDir  = Join-Path $Root 'tmp'
+$OutDir  = Join-Path $TmpDir 'figures'
 
 Write-Host '=== SVG 図の書き出し ===' -ForegroundColor Cyan
 
-# 共有環境の存在確認
-if (-not (Test-Path -LiteralPath $PlaywrightRoot)) {
-	Write-Host "共有 Playwright 環境が見つかりません: $PlaywrightRoot" -ForegroundColor Red
-	Write-Host '~/.claude/CLAUDE.md の「PlayWright テストの実行」を確認してください。'
+# ランナーの存在確認
+if (-not (Get-Command playwright-test -ErrorAction SilentlyContinue)) {
+	Write-Host 'playwright-test が見つかりません。' -ForegroundColor Red
+	Write-Host '共通ルールの「PlayWright テストの実行」を確認してください。'
 	exit 1
 }
 
-$SpecDir = Join-Path $PlaywrightRoot "projects/$ProjectName"
-if (-not (Test-Path -LiteralPath $SpecDir)) {
-	Write-Host "spec フォルダが見つかりません: $SpecDir" -ForegroundColor Red
+if (-not (Test-Path -LiteralPath $TestDir)) {
+	Write-Host "テストの置き場が見つかりません: $TestDir" -ForegroundColor Red
 	exit 1
 }
 
@@ -47,21 +46,14 @@ if (Test-Path -LiteralPath $OutDir) {
 	}
 }
 
-# 実行（共有環境のルートで npm を叩く）
-Write-Host "共有環境: $PlaywrightRoot"
-Write-Host "プロジェクト: $ProjectName"
+# 実行
+# 走らせる spec を名指しする。渡さないと tests 配下が全部動く。
+# ブラウザは chromium だけにする。3 つで走ると同じ PNG を 3 回撮り直すことになる。
+Write-Host "テスト: $TestDir"
 Write-Host ''
 
-Push-Location -LiteralPath $PlaywrightRoot
-try {
-	$env:PW_PROJECT = $ProjectName
-	# 走らせる spec を名指しする。フォルダ名だけを渡すと配下の spec が全部動く。
-	npm run test:projects -- "$ProjectName/capture-figures" "$ProjectName/export-outline"
-	$exitCode = $LASTEXITCODE
-}
-finally {
-	Pop-Location
-}
+playwright-test --test-dir "$TestDir" --out-dir "$TmpDir" --project=chromium capture-figures export-outline
+$exitCode = $LASTEXITCODE
 
 Write-Host ''
 
