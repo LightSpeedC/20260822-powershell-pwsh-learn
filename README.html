@@ -271,12 +271,25 @@
 	footer {
 		max-width: 1600px;
 		margin: 40px auto 0;
-		padding: 18px 30px 0;
+		padding: 18px 30px 30px;
 		border-top: 2px solid var(--line);
 		color: var(--ink-soft);
 		font-size: 0.86em;
 	}
 	footer a { color: var(--navy2); }
+
+	/* 親サイトへ戻るリンク（上下とも同じ紺のバッジ） */
+	.wrap > .backlink { margin: 18px 0 0; }
+	a.back-home, footer a.back-home {
+		display: inline-block;
+		padding: 2px 10px;
+		border-radius: 6px;
+		background: linear-gradient(100deg, var(--navy1, #12224d), var(--navy2, #2f5fbf));
+		color: #fff;
+		text-decoration: none;
+		line-height: 1.6;
+	}
+	a.back-home svg { vertical-align: -2px; }
 </style>
 </head>
 <body>
@@ -285,11 +298,13 @@
 	<div class="inner">
 		<h1>PowerShell 学習資料</h1>
 		<p class="lead">Windows PowerShell 5.1 と PowerShell 7 の両対応 ／ 全 12 章 ＋ 付録3本</p>
-		<p class="date">📅 作成: 2026-08-22 / 更新: 2026-09-10 ／ 対象: 何らかのプログラミング言語の基礎を知っている方</p>
+		<p class="date">📅 作成: 2026-08-22 / 更新: 2026-10-10 ／ 対象: 何らかのプログラミング言語の基礎を知っている方</p>
 	</div>
 </div>
 
 <div class="wrap">
+
+<p class="backlink"><a class="back-home" href="../" title="公開資料の一覧"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M2 7.5 8 2l6 5.5V14H2z"/><path d="M6.5 14V10h3v4"/></svg></a></p>
 
 <h2>この資料について</h2>
 
@@ -614,6 +629,7 @@
 </div>
 
 <footer>
+	<p><a class="back-home" href="../" title="公開資料の一覧"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M2 7.5 8 2l6 5.5V14H2z"/><path d="M6.5 14V10h3v4"/></svg></a></p>
 	<p>PowerShell 学習資料 ／ 本編 12 章 ＋ 付録 3 ／ 作り方は <a href="docs/ZZ-構成.html">構成案</a> にまとめています。</p>
 	<p>ほかの公開資料は <a href="https://lightspeedc.com/">公開資料の一覧</a> にあります。</p>
 </footer>
