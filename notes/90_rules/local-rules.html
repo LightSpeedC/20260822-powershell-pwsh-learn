@@ -37,18 +37,17 @@
 	.callout strong { color: var(--accent, #12224d); background: transparent; }
 	footer { max-width: 1600px; margin: 40px auto 0; padding: 18px 30px 30px; border-top: 2px solid var(--line); color: var(--ink-soft); background: #ffffff; font-size: 0.86em; }
 	.ch01 { --accent: hsl(280,78%,25%); --accent2: hsl(280,58%,55%); --soft: hsl(280,28%,95%); }
-	.ch02 { --accent: hsl(256.7,78%,25%); --accent2: hsl(256.7,58%,55%); --soft: hsl(256.7,28%,95%); }
-	.ch03 { --accent: hsl(233.3,78%,25%); --accent2: hsl(233.3,58%,55%); --soft: hsl(233.3,28%,95%); }
-	.ch04 { --accent: hsl(210,78%,25%); --accent2: hsl(210,58%,55%); --soft: hsl(210,28%,95%); }
-	.ch05 { --accent: hsl(186.7,78%,25%); --accent2: hsl(186.7,58%,55%); --soft: hsl(186.7,28%,95%); }
-	.ch06 { --accent: hsl(163.3,78%,25%); --accent2: hsl(163.3,58%,55%); --soft: hsl(163.3,28%,95%); }
-	.ch07 { --accent: hsl(140,78%,25%); --accent2: hsl(140,58%,55%); --soft: hsl(140,28%,95%); }
-	.ch08 { --accent: hsl(116.7,78%,25%); --accent2: hsl(116.7,58%,55%); --soft: hsl(116.7,28%,95%); }
-	.ch09 { --accent: hsl(93.3,78%,25%); --accent2: hsl(93.3,58%,55%); --soft: hsl(93.3,28%,95%); }
-	.ch10 { --accent: hsl(70,78%,25%); --accent2: hsl(70,58%,55%); --soft: hsl(70,28%,95%); }
-	.ch11 { --accent: hsl(46.7,78%,25%); --accent2: hsl(46.7,58%,55%); --soft: hsl(46.7,28%,95%); }
-	.ch12 { --accent: hsl(23.3,78%,25%); --accent2: hsl(23.3,58%,55%); --soft: hsl(23.3,28%,95%); }
-	.ch13 { --accent: hsl(0,78%,25%); --accent2: hsl(0,58%,55%); --soft: hsl(0,28%,95%); }
+	.ch02 { --accent: hsl(254.5,78%,25%); --accent2: hsl(254.5,58%,55%); --soft: hsl(254.5,28%,95%); }
+	.ch03 { --accent: hsl(229.1,78%,25%); --accent2: hsl(229.1,58%,55%); --soft: hsl(229.1,28%,95%); }
+	.ch04 { --accent: hsl(203.6,78%,25%); --accent2: hsl(203.6,58%,55%); --soft: hsl(203.6,28%,95%); }
+	.ch05 { --accent: hsl(178.2,78%,25%); --accent2: hsl(178.2,58%,55%); --soft: hsl(178.2,28%,95%); }
+	.ch06 { --accent: hsl(152.7,78%,25%); --accent2: hsl(152.7,58%,55%); --soft: hsl(152.7,28%,95%); }
+	.ch07 { --accent: hsl(127.3,78%,25%); --accent2: hsl(127.3,58%,55%); --soft: hsl(127.3,28%,95%); }
+	.ch08 { --accent: hsl(101.8,78%,25%); --accent2: hsl(101.8,58%,55%); --soft: hsl(101.8,28%,95%); }
+	.ch09 { --accent: hsl(76.4,78%,25%); --accent2: hsl(76.4,58%,55%); --soft: hsl(76.4,28%,95%); }
+	.ch10 { --accent: hsl(50.9,78%,25%); --accent2: hsl(50.9,58%,55%); --soft: hsl(50.9,28%,95%); }
+	.ch11 { --accent: hsl(25.5,78%,25%); --accent2: hsl(25.5,58%,55%); --soft: hsl(25.5,28%,95%); }
+	.ch12 { --accent: hsl(0,78%,25%); --accent2: hsl(0,58%,55%); --soft: hsl(0,28%,95%); }
 </style>
 </head>
 <body>
@@ -57,7 +56,7 @@
 	<div class="inner">
 		<h1>PowerShell 学習資料 ローカルルール</h1>
 		<p class="lead">このプロジェクトでだけ通る決めごと。全プロジェクトに通ることは共通ルールに置く</p>
-		<p class="date">📅 作成: 2026-08-22 / 更新: 2026-10-09</p>
+		<p class="date">📅 作成: 2026-08-22 / 更新: 2026-10-11</p>
 	</div>
 </div>
 
@@ -186,33 +185,20 @@
 </section>
 
 <section class="ch08" id="ch08">
-<h1>再生成した図は、内容が変わったものだけ commit する</h1>
+<h1>共通ルールと違うところ: 見出しの番号</h1>
 
-<p><code>capture-figures.ps1</code> は撮影のたびに差分を出す。アンチエイリアスの揺れによるもので、見た目は同一。</p>
-
-<ul>
-	<li>再生成したら <code>git diff --stat -- docs/images</code> を見る</li>
-	<li>元の SVG を触っていない図の差分は <code>git checkout -- &lt;path&gt;</code> で戻す</li>
-	<li><strong>判定は寸法ではなく SVG ソースで行う</strong>。<code>git show HEAD:&lt;html&gt;</code> と現在の <code>&lt;figure&gt;</code> を比べ、<strong>ソースが同一なら PNG は更新しない</strong></li>
-	<li>寸法の一致・不一致は当てにならない。<strong>同じ寸法でも実質変更のことがあり、数 px 違っても中身が同じことがある</strong></li>
-</ul>
-
-<p><strong>Why:</strong> PNG は Git が差分圧縮できないため、ノイズ commit のたびにファイル全体（200〜400KB）が履歴に積まれる。それ以上に、本物の変更が埋もれて判別できなくなる。実際に付録追加時、12 枚の変更のうち中身が変わったのは 1 枚だけだった。また、README から構成案へ図を移した際、色が変わったと判断して差し替えたが、実測すると差は 1/255 で視覚的に区別できなかった。移設の前後で節の色相がどちらも 0（最終節）だったためで、寸法も同じだった。SVG ソースを比べていれば一目で分かった。</p>
+<div class="tablewrap">
+<table>
+<tr><th>項目</th><th>内容</th></tr>
+<tr><td class="nowrap">見出し</td><td>共通ルールの「HTMLデザインルール」＞「クラス名」の「章の連番は html2md が振る。HTML 側に番号を書かない」</td></tr>
+<tr><td class="nowrap">違い</td><td>HTML の見出しに資料番号付きの番号を書く。タイトルバーの h1 は <code>01. PowerShell の生まれた経緯</code>、章の h1 は <code>01.1 Windows Command Shell の限界</code></td></tr>
+<tr><td class="nowrap">なぜ</td><td>資料をまたいで「01.2 を参照」と書くため。html2md が振る番号は資料ごとに 1 から始まり、資料番号を持たない</td></tr>
+<tr><td class="nowrap">引き受けること</td><td>Markdown では html2md の番号と重なり、<code>## 1. 01.1 Windows Command Shell の限界</code> になる</td></tr>
+</table>
+</div>
 </section>
 
 <section class="ch09" id="ch09">
-<h1>見出しへの番号付け</h1>
-
-<p>見出しテキストの先頭に階層番号を付ける:</p>
-<ul>
-	<li>ファイルレベル（header）: <code>01. PowerShell の生まれた経緯</code></li>
-	<li>セクション h1: <code>01.1 Windows Command Shell の限界</code>、<code>01.2 ...</code> など</li>
-</ul>
-
-<p><strong>Why:</strong> 複数ファイルがある場合、参照が明確になる。「01.2 を参照」で誰もが同じセクションを指せる。</p>
-</section>
-
-<section class="ch10" id="ch10">
 <h1>SVG 図の追加</h1>
 
 <p><strong>できるだけ SVG 図をいっぱい付ける。</strong></p>
@@ -220,7 +206,7 @@
 <p>各ファイルにフロー図・比較図・概念図を複数枚埋め込む。描き方は <code>docs/rules/html-design.md</code> および共通ルールの「SVG図」節に従う。</p>
 </section>
 
-<section class="ch11" id="ch11">
+<section class="ch10" id="ch10">
 <h1>callout には本文に無いことだけを書く</h1>
 
 <p><strong>本文で述べた結論を callout で言い直さない。</strong>言い回しを変えても、読者は同じ話を2回読んだと感じる。</p>
@@ -256,7 +242,7 @@
 <p><strong>Why:</strong> 本文と callout はどちらも「地の文」として読まれる。同じ主張が並ぶと、読者は情報量の割に長い資料だと感じる。</p>
 </section>
 
-<section class="ch12" id="ch12">
+<section class="ch11" id="ch11">
 <h1>等幅フォントは BIZ UDゴシックを使う</h1>
 
 <p><strong><code>code</code> / <code>pre</code> / SVG 内のコード表記は、バックスラッシュを <code>¥</code> で描くフォントを使う。</strong></p>
@@ -283,7 +269,7 @@
 <p><strong>Why:</strong> 日本語 Windows のコンソールは <code>\</code> を <code>¥</code> で表示する。資料の表示を実機に合わせたほうが、読者が画面と資料を照合しやすい。</p>
 </section>
 
-<section class="ch13" id="ch13">
+<section class="ch12" id="ch12">
 <h1>バージョン差はバッジで明示する</h1>
 
 <p><strong>資料は Windows PowerShell 5.1 と PowerShell 7 (pwsh) の両方を対象にする。</strong>どちらか一方でしか動かない、または挙動が異なる内容には、その場でバッジを付ける。</p>
