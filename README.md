@@ -159,6 +159,6 @@ PowerShell を<strong>「コマンドを暗記する道具」ではなく「調�
 
 [公開資料の一覧](../)
 
-PowerShell 学習資料 ／ 本編 12 章 ＋ 付録 3 ／ 作り方は [構成案](docs/ZZ-構成.md) にまとめています。
+PowerShell 学習資料 ／ 本編 12 章 ＋ 付録 3 ／ 作り方は [構成案](docs/ZZ-構成.md) にまとめています。これから直すことは [課題](notes/40_issues/issues.md) にあります。
 
 ほかの公開資料は [公開資料の一覧](https://lightspeedc.com/) にあります。
