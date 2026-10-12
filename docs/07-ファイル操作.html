@@ -330,7 +330,7 @@
 </table>
 </div>
 
-<pre><code># スクリプトと同じ場所にある設定ファイルを読む（定番）
+<pre><code class="language-powershell"># スクリプトと同じ場所にある設定ファイルを読む（定番）
 $config = Join-Path $PSScriptRoot 'config.json'</code></pre>
 
 <div class="callout callout-important">
@@ -340,7 +340,7 @@ $config = Join-Path $PSScriptRoot 'config.json'</code></pre>
 
 <h2>カレントの実行ファイルは <code>.\</code> を明示する</h2>
 
-<pre><code># ✗ 環境設定によっては見つからない
+<pre><code class="language-powershell"># ✗ 環境設定によっては見つからない
 mytool.exe
 
 # ✓ カレントを明示する
@@ -376,7 +376,7 @@ mytool.exe
 
 <p>以降の例はすべて、次の構成に対して実行した<strong>実測値</strong>です。</p>
 
-<pre><code>$base\
+<pre><code class="language-text">$base\
 ├── docs-a\
 │   ├── a.txt
 │   └── a.log
@@ -442,7 +442,7 @@ mytool.exe
 <figcaption>図 07.2 — 実測値。①だけが 0 件になる。エラーが出ないため原因に気づきにくい</figcaption>
 </figure>
 
-<pre><code># ✗ 0 件になる
+<pre><code class="language-powershell"># ✗ 0 件になる
 Get-ChildItem "$base\docs-*" -Filter '*.txt' -File
 
 # ✓ 親フォルダを指定して再帰し、絞り込みは Where-Object で行う
@@ -451,7 +451,7 @@ Get-ChildItem $base -Recurse -Filter '*.txt' -File |
 
 <h2>理由② <code>-Include</code> を <code>-Recurse</code> なしで使った</h2>
 
-<pre><code>Get-ChildItem $base -Include '*.txt'              # → 0 件（何も返らない）
+<pre><code class="language-powershell">Get-ChildItem $base -Include '*.txt'              # → 0 件（何も返らない）
 Get-ChildItem $base -Recurse -Include '*.txt'     # → 3 件（a.txt / b.txt / c.txt）
 Get-ChildItem "$base\*" -Include '*.txt'          # → これでも動く</code></pre>
 
@@ -514,7 +514,7 @@ Get-ChildItem "$base\*" -Include '*.txt'          # → これでも動く</code
 
 <h2>よく使う指定</h2>
 
-<pre><code>Get-ChildItem $dir -File                        # ファイルだけ
+<pre><code class="language-powershell">Get-ChildItem $dir -File                        # ファイルだけ
 Get-ChildItem $dir -Directory                   # フォルダだけ
 Get-ChildItem $dir -Recurse -Depth 2            # 深さを制限する
 Get-ChildItem $dir -Force                       # 隠しファイルも含める
@@ -598,7 +598,7 @@ Get-ChildItem $dir -Recurse -ErrorAction SilentlyContinue   # アクセス不可
 
 <h3>両方で同じ結果になる書き方</h3>
 
-<pre><code># 読む（BOM があればそちらが優先される）
+<pre><code class="language-powershell"># 読む（BOM があればそちらが優先される）
 $text = Get-Content .\data.txt -Encoding UTF8 -Raw
 
 # 書く
@@ -631,7 +631,7 @@ $text | Set-Content .\out.txt -Encoding UTF8      # 5.1: BOM 付き / 7: BOM な
 <code>-Raw</code> なしだと行ごとの配列になり、<code>ConvertFrom-Json</code> が正しく解釈できません。<strong>「JSON の解析に失敗する」の原因はほぼこれです。</strong>
 </div>
 
-<pre><code># ✗ 行の配列が渡ってしまう
+<pre><code class="language-powershell"># ✗ 行の配列が渡ってしまう
 Get-Content .\data.json | ConvertFrom-Json
 
 # ✓
@@ -650,7 +650,7 @@ Get-Content .\data.json -Raw | ConvertFrom-Json</code></pre>
 
 <h2>CSV — 表形式のデータ</h2>
 
-<pre><code># 読む（1行が1オブジェクトになる）
+<pre><code class="language-powershell"># 読む（1行が1オブジェクトになる）
 $rows = Import-Csv .\data.csv -Encoding UTF8
 
 # 書く
@@ -663,7 +663,7 @@ $rows | Export-Csv .\out.csv -Encoding UTF8 -NoTypeInformation</code></pre>
 
 <h3>読み込んだ値はすべて文字列</h3>
 
-<pre><code>$rows = Import-Csv .\sales.csv
+<pre><code class="language-powershell">$rows = Import-Csv .\sales.csv
 $rows[0].Amount + 1        # → "1000" + 1 = "10001"  ✗ 文字列結合
 
 [int]$rows[0].Amount + 1   # → 1001                  ✓</code></pre>
@@ -672,7 +672,7 @@ $rows[0].Amount + 1        # → "1000" + 1 = "10001"  ✗ 文字列結合
 
 <h2>JSON</h2>
 
-<pre><code># 読む
+<pre><code class="language-powershell"># 読む
 $config = Get-Content .\config.json -Raw | ConvertFrom-Json
 
 # 書く
@@ -720,7 +720,7 @@ $data | ConvertTo-Json -Depth 10 | Set-Content .\out.json -Encoding UTF8</code><
 
 <h3>JSON を読むと <code>PSCustomObject</code> になる</h3>
 
-<pre><code>$config = Get-Content .\config.json -Raw | ConvertFrom-Json
+<pre><code class="language-powershell">$config = Get-Content .\config.json -Raw | ConvertFrom-Json
 $config.database.host        # ドットでたどれる
 
 # ハッシュテーブルとして受け取りたい場合
@@ -739,7 +739,7 @@ $hash = Get-Content .\config.json -Raw | ConvertFrom-Json -AsHashtable   # pwsh 
 </table>
 </div>
 
-<pre><code># オブジェクトをそのまま保存して復元する（型情報も保たれる）
+<pre><code class="language-powershell"># オブジェクトをそのまま保存して復元する（型情報も保たれる）
 Get-Process | Export-Clixml .\proc.xml
 $procs = Import-Clixml .\proc.xml</code></pre>
 

@@ -602,7 +602,7 @@ BOM なしの ps1 に日本語を書いて 5.1 で実行し、文字化けを目
 
 <p>読者Aの既知知識に最も接続しやすい章。<strong>全節で JS のコードを左、PowerShell を右に並べます。</strong></p>
 
-<pre><code># JavaScript                    # PowerShell
+<pre><code class="language-text"># JavaScript                    # PowerShell
 const name = "PS";              $name = "PS"
 const arr = [1, 2, 3];          $arr = @(1, 2, 3)
 const obj = { a: 1 };           $obj = @{ a = 1 }
@@ -995,7 +995,7 @@ pptx は <code>tmp/outline/*.json</code> を材料にするため、<strong>先�
 
 <h2>実行方法</h2>
 
-<pre><code># 0) 章を増減・改題したときに実行する2本
+<pre><code class="language-powershell"># 0) 章を増減・改題したときに実行する2本
 .\src\scripts\nav\build-nav.ps1      # 各章フッターの前後リンク
 .\src\scripts\index\build-index.ps1  # A1.2 のコマンド索引
 

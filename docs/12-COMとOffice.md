@@ -38,14 +38,14 @@ PowerShell 側の入口は `New-Object -ComObject` ひとつだけです。
 
 COM のオブジェクトは **ProgID**（`Excel.Application` のような名前）で指定します。登録されているかはレジストリで確認できます。
 
-```
+```powershell
 foreach ($p in 'Word.Application','Excel.Application','PowerPoint.Application') {
     $v = (Get-ItemProperty "HKLM:\SOFTWARE\Classes\$p\CurVer").'(default)'
     "{0} -> {1}" -f $p, $v
 }
 ```
 
-```
+```text
 Word.Application -> Word.Application.16
 Excel.Application -> Excel.Application.16
 PowerPoint.Application -> PowerPoint.Application.16
@@ -55,7 +55,7 @@ PowerPoint.Application -> PowerPoint.Application.16
 
 #### 登録されていない ProgID を指定すると
 
-```
+```text
 PS> New-Object -ComObject Foo.Bar.Application
 ```
 
@@ -68,14 +68,14 @@ PS> New-Object -ComObject Foo.Bar.Application
 
 ### 返ってくるのは `System.__ComObject`
 
-```
+```powershell
 $sh = New-Object -ComObject WScript.Shell
 $sh.GetType().FullName
 [System.Runtime.InteropServices.Marshal]::IsComObject($sh)
 $sh.SpecialFolders.Item('Desktop')
 ```
 
-```
+```text
 System.__ComObject
 True
 C:\Users\<username>\Desktop
@@ -83,12 +83,12 @@ C:\Users\<username>\Desktop
 
 `GetType()` は必ず `System.__ComObject` を返します。**実体の型名は分かりません**。C# の `dynamic` と同じで、メンバーの解決は呼び出しのたびに実行時に行われます。それでも `Get-Member` は型ライブラリを読んでメンバーを列挙してくれます。
 
-```
+```powershell
 $x = New-Object -ComObject Excel.Application
 $x | Get-Member -MemberType Property | Select-Object -First 8
 ```
 
-```
+```text
   ActiveCell  (Property)
   ActiveChart  (Property)
   ActiveDialog  (Property)
@@ -105,7 +105,7 @@ $x | Get-Member -MemberType Property | Select-Object -First 8
 
 自動処理でウィンドウが出てくると、実行中にユーザーが誤ってクリックできてしまいます。Word と Excel は `Visible` を `$false` にできます。
 
-```
+```powershell
 $word.Visible  = $false
 $excel.Visible = $false
 $excel.DisplayAlerts = $false    # 「保存しますか」等のダイアログを出さない
@@ -154,7 +154,7 @@ VBA なら `wdExportFormatPDF` と名前で書けますが、**PowerShell には
 
 以下はそのまま実行できます。**後始末（12.3）まで含めた完成形**です。
 
-```
+```powershell
 $ErrorActionPreference = 'Stop'
 $dir = 'C:\work\pdf'
 New-Item -ItemType Directory -Force -Path $dir | Out-Null
@@ -216,7 +216,7 @@ Start-Sleep -Seconds 3
 
 #### 実行結果
 
-```
+```text
 Word  ExportAsFixedFormat            62608 バイト    225 ms
 Excel ExportAsFixedFormat            52996 バイト    221 ms
 PowerPoint SaveAs(32)                58246 バイト    175 ms
@@ -229,7 +229,7 @@ PowerPoint SaveAs(32)                58246 バイト    175 ms
 
 PowerPoint で `ExportAsFixedFormat` を呼ぶと、**PDF を作る前に引数の解決で落ちます**。
 
-```
+```text
 PS> $pres.ExportAsFixedFormat($pdf, 2)
 ```
 
@@ -240,7 +240,7 @@ PS> $pres.ExportAsFixedFormat($pdf, 2)
 
 `ExportAsFixedFormat` は省略可能な引数を十数個持つメソッドです。PowerShell は COM のメソッドを**実行時に名前で探して呼ぶ**ため、省略された引数をどう埋めるかを決められず、この段階で失敗します。**回避策は `SaveAs` に PDF の形式番号を渡すこと**です。
 
-```
+```powershell
 $pres.SaveAs($pdf, 32)      # ppSaveAsPDF = 32 → 成功（49224 バイト）
 ```
 
@@ -253,7 +253,7 @@ $pres.SaveAs($pdf, 32)      # ppSaveAsPDF = 32 → 成功（49224 バイト）
 
 「終わったら `Quit()` を呼べばよい」と考えるのが自然ですが、**それだけでは Office のプロセスは終わりません**。3 つのアプリで計測しました。
 
-```
+```powershell
 function Count($n) { @(Get-Process $n -ErrorAction SilentlyContinue).Count }
 
 $x  = New-Object -ComObject Excel.Application
@@ -274,7 +274,7 @@ Start-Sleep -Seconds 3
 
 #### 実行結果 **5.1**
 
-```
+```text
 --- Excel ---
 開始前の EXCEL.EXE : 0
 Quit() 直後（Release なし） : 1
@@ -299,7 +299,7 @@ ReleaseComObject + GC のあと : 0
 
 12.2 のスクリプトから **`$sheet` と `$slide` の解放だけを外して**実行すると、こうなります。
 
-```
+```text
 Word  ExportAsFixedFormat            62608 バイト    250 ms
 Excel ExportAsFixedFormat            52996 バイト    247 ms
 PowerPoint SaveAs(32)                58246 バイト    169 ms
@@ -326,7 +326,7 @@ PowerPoint SaveAs(32)                58246 バイト    169 ms
 
 <strong>COM を触るコードは必ず `try` / `finally` で囲みます。</strong>途中で例外が出ても `finally` は必ず通るので、プロセスが取り残されません。
 
-```
+```powershell
 function Convert-ToPdf {
     [CmdletBinding()]
     param(
@@ -385,11 +385,11 @@ function Convert-ToPdf {
 
 [PowerShell Gallery](https://www.powershellgallery.com/packages/ImportExcel) で配布されているモジュールです（実測時点の最新は **7.8.10**、作者 Douglas Finke）。内部で Open XML を直接読み書きするので、**Excel をインストールしていないマシンでも動きます**。
 
-```
+```powershell
 Install-Module ImportExcel -Scope CurrentUser
 ```
 
-```
+```powershell
 $data = @(
     [PSCustomObject]@{ 商品='りんご'; 数量=12; 単価=180 }
     [PSCustomObject]@{ 商品='みかん'; 数量=30; 単価=95  }
@@ -404,7 +404,7 @@ $back | Format-Table -AutoSize
 
 #### 実行結果 **5.1**
 
-```
+```text
 ImportExcel 7.8.10 を読み込み
 Office の COM は使うか: EXCEL.EXE = 0 個
 Export-Excel: 736 ms  3583 バイト
@@ -469,7 +469,7 @@ COM の時間には **Excel の起動時間が含まれていません**（起�
 
 #### 本体（566 行目付近）
 
-```
+```powershell
 $app = $null
 try {
     $app = New-Object -ComObject PowerPoint.Application
@@ -486,7 +486,7 @@ finally {
 
 #### PDF 化の部分（586 行目付近）
 
-```
+```powershell
 if ($Pdf) {
     # ExportAsFixedFormat は PowerShell の COM バインドで引数が解決できないため
     # SaveAs の PDF 形式（ppSaveAsPDF = 32）を使う
@@ -499,7 +499,7 @@ if ($Pdf) {
 
 定数はファイル冒頭でまとめて定義されています（52〜60 行目）。
 
-```
+```powershell
 $msoTrue        = -1
 $msoFalse       = 0
 $ppLayoutBlank  = 12
@@ -526,7 +526,7 @@ $ppSaveAsPdf    = 32
 
 この章の検証中に、**再現性のある厄介な挙動**を見つけました。`Join-Path` の戻り値を **そのまま Word のメソッドに渡すと、5.1 では応答が返ってきません**。エラーも出ず、ただ止まります。
 
-```
+```powershell
 # 止まる（5.1）
 $docx = Join-Path $dir 'sample.docx'
 $doc.SaveAs2($docx)
@@ -552,7 +552,7 @@ $doc.SaveAs2($docx)
 
 同じ現象は Excel でも形を変えて出ます。**`PSCustomObject` のプロパティ値をそのまま二次元配列に詰めて `Range.Value2` に一括代入すると、5.1 では例外になります。**
 
-```
+```powershell
 # 5.1 では失敗する
 for ($i = 0; $i -lt 200; $i++) {
     $arr[$i,0] = $data[$i].番号
@@ -562,7 +562,7 @@ for ($i = 0; $i -lt 200; $i++) {
 $sheet.Range($sheet.Cells.Item(1,1), $sheet.Cells.Item(200,3)).Value2 = $arr
 ```
 
-```
+```text
 プログラムの実行を続行するための十分なメモリがありませんでした。
     + CategoryInfo          : OperationStopped: (:) [], OutOfMemoryException
     + FullyQualifiedErrorId : System.OutOfMemoryException
@@ -570,7 +570,7 @@ $sheet.Range($sheet.Cells.Item(1,1), $sheet.Cells.Item(200,3)).Value2 = $arr
 
 200 行 × 3 列でメモリが足りなくなるはずがありません。**詰める時点で型を明示すると、そのまま通ります。**
 
-```
+```powershell
 for ($i = 0; $i -lt 200; $i++) {
     $arr[$i,0] = [int]$data[$i].番号
     $arr[$i,1] = [string]$data[$i].商品
@@ -590,7 +590,7 @@ for ($i = 0; $i -lt 200; $i++) {
 
 ループの中で `Value2` に数値と文字列を交互に代入すると、**2 回目で必ず落ちます**。
 
-```
+```powershell
 foreach ($d in $data) {
     $sheet.Cells.Item($r,1).Value2 = $d.番号     # Int32
     $sheet.Cells.Item($r,2).Value2 = $d.商品     # String → ここで落ちる

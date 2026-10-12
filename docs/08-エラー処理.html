@@ -277,7 +277,7 @@
 
 <h2>まず動かして確かめる</h2>
 
-<pre><code>try {
+<pre><code class="language-powershell">try {
     Get-ChildItem 'X:\ないパス'
     'ここまで到達した'
 } catch {
@@ -350,7 +350,7 @@
 
 <p>非終了エラーを<strong>終了エラーに格上げ</strong>すると <code>catch</code> できます。</p>
 
-<pre><code>try {
+<pre><code class="language-powershell">try {
     Get-ChildItem 'X:\ないパス' -ErrorAction Stop
     'ここまで到達した'
 } catch {
@@ -412,7 +412,7 @@
 
 <h3>スクリプト全体を厳しくする</h3>
 
-<pre><code>$ErrorActionPreference = 'Stop'      # スクリプトの先頭に書く</code></pre>
+<pre><code class="language-powershell">$ErrorActionPreference = 'Stop'      # スクリプトの先頭に書く</code></pre>
 
 <div class="callout callout-important">
 <strong>業務スクリプトでは先頭に書くことを推奨します。</strong><br>
@@ -433,7 +433,7 @@ Java・C# では<strong>例外は必ず catch できる</strong>のが前提で�
 
 <h2>基本の形</h2>
 
-<pre><code>try {
+<pre><code class="language-powershell">try {
     $data = Get-Content .\config.json -Raw -ErrorAction Stop
     $config = $data | ConvertFrom-Json
 }
@@ -507,7 +507,7 @@ finally {
 </table>
 </div>
 
-<pre><code>catch {
+<pre><code class="language-powershell">catch {
     Write-Host "エラー: $($_.Exception.Message)"
     Write-Host "場所  : $($_.InvocationInfo.ScriptName) の $($_.InvocationInfo.ScriptLineNumber) 行目"
 }</code></pre>
@@ -529,7 +529,7 @@ finally {
 </table>
 </div>
 
-<pre><code># 続行できないので止める
+<pre><code class="language-powershell"># 続行できないので止める
 if (-not (Test-Path $config)) { throw "設定ファイルが見つかりません: $config" }
 
 # 1件失敗しても残りを処理したい
@@ -540,7 +540,7 @@ foreach ($f in $files) {
 
 <h2>エラーを後から確認する</h2>
 
-<pre><code># 直近のエラーが新しい順に入っている
+<pre><code class="language-powershell"># 直近のエラーが新しい順に入っている
 $Error[0]
 $Error.Count
 
@@ -572,7 +572,7 @@ Get-Error</code></pre>
 
 <p><code>robocopy</code>、<code>git</code>、<code>7z</code> などの外部コマンドは、<strong>失敗しても PowerShell のエラーになりません</strong>。</p>
 
-<pre><code>try {
+<pre><code class="language-powershell">try {
     cmd /c "exit 3"
     "例外なし。`$LASTEXITCODE = $LASTEXITCODE  /  `$? = $?"
 } catch {
@@ -631,7 +631,7 @@ Get-Error</code></pre>
 </table>
 </div>
 
-<pre><code>robocopy $src $dst /MIR
+<pre><code class="language-powershell">robocopy $src $dst /MIR
 if ($LASTEXITCODE -ge 8) {
     throw "robocopy が失敗しました (終了コード: $LASTEXITCODE)"
 }</code></pre>
@@ -644,7 +644,7 @@ if ($LASTEXITCODE -ge 8) {
 
 <h3>PowerShell 7 なら例外にできる <span class="badge b-ps7">pwsh 7</span></h3>
 
-<pre><code>$PSNativeCommandUseErrorActionPreference = $true
+<pre><code class="language-powershell">$PSNativeCommandUseErrorActionPreference = $true
 $ErrorActionPreference = 'Stop'
 
 try { cmd /c "exit 5" }
@@ -655,7 +655,7 @@ catch { $_.Exception.Message }
 
 <h2>スクリプト自身の終了コード</h2>
 
-<pre><code>exit 0     # 正常終了
+<pre><code class="language-powershell">exit 0     # 正常終了
 exit 1     # 異常終了</code></pre>
 
 <div class="callout callout-warning">
@@ -688,7 +688,7 @@ cmd の <code>%ERRORLEVEL%</code> と同じものを、PowerShell では <code>$
 </table>
 </div>
 
-<pre><code>function Get-Report {
+<pre><code class="language-powershell">function Get-Report {
     [CmdletBinding()]
     param([string]$Path)
 
@@ -757,7 +757,7 @@ Get-Report -Path .\a.txt -Verbose     # Write-Verbose の内容が出る</code><
 <figcaption>図 08.5 — 停止中はデバッグコンソールが通常のシェルとして使える</figcaption>
 </figure>
 
-<pre><code># 変数が変更されたときに止める
+<pre><code class="language-powershell"># 変数が変更されたときに止める
 Set-PSBreakpoint -Script .\main.ps1 -Variable count -Mode Write
 
 # 特定のコマンドが呼ばれたときに止める
@@ -774,7 +774,7 @@ Get-PSBreakpoint | Remove-PSBreakpoint</code></pre>
 
 <h3>行単位のトレース</h3>
 
-<pre><code>Set-PSDebug -Trace 1     # 実行された行を表示
+<pre><code class="language-powershell">Set-PSDebug -Trace 1     # 実行された行を表示
 Set-PSDebug -Trace 2     # 変数代入も表示
 Set-PSDebug -Off         # 解除</code></pre>
 

@@ -342,7 +342,7 @@
 
 <h2>スクリプト</h2>
 
-<pre><code>[CmdletBinding()]
+<pre><code class="language-powershell">[CmdletBinding()]
 param(
     [Parameter(Mandatory)][string]$LogPath,
     [int]$Days = 7
@@ -390,7 +390,7 @@ if ($errors.Count -gt 0) {
 
 <h3>実行結果</h3>
 
-<pre><code>PS&gt; .\Get-LogSummary.ps1 -LogPath .\app.log -Days 7 -Verbose
+<pre><code class="language-text">PS&gt; .\Get-LogSummary.ps1 -LogPath .\app.log -Days 7 -Verbose
 VERBOSE: 対象: .\app.log （2026-08-16 以降）
 VERBOSE: 解析できた行: 7 件
 
@@ -486,7 +486,7 @@ JavaScript の <code>(?&lt;name&gt;...)</code> と同じ記法です。
 
 <h2>スクリプト</h2>
 
-<pre><code>[CmdletBinding(SupportsShouldProcess)]
+<pre><code class="language-powershell">[CmdletBinding(SupportsShouldProcess)]
 param(
     [Parameter(Mandatory)][string]$Path,
     [Parameter(Mandatory)][string]$Pattern,
@@ -519,7 +519,7 @@ foreach ($t in $targets) {
 
 <h3>実行結果</h3>
 
-<pre><code>PS&gt; .\Rename-Bulk.ps1 -Path .\photos -Pattern '^IMG_0*(\d+)\.JPG$' -Replacement 'photo-$1.jpg' -WhatIf
+<pre><code class="language-text">PS&gt; .\Rename-Bulk.ps1 -Path .\photos -Pattern '^IMG_0*(\d+)\.JPG$' -Replacement 'photo-$1.jpg' -WhatIf
 What if: Performing the operation "→ photo-1.jpg" on target "IMG_0001.JPG".
 What if: Performing the operation "→ photo-2.jpg" on target "IMG_0002.JPG".
 What if: Performing the operation "→ photo-3.jpg" on target "IMG_0003.JPG".</code></pre>
@@ -609,7 +609,7 @@ What if: Performing the operation "→ photo-3.jpg" on target "IMG_0003.JPG".</c
 
 <h2>スクリプト</h2>
 
-<pre><code>[CmdletBinding()]
+<pre><code class="language-powershell">[CmdletBinding()]
 param(
     [Parameter(Mandatory)][string]$Source,
     [Parameter(Mandatory)][string]$Destination,
@@ -739,7 +739,7 @@ exit 0</code></pre>
 
 <h3>ランチャー（run.cmd）</h3>
 
-<pre><code>@echo off
+<pre><code class="language-batch">@echo off
 cd /d "%~dp0"
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0main.ps1" %*
 exit /b %ERRORLEVEL%</code></pre>
@@ -748,7 +748,7 @@ exit /b %ERRORLEVEL%</code></pre>
 
 <h3>ログを残す本体（main.ps1）</h3>
 
-<pre><code>[CmdletBinding()]
+<pre><code class="language-powershell">[CmdletBinding()]
 param()
 
 Set-StrictMode -Version Latest
@@ -781,7 +781,7 @@ catch {
 
 <h2>タスクの登録</h2>
 
-<pre><code>$action  = New-ScheduledTaskAction -Execute 'C:\work\backup\run.cmd'
+<pre><code class="language-powershell">$action  = New-ScheduledTaskAction -Execute 'C:\work\backup\run.cmd'
 $trigger = New-ScheduledTaskTrigger -Daily -At 02:00
 
 Register-ScheduledTask -TaskName 'DailyBackup' `
@@ -853,7 +853,7 @@ Register-ScheduledTask -TaskName 'DailyBackup' `
 
 <h2>実際に動かした例</h2>
 
-<pre><code># Node.js に JSON を吐かせて受け取る
+<pre><code class="language-powershell"># Node.js に JSON を吐かせて受け取る
 $out = node -e "console.log(JSON.stringify({ok:true, items:[1,2,3]}))"
 
 $obj = $out | ConvertFrom-Json
@@ -863,13 +863,13 @@ $LASTEXITCODE      # → 0</code></pre>
 
 <h3>失敗を検知する</h3>
 
-<pre><code>node -e "process.exit(2)"
+<pre><code class="language-powershell">node -e "process.exit(2)"
 $LASTEXITCODE      # → 2
 $?                 # → False</code></pre>
 
 <h2>安全な呼び出しのひな形</h2>
 
-<pre><code>[CmdletBinding()]
+<pre><code class="language-powershell">[CmdletBinding()]
 param([Parameter(Mandatory)][string]$ScriptPath)
 
 Set-StrictMode -Version Latest

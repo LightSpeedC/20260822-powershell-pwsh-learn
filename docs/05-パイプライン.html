@@ -281,11 +281,11 @@
 
 <p>01 章で見たとおり、Bash のパイプには<strong>テキスト行</strong>が、PowerShell のパイプには<strong>オブジェクト</strong>が流れます。ここではそれを実際に確かめます。</p>
 
-<pre><code>Get-Process | Select-Object -First 1</code></pre>
+<pre><code class="language-powershell">Get-Process | Select-Object -First 1</code></pre>
 
 <p>実行すると、次のような表が出ます。</p>
 
-<pre><code> NPM(K)    PM(M)      WS(M)     CPU(s)      Id  SI ProcessName
+<pre><code class="language-text"> NPM(K)    PM(M)      WS(M)     CPU(s)      Id  SI ProcessName
  ------    -----      -----     ------      --  -- -----------
      28    18.42      35.66       1.42    9876   1 pwsh</code></pre>
 
@@ -335,7 +335,7 @@
 
 <p>表に出ていない <code>Path</code> も、そのまま使えます。</p>
 
-<pre><code>Get-Process | Select-Object -First 1 | Select-Object Name, Path, StartTime</code></pre>
+<pre><code class="language-powershell">Get-Process | Select-Object -First 1 | Select-Object Name, Path, StartTime</code></pre>
 
 <div class="callout">
 <strong>Bash との決定的な違いはここです。</strong><br>
@@ -347,7 +347,7 @@ PowerShell では<strong>表示が絞られているだけで、データは全�
 
 <p><code>Format-Table</code> や <code>Format-List</code> を途中に挟むと、<strong>そこでオブジェクトが「表示用の部品」に変換されてしまいます</strong>。以降のコマンドはまともに動きません。</p>
 
-<pre><code># ✗ 動かない — Format-Table の後は表示部品になっている
+<pre><code class="language-powershell"># ✗ 動かない — Format-Table の後は表示部品になっている
 Get-Process | Format-Table Name, Id | Where-Object { $_.Id -gt 1000 }
 
 # ✓ 絞ってから最後に整形する
@@ -373,9 +373,9 @@ Get-Process | Where-Object { $_.Id -gt 1000 } | Format-Table Name, Id</code></pr
 
 <p>05.1 で「表示に出ていない情報がある」と分かりました。<strong>ではどうやって中身を知るのか。</strong>その答えが <code>Get-Member</code> です。</p>
 
-<pre><code>Get-Process | Get-Member</code></pre>
+<pre><code class="language-powershell">Get-Process | Get-Member</code></pre>
 
-<pre><code>   TypeName: System.Diagnostics.Process
+<pre><code class="language-text">   TypeName: System.Diagnostics.Process
 
 Name                       MemberType     Definition
 ----                       ----------     ----------
@@ -450,7 +450,7 @@ CPU                        ScriptProperty System.Object CPU {get=...}
 
 <h3>プロパティだけ見たいとき</h3>
 
-<pre><code>Get-Process | Get-Member -MemberType Property
+<pre><code class="language-powershell">Get-Process | Get-Member -MemberType Property
 
 # 短縮形（gm は Get-Member のエイリアス）
 Get-Process | gm -MemberType Property</code></pre>
@@ -476,7 +476,7 @@ PowerShell のオブジェクトは <strong>.NET のクラスそのもの</stron
 
 <h2>まず <code>Get-Member</code>、が習慣になれば独学できる</h2>
 
-<pre><code># 知らないコマンドに出会ったとき
+<pre><code class="language-powershell"># 知らないコマンドに出会ったとき
 Get-Service | Get-Member          # 何が返るか調べる
 Get-Service | Select-Object -First 1 | Format-List *   # 実際の値を全部見る</code></pre>
 
@@ -539,7 +539,7 @@ Get-Service | Select-Object -First 1 | Format-List *   # 実際の値を全部�
 
 <h2>Where-Object — 絞る</h2>
 
-<pre><code># JavaScript
+<pre><code class="language-powershell"># JavaScript
 files.filter(f =&gt; f.size &gt; 1024)
 
 # PowerShell（スクリプトブロック）
@@ -561,7 +561,7 @@ Get-ChildItem | Where-Object Length -gt 1024</code></pre>
 
 <h2>ForEach-Object — 変える</h2>
 
-<pre><code># JavaScript
+<pre><code class="language-powershell"># JavaScript
 files.map(f =&gt; f.name.toUpperCase())
 
 # PowerShell
@@ -569,14 +569,14 @@ Get-ChildItem | ForEach-Object { $_.Name.ToUpper() }</code></pre>
 
 <h3>3つのブロックを持てる</h3>
 
-<pre><code>1..3 | ForEach-Object -Begin { "開始" } -Process { $_ * 10 } -End { "終了" }
+<pre><code class="language-powershell">1..3 | ForEach-Object -Begin { "開始" } -Process { $_ * 10 } -End { "終了" }
 # → 開始 / 10 / 20 / 30 / 終了</code></pre>
 
 <p><code>-Begin</code> は最初に1回、<code>-End</code> は最後に1回だけ実行されます。集計の初期化と結果出力に使えます。</p>
 
 <h3>並列実行 <span class="badge b-ps7">pwsh 7</span></h3>
 
-<pre><code>1..10 | ForEach-Object -Parallel { Start-Sleep 1; $_ } -ThrottleLimit 5</code></pre>
+<pre><code class="language-powershell">1..10 | ForEach-Object -Parallel { Start-Sleep 1; $_ } -ThrottleLimit 5</code></pre>
 
 <div class="callout callout-important">
 <strong><code>-Parallel</code> の中は別のセッションです。</strong><br>
@@ -585,13 +585,13 @@ Get-ChildItem | ForEach-Object { $_.Name.ToUpper() }</code></pre>
 
 <h2>Select-Object — 選ぶ</h2>
 
-<pre><code>Get-Process | Select-Object Name, Id, CPU
+<pre><code class="language-powershell">Get-Process | Select-Object Name, Id, CPU
 Get-Process | Select-Object -First 5
 Get-Process | Select-Object -Property Name -Unique</code></pre>
 
 <h3><code>-ExpandProperty</code> — 値そのものを取り出す <span class="badge b-warn">よく使う</span></h3>
 
-<pre><code># オブジェクトが返る（Name というプロパティを持つ箱）
+<pre><code class="language-powershell"># オブジェクトが返る（Name というプロパティを持つ箱）
 Get-Process | Select-Object -First 1 -Property Name
 # → @{Name=pwsh}
 
@@ -606,7 +606,7 @@ Get-Process | Select-Object -First 1 -ExpandProperty Name
 
 <h3>計算プロパティ — 列を作る</h3>
 
-<pre><code>Get-ChildItem | Select-Object Name, @{ Name = 'MB'; Expression = { [math]::Round($_.Length / 1MB, 2) } }</code></pre>
+<pre><code class="language-powershell">Get-ChildItem | Select-Object Name, @{ Name = 'MB'; Expression = { [math]::Round($_.Length / 1MB, 2) } }</code></pre>
 
 <p><code>Name</code>（列名）と <code>Expression</code>（値の計算式）のハッシュテーブルを渡すと、<strong>その場で新しい列を作れます</strong>。<code>N</code> / <code>E</code> と略記もできます。</p>
 
@@ -680,7 +680,7 @@ Get-Process | Select-Object -First 1 -ExpandProperty Name
 
 <h2>Sort-Object — 並べる</h2>
 
-<pre><code>Get-ChildItem | Sort-Object Length -Descending
+<pre><code class="language-powershell">Get-ChildItem | Sort-Object Length -Descending
 Get-ChildItem | Sort-Object Extension, Name          # 複数キー
 Get-Process   | Sort-Object CPU -Descending -Top 5   # 上位だけ</code></pre>
 
@@ -697,7 +697,7 @@ Get-Process   | Sort-Object CPU -Descending -Top 5   # 上位だけ</code></pre>
 </table>
 </div>
 
-<pre><code># 拡張子ごとの合計サイズを出す
+<pre><code class="language-powershell"># 拡張子ごとの合計サイズを出す
 Get-ChildItem -Recurse -File |
     Group-Object Extension |
     ForEach-Object {
@@ -717,10 +717,10 @@ SQL の <code>GROUP BY</code> では集計関数を通した値しか取れま�
 
 <h2>Measure-Object — 数える</h2>
 
-<pre><code>Get-ChildItem | Measure-Object                                    # 件数だけ
+<pre><code class="language-powershell">Get-ChildItem | Measure-Object                                    # 件数だけ
 Get-ChildItem | Measure-Object Length -Sum -Average -Maximum      # 集計</code></pre>
 
-<pre><code>Count    : 4
+<pre><code class="language-text">Count    : 4
 Average  : 43403.5
 Sum      : 173614
 Maximum  : 48259
@@ -734,7 +734,7 @@ Property : Length</code></pre>
 
 <h2>組み合わせの実例</h2>
 
-<pre><code># 直近7日に更新された .ps1 を、サイズの大きい順に5件
+<pre><code class="language-powershell"># 直近7日に更新された .ps1 を、サイズの大きい順に5件
 Get-ChildItem -Recurse -Filter *.ps1 |
     Where-Object { $_.LastWriteTime -gt (Get-Date).AddDays(-7) } |
     Sort-Object Length -Descending |
@@ -796,18 +796,18 @@ Get-ChildItem -Recurse -Filter *.ps1 |
 <figcaption>図 05.5 — 動詞は承認された 100 個に統一されている。だから名前が推測できる</figcaption>
 </figure>
 
-<pre><code>Get-Verb | Measure-Object      # → Count: 100
+<pre><code class="language-powershell">Get-Verb | Measure-Object      # → Count: 100
 Get-Verb | Where-Object Group -eq 'Common'</code></pre>
 
 <h2>Get-Command で探す</h2>
 
-<pre><code>Get-Command -Verb Get -Noun Process        # 動詞と名詞で絞る
+<pre><code class="language-powershell">Get-Command -Verb Get -Noun Process        # 動詞と名詞で絞る
 Get-Command *service*                      # 名前の一部で探す
 Get-Command -Module Microsoft.PowerShell.Management</code></pre>
 
 <h2>Get-Help で使い方を見る</h2>
 
-<pre><code>Get-Help Get-ChildItem                     # 概要
+<pre><code class="language-powershell">Get-Help Get-ChildItem                     # 概要
 Get-Help Get-ChildItem -Examples           # 使用例だけ（最も実用的）
 Get-Help Get-ChildItem -Full               # 全部
 Get-Help Get-ChildItem -Online             # ブラウザで公式ドキュメント</code></pre>
@@ -891,7 +891,7 @@ Get-Help Get-ChildItem -Online             # ブラウザで公式ドキュメ�
 
 <h2>① コマンドのエイリアス — <code>Get-Alias</code> で一覧できる</h2>
 
-<pre><code>Get-Alias                                # 全部見る
+<pre><code class="language-powershell">Get-Alias                                # 全部見る
 Get-Alias ls                             # ls の正体を調べる
 Get-Alias -Definition Get-ChildItem      # 逆引き → dir, gci, ls の3つ
 Get-Help about_Aliases                   # 公式の解説</code></pre>
@@ -931,7 +931,7 @@ Get-Help about_Aliases                   # 公式の解説</code></pre>
 
 <h2>② パラメータのエイリアス — コマンドごとに調べる</h2>
 
-<pre><code>(Get-Command Get-ChildItem).Parameters['Recurse'].Aliases
+<pre><code class="language-powershell">(Get-Command Get-ChildItem).Parameters['Recurse'].Aliases
 # → s, r
 
 (Get-Command Get-ChildItem).Parameters['LiteralPath'].Aliases
@@ -943,7 +943,7 @@ Get-Help about_Aliases                   # 公式の解説</code></pre>
 
 <p>パラメータ名は<strong>他と区別できるところまで縮められます</strong>。ただし一覧はなく、<strong>何に解決されるかが状況で変わります</strong>。</p>
 
-<pre><code>Get-ChildItem -Rec       # → Recurse に解決される  ✓
+<pre><code class="language-powershell">Get-ChildItem -Rec       # → Recurse に解決される  ✓
 Get-ChildItem -Fil       # → Filter に解決される   ✓
 Get-ChildItem -F         # → エラー
 # Parameter cannot be processed because the parameter name 'F' is ambiguous.

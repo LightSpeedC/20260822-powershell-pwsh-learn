@@ -342,11 +342,11 @@
 
 <h2>いま何で動いているかを確認する</h2>
 
-<pre><code>$PSVersionTable</code></pre>
+<pre><code class="language-powershell">$PSVersionTable</code></pre>
 
 <p>実行すると次のように出ます（PowerShell 7 の例）。</p>
 
-<pre><code>Name                           Value
+<pre><code class="language-text">Name                           Value
 ----                           -----
 PSVersion                      7.6.3
 PSEdition                      Core
@@ -363,7 +363,7 @@ Platform                       Win32NT</code></pre>
 
 <p><code>PSEdition</code> が <strong>Desktop なら 5.1、Core なら 7</strong> です。スクリプトの中で分岐したいときはこれを見ます。</p>
 
-<pre><code>if ($PSVersionTable.PSEdition -eq 'Core') {
+<pre><code class="language-powershell">if ($PSVersionTable.PSEdition -eq 'Core') {
     # PowerShell 7 での処理
 } else {
     # Windows PowerShell 5.1 での処理
@@ -371,7 +371,7 @@ Platform                       Win32NT</code></pre>
 
 <h3><code>$host.Version</code> は使わない <span class="badge b-bad">間違えやすい</span></h3>
 
-<pre><code>$host.Version      # ✗ PowerShell のバージョンではない</code></pre>
+<pre><code class="language-powershell">$host.Version      # ✗ PowerShell のバージョンではない</code></pre>
 
 <div class="callout">
 <strong><code>$host</code> は「PowerShell を動かしているアプリ」を指します。</strong><br>
@@ -383,7 +383,7 @@ Platform                       Win32NT</code></pre>
 
 <p>片方で作業中でも、<strong>もう一方に問い合わせられます</strong>。共存しているからこそできる確認方法です。</p>
 
-<pre><code>powershell.exe -NoProfile -Command '$PSVersionTable.PSVersion'   # 5.1 側
+<pre><code class="language-powershell">powershell.exe -NoProfile -Command '$PSVersionTable.PSVersion'   # 5.1 側
 pwsh.exe       -NoProfile -Command '$PSVersionTable.PSVersion'   # 7 側</code></pre>
 
 <p>実測結果です。</p>
@@ -420,7 +420,7 @@ pwsh.exe       -NoProfile -Command '$PSVersionTable.PSVersion'   # 7 側</code><
 ネットで見つかる古いサンプルの多くが <code>Get-WmiObject</code> を使っています。7 で実行すると「コマンドレットが見つかりません」で止まります。<strong>置き換え先は <code>Get-CimInstance</code></strong> で、引数もほぼ同じです。
 </div>
 
-<pre><code># 5.1 の書き方（7 では動かない）
+<pre><code class="language-powershell"># 5.1 の書き方（7 では動かない）
 Get-WmiObject Win32_OperatingSystem
 
 # 両方で動く書き方
@@ -464,7 +464,7 @@ Get-CimInstance Win32_OperatingSystem</code></pre>
 </table>
 </div>
 
-<pre><code>winget install --id Microsoft.PowerShell --source winget</code></pre>
+<pre><code class="language-powershell">winget install --id Microsoft.PowerShell --source winget</code></pre>
 
 <p>導入後、<code>pwsh</code> と打てば 7 が起動します。<code>powershell</code> は今までどおり 5.1 のままです。</p>
 
@@ -498,7 +498,7 @@ Get-CimInstance Win32_OperatingSystem</code></pre>
 その際、<strong>ダウンロードした MSI には「インターネットから来た」印（Zone.Identifier）が付きます</strong>（03.2 で扱います）。MSI 自体は実行できますが、同じ経路で <code>.ps1</code> を持ち込むと <code>RemoteSigned</code> で止まるので、<code>Unblock-File</code> が要ります。
 </div>
 
-<pre><code># 画面を出して入れる
+<pre><code class="language-powershell"># 画面を出して入れる
 msiexec.exe /i PowerShell-7.6.3-win-x64.msi
 
 # 無人で入れる（社内配布・タスクから叩く場合）
@@ -543,7 +543,7 @@ msiexec.exe /i PowerShell-7.6.3-win-x64.msi /quiet /norestart `
 
 <p><code>.ps1</code> を作って実行しようとすると、多くの環境で次のエラーが出ます。</p>
 
-<pre><code>.\hello.ps1 : このシステムではスクリプトの実行が無効になっているため、
+<pre><code class="language-text">.\hello.ps1 : このシステムではスクリプトの実行が無効になっているため、
 ファイル C:\work\hello.ps1 を読み込むことができません。</code></pre>
 
 <p>これが<strong>実行ポリシー</strong>です。02 章で cmd ランチャーに <code>-ExecutionPolicy Bypass</code> と書いたのは、これを回避するためでした。</p>
@@ -620,9 +620,9 @@ Microsoft 自身がそう明言しています。回避方法はいくらでも�
 
 <h3>いまの状態を確認する</h3>
 
-<pre><code>Get-ExecutionPolicy -List</code></pre>
+<pre><code class="language-powershell">Get-ExecutionPolicy -List</code></pre>
 
-<pre><code>        Scope ExecutionPolicy
+<pre><code class="language-text">        Scope ExecutionPolicy
         ----- ---------------
 MachinePolicy       Undefined
    UserPolicy       Undefined
@@ -636,7 +636,7 @@ MachinePolicy       Undefined
 
 <h3>開発中の自分の PC なら</h3>
 
-<pre><code>Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned</code></pre>
+<pre><code class="language-powershell">Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned</code></pre>
 
 <ul>
 	<li><span class="badge b-ok">利点</span><strong>管理者権限が不要</strong>（<code>CurrentUser</code> スコープのため）</li>
@@ -648,7 +648,7 @@ MachinePolicy       Undefined
 
 <p>相手の PC の設定を変えさせるのは筋が悪いので、<strong>ランチャー側で Process スコープだけ緩めます</strong>。02 章で作った形がこれです。</p>
 
-<pre><code>powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0foo.ps1"</code></pre>
+<pre><code class="language-batch">powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0foo.ps1"</code></pre>
 
 <div class="callout">
 <strong><code>-ExecutionPolicy Bypass</code> が安全に使える理由。</strong><br>
@@ -659,7 +659,7 @@ MachinePolicy       Undefined
 
 <p><code>RemoteSigned</code> が「ダウンロード品」を見分けられるのは、<strong>ファイルに印が付いている</strong>からです。Windows はインターネットから来たファイルに <code>Zone.Identifier</code> という情報を付けます。</p>
 
-<pre><code># 印が付いているか確認（5.1 / 7 共通）
+<pre><code class="language-powershell"># 印が付いているか確認（5.1 / 7 共通）
 Get-Item .\downloaded.ps1 -Stream Zone.Identifier
 
 # 印を外す（内容を確認してから実行すること）
@@ -680,7 +680,7 @@ Zip で受け取ったスクリプトが動かないときは、<strong>展開�
 
 <p>PowerShell は起動時に<strong>プロファイル</strong>という <code>.ps1</code> を自動実行します。エイリアスや関数を常駐させたいときに使います。</p>
 
-<pre><code># 自分のプロファイルの場所を表示（無くてもパスは返る）
+<pre><code class="language-powershell"># 自分のプロファイルの場所を表示（無くてもパスは返る）
 $PROFILE
 
 # 実際に存在するか
@@ -721,7 +721,7 @@ notepad $PROFILE</code></pre>
 
 <p>PowerShell の機能拡張は<strong>モジュール</strong>という単位で配布されます。JavaScript でいう npm パッケージにあたります。</p>
 
-<pre><code># 探す
+<pre><code class="language-powershell"># 探す
 Find-Module -Name ImportExcel
 
 # 入れる（-Scope CurrentUser なら管理者権限が不要）
@@ -751,7 +751,7 @@ Node.js と違い、<strong>プロジェクトごとの <code>node_modules</code
 
 <h3>5.1 と 7 でモジュールの置き場所も違う</h3>
 
-<pre><code>$env:PSModulePath -split ';'</code></pre>
+<pre><code class="language-powershell">$env:PSModulePath -split ';'</code></pre>
 
 <p>実行するバージョンによって異なる一覧が返ります。<strong>7 で入れたモジュールは 5.1 からは見えません</strong>（Windows 用の一部を除く）。プロファイルと同じ事情です。</p>
 </section>
@@ -768,7 +768,7 @@ Node.js と違い、<strong>プロジェクトごとの <code>node_modules</code
 
 <p>Windows のスタートメニューには <strong>「Windows PowerShell ISE」</strong> という項目があります。VS Code が普及する前の標準的なスクリプト編集ツールで、いまも標準搭載されています。</p>
 
-<pre><code>C:\Windows\System32\WindowsPowerShell\v1.0\powershell_ise.exe</code></pre>
+<pre><code class="language-text">C:\Windows\System32\WindowsPowerShell\v1.0\powershell_ise.exe</code></pre>
 
 <p>上下2ペインで「上で編集、下のコンソールで実行」ができる便利な作りですが、<strong>これから学ぶなら選ばないでください。</strong>理由は3つあります。</p>
 
@@ -856,7 +856,7 @@ ISE の中では快適に動きますが、<strong>タスクスケジューラ�
 
 <h3>settings.json の設定</h3>
 
-<pre><code>{
+<pre><code class="language-json">{
     "[powershell]": {
         "files.encoding": "utf8bom",
         "files.eol": "\r\n"
@@ -887,7 +887,7 @@ ISE の中では快適に動きますが、<strong>タスクスケジューラ�
 
 <p>VS Code のターミナルは <code>+</code> の横の <code>∨</code> から起動するシェルを選べます。<strong>PowerShell（5.1）と PowerShell 7 は別項目として並びます</strong>。動作確認は両方で行うのが安全です。</p>
 
-<pre><code>// 既定を PowerShell 7 にする場合
+<pre><code class="language-json">// 既定を PowerShell 7 にする場合
 "terminal.integrated.defaultProfile.windows": "PowerShell"</code></pre>
 
 <p><span class="badge b-warn">紛らわしい</span>VS Code の表示では、<strong>7 のほうが「PowerShell」、5.1 が「Windows PowerShell」</strong>です。03.1 の名前の整理と同じ規則になっています。</p>

@@ -341,7 +341,7 @@
 
 <p>ギャラリーは誰でも公開できます。名前だけでは本家か模倣かが分かりません。<code>Find-Module</code> の返す <code>Author</code>・<code>CompanyName</code>・<code>ProjectUri</code> を見ます。</p>
 
-<pre><code>Find-Module -Name PSScriptAnalyzer | Format-List Name, Author, CompanyName, ProjectUri</code></pre>
+<pre><code class="language-powershell">Find-Module -Name PSScriptAnalyzer | Format-List Name, Author, CompanyName, ProjectUri</code></pre>
 
 <div class="tablewrap">
 <table>
@@ -358,9 +358,9 @@
 
 <p>更新日は <code>PublishedDate</code> で見ます。</p>
 
-<pre><code>Find-Module -Name ImportExcel | Select-Object Name, Version, PublishedDate</code></pre>
+<pre><code class="language-powershell">Find-Module -Name ImportExcel | Select-Object Name, Version, PublishedDate</code></pre>
 
-<pre><code>Name          : ImportExcel
+<pre><code class="language-text">Name          : ImportExcel
 Version       : 7.8.10
 PublishedDate : 2024/10/21 23:45:09</code></pre>
 
@@ -368,10 +368,10 @@ PublishedDate : 2024/10/21 23:45:09</code></pre>
 
 <p>メタデータには <code>lastUpdated</code> という、いかにも更新日らしい項目があります。両方を並べて見ます。</p>
 
-<pre><code>(Find-Module -Name ImportExcel).AdditionalMetadata |
+<pre><code class="language-powershell">(Find-Module -Name ImportExcel).AdditionalMetadata |
 	Select-Object published, lastUpdated</code></pre>
 
-<pre><code>published   : 2024/10/21 23:45:09 +09:00
+<pre><code class="language-text">published   : 2024/10/21 23:45:09 +09:00
 lastUpdated : 2026/08/26 00:00:01 +09:00</code></pre>
 
 <p>同じモジュールで<strong>2 年近い開きがあります</strong>。<code>lastUpdated</code> はギャラリー側のフィードを作り直した時刻で、どのモジュールを調べても<strong>実行した当日</strong>が返ります。4 本試して 4 本とも当日でした。</p>
@@ -391,7 +391,7 @@ lastUpdated : 2026/08/26 00:00:01 +09:00</code></pre>
 
 <p>タグに <code>PSEdition_Desktop</code>（＝Windows PowerShell 5.1）と <code>PSEdition_Core</code>（＝PowerShell 7）が入っています。</p>
 
-<pre><code>(Find-Module -Name Pester).Tags | Where-Object { $_ -like 'PSEdition_*' }</code></pre>
+<pre><code class="language-powershell">(Find-Module -Name Pester).Tags | Where-Object { $_ -like 'PSEdition_*' }</code></pre>
 
 <div class="tablewrap">
 <table>
@@ -416,13 +416,13 @@ lastUpdated : 2026/08/26 00:00:01 +09:00</code></pre>
 
 <p><code>-IncludeDependencies</code> を付けると、<strong>ダウンロードせずに</strong>依存を含む全件が一覧できます。返る件数がそのまま「増えるフォルダの数」です。</p>
 
-<pre><code>Find-Module -Name PSScriptAnalyzer -IncludeDependencies | Measure-Object</code></pre>
+<pre><code class="language-powershell">Find-Module -Name PSScriptAnalyzer -IncludeDependencies | Measure-Object</code></pre>
 
-<pre><code>Count : 1</code></pre>
+<pre><code class="language-text">Count : 1</code></pre>
 
-<pre><code>Find-Module -Name Microsoft.Graph -IncludeDependencies | Measure-Object</code></pre>
+<pre><code class="language-powershell">Find-Module -Name Microsoft.Graph -IncludeDependencies | Measure-Object</code></pre>
 
-<pre><code>Count : 40</code></pre>
+<pre><code class="language-text">Count : 40</code></pre>
 
 <div class="tablewrap">
 <table>
@@ -446,9 +446,9 @@ lastUpdated : 2026/08/26 00:00:01 +09:00</code></pre>
 
 <p>ギャラリーで最初に目に入るのがダウンロード数です。これを選定根拠にできない例が実際にあります。</p>
 
-<pre><code>Find-Module -Name PSWindowsUpdate | ForEach-Object { $_.AdditionalMetadata.downloadCount }</code></pre>
+<pre><code class="language-powershell">Find-Module -Name PSWindowsUpdate | ForEach-Object { $_.AdditionalMetadata.downloadCount }</code></pre>
 
-<pre><code>2147474038</code></pre>
+<pre><code class="language-text">2147474038</code></pre>
 
 <p>21 億 4747 万。世界人口の 4 分の 1 が 1 回ずつ入れた計算になります。この値は <code>Int32</code> の上限 <code>2147483647</code> の<strong>わずか 9,609 下</strong>で、上限に張り付いた飽和値と読むのが自然です。</p>
 
@@ -476,21 +476,21 @@ lastUpdated : 2026/08/26 00:00:01 +09:00</code></pre>
 
 <p>この PC には <code>AzureRM</code> が残っています。</p>
 
-<pre><code>Get-Module -ListAvailable AzureRM | Select-Object Name, Version, ModuleBase</code></pre>
+<pre><code class="language-powershell">Get-Module -ListAvailable AzureRM | Select-Object Name, Version, ModuleBase</code></pre>
 
-<pre><code>Name       : AzureRM
+<pre><code class="language-text">Name       : AzureRM
 Version    : 5.7.0
 ModuleBase : C:\Program Files\WindowsPowerShell\Modules\AzureRM\5.7.0</code></pre>
 
 <p>AzureRM は Azure 操作の旧モジュールで、後継の <code>Az</code> に置き換わっています。それでも<strong>提供終了はギャラリー側の話であって、入れた PC からは何も起きません</strong>。残るものを数えます。</p>
 
-<pre><code>Get-ChildItem 'C:\Program Files\WindowsPowerShell\Modules' -Directory |
+<pre><code class="language-powershell">Get-ChildItem 'C:\Program Files\WindowsPowerShell\Modules' -Directory |
 	Where-Object Name -like 'Azure*' |
 	ForEach-Object { Get-ChildItem $_.FullName -Recurse -File } |
 	Measure-Object -Property Length -Sum |
 	Select-Object @{n='Files';e={$_.Count}}, @{n='SizeMB';e={[math]::Round($_.Sum/1MB)}}</code></pre>
 
-<pre><code>Files  : 1124
+<pre><code class="language-text">Files  : 1124
 SizeMB : 215</code></pre>
 
 <p><strong>57 フォルダ・1,124 ファイル・215 MB</strong>。ファイルの最終更新は <strong>2018-04-06</strong> で、8 年前のまま <code>AllUsers</code> スコープに置かれています。しかも <code>AzureRM.*</code> は 53 個に分かれているので、<code>Uninstall-Module AzureRM</code> だけでは本体の 1 フォルダしか消えません。</p>
@@ -708,7 +708,7 @@ SizeMB : 215</code></pre>
 
 <p>VS Code の PowerShell 拡張は内部でこれを使っているので、拡張を入れた人は<strong>すでに結果だけは見ています</strong>（エディタ上の緑の波線）。単体で入れると、同じ判定を<strong>コマンドラインと CI から</strong>呼べるようになります。</p>
 
-<pre><code># 1ファイルを見る
+<pre><code class="language-powershell"># 1ファイルを見る
 Invoke-ScriptAnalyzer -Path .\deploy.ps1
 
 # フォルダごと再帰する
@@ -741,7 +741,7 @@ Invoke-ScriptAnalyzer -Path .\deploy.ps1 -Fix</code></pre>
 
 <p>既定の規則をそのまま全部使うと、既存のスクリプトでは指摘が数百件出ます。設定ファイルに置いて絞ります。</p>
 
-<pre><code># PSScriptAnalyzerSettings.psd1
+<pre><code class="language-powershell"># PSScriptAnalyzerSettings.psd1
 @{
 	Severity = @('Error', 'Warning')
 
@@ -751,7 +751,7 @@ Invoke-ScriptAnalyzer -Path .\deploy.ps1 -Fix</code></pre>
 	)
 }</code></pre>
 
-<pre><code>Invoke-ScriptAnalyzer -Path .\src -Recurse -Settings .\PSScriptAnalyzerSettings.psd1</code></pre>
+<pre><code class="language-powershell">Invoke-ScriptAnalyzer -Path .\src -Recurse -Settings .\PSScriptAnalyzerSettings.psd1</code></pre>
 
 <div class="callout callout-warning">
 <strong><code>-Fix</code> はファイルを書き換えます。</strong><br>
@@ -773,7 +773,7 @@ Invoke-ScriptAnalyzer -Path .\deploy.ps1 -Fix</code></pre>
 </table>
 </div>
 
-<pre><code># 読む（1行 = 1オブジェクト。Import-Csv と同じ形で返る）
+<pre><code class="language-powershell"># 読む（1行 = 1オブジェクト。Import-Csv と同じ形で返る）
 $rows = Import-Excel -Path .\売上.xlsx
 
 # シートを指定する
@@ -785,7 +785,7 @@ $rows = Import-Excel -Path .\売上.xlsx -StartRow 3
 # 見出し行が無いので自分で名前を付ける
 $rows = Import-Excel -Path .\売上.xlsx -NoHeader -HeaderName '日付','商品','金額'</code></pre>
 
-<pre><code># 書く（テーブル書式と自動列幅を付ける）
+<pre><code class="language-powershell"># 書く（テーブル書式と自動列幅を付ける）
 $rows | Export-Excel -Path .\集計.xlsx -AutoSize -TableName '売上'
 
 # 既存ブックに別シートとして足す
@@ -831,7 +831,7 @@ $rows | Export-Excel -Path .\集計.xlsx -AutoSize `
 
 <p>この分け方の利点は、<strong>スクリプト側のコードが金庫の種類に依存しないこと</strong>です。手元では SecretStore、本番では Azure Key Vault、という切り替えが <code>Register-SecretVault</code> の 1 行だけで済みます。</p>
 
-<pre><code># 金庫を登録する（最初の1回だけ）
+<pre><code class="language-powershell"># 金庫を登録する（最初の1回だけ）
 Register-SecretVault -Name LocalStore `
 	-ModuleName Microsoft.PowerShell.SecretStore `
 	-DefaultVault
@@ -842,7 +842,7 @@ Set-Secret -Name 'DbPassword'
 # 資格情報として丸ごとしまう
 Set-Secret -Name 'SvcAccount' -Secret (Get-Credential)</code></pre>
 
-<pre><code># 取り出す（既定で [SecureString] が返る）
+<pre><code class="language-powershell"># 取り出す（既定で [SecureString] が返る）
 $sec = Get-Secret -Name 'DbPassword'
 
 # PSCredential としてしまったものは PSCredential で返る
@@ -877,9 +877,9 @@ SecretStore は既定で<strong>マスターパスワードを対話で聞きま
 
 <p>Pester は Windows に同梱されています。この PC で見るとこうなります。</p>
 
-<pre><code>Get-Module -ListAvailable Pester | Select-Object Name, Version, ModuleBase</code></pre>
+<pre><code class="language-powershell">Get-Module -ListAvailable Pester | Select-Object Name, Version, ModuleBase</code></pre>
 
-<pre><code>Name       : Pester
+<pre><code class="language-text">Name       : Pester
 Version    : 3.4.0
 ModuleBase : C:\Program Files\WindowsPowerShell\Modules\Pester\3.4.0</code></pre>
 
@@ -901,7 +901,7 @@ ModuleBase : C:\Program Files\WindowsPowerShell\Modules\Pester\3.4.0</code></pre
 
 <p>JavaScript 経験者には Jest の <code>describe</code> / <code>it</code>、Java・C# 経験者には JUnit の <code>@Test</code> や MSTest の <code>[TestMethod]</code> と同じ構造です。<code>Should -Be</code> が assert にあたります。</p>
 
-<pre><code># tests\calc.tests.ps1
+<pre><code class="language-powershell"># tests\calc.tests.ps1
 BeforeAll {
 	. (Join-Path $PSScriptRoot '..\src\calc.ps1')
 }
@@ -925,7 +925,7 @@ Describe 'Add-Number' {
 	}
 }</code></pre>
 
-<pre><code># 実行する
+<pre><code class="language-powershell"># 実行する
 Invoke-Pester -Path .\tests
 
 # CI 用（失敗すると終了コードが 0 以外になる）
@@ -935,7 +935,7 @@ Invoke-Pester -Path .\tests -CI</code></pre>
 
 <p><code>Install-Module Pester -Scope CurrentUser</code> をしても、<code>C:\Program Files\WindowsPowerShell\Modules\Pester\3.4.0</code> はそのまま残ります。<strong>両方が見える状態</strong>になるので、スクリプト側で版を名指しします。</p>
 
-<pre><code># スクリプトの先頭で明示する
+<pre><code class="language-powershell"># スクリプトの先頭で明示する
 #Requires -Modules @{ ModuleName = 'Pester'; ModuleVersion = '5.0' }
 
 # または読み込み時に指定する
@@ -956,7 +956,7 @@ Import-Module Pester -MinimumVersion 5.0</code></pre>
 
 <p><code>Install-Module</code> の既定は <code>AllUsers</code> で、<strong>管理者権限が要り、PC を使う全員に影響します</strong>。個人の作業で入れるなら <code>CurrentUser</code> です。</p>
 
-<pre><code>Install-Module -Name PSScriptAnalyzer -Scope CurrentUser</code></pre>
+<pre><code class="language-powershell">Install-Module -Name PSScriptAnalyzer -Scope CurrentUser</code></pre>
 
 <div class="tablewrap">
 <table>
@@ -971,9 +971,9 @@ Import-Module Pester -MinimumVersion 5.0</code></pre>
 
 <p>探しに行く場所は <code>$env:PSModulePath</code> に並んでいます。この PC の <span class="badge b-ps7">pwsh 7</span> ではこうなっていました（ユーザー名は伏せています）。</p>
 
-<pre><code>$env:PSModulePath -split ';'</code></pre>
+<pre><code class="language-powershell">$env:PSModulePath -split ';'</code></pre>
 
-<pre><code>C:\Users\&lt;username&gt;\Documents\PowerShell\Modules
+<pre><code class="language-text">C:\Users\&lt;username&gt;\Documents\PowerShell\Modules
 C:\Program Files\PowerShell\Modules
 c:\program files\powershell\7\Modules
 C:\Users\&lt;username&gt;\Documents\WindowsPowerShell\Modules
@@ -992,20 +992,20 @@ C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules</code></pre>
 
 <p>インターネットに出られない PC には <code>Install-Module</code> が使えません。出られる PC で<strong>ダウンロードだけ</strong>して、フォルダごと運びます。</p>
 
-<pre><code># 出られる PC で、依存ごとフォルダに落とす
+<pre><code class="language-powershell"># 出られる PC で、依存ごとフォルダに落とす
 Save-Module -Name ImportExcel -Path C:\work\offline
 
 # 版を固定したいとき
 Save-Module -Name Pester -RequiredVersion 6.1.0 -Path C:\work\offline</code></pre>
 
-<pre><code>C:\work\offline\
+<pre><code class="language-text">C:\work\offline\
 └── ImportExcel\
     └── 7.8.10\
         ├── ImportExcel.psd1
         ├── ImportExcel.psm1
         └── ...</code></pre>
 
-<pre><code># 出られない PC で、CurrentUser のモジュールフォルダへ丸ごとコピーする
+<pre><code class="language-powershell"># 出られない PC で、CurrentUser のモジュールフォルダへ丸ごとコピーする
 Copy-Item C:\work\offline\ImportExcel `
 	-Destination "$HOME\Documents\PowerShell\Modules" -Recurse
 
@@ -1024,7 +1024,7 @@ Get-Module -ListAvailable ImportExcel</code></pre>
 
 <p><a href="03-実行環境.html#ch03">03.3</a> の通り、PowerShell には <code>package.json</code> にあたるものがありません。<strong>必要なモジュールはスクリプト自身に書きます。</strong></p>
 
-<pre><code>#Requires -Version 5.1
+<pre><code class="language-powershell">#Requires -Version 5.1
 #Requires -Modules ImportExcel
 
 # 版まで縛る
@@ -1048,7 +1048,7 @@ Get-Module -ListAvailable ImportExcel</code></pre>
 
 <h3>まず何が入っているかを見る</h3>
 
-<pre><code># 導入済みを名前順に見る
+<pre><code class="language-powershell"># 導入済みを名前順に見る
 Get-Module -ListAvailable |
 	Select-Object Name, Version, ModuleBase |
 	Sort-Object Name
@@ -1064,7 +1064,7 @@ Get-InstalledModule | Select-Object Name, Version, InstalledDate</code></pre>
 
 <h3>消す</h3>
 
-<pre><code># PowerShellGet で入れたものを消す
+<pre><code class="language-powershell"># PowerShellGet で入れたものを消す
 Uninstall-Module -Name PSWindowsUpdate -AllVersions
 
 # 何が消えるか先に見る
@@ -1093,11 +1093,11 @@ Uninstall-Module -Name PSWindowsUpdate -AllVersions -WhatIf</code></pre>
 
 <p>モジュール自体は実行ポリシーの影響を受けませんが、<strong>モジュールを呼ぶスクリプトが動かなければ意味がありません</strong>。スコープごとの設定を見ます。</p>
 
-<pre><code>Get-ExecutionPolicy -List</code></pre>
+<pre><code class="language-powershell">Get-ExecutionPolicy -List</code></pre>
 
 <p><span class="badge b-ps51">5.1</span> この PC での結果です。</p>
 
-<pre><code>        Scope ExecutionPolicy
+<pre><code class="language-text">        Scope ExecutionPolicy
         ----- ---------------
 MachinePolicy       Undefined
    UserPolicy       Undefined
@@ -1127,7 +1127,7 @@ MachinePolicy       Undefined
 
 <p><code>Find-Module</code> が <code>Unable to resolve package source 'https://www.powershellgallery.com/api/v2'</code> で失敗するときは、たいていプロキシです。</p>
 
-<pre><code>$proxy = 'http://proxy.example.co.jp:8080'
+<pre><code class="language-powershell">$proxy = 'http://proxy.example.co.jp:8080'
 
 # 認証なしのプロキシ
 Find-Module -Name ImportExcel -Proxy $proxy
@@ -1141,15 +1141,15 @@ Find-Module -Name ImportExcel -Proxy $proxy -ProxyCredential (Get-Credential)</c
 
 <p>5.1 では、プロキシを越えても通信自体が失敗することがあります。この PC の 5.1 を見ます。</p>
 
-<pre><code>Get-Module -ListAvailable PowerShellGet | Select-Object Name, Version, ModuleBase</code></pre>
+<pre><code class="language-powershell">Get-Module -ListAvailable PowerShellGet | Select-Object Name, Version, ModuleBase</code></pre>
 
-<pre><code>Name       : PowerShellGet
+<pre><code class="language-text">Name       : PowerShellGet
 Version    : 1.0.0.1
 ModuleBase : C:\Program Files\WindowsPowerShell\Modules\PowerShellGet\1.0.0.1</code></pre>
 
 <p>Windows 同梱の <code>1.0.0.1</code> です。7 側は <code>2.2.5</code> でした。この古い版は既定で TLS 1.0/1.1 を使おうとしますが、<strong>PowerShell Gallery は TLS 1.2 以上しか受け付けません</strong>。</p>
 
-<pre><code># そのセッションだけ TLS 1.2 にする
+<pre><code class="language-powershell"># そのセッションだけ TLS 1.2 にする
 [Net.ServicePointManager]::SecurityProtocol =
 	[Net.SecurityProtocolType]::Tls12
 
@@ -1162,10 +1162,10 @@ Install-Module -Name PowerShellGet -Scope CurrentUser -Force</code></pre>
 
 <p><a href="#ch02">A3.2</a> の一覧に <code>Microsoft.PowerShell.PSResourceGet</code> を入れましたが、この PC ではすでに使える状態でした。</p>
 
-<pre><code>Get-Module -ListAvailable Microsoft.PowerShell.PSResourceGet |
+<pre><code class="language-powershell">Get-Module -ListAvailable Microsoft.PowerShell.PSResourceGet |
 	Select-Object Name, Version, ModuleBase</code></pre>
 
-<pre><code>Name       : Microsoft.PowerShell.PSResourceGet
+<pre><code class="language-text">Name       : Microsoft.PowerShell.PSResourceGet
 Version    : 1.2.0
 ModuleBase : C:\program files\powershell\7\Modules\Microsoft.PowerShell.PSResourceGet</code></pre>
 

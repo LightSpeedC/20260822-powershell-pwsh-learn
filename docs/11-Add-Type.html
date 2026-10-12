@@ -289,7 +289,7 @@
 
 <p>1 から 300 万までの合計を求めるだけの処理を、3通りで測りました。</p>
 
-<pre><code>$n = 3000000
+<pre><code class="language-powershell">$n = 3000000
 
 Add-Type -TypeDefinition @"
 public static class Bench
@@ -322,7 +322,7 @@ $t3 = Measure-Command { $null = [Bench]::SumTo($n) }</code></pre>
 
 <p>速度とは別に、<strong>PowerShell の文法では表現できない</strong>ものがあります。代表が<strong>値型（struct）</strong>と、それを要求する Win32 API です。</p>
 
-<pre><code>Add-Type -TypeDefinition @"
+<pre><code class="language-powershell">Add-Type -TypeDefinition @"
 using System.Runtime.InteropServices;
 
 [StructLayout(LayoutKind.Sequential)]
@@ -419,7 +419,7 @@ class PsPoint { [int]$X; [int]$Y }      # PowerShell の class
 
 <h3>文字列連結の実測</h3>
 
-<pre><code>$n = 20000
+<pre><code class="language-powershell">$n = 20000
 $t1 = Measure-Command { $s = ''; for ($i = 0; $i -lt $n; $i++) { $s += "$i," } }
 $t2 = Measure-Command {
     $sb = [System.Text.StringBuilder]::new()
@@ -458,7 +458,7 @@ JIT コンパイルされる言語から来ると「ループ 300 万回」は�
 
 <p><code>Add-Type -TypeDefinition</code> に C# のソースコードを文字列で渡すと、<strong>その場でコンパイルされ、そのセッションで型が使えるようになります</strong>。プロジェクトファイルもビルド手順もありません。</p>
 
-<pre><code>Add-Type -TypeDefinition @"
+<pre><code class="language-powershell">Add-Type -TypeDefinition @"
 public class Temperature
 {
     public double Celsius { get; private set; }
@@ -473,7 +473,7 @@ public class Temperature
 
 <h2>3通りの呼び方</h2>
 
-<pre><code>$t = [Temperature]::new(25)              # コンストラクタ（推奨）
+<pre><code class="language-powershell">$t = [Temperature]::new(25)              # コンストラクタ（推奨）
 $t.ToFahrenheit()                        # → 77
 $t.ToString()                            # → 25.0 degC
 
@@ -484,7 +484,7 @@ $t2.ToFahrenheit()                       # → 212
 
 <p>C# 側で書いた <code>public</code> メンバは、そのまま PowerShell のメンバとして見えます。</p>
 
-<pre><code>PS&gt; $t | Get-Member -MemberType Method, Property | Select-Object Name, MemberType
+<pre><code class="language-text">PS&gt; $t | Get-Member -MemberType Method, Property | Select-Object Name, MemberType
 
 Name         MemberType
 ----         ----------
@@ -499,7 +499,7 @@ Celsius        Property</code></pre>
 
 <p><code>Add-Type</code> は既定では何も出力しません。<code>-PassThru</code> を付けると、<strong>作られた型（<code>System.Type</code>）が返ります</strong>。</p>
 
-<pre><code>PS&gt; Add-Type -TypeDefinition $src -PassThru | Format-Table Name, IsPublic, BaseType -AutoSize
+<pre><code class="language-text">PS&gt; Add-Type -TypeDefinition $src -PassThru | Format-Table Name, IsPublic, BaseType -AutoSize
 
 Name        IsPublic BaseType
 ----        -------- --------
@@ -509,7 +509,7 @@ Temperature     True System.Object</code></pre>
 
 <p>ディスクには何も残りません。<strong>メモリ上のアセンブリ</strong>として、実行中のプロセスにだけ読み込まれます。</p>
 
-<pre><code>PS&gt; Add-Type -TypeDefinition 'public class Loc { }'
+<pre><code class="language-text">PS&gt; Add-Type -TypeDefinition 'public class Loc { }'
 PS&gt; "[" + [Loc].Assembly.Location + "]"
 []
 PS&gt; [Loc].Assembly.FullName.Split(',')[0]
@@ -596,7 +596,7 @@ xi04rcin</code></pre>
 
 <p>この違いは、<strong>エラーメッセージの形</strong>にそのまま現れます。同じ間違った C# を両方に食わせた結果です。</p>
 
-<pre><code># 5.1 — ファイルパスが出る。CS 番号が無い
+<pre><code class="language-powershell"># 5.1 — ファイルパスが出る。CS 番号が無い
 C:\Users\&lt;username&gt;\AppData\Local\Temp\wp4uszhu.0.cs(1) : 'int' は無効です。
 
 # pwsh 7 — 行と列。CS 番号が付く
@@ -623,7 +623,7 @@ C:\Users\&lt;username&gt;\AppData\Local\Temp\wp4uszhu.0.cs(1) : 'int' は無効�
 
 <p>5.1 で C# 6 の文字列補間を使ったときの実際のエラーです。<code>$</code> が理解できていません。</p>
 
-<pre><code>C:\Users\&lt;username&gt;\AppData\Local\Temp\tjem3wc3.0.cs(4) : 文字 '$' は予期されていません。</code></pre>
+<pre><code class="language-text">C:\Users\&lt;username&gt;\AppData\Local\Temp\tjem3wc3.0.cs(4) : 文字 '$' は予期されていません。</code></pre>
 
 <div class="callout callout-important">
 <strong>両対応させるなら、C# 5 の範囲で書くのが唯一の方法です。</strong><br>
@@ -635,7 +635,7 @@ C:\Users\&lt;username&gt;\AppData\Local\Temp\wp4uszhu.0.cs(1) : 'int' は無効�
 
 <p>5.1 は C# 以外の言語も受け付けます。7 は <strong>C# のみ</strong>です。</p>
 
-<pre><code>PS&gt; $t = (Get-Command Add-Type).Parameters['Language'].ParameterType
+<pre><code class="language-text">PS&gt; $t = (Get-Command Add-Type).Parameters['Language'].ParameterType
 PS&gt; [Enum]::GetNames($t) -join ', '
 
 # 5.1 → CSharp, CSharpVersion3, CSharpVersion2, VisualBasic, JScript
@@ -643,7 +643,7 @@ PS&gt; [Enum]::GetNames($t) -join ', '
 
 <p>実際に 5.1 で Visual Basic のクラスを定義すると通ります。7 では<strong>パラメータの束縛の時点で</strong>失敗します。</p>
 
-<pre><code># pwsh 7
+<pre><code class="language-powershell"># pwsh 7
 Add-Type: Cannot bind parameter 'Language'. Cannot convert value "VisualBasic" to type
 "Microsoft.PowerShell.Commands.Language". Error: "Unable to match the identifier name
 VisualBasic to a valid enumerator name. ...</code></pre>
@@ -662,7 +662,7 @@ VisualBasic to a valid enumerator name. ...</code></pre>
 
 <p>ここが最も混乱する箇所です。<strong>同じコードで、5.1 は参照を足さないと通らず、7 は参照を足すと通らなくなります</strong>。</p>
 
-<pre><code>$src = 'using System.Xml.Linq;
+<pre><code class="language-powershell">$src = 'using System.Xml.Linq;
 public class R { public static string V() { return XDocument.Parse("&lt;a/&gt;").Root.Name.LocalName; } }'</code></pre>
 
 <div class="tablewrap">
@@ -678,7 +678,7 @@ public class R { public static string V() { return XDocument.Parse("&lt;a/&gt;")
 
 <p>7 の挙動は「参照が足りない」のではなく、<strong><code>-ReferencedAssemblies</code> を指定すると既定の参照集合が置き換わる</strong>ためです。無関係なアセンブリを1つ指定しただけで、それまで見えていた <code>System.Xml</code> が見えなくなります。</p>
 
-<pre><code># pwsh 7 — System.Windows.Forms を指定しただけで System.Xml が消える
+<pre><code class="language-powershell"># pwsh 7 — System.Windows.Forms を指定しただけで System.Xml が消える
 Add-Type -TypeDefinition $src -ReferencedAssemblies 'System.Windows.Forms'
 (1,14): error CS0234: 型または名前空間の名前 'Xml' が名前空間 'System' に存在しません</code></pre>
 
@@ -775,12 +775,12 @@ Add-Type -TypeDefinition $src -ReferencedAssemblies 'System.Windows.Forms'
 
 <h2>実際のエラー</h2>
 
-<pre><code>Add-Type -TypeDefinition 'public class Point2 { public int X; }'
+<pre><code class="language-powershell">Add-Type -TypeDefinition 'public class Point2 { public int X; }'
 Add-Type -TypeDefinition 'public class Point2 { public int X; public int Y; }'</code></pre>
 
 <h3><span class="badge b-ps51">5.1</span>エラーは1つ</h3>
 
-<pre><code>Add-Type : Cannot add type. The type name 'Point2' already exists.
+<pre><code class="language-text">Add-Type : Cannot add type. The type name 'Point2' already exists.
 At C:\work\t20-raw.ps1:2 char:1
 + Add-Type -TypeDefinition 'public class Point2 { public int X; public  ...
 + ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -789,7 +789,7 @@ At C:\work\t20-raw.ps1:2 char:1
 
 <h3><span class="badge b-ps7">pwsh 7</span>エラーは2つ</h3>
 
-<pre><code>Add-Type: C:\work\t20-raw.ps1:2
+<pre><code class="language-text">Add-Type: C:\work\t20-raw.ps1:2
 Line |
    2 |  Add-Type -TypeDefinition 'public class Point2 { public int X; public  …
      |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -817,13 +817,13 @@ Line |
 
 <p><code>Add-Type</code> は<strong>渡されたソース文字列そのものを覚えていて</strong>、完全に一致していれば2回目は何もせずに成功します。</p>
 
-<pre><code>$src = 'public class Same { public static int V() { return 1; } }'
+<pre><code class="language-powershell">$src = 'public class Same { public static int V() { return 1; } }'
 Add-Type -TypeDefinition $src            # 1回目 → OK
 Add-Type -TypeDefinition $src            # 2回目 → OK（何も起きない）</code></pre>
 
 <p>ところが<strong>末尾に空白を1つ足しただけ</strong>で、別のソースとみなされてエラーになります。</p>
 
-<pre><code>Add-Type -TypeDefinition 'public class WS { public static int V() { return 1; } }'
+<pre><code class="language-powershell">Add-Type -TypeDefinition 'public class WS { public static int V() { return 1; } }'
 Add-Type -TypeDefinition 'public class WS { public static int V() { return 1; } } '
 # → Cannot add type. The type name 'WS' already exists.   （5.1・7 とも同じ）</code></pre>
 
@@ -837,7 +837,7 @@ Add-Type -TypeDefinition 'public class WS { public static int V() { return 1; } 
 
 <h3>① 新しいプロセスで実行する</h3>
 
-<pre><code>pwsh.exe -NoProfile -ExecutionPolicy Bypass -File .\dev.ps1</code></pre>
+<pre><code class="language-powershell">pwsh.exe -NoProfile -ExecutionPolicy Bypass -File .\dev.ps1</code></pre>
 
 <p>いちばん確実です。プロセスが終われば型も消えるので、何度でも作り直せます。C# を書き換えながら試す間は、<strong>対話セッションで <code>Add-Type</code> を打たない</strong>のが結局いちばん速く進みます。</p>
 
@@ -845,7 +845,7 @@ Add-Type -TypeDefinition 'public class WS { public static int V() { return 1; } 
 
 <p>同じセッションで差し替えたいなら、型名にランダムな文字列を付け、<code>-PassThru</code> で返る型オブジェクトを保持して呼びます。</p>
 
-<pre><code>function New-Calc([int]$factor) {
+<pre><code class="language-powershell">function New-Calc([int]$factor) {
     $name = 'Calc_' + [guid]::NewGuid().ToString('N')
     $src  = "public static class $name { public static int Mul(int x) { return x * $factor; } }"
     Add-Type -TypeDefinition $src -PassThru
@@ -874,7 +874,7 @@ $v2::Mul(10)        # → 30   エラーにならない</code></pre>
 
 <p>Win32 API を呼ぶだけなら、クラス全体を書く必要はありません。<code>-MemberDefinition</code> に<strong>メンバの宣言だけ</strong>を渡すと、<code>Add-Type</code> がクラスの外枠を組み立ててくれます。</p>
 
-<pre><code>$sig = @"
+<pre><code class="language-powershell">$sig = @"
 [DllImport("kernel32.dll")]
 public static extern ulong GetTickCount64();
 
@@ -886,7 +886,7 @@ Add-Type -MemberDefinition $sig -Name 'Native' -Namespace 'Demo'</code></pre>
 
 <p><code>-Name</code> がクラス名、<code>-Namespace</code> が名前空間になり、<code>[Demo.Native]</code> という型ができます。</p>
 
-<pre><code>PS&gt; [Demo.Native]::GetTickCount64()
+<pre><code class="language-text">PS&gt; [Demo.Native]::GetTickCount64()
 1214534562
 
 PS&gt; [Demo.Native]::GetSystemMetrics(0)     # SM_CXSCREEN
@@ -902,7 +902,7 @@ PS&gt; [Demo.Native]::GetSystemMetrics(80)    # SM_CMONITORS
 
 <p>出力引数に構造体を要求する API は、<code>struct</code> を自分で定義して <code>[ref]</code> で渡します。</p>
 
-<pre><code>Add-Type -TypeDefinition @"
+<pre><code class="language-powershell">Add-Type -TypeDefinition @"
 using System.Runtime.InteropServices;
 
 [StructLayout(LayoutKind.Sequential)]
@@ -921,7 +921,7 @@ public static class Win
 $r  = New-Object RECT
 $ok = [Win]::GetWindowRect([Win]::GetDesktopWindow(), [ref]$r)</code></pre>
 
-<pre><code>PS&gt; $ok
+<pre><code class="language-text">PS&gt; $ok
 True
 PS&gt; "Left=$($r.Left) Top=$($r.Top) Right=$($r.Right) Bottom=$($r.Bottom)"
 Left=0 Top=0 Right=1536 Bottom=864</code></pre>
@@ -932,7 +932,7 @@ Left=0 Top=0 Right=1536 Bottom=864</code></pre>
 
 <p><code>GetPrivateProfileString</code> は、文字列バッファを渡して書き込んでもらう典型的な API です。VBA から呼んだことがある方も多いはずです。</p>
 
-<pre><code>$sig = @"
+<pre><code class="language-powershell">$sig = @"
 [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
 public static extern uint GetPrivateProfileString(
     string lpAppName, string lpKeyName, string lpDefault,
@@ -949,14 +949,14 @@ function Get-IniValue([string]$Path, [string]$Section, [string]$Key, [string]$De
 
 <p>読ませた INI と、その結果です。</p>
 
-<pre><code>[Database]
+<pre><code class="language-ini">[Database]
 Server=db01.example.jp
 Port=5432
 
 [App]
 Timeout=90</code></pre>
 
-<pre><code>PS&gt; Get-IniValue .\sample.ini 'Database' 'Server'
+<pre><code class="language-text">PS&gt; Get-IniValue .\sample.ini 'Database' 'Server'
 db01.example.jp
 PS&gt; Get-IniValue .\sample.ini 'App' 'Timeout' '30'
 90
@@ -974,7 +974,7 @@ Win32 の INI API が理解するのは <strong>ANSI か UTF-16LE</strong> だ�
 <div class="callout callout-important">
 <strong><code>-UsingNamespace 'System.Runtime.InteropServices'</code> を付けると、逆にコンパイルが失敗します。</strong><br>
 <code>-MemberDefinition</code> は <code>DllImport</code> を使う前提なので、この <code>using</code> を<strong>最初から自動で入れています</strong>。重ねて指定すると <code>CS0105</code>（重複した using）になり、しかも警告がエラー扱いのため止まります。5.1・7 の両方で同じです。
-<pre><code>(3,7): error CS0105: 'System.Runtime.InteropServices' の using ディレクティブは、
+<pre><code class="language-text">(3,7): error CS0105: 'System.Runtime.InteropServices' の using ディレクティブは、
 この名前空間で既に使用されています</code></pre>
 </div>
 
@@ -993,7 +993,7 @@ Win32 の INI API が理解するのは <strong>ANSI か UTF-16LE</strong> だ�
 
 <p><code>Add-Type</code> で C# を用意しても、<strong>PowerShell から1回ずつ呼んでいては効果がありません</strong>。同じ合計処理を、C# の呼び方だけ変えて測りました（30 万回）。</p>
 
-<pre><code>$n = 300000
+<pre><code class="language-powershell">$n = 300000
 
 $t1 = Measure-Command { $s = 0L; for ($i = 1; $i -le $n; $i++) { $s = $s + $i } }
 $t2 = Measure-Command { $s = 0L; for ($i = 1; $i -le $n; $i++) { $s = [B4]::Add($s, $i) } }
@@ -1170,7 +1170,7 @@ PowerShell と C# が交互に出てくるスクリプトは、<strong>読む人
 
 <div class="callout">
 <strong><span class="badge b-ps51">5.1</span><code>csc.exe</code> の場所は、5.1 なら実行中のランタイムから引けます。</strong>
-<pre><code>$dir = [System.Runtime.InteropServices.RuntimeEnvironment]::GetRuntimeDirectory()
+<pre><code class="language-powershell">$dir = [System.Runtime.InteropServices.RuntimeEnvironment]::GetRuntimeDirectory()
 Join-Path $dir 'csc.exe'
 # 5.1 → C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe  （存在する）
 # 7   → C:\Program Files\PowerShell\7\csc.exe                    （存在しない）</code></pre>
@@ -1181,7 +1181,7 @@ Join-Path $dir 'csc.exe'
 
 <p><code>Sum.cs</code> — 1 から n までの合計を出すだけのコンソールアプリです。<strong>終了コードを返す</strong>ように書いておきます（08 章）。</p>
 
-<pre><code>using System;
+<pre><code class="language-csharp">using System;
 
 class Program
 {
@@ -1205,7 +1205,7 @@ class Program
     }
 }</code></pre>
 
-<pre><code>PS&gt; $csc = 'C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe'
+<pre><code class="language-text">PS&gt; $csc = 'C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe'
 PS&gt; &amp; $csc /nologo /target:exe /out:Sum.exe Sum.cs
 PS&gt; $LASTEXITCODE
 0
@@ -1217,7 +1217,7 @@ Sum.exe   4096</code></pre>
 
 <p>4 KB の exe が1つできます。動かします。<strong>カレントの実行ファイルは <code>.\</code> を付けて呼びます</strong>（03 章）。</p>
 
-<pre><code>PS&gt; .\Sum.exe 3000000
+<pre><code class="language-text">PS&gt; .\Sum.exe 3000000
 4500001500000
 PS&gt; $LASTEXITCODE
 0
@@ -1238,7 +1238,7 @@ PS&gt; $LASTEXITCODE
 
 <p><code>/target:library</code> にすると dll になります。こちらのほうが実務では使い出があります。</p>
 
-<pre><code>using System;
+<pre><code class="language-csharp">using System;
 
 namespace MyTools
 {
@@ -1260,13 +1260,13 @@ namespace MyTools
     }
 }</code></pre>
 
-<pre><code>PS&gt; &amp; $csc /nologo /target:library /out:MyTools.dll Calc.cs
+<pre><code class="language-text">PS&gt; &amp; $csc /nologo /target:library /out:MyTools.dll Calc.cs
 PS&gt; $LASTEXITCODE
 0</code></pre>
 
 <p>できた dll は <code>Add-Type -Path</code> で読み込みます。</p>
 
-<pre><code>PS&gt; Add-Type -Path .\MyTools.dll
+<pre><code class="language-text">PS&gt; Add-Type -Path .\MyTools.dll
 PS&gt; [MyTools.Calc]::SumTo(1000)
 500500
 PS&gt; [MyTools.Calc]::Reverse('PowerShell')
@@ -1276,7 +1276,7 @@ C:\work\MyTools.dll</code></pre>
 
 <p>11.2 の <code>-TypeDefinition</code> と違い、<strong><code>Location</code> にちゃんとパスが入ります</strong>。そして重要なのは次の点です。</p>
 
-<pre><code>PS&gt; Measure-Command { Add-Type -Path .\MyTools.dll }
+<pre><code class="language-text">PS&gt; Measure-Command { Add-Type -Path .\MyTools.dll }
 # 5.1 → 23 ms   7 → 5 ms   どちらもエラーにならない</code></pre>
 
 <p><strong>同じ dll を2回読み込んでもエラーになりません。</strong>11.4 の「型を再定義できない」という制約は、<code>-TypeDefinition</code> でソースからコンパイルする場合の話です。既に読み込み済みのアセンブリを指定した <code>Add-Type -Path</code> は、単に何もせず返ります。</p>
@@ -1290,7 +1290,7 @@ C:\work\MyTools.dll</code></pre>
 
 <p><code>csc.exe</code> は<strong>例外を投げません</strong>。成否は終了コードで判定します（08.3）。わざと2箇所間違えた <code>.cs</code> を食わせた結果です。</p>
 
-<pre><code>PS&gt; &amp; $csc /nologo /target:exe /out:Bad3.exe Bad3.cs
+<pre><code class="language-text">PS&gt; &amp; $csc /nologo /target:exe /out:Bad3.exe Bad3.cs
 Bad3.cs(7,17): error CS0029: 型 'string' を型 'int' に暗黙的に変換できません。
 Bad3.cs(8,17): error CS0117: 'System.Console' に 'WirteLine' の定義がありません。
 PS&gt; $LASTEXITCODE
@@ -1302,7 +1302,7 @@ False</code></pre>
 
 <h3>ビルド用ラッパ</h3>
 
-<pre><code>[CmdletBinding()]
+<pre><code class="language-powershell">[CmdletBinding()]
 param(
     [string]$Source,
     [string]$Output
@@ -1322,7 +1322,7 @@ if ($LASTEXITCODE -ne 0) { throw "コンパイルに失敗しました (終了�
 
 Write-Host "生成: $Output ($((Get-Item $Output).Length) バイト)"</code></pre>
 
-<pre><code>PS&gt; .\build.ps1
+<pre><code class="language-text">PS&gt; .\build.ps1
 コンパイル: C:\work\Sum.cs
 生成: C:\work\Sum.exe (4096 バイト)
 
@@ -1337,7 +1337,7 @@ Bad3.cs(8,17): error CS0117: 'System.Console' に 'WirteLine' の定義があり
 <div class="callout callout-important">
 <strong>ただし <code>Framework64\v4.0.30319\csc.exe</code> が受け付ける C# も、5.1 の <code>Add-Type</code> と同じ C# 5 までです。</strong><br>
 <code>/langversion</code> に 6 を渡すと、有効な値そのものが返ってきます。
-<pre><code>error CS1617: /langversion に対する無効なオプション '6' です。
+<pre><code class="language-text">error CS1617: /langversion に対する無効なオプション '6' です。
 ISO-1、ISO-2、3、4、5、または Default でなければなりません。</code></pre>
 5.1 の <code>Add-Type</code> がこの <code>csc.exe</code> を呼んでいるのですから、当然の一致です。C# 6 以降を使いたい場合は Visual Studio 同梱の Roslyn 版 <code>csc.exe</code> か dotnet SDK が要ります。
 </div>
@@ -1346,7 +1346,7 @@ ISO-1、ISO-2、3、4、5、または Default でなければなりません。<
 
 <p>dotnet SDK が入っているなら <code>dotnet build</code> も使えますが、<strong>プロジェクトファイルが要ります</strong>。<code>.cs</code> を直接渡すことはできません。</p>
 
-<pre><code>PS&gt; dotnet build Sum.cs
+<pre><code class="language-text">PS&gt; dotnet build Sum.cs
 MSBuild version 17.5.0+6f08c67f3 for .NET
 C:\work\Sum.cs(1,1): error MSB4025: プロジェクト ファイルを読み込めませんでした。
 Data at the root level is invalid. Line 1, position 1.

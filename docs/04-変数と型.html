@@ -279,7 +279,7 @@
 
 <h2>まず並べて見る</h2>
 
-<pre><code># JavaScript                      # PowerShell
+<pre><code class="language-text"># JavaScript                      # PowerShell
 const name = "PS";                $name = "PS"
 let count = 0;                    $count = 0
 const arr = [1, 2, 3];            $arr = @(1, 2, 3)
@@ -302,7 +302,7 @@ console.log(name);                Write-Host $name</code></pre>
 
 <p>PowerShell の値は、内部的にはすべて <strong>.NET の型</strong>を持っています。確認してみます。</p>
 
-<pre><code>$s = "hello"
+<pre><code class="language-powershell">$s = "hello"
 $n = 42
 $a = @(1, 2, 3)
 
@@ -312,7 +312,7 @@ $a.GetType().Name    # Object[]</code></pre>
 
 <p>さらに <strong>変数に型を宣言できます</strong>。これは JavaScript には無い機能です。</p>
 
-<pre><code>[int]$num = 5
+<pre><code class="language-powershell">[int]$num = 5
 $num = "42"          # 文字列だが自動で int に変換される → 42
 $num = "abc"         # 変換できないのでエラーになる</code></pre>
 
@@ -392,7 +392,7 @@ TypeScript の型は<strong>コンパイル時に消えます</strong>が、Powe
 
 <p>PowerShell では<strong>シングルクォートとダブルクォートが別物</strong>です。ここは最初に必ず覚えてください。</p>
 
-<pre><code>$name = "PowerShell"
+<pre><code class="language-powershell">$name = "PowerShell"
 
 'こんにちは $name'     # → こんにちは $name    （そのまま）
 "こんにちは $name"     # → こんにちは PowerShell（展開される）</code></pre>
@@ -440,7 +440,7 @@ TypeScript の型は<strong>コンパイル時に消えます</strong>が、Powe
 
 <p>変数名だけならそのまま書けますが、<strong>プロパティやメソッドは <code>$()</code> で囲みます</strong>。</p>
 
-<pre><code>$file = Get-Item .\a.txt
+<pre><code class="language-powershell">$file = Get-Item .\a.txt
 
 "名前は $file.Name です"        # → 名前は a.txt.Name です   ✗ 意図しない
 "名前は $($file.Name) です"     # → 名前は a.txt です        ✓</code></pre>
@@ -458,7 +458,7 @@ TypeScript の型は<strong>コンパイル時に消えます</strong>が、Powe
 
 <p>PowerShell のエスケープ文字は <strong>バッククォート（<code>`</code>）</strong>です。バックスラッシュは<strong>ただの文字</strong>として扱われます。</p>
 
-<pre><code>"C:\temp\new".Length     # → 11   \t や \n は展開されない
+<pre><code class="language-powershell">"C:\temp\new".Length     # → 11   \t や \n は展開されない
 "C:\temp`nnew"           # → 改行が入る（`n が改行）</code></pre>
 
 <div class="callout">
@@ -479,7 +479,7 @@ JavaScript や Java では <code>"C:\\temp\\new"</code> と二重に書く必要
 
 <h2>ヒアストリング — 複数行をそのまま書く</h2>
 
-<pre><code>$sql = @'
+<pre><code class="language-powershell">$sql = @'
 SELECT *
   FROM users
  WHERE name = '田中'
@@ -490,7 +490,7 @@ SELECT *
 <code>'@</code> の前に<strong>スペースやタブが1つでもあると構文エラー</strong>になります。インデントを揃えたくなる場所ですが、ここだけは字下げできません。開始側の <code>@'</code> は行末で改行する必要があります。
 </div>
 
-<pre><code># ✗ エラーになる例
+<pre><code class="language-powershell"># ✗ エラーになる例
     $s = @'
     テキスト
     '@          ← 終端がインデントされている
@@ -534,7 +534,7 @@ SELECT *
 
 <p>ここが本章で<strong>もっとも事故につながる仕様</strong>です。</p>
 
-<pre><code>"abc" -eq "ABC"      # → True   （！）
+<pre><code class="language-powershell">"abc" -eq "ABC"      # → True   （！）
 "abc" -ceq "ABC"     # → False  （c を付けると区別する）</code></pre>
 
 <figure>
@@ -592,12 +592,12 @@ SELECT *
 
 <h2>ワイルドカードと正規表現は別物</h2>
 
-<pre><code>"report-2026.txt" -like  "report-*.txt"      # → True （ワイルドカード）
+<pre><code class="language-powershell">"report-2026.txt" -like  "report-*.txt"      # → True （ワイルドカード）
 "report-2026.txt" -match "report-\d{4}"      # → True （正規表現）</code></pre>
 
 <p><code>-match</code> が成功すると、<strong>キャプチャ結果が <code>$matches</code> に入ります</strong>。</p>
 
-<pre><code>if ("report-2026.txt" -match "report-(\d{4})") {
+<pre><code class="language-powershell">if ("report-2026.txt" -match "report-(\d{4})") {
     $matches[1]      # → 2026
 }</code></pre>
 
@@ -614,7 +614,7 @@ SELECT *
 
 <h2>配列の作り方</h2>
 
-<pre><code># JavaScript                      # PowerShell
+<pre><code class="language-text"># JavaScript                      # PowerShell
 const a = [1, 2, 3];              $a = @(1, 2, 3)
                                   $a = 1, 2, 3        # @() は省略できる
 const empty = [];                 $empty = @()
@@ -625,7 +625,7 @@ a.slice(1, 3)                     $a[1..2]            # 範囲指定</code></pre
 
 <p>カンマ <code>,</code> が配列を作る演算子なので、<code>@()</code> は無くても動きます。ただし<strong>要素が1個のときは <code>@()</code> が必要</strong>です。</p>
 
-<pre><code>$one = @(5)          # 要素1個の配列
+<pre><code class="language-powershell">$one = @(5)          # 要素1個の配列
 $one.GetType().Name  # → Object[]  （配列のまま）</code></pre>
 
 <h2><code>+=</code> は毎回新しい配列を作る <span class="badge b-warn">性能の罠</span></h2>
@@ -678,7 +678,7 @@ $one.GetType().Name  # → Object[]  （配列のまま）</code></pre>
 <figcaption>図 04.4 — <code>+=</code> はコピーの繰り返し。件数が増えると急激に遅くなる</figcaption>
 </figure>
 
-<pre><code># ✗ 件数が多いと遅い
+<pre><code class="language-powershell"># ✗ 件数が多いと遅い
 $result = @()
 foreach ($x in 1..10000) { $result += $x }
 
@@ -696,7 +696,7 @@ $result = foreach ($x in 1..10000) { $x }</code></pre>
 
 <h2>ハッシュテーブル</h2>
 
-<pre><code># JavaScript                      # PowerShell
+<pre><code class="language-text"># JavaScript                      # PowerShell
 const o = { a: 1, b: 2 };         $o = @{ a = 1; b = 2 }
 o.a                               $o.a
 o["a"]                            $o["a"]
@@ -709,7 +709,7 @@ delete o.a;                       $o.Remove("a")
 
 <h3>順序を保ちたいときは <code>[ordered]</code></h3>
 
-<pre><code>$h = @{ b = 2; a = 1 }             # 順序は保証されない
+<pre><code class="language-powershell">$h = @{ b = 2; a = 1 }             # 順序は保証されない
 $h = [ordered]@{ b = 2; a = 1 }    # 書いた順に並ぶ</code></pre>
 
 <div class="callout callout-important">
@@ -732,12 +732,12 @@ PowerShell では<strong>ドット記法でもブラケット記法でもアク�
 
 <p>PowerShell では <code>$null</code> との比較を<strong>必ず左辺に書きます</strong>。</p>
 
-<pre><code>if ($null -eq $value) { }     # ✓ 正しい
+<pre><code class="language-powershell">if ($null -eq $value) { }     # ✓ 正しい
 if ($value -eq $null) { }     # ✗ 避ける</code></pre>
 
 <p>理由は、<strong>右辺が配列だと <code>-eq</code> がフィルタとして働く</strong>ためです。</p>
 
-<pre><code>$arr = @(1, $null, 2)
+<pre><code class="language-powershell">$arr = @(1, $null, 2)
 
 $arr -eq $null       # → $null が1個返る（フィルタ結果）
 $null -eq $arr       # → False（比較結果）</code></pre>
@@ -812,7 +812,7 @@ JavaScript では <code>if ([])</code> が真になるため <code>arr.length</c
 
 <h2>型変換 — 左辺の型が演算を決める <span class="badge b-bad">JS と違う</span></h2>
 
-<pre><code>"42" + 1        # → "421"   文字列結合（左が文字列）
+<pre><code class="language-powershell">"42" + 1        # → "421"   文字列結合（左が文字列）
 1 + "42"        # → 43      数値加算（左が数値）</code></pre>
 
 <p>JavaScript では<strong>どちらも文字列結合</strong>（<code>"421"</code> と <code>"142"</code>）になります。PowerShell は<strong>左辺の型に合わせて右辺を変換</strong>するので、結果が変わります。</p>
@@ -824,7 +824,7 @@ CSV やテキストファイルから読んだ数値は<strong>すべて文字�
 
 <h3>安全に変換する <code>-as</code></h3>
 
-<pre><code>[int]"abc"           # → エラーで止まる
+<pre><code class="language-powershell">[int]"abc"           # → エラーで止まる
 "abc" -as [int]      # → $null が返る（止まらない）
 
 $n = $input -as [int]

@@ -326,7 +326,7 @@
 
 <h2>そのまま貼れる形</h2>
 
-<pre><code>#Requires -Version 5.1
+<pre><code class="language-powershell">#Requires -Version 5.1
 [CmdletBinding()]
 param(
 	[Parameter(Mandatory)]
@@ -363,7 +363,7 @@ catch {
 
 <h3>実行結果</h3>
 
-<pre><code>PS&gt; .\skeleton.ps1 -Path C:\work
+<pre><code class="language-text">PS&gt; .\skeleton.ps1 -Path C:\work
 処理しました: C:\work
 exit=0
 
@@ -390,7 +390,7 @@ exit=1</code></pre>
 <div class="callout callout-warning">
 <strong><span class="badge b-ps51">5.1</span> <code>[CmdletBinding()]</code> を付けると、<code>param()</code> の既定値の中で <code>$PSScriptRoot</code> が空文字列になります。</strong><br>
 そのため <code>[string]$OutFile = (Join-Path $PSScriptRoot 'result.csv')</code> と書くと、<strong>引数を省略した瞬間に起動時点で落ちます</strong>。
-<pre><code>Join-Path : Cannot bind argument to parameter 'Path' because it is an empty string.
+<pre><code class="language-text">Join-Path : Cannot bind argument to parameter 'Path' because it is an empty string.
 At C:\work\skeleton.ps1:6 char:31
 +     [string]$OutFile = (Join-Path $PSScriptRoot 'result.csv')
 +                                  ~~~~~~~~~~~~~</code></pre>
@@ -412,7 +412,7 @@ At C:\work\skeleton.ps1:6 char:31
 
 <h2>Write-Log 関数</h2>
 
-<pre><code>$LogPath = Join-Path $PSScriptRoot 'run.log'
+<pre><code class="language-powershell">$LogPath = Join-Path $PSScriptRoot 'run.log'
 
 function Write-Log {
 	[CmdletBinding()]
@@ -436,11 +436,11 @@ function Write-Log {
 
 <h3>使い方と実行結果</h3>
 
-<pre><code>Write-Log '処理を開始しました'
+<pre><code class="language-powershell">Write-Log '処理を開始しました'
 Write-Log '対象が見つかりません' -Level WARN
 'パイプでも渡せます' | Write-Log</code></pre>
 
-<pre><code>2026-08-25 00:24:32 [INFO] 処理を開始しました
+<pre><code class="language-text">2026-08-25 00:24:32 [INFO] 処理を開始しました
 2026-08-25 00:24:32 [WARN] 対象が見つかりません
 2026-08-25 00:24:32 [INFO] パイプでも渡せます</code></pre>
 
@@ -468,11 +468,11 @@ Write-Log '対象が見つかりません' -Level WARN
 
 <h2>ログを日ごとに分ける</h2>
 
-<pre><code>$LogPath = Join-Path $PSScriptRoot ('run-{0}.log' -f (Get-Date -Format 'yyyyMMdd'))</code></pre>
+<pre><code class="language-powershell">$LogPath = Join-Path $PSScriptRoot ('run-{0}.log' -f (Get-Date -Format 'yyyyMMdd'))</code></pre>
 
 <p>1行変えるだけです。古いログの削除まで入れるなら次の形にします。</p>
 
-<pre><code># 30 日より古いログを消す
+<pre><code class="language-powershell"># 30 日より古いログを消す
 Get-ChildItem -LiteralPath $PSScriptRoot -Filter 'run-*.log' |
 	Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-30) } |
 	Remove-Item -WhatIf</code></pre>
@@ -488,7 +488,7 @@ Get-ChildItem -LiteralPath $PSScriptRoot -Filter 'run-*.log' |
 
 <h2>使える検証属性</h2>
 
-<pre><code>[CmdletBinding()]
+<pre><code class="language-powershell">[CmdletBinding()]
 param(
 	[Parameter(Mandatory)]
 	[ValidateNotNullOrEmpty()]
@@ -511,7 +511,7 @@ param(
 
 <p>いずれも<strong>本体は1行も実行されません</strong>。</p>
 
-<pre><code>PS&gt; .\validate.ps1 -Name t -Env Hoge
+<pre><code class="language-text">PS&gt; .\validate.ps1 -Name t -Env Hoge
 Cannot validate argument on parameter 'Env'. The argument "Hoge" does not
 belong to the set "Dev,Stg,Prod" specified by the ValidateSet attribute.
 
@@ -551,7 +551,7 @@ not match the "^\d{4}-\d{2}-\d{2}$" pattern.</code></pre>
 
 <p>「A を指定したなら B も要る」のような条件は属性では書けません。<strong>パラメータセット</strong>を使います。</p>
 
-<pre><code>[CmdletBinding(DefaultParameterSetName = 'ByName')]
+<pre><code class="language-powershell">[CmdletBinding(DefaultParameterSetName = 'ByName')]
 param(
 	[Parameter(Mandatory, ParameterSetName = 'ByName')]
 	[string]$Name,
@@ -577,7 +577,7 @@ switch ($PSCmdlet.ParameterSetName) {
 
 <h2>読む</h2>
 
-<pre><code># 行の配列として読む
+<pre><code class="language-powershell"># 行の配列として読む
 $lines = Get-Content -LiteralPath $Path -Encoding UTF8
 
 # 1つの文字列として読む（JSON・XML はこちら）
@@ -596,7 +596,7 @@ Get-Content -LiteralPath $Path -Encoding UTF8 | ForEach-Object {
 
 <h2>書く</h2>
 
-<pre><code># 上書き
+<pre><code class="language-powershell"># 上書き
 Set-Content -LiteralPath $Path -Value $text -Encoding UTF8
 
 # 追記
@@ -615,7 +615,7 @@ $rows | Export-Csv -LiteralPath $Path -Encoding UTF8 -NoTypeInformation</code></
 
 <h2>パスを組み立てる</h2>
 
-<pre><code># 連結（区切りの重複を吸収してくれる）
+<pre><code class="language-powershell"># 連結（区切りの重複を吸収してくれる）
 $full = Join-Path $Dir 'sub' | Join-Path -ChildPath 'file.txt'
 
 # 分解
@@ -631,7 +631,7 @@ $data = Join-Path $PSScriptRoot 'data'</code></pre>
 
 <h2>存在を確かめる</h2>
 
-<pre><code># あるかどうか
+<pre><code class="language-powershell"># あるかどうか
 if (Test-Path -LiteralPath $Path) { }
 
 # ファイルであること（フォルダを除く）
@@ -653,7 +653,7 @@ if (-not (Test-Path -LiteralPath $Dir)) {
 
 <h2>一覧する</h2>
 
-<pre><code># フォルダ直下のファイルだけ
+<pre><code class="language-powershell"># フォルダ直下のファイルだけ
 Get-ChildItem -LiteralPath $Dir -File
 
 # 再帰して拡張子で絞る
@@ -668,7 +668,7 @@ Get-ChildItem -LiteralPath $Dir -Recurse -File |
 
 <h2>安全に消す・移す</h2>
 
-<pre><code># まず -WhatIf で確認する
+<pre><code class="language-powershell"># まず -WhatIf で確認する
 Get-ChildItem -LiteralPath $Dir -Filter '*.tmp' | Remove-Item -WhatIf
 
 # 納得したら外す
@@ -688,7 +688,7 @@ Get-ChildItem -LiteralPath $Dir -Filter '*.tmp' | Remove-Item -Confirm</code></p
 
 <h2>ラッパー関数</h2>
 
-<pre><code>function Invoke-External {
+<pre><code class="language-powershell">function Invoke-External {
 	param(
 		[Parameter(Mandatory)][string]$Command,
 		[string[]]$Arguments = @()
@@ -709,7 +709,7 @@ Get-ChildItem -LiteralPath $Dir -Filter '*.tmp' | Remove-Item -Confirm</code></p
 
 <h3>実行結果</h3>
 
-<pre><code>PS&gt; Invoke-External 'cmd.exe' @('/c', 'echo hello')
+<pre><code class="language-text">PS&gt; Invoke-External 'cmd.exe' @('/c', 'echo hello')
 hello
 
 PS&gt; Invoke-External 'cmd.exe' @('/c', 'exit 3')
@@ -736,7 +736,7 @@ PS&gt; Invoke-External 'nosuchcmd.exe'
 
 <h2>JSON を返すコマンドを受け取る</h2>
 
-<pre><code>$json = Invoke-External 'gh' @('api', 'repos/owner/name')
+<pre><code class="language-powershell">$json = Invoke-External 'gh' @('api', 'repos/owner/name')
 $repo = $json -join "`n" | ConvertFrom-Json
 $repo.full_name</code></pre>
 
@@ -757,7 +757,7 @@ $repo.full_name</code></pre>
 
 <h2>フォルダの形</h2>
 
-<pre><code>mytool\
+<pre><code class="language-text">mytool\
 ├── mytool.ps1        本体
 ├── mytool.cmd        ダブルクリック用のランチャー
 ├── config.json       設定（コードと分ける）
@@ -768,7 +768,7 @@ $repo.full_name</code></pre>
 
 <p><code>.ps1</code> はダブルクリックしても実行されません。<strong>同名の <code>.cmd</code> を添えます。</strong></p>
 
-<pre><code>@echo off
+<pre><code class="language-batch">@echo off
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0mytool.ps1" %*
 pause</code></pre>
 
@@ -787,7 +787,7 @@ pause</code></pre>
 
 <h2>設定をコードから分ける</h2>
 
-<pre><code>$ConfigPath = Join-Path $PSScriptRoot 'config.json'
+<pre><code class="language-powershell">$ConfigPath = Join-Path $PSScriptRoot 'config.json'
 
 $Config = if (Test-Path -LiteralPath $ConfigPath) {
 	Get-Content -LiteralPath $ConfigPath -Raw -Encoding UTF8 | ConvertFrom-Json
@@ -805,7 +805,7 @@ Write-Verbose "対象: $($Config.TargetDir)"</code></pre>
 
 <h2>タスクスケジューラに登録する</h2>
 
-<pre><code>$action = New-ScheduledTaskAction `
+<pre><code class="language-powershell">$action = New-ScheduledTaskAction `
 	-Execute 'powershell.exe' `
 	-Argument '-NoProfile -ExecutionPolicy Bypass -File "C:\tools\mytool\mytool.ps1"' `
 	-WorkingDirectory 'C:\tools\mytool'

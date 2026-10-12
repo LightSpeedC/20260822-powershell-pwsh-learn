@@ -294,7 +294,7 @@
 
 <h3>DOS / cmd.exe の基本</h3>
 
-<pre><code>C:\&gt; dir
+<pre><code class="language-batch">C:\&gt; dir
 C:\&gt; copy file.txt backup.txt
 C:\&gt; del oldfile.txt</code></pre>
 
@@ -309,7 +309,7 @@ C:\&gt; del oldfile.txt</code></pre>
 
 <h3>DOS での問題例</h3>
 
-<pre><code>REM 変数はあるが文字列のみ
+<pre><code class="language-batch">REM 変数はあるが文字列のみ
 set name=PowerShell
 echo %name%
 
@@ -434,7 +434,7 @@ Perl や VBScript は使えましたが、OS 標準ではなく、多くの環�
 
 <h3>PowerShell が解決したこと</h3>
 
-<pre><code># オブジェクト指向のパイプ
+<pre><code class="language-powershell"># オブジェクト指向のパイプ
 Get-Process | Where-Object { $_.Memory -gt 100MB } | Stop-Process
 
 # Windows API への直接アクセス
@@ -484,11 +484,11 @@ foreach ($file in Get-ChildItem) {
 
 <h3>Bash（テキスト処理）</h3>
 
-<pre><code>$ ps aux | grep node | awk '{print $2}' | xargs kill</code></pre>
+<pre><code class="language-shell">$ ps aux | grep node | awk '{print $2}' | xargs kill</code></pre>
 
 <h3>PowerShell（オブジェクト処理）</h3>
 
-<pre><code>Get-Process -Name node | Stop-Process</code></pre>
+<pre><code class="language-powershell">Get-Process -Name node | Stop-Process</code></pre>
 
 <figure>
 <svg viewBox="0 0 780 268" role="img" aria-label="テキストパイプとオブジェクトパイプの違い">
@@ -629,7 +629,7 @@ foreach ($file in Get-ChildItem) {
 
 <h3>PowerShell が向いている場面</h3>
 
-<pre><code># Windows サーバーの一括管理
+<pre><code class="language-powershell"># Windows サーバーの一括管理
 $servers = Get-Content servers.txt
 foreach ($server in $servers) {
     Invoke-Command -ComputerName $server -ScriptBlock {
@@ -646,7 +646,7 @@ Get-ChildItem *.log | ForEach-Object {
 
 <h3>Node.js が向いている場面</h3>
 
-<pre><code>// Web サーバー + リアルタイム処理
+<pre><code class="language-javascript">// Web サーバー + リアルタイム処理
 const express = require('express');
 const app = express();
 

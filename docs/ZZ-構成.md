@@ -166,7 +166,7 @@ DOS/cmd の限界 → Bash の強み → PowerShell が必要だった理由 →
 
 読者Aの既知知識に最も接続しやすい章。**全節で JS のコードを左、PowerShell を右に並べます。**
 
-```
+```text
 # JavaScript                    # PowerShell
 const name = "PS";              $name = "PS"
 const arr = [1, 2, 3];          $arr = @(1, 2, 3)
@@ -397,7 +397,7 @@ README の逆引き索引（17項目）は**残します**。役割を分けま�
 
 ### 実行方法
 
-```
+```powershell
 # 0) 章を増減・改題したときに実行する2本
 .\src\scripts\nav\build-nav.ps1      # 各章フッターの前後リンク
 .\src\scripts\index\build-index.ps1  # A1.2 のコマンド索引

@@ -333,7 +333,7 @@
 
 <p>この章では <span class="badge b-ps51">5.1</span> <span class="badge b-ps7">pwsh 7</span> のバッジで挙動の違いを示します。<strong>コード例はどちらで実行するかで結果が変わる</strong>ので、まず自分の環境を確認してください。</p>
 
-<pre><code>$PSVersionTable.PSEdition</code></pre>
+<pre><code class="language-powershell">$PSVersionTable.PSEdition</code></pre>
 
 <div class="tablewrap">
 <table>
@@ -434,7 +434,7 @@ Windows が言う「ANSI」は特定の文字コードの名前ではなく、<s
 
 <p>ここが最大のポイントです。HTML や HTTP には文字コードを宣言する場所がありますが、<strong>プレーンテキストのファイルにはそれがありません</strong>。</p>
 
-<pre><code>&lt;!-- HTML なら宣言できる --&gt;
+<pre><code class="language-html">&lt;!-- HTML なら宣言できる --&gt;
 &lt;meta charset="UTF-8"&gt;
 
 # HTTP なら宣言できる
@@ -558,7 +558,7 @@ Write-Host "こんにちは"</code></pre>
 
 <p>ここに<strong>同じ名前で結果が違う</strong>という罠があります。</p>
 
-<pre><code># Windows PowerShell 5.1
+<pre><code class="language-powershell"># Windows PowerShell 5.1
 Set-Content -Path .\a.ps1 -Value $text -Encoding UTF8      # → BOM 付き UTF-8
 
 # PowerShell 7
@@ -574,7 +574,7 @@ Set-Content -Path .\a.ps1 -Value $text -Encoding utf8BOM   # → BOM 付き UTF-
 
 <p>BOM が付いているかは、先頭3バイトを見れば分かります。</p>
 
-<pre><code># 先頭 3 バイトが EF BB BF なら BOM 付き UTF-8
+<pre><code class="language-powershell"># 先頭 3 バイトが EF BB BF なら BOM 付き UTF-8
 Get-Content .\a.ps1 -AsByteStream -TotalCount 3          # pwsh 7
 Get-Content .\a.ps1 -Encoding Byte -TotalCount 3         # 5.1</code></pre>
 
@@ -671,7 +671,7 @@ cmd.exe のバッチ解釈は行末に CR があることを前提にした挙�
 
 <p>より確実なのは <code>.gitattributes</code> で拡張子ごとに固定する方法です。</p>
 
-<pre><code># .gitattributes
+<pre><code class="language-text"># .gitattributes
 *.ps1  text eol=crlf
 *.bat  text eol=crlf
 *.cmd  text eol=crlf</code></pre>
@@ -766,7 +766,7 @@ cmd.exe はファイルを<strong>現在のコードページ</strong>で解釈�
 
 <h2>ランチャーの中身</h2>
 
-<pre><code>@echo off
+<pre><code class="language-batch">@echo off
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0foo.ps1"
 pause</code></pre>
 
@@ -791,7 +791,7 @@ pause</code></pre>
 
 <p>実行ファイル名を変えるだけです。</p>
 
-<pre><code>@echo off
+<pre><code class="language-batch">@echo off
 pwsh.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0foo.ps1"
 pause</code></pre>
 

@@ -277,7 +277,7 @@
 
 <h2>if は見た目どおり</h2>
 
-<pre><code># JavaScript                        # PowerShell
+<pre><code class="language-text"># JavaScript                        # PowerShell
 if (x &gt; 10) {                       if ($x -gt 10) {
     ...                                 ...
 } else if (x &gt; 5) {                 } elseif ($x -gt 5) {
@@ -298,7 +298,7 @@ if (x &gt; 10) {                       if ($x -gt 10) {
 </table>
 </div>
 
-<pre><code># 全件をメモリに載せる（10万件のファイルだと重い）
+<pre><code class="language-powershell"># 全件をメモリに載せる（10万件のファイルだと重い）
 foreach ($f in Get-ChildItem -Recurse) { $f.Name }
 
 # 1件ずつ処理する（メモリを使わない）
@@ -312,7 +312,7 @@ Get-ChildItem -Recurse | ForEach-Object { $_.Name }</code></pre>
 
 <h3>その他の繰り返し</h3>
 
-<pre><code>for ($i = 0; $i -lt 10; $i++) { $i }
+<pre><code class="language-powershell">for ($i = 0; $i -lt 10; $i++) { $i }
 
 while ($true) { break }
 
@@ -365,7 +365,7 @@ do { $n++ } until ($n -ge 3)      # until は JavaScript にない
 <figcaption>図 06.1 — PowerShell の switch は条件を全部評価し、一致したものをすべて実行する</figcaption>
 </figure>
 
-<pre><code>switch (5) {
+<pre><code class="language-powershell">switch (5) {
     {$_ -gt 1}  { 'gt1' }
     {$_ -gt 3}  { 'gt3' }
     {$_ -gt 10} { 'gt10' }
@@ -385,7 +385,7 @@ C 系の <code>break</code> は<strong>「次に流れ落ちるのを防ぐ」</
 
 <h2>switch の便利な使い方</h2>
 
-<pre><code># 配列を渡すと各要素を処理する（ループが不要）
+<pre><code class="language-powershell"># 配列を渡すと各要素を処理する（ループが不要）
 switch (1, 2, 3) {
     1 { 'one' }
     2 { 'two' }
@@ -421,7 +421,7 @@ switch -CaseSensitive ('ABC') { 'abc' { '一致しない' } }</code></pre>
 
 <h2>定義</h2>
 
-<pre><code># JavaScript
+<pre><code class="language-powershell"># JavaScript
 function getUser(name, age = 20) { ... }
 
 # PowerShell
@@ -547,7 +547,7 @@ function Get-User {
 <figcaption>図 06.3 — <code>process</code> を書き忘れると、最後の1件しか処理されない</figcaption>
 </figure>
 
-<pre><code>function Add-Tag {
+<pre><code class="language-powershell">function Add-Tag {
     param([Parameter(ValueFromPipeline)][string]$Text)
 
     begin   { $n = 0 }
@@ -566,7 +566,7 @@ function Get-User {
 
 <h2><code>[CmdletBinding()]</code> を付ける</h2>
 
-<pre><code>function Get-Report {
+<pre><code class="language-powershell">function Get-Report {
     [CmdletBinding()]
     param([string]$Path)
 
@@ -639,7 +639,7 @@ Get-Report -Path .\a.txt -Verbose      # -Verbose が使えるようになる</c
 <figcaption>図 06.4 — <code>return</code> は「関数を抜ける」だけ。それまでに出力されたものは全部戻り値に含まれる</figcaption>
 </figure>
 
-<pre><code>function Test-Return {
+<pre><code class="language-powershell">function Test-Return {
     "途中の出力"          # ← これも戻り値になる
     $x = 1 + 1            # ← 代入なので戻り値にならない
     return "returnの値"
@@ -674,7 +674,7 @@ PowerShell の <code>return</code> は<strong>「その値を出力して、関�
 
 <p>関数から配列を返すと、<strong>要素が1個のときだけ配列ではなくなります</strong>。</p>
 
-<pre><code>function Get-One {
+<pre><code class="language-powershell">function Get-One {
     $a = @('x')          # 要素1個の配列
     return $a
 }
@@ -721,7 +721,7 @@ $o.GetType().Name        # → String （！配列ではない）</code></pre>
 <figcaption>図 06.5 — 件数によって型が変わる。テストでは通り、本番で落ちる典型例</figcaption>
 </figure>
 
-<pre><code>function Get-OneFixed {
+<pre><code class="language-powershell">function Get-OneFixed {
     $a = @('x')
     return ,$a           # ← 先頭のカンマがポイント
 }
@@ -738,7 +738,7 @@ PowerShell は配列を返すとき<strong>自動的に要素へばらします�
 
 <h3>呼び出し側でも守れる</h3>
 
-<pre><code># 受け取る側で @() で包めば、必ず配列になる
+<pre><code class="language-powershell"># 受け取る側で @() で包めば、必ず配列になる
 $items = @(Get-One)
 $items.Count             # → 1（潰れていても復元される）</code></pre>
 
@@ -787,7 +787,7 @@ $items.Count             # → 1（潰れていても復元される）</code></
 <figcaption>図 06.6 — 親の変数は読めるが、代入すると関数内に別の変数ができる</figcaption>
 </figure>
 
-<pre><code>$outer = 'もとの値'
+<pre><code class="language-powershell">$outer = 'もとの値'
 
 function Test-Write {
     $outer = '関数内で変更'
@@ -808,7 +808,7 @@ Test-Write
 </table>
 </div>
 
-<pre><code>function Set-Counter {
+<pre><code class="language-powershell">function Set-Counter {
     $script:counter = 10      # スクリプト全体で見える
 }
 Set-Counter
@@ -822,7 +822,7 @@ $counter                      # → 10</code></pre>
 
 <h2>ドットソース — 別ファイルの関数を読み込む</h2>
 
-<pre><code># ✗ これは別プロセスとして実行され、関数は残らない
+<pre><code class="language-powershell"># ✗ これは別プロセスとして実行され、関数は残らない
 .\lib.ps1
 
 # ✓ ドットソース。現在のスコープに読み込まれる
@@ -831,7 +831,7 @@ Get-MyFunction            # lib.ps1 で定義した関数が使える</code></pr
 
 <p><strong>ドット＋スペース＋パス</strong>です。見落としやすいですが、これがないと関数が読み込まれません。</p>
 
-<pre><code># 自分と同じフォルダの lib.ps1 を読む（定番の書き方）
+<pre><code class="language-powershell"># 自分と同じフォルダの lib.ps1 を読む（定番の書き方）
 . (Join-Path $PSScriptRoot 'lib.ps1')</code></pre>
 
 <div class="callout">
@@ -841,7 +841,7 @@ Get-MyFunction            # lib.ps1 で定義した関数が使える</code></pr
 
 <h2><code>Set-StrictMode</code> でミスを早く見つける</h2>
 
-<pre><code>Set-StrictMode -Version Latest</code></pre>
+<pre><code class="language-powershell">Set-StrictMode -Version Latest</code></pre>
 
 <div class="tablewrap">
 <table>
