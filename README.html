@@ -19,11 +19,13 @@
 		--soft: #f2f5fb;
 	}
 
-	/* 章ごとの虹色アクセント (H: 280 → 0, 280°を3章に均等分割 = 140°刻み) */
-	.ch01 { --accent: hsl(280,78%,25%); --accent2: hsl(280,58%,65%); --soft: hsl(280,28%,95%); }
-	.ch02 { --accent: hsl(186.7,78%,25%); --accent2: hsl(186.7,58%,65%); --soft: hsl(186.7,28%,95%); }
-	.ch03 { --accent: hsl(93.3,78%,25%); --accent2: hsl(93.3,58%,65%); --soft: hsl(93.3,28%,95%); }
-	.ch04 { --accent: hsl(0,78%,25%); --accent2: hsl(0,58%,65%); --soft: hsl(0,28%,95%); }
+	/* 章ごとの虹色アクセント (H: 280 → 0, 6章 = 56°刻み) */
+	.ch01 { --accent: hsl(280,78%,25%); --accent2: hsl(280,58%,55%); --soft: hsl(280,28%,95%); }
+	.ch02 { --accent: hsl(224,78%,25%); --accent2: hsl(224,58%,55%); --soft: hsl(224,28%,95%); }
+	.ch03 { --accent: hsl(168,78%,25%); --accent2: hsl(168,58%,55%); --soft: hsl(168,28%,95%); }
+	.ch04 { --accent: hsl(112,78%,25%); --accent2: hsl(112,58%,55%); --soft: hsl(112,28%,95%); }
+	.ch05 { --accent: hsl(56,78%,25%); --accent2: hsl(56,58%,55%); --soft: hsl(56,28%,95%); }
+	.ch06 { --accent: hsl(0,78%,25%); --accent2: hsl(0,58%,55%); --soft: hsl(0,28%,95%); }
 
 	* { box-sizing: border-box; }
 
@@ -298,7 +300,7 @@
 	<div class="inner">
 		<h1>PowerShell 学習資料</h1>
 		<p class="lead">Windows PowerShell 5.1 と PowerShell 7 の両対応 ／ 全 12 章 ＋ 付録3本</p>
-		<p class="date">📅 作成: 2026-08-22 / 更新: 2026-10-10 ／ 対象: 何らかのプログラミング言語の基礎を知っている方</p>
+		<p class="date">📅 作成: 2026-08-22 / 更新: 2026-10-20 ／ 対象: 何らかのプログラミング言語の基礎を知っている方</p>
 	</div>
 </div>
 
@@ -389,6 +391,8 @@
 		<li class="ch02"><a href="#ch02">この資料の約束事</a></li>
 		<li class="ch03"><a href="#ch03">目的から引く — 逆引き索引</a></li>
 		<li class="ch04"><a href="#ch04">勉強会で使う場合</a></li>
+		<li class="ch05"><a href="#ch05">課題</a></li>
+		<li class="ch06"><a href="#ch06">ローカルルール</a></li>
 	</ol>
 </nav>
 
@@ -625,12 +629,24 @@
 参加するだけなら読む必要はありません。
 </div>
 </section>
+<!-- ============ 5 ============ -->
+<section class="ch05" id="ch05">
+<h1>5. 課題</h1>
+
+<p>この資料でこれから直すことは <a href="notes/40_issues/issues.html">課題</a> にまとめています。</p>
+</section>
+<!-- ============ 6 ============ -->
+<section class="ch06" id="ch06">
+<h1>6. ローカルルール</h1>
+
+<p>この資料を作るときの決めごとは <a href="notes/90_rules/local-rules.html">ローカルルール</a> にまとめています。</p>
+</section>
 
 </div>
 
 <footer>
 	<p><a class="back-home" href="../" title="公開資料の一覧"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M2 7.5 8 2l6 5.5V14H2z"/><path d="M6.5 14V10h3v4"/></svg></a></p>
-	<p>PowerShell 学習資料 ／ 本編 12 章 ＋ 付録 3 ／ 作り方は <a href="docs/ZZ-構成.html">構成案</a> にまとめています。これから直すことは <a href="notes/40_issues/issues.html">課題</a> にあります。</p>
+	<p>PowerShell 学習資料 ／ 本編 12 章 ＋ 付録 3 ／ 作り方は <a href="docs/ZZ-構成.html">構成案</a> にまとめています。</p>
 	<p>ほかの公開資料は <a href="https://lightspeedc.com/">公開資料の一覧</a> にあります。</p>
 </footer>
 
